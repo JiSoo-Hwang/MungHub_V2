@@ -17,6 +17,6 @@ private String kindAddress;//	KIND_ADDRESS
 private String kindName;//	KIND_NAME
 private String kindContact;//	KIND_CONTACT
 private double placeX;//	PLACE_X
-//	PLACE_Y
-//	STATUS
+private double placeY;//	PLACE_Y
+private String status;//	STATUS
 }

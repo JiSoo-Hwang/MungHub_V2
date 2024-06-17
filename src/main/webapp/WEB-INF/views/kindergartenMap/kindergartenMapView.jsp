@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,29 +14,35 @@
 <script>
 var mapContainer = document.getElementById('map'), // 지도를 표시할 div  
     mapOption = { 
-        center: new kakao.maps.LatLng(37.5338916, 126.8969999), // 지도의 중심좌표
+        center: new kakao.maps.LatLng(37.533809, 126.896876), // 지도의 중심좌표
         level: 3 // 지도의 확대 레벨
     };
 
 var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
  
 // 마커를 표시할 위치와 title 객체 배열입니다 
+
+/* var mapList = ${mapList};
+for(var i in mapList){
+	title : mapList[i].kindName,
+	latlng: new kakao.maps.LatLng(mapList[i].)
+} */
 var positions = [
     {
-        title: '카카오', 
-        latlng: new kakao.maps.LatLng(37.5338151, 126.570677)
+        title: '왈왈스쿨', 
+        latlng: new kakao.maps.LatLng(37.5302334, 127.1320619)
     },
     {
-        title: '생태연못', 
-        latlng: new kakao.maps.LatLng(33.450936, 126.569477)
+        title: '펫도그 애견스쿨', 
+        latlng: new kakao.maps.LatLng(37.4832778, 127.1262065)
     },
     {
-        title: '텃밭', 
-        latlng: new kakao.maps.LatLng(33.450879, 126.569940)
+        title: '퍼피스쿨', 
+        latlng: new kakao.maps.LatLng(37.5136773, 127.0618982)
     },
     {
-        title: '근린공원',
-        latlng: new kakao.maps.LatLng(33.451393, 126.570738)
+        title: '마이댕댕스쿨',
+        latlng: new kakao.maps.LatLng(37.5478131, 126.8496339)
     }
 ];
 
