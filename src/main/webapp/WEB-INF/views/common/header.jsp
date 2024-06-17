@@ -322,7 +322,7 @@
                         <li><a href=""></a> </li>
                     </ul>
                 </li>
-                <li><a href="">shop</a>
+                <li><a href="/pjtMungHub/list.sp">shop</a>
                     <!-- 메인메뉴 하위 요소 -->
                     <ul>
                         <li><a href=""></a> </li>
