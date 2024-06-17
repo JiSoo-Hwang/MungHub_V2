@@ -8,5 +8,6 @@
 	</settings>
 	<typeAliases>
 	<typeAlias type="com.kh.pjtMungHub.shop.model.vo.Product" alias="Product"/>
+	<typeAlias type="com.kh.pjtMungHub.kindergartenMap.model.vo.MapVO" alias="MapVO"/>
 	</typeAliases>
 </configuration>
