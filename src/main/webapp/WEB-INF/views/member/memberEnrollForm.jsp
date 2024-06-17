@@ -213,8 +213,8 @@
 		</div>
 		
 		<div>
-			<button>반려견주(보호자)로 가입</button>
-			<button>반려견돌보미(선생님)로 가입</button>
+			<button>반려견주(일반 회원)로 가입</button>
+			<button>반려견돌보미(반려견유치원 선생님)로 가입</button>
 		</div>
 	</div>
 	<script>
@@ -223,5 +223,66 @@
 				$("input[type=radio]").each()})
 			}
 	</script>
+	
+		<!-- 회원탈퇴 클릭시 사용될 모달영역 -->
+	<div class="modal fade" id="joinModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<!-- Modal Header -->
+				<div class="modal-header">
+					<h4 class="modal-title">회원 가입</h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+
+				<!-- 회원탈퇴 요청 처리할 form태그 -->
+				<form action="join.me" method="post">
+					<!-- Modal body -->
+					<div class="modal-body">
+						<div class="member-data">
+							<label for="userId">아이디 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="아이디를 입력하세요" id="userId" name="userId" required>
+							
+							<label for="userPwd">비밀번호 :</label>
+							<input type="password" class="form-control mb-2 mr-sm-2" 
+									placeholder="등록할 비밀번호를 입력하세요" id="userPwd" name="userPwd" required>
+							<span>비밀번호는 6글자 이상 20자 미만으로, 영어, 숫자 및 특수문자를 반드시 포함하여 구성하셔야 합니다.</span>
+							<div class="password-rule">
+
+							<label for="checkPwd">비밀번호 확인 :</label>
+							<input type="password" class="form-control mb-2 mr-sm-2" 
+									placeholder="동일한 비밀번호를 입력하세요" id="checkPwd" name="checkPwd" required>
+							<div class="password-check">
+							<label for="name">이름 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="이름를 입력하세요" id="name" name="name" required>
+							<label for="phone">전화번호 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="하이픈(-) 포함 공백없이 입력해 주시기 바랍니다." id="phone" name="phone" required>
+							<label for="phone">이메일 :</label>
+							<input type="email" class="form-control mb-2 mr-sm-2" 
+									placeholder="" id="email" name="email" >
+							<label for="address">주소 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="" id="address" name="address" >
+						</div>
+							<label for="">반려견 유무 :</label>
+							<input type="radio" id="male" value="Y" name="yesPet">
+							<label for="yesPet">있습니다.</label> &nbsp;&nbsp;
+							<input type="radio" id="female" value="N" name="noPet">
+							<label for="noPet">없습니다.</label> &nbsp;&nbsp;
+								
+					</div>
+					<!-- Modal footer -->
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-danger">회원가입</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</div>
 </body>
 </html>
