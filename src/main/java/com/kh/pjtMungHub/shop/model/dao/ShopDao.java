@@ -12,8 +12,12 @@ public class ShopDao {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ArrayList<Product> selectProductList(SqlSessionTemplate sqlSession) {
-		// TODO Auto-generated method stub
 		return (ArrayList)sqlSession.selectList("shopMapper.selectList");
+	}
+
+	public Product selectProductDetail(SqlSessionTemplate sqlSession, int productNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectDetail",productNo);
 	}
 
 }

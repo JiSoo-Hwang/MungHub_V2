@@ -16,7 +16,7 @@ position : relative;
  height: 300px; 
  width: 200px;
  filter: brightness(1);
- transition: 1s;
+ transition: 0.3s;
 }
 .card-img-top:hover{
  filter: brightness(0.7);
@@ -34,21 +34,24 @@ position : relative;
 </div>
 <c:forEach items="${pList }" var="p">
 <div class="col-3">
-<div class="card">
+<div class="card" onclick="location.href='detail.sp/${p.productNo}'">
 	<div>
 	<img class="card-img-top" src="resources/shopFile/16-ageing-12-b1-ne.jpg">
 	</div>
 	<div class="card-body">
 		<h5 class="card-title">${p.productName }</h5>
-		<del>${p.price }</del>
-		<br> <strong>${p.price }</strong>
-		<strong>${p.discount }</strong>
+		<del><fmt:formatNumber type="number" maxFractionDigits="0" value="${p.price}" /></del>
+		<br> 
+		<fmt:formatNumber type="number" maxFractionDigits="0" value="${p.price -(p.price/p.discount)}" />
+
+		<strong style="color:rgb(250, 58, 14)">${p.discount }%</strong>
 		
 	</div> 
 	</div>
 </div>
 </c:forEach>
 </div>
+
 
 <br> <br>
 </body>
