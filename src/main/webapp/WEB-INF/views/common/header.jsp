@@ -345,18 +345,6 @@
             </ul>
         </div>
     </div>
-    <div class="quick_menu">
-        <ul>
-            <li class="bar_open"><a href="">퀵메뉴</a></li>
-            <li class="kako_talk"><a href="">채팅상담</a></li>
-            <li class="page_up">
-                <a href="">▲</a>
-            </li>
-            <li class="page_down"><a href="">▼</a></li>
-            <li class="consult"><a href="">상담문의</a></li>
-            <li class="contact"><a href="">대표전화</a></li>
-        </ul>
-    </div>
     <br clear="both">
     <script>
         // 화면이 일정 크기로 축소되면 메뉴 구성이 바뀜 (아직 진행중, 편의상 주석처리)
