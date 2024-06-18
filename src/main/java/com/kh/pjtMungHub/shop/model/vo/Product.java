@@ -17,4 +17,6 @@ public class Product {
 	private int discount;
 	private int categoryNo;
 	private int brandCode;
+	
+	private int reviewCount;
 }

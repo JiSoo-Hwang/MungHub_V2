@@ -6,5 +6,8 @@ import com.kh.pjtMungHub.shop.model.vo.Product;
 
 public interface ShopService {
 
-	ArrayList<Product> selectProductList(); 
+	ArrayList<Product> selectProductList();
+
+
+	Product selectProductDetail(int productNo); 
 }
