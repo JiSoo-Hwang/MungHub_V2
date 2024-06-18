@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.kh.pjtMungHub.kindergartenMap.model.dao.MapDao;
 import com.kh.pjtMungHub.kindergartenMap.model.vo.MapVO;
 
+@Service
 public class MapServiceImpl implements MapService{
 	
 	@Autowired
