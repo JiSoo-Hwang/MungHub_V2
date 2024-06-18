@@ -298,7 +298,7 @@
                 <li><a href="">pet care</a>
                     <!-- 메인메뉴 하위 요소 -->
                     <ul>
-                        <li><a href=""></a> </li>
+                        <li><a href="sitter.re">단기돌봄예약</a> </li> <!-- 예약 전 펫시터 선택 화면으로 -->
                         <li><a href=""></a> </li>
                         <li><a href=""></a> </li>
                         <li><a href=""></a> </li>
