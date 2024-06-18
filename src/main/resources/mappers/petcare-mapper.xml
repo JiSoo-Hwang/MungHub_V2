@@ -3,4 +3,63 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="petcareMapper">
+
+	<!-- 펫시터 resultMap -->
+	<resultMap type="PetSitter" id="petSitterResultSet">
+		<result column="PET_SITTER_NO" property="petSitterNo"/>
+		<result column="PET_SITTER_NAME" property="petSitterName"/>
+		<result column="INTRODUCE" property="introduce"/>
+		<result column="DOG_KEYWORD" property="dogKeword"/>
+		<result column="TYPE_KEYWORD" property="typeKeyword"/>
+		<result column="PHONE" property="phone"/>
+		<result column="EMAIL" property="email"/>
+		<result column="ORIGIN_NAME" property="originName"/>
+		<result column="FILE_PATH" property="filePath"/>
+		<result column="STATUS" property="status"/>
+	</resultMap>
+	
+	<select id="selectSitter" parameterType="AvailableTimes" resultMap="petSitterResultSet">
+		SELECT P.PET_SITTER_NAME, P.INTRODUCE
+			  ,P.DOG_KEYWORD,P.TYPE_KEYWORD
+			  ,P.ORIGIN_NAME,P.FILE_PATH
+		FROM PET_SITTER P
+		WHERE P.STATUS = 'Y'
+			AND NOT EXISTS (
+		    SELECT 1
+		    FROM RESERVATION R
+		    WHERE R.PET_SITTER_NO = P.PET_SITTER_NO
+		    AND R.VISIT_DATE = TO_DATE(#{visitDate}, 'YYYY-MM-DD')
+		    AND (
+		        (R.START_TIME &lt; #{startTime} AND R.END_TIME > #{endTime})
+		    	)
+			)
+	</select>
+	
+	
+	
+	
+	
+	
+
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
