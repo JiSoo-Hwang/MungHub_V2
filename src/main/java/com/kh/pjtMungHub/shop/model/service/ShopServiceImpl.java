@@ -20,8 +20,15 @@ public class ShopServiceImpl implements ShopService {
 	
 	@Override
 	public ArrayList<Product> selectProductList() {
-		// TODO Auto-generated method stub
+		
 		return shopDao.selectProductList(sqlSession);
 	}
+
+	@Override
+	public Product selectProductDetail(int productNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectProductDetail(sqlSession,productNo);
+	}
+
 
 }
