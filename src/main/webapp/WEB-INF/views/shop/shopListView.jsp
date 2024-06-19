@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>MUNGHUBSHOP</title>
 <style>
 .card{
 cursor: pointer;
@@ -32,11 +32,13 @@ position : relative;
 <div class="jumbotron">
 <h1>애견용품</h1>
 </div>
+<a class="btn btn-primary" href="insert.sp">상품등록</a>
+<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 <c:forEach items="${pList }" var="p">
-<div class="col-3">
-<div class="card" onclick="location.href='detail.sp/${p.productNo}'">
+<div class="col-3 my-3">
+	<div class="card" onclick="location.href='detail.sp/${p.productNo}'">
 	<div>
-	<img class="card-img-top" src="resources/shopFile/16-ageing-12-b1-ne.jpg">
+	<img class="card-img-top" src="${p.attachment }">
 	</div>
 	<div class="card-body">
 		<h5 class="card-title">${p.productName }</h5>
@@ -50,6 +52,7 @@ position : relative;
 	</div>
 </div>
 </c:forEach>
+</div>
 </div>
 
 
