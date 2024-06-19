@@ -12,6 +12,7 @@
 	,KIND_CONTACT kindContact
 	,PLACE_X placeX
 	,PLACE_Y placeY
+	,STATUS
 	FROM KINDERGARTEN
 	WHERE STATUS = 'Y'
 	</select>

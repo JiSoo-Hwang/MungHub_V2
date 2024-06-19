@@ -7,6 +7,11 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+<%@ include file="/WEB-INF/views/common/header.jsp" %>
+<div class="outer">
+<div class="inner">
+<h3>우앙</h3>
+</div>
+</div>
 </body>
 </html>
