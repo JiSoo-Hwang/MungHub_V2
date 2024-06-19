@@ -1,4 +1,4 @@
-package com.kh.pjtMungHub.member.model.vo;
+package com.kh.pjtMungHub.pet.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
