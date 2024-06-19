@@ -8,11 +8,13 @@
 	</settings>
 	<typeAliases>
 
-	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.AvailableTimes" alias="AvailableTimes"/>
-	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.PetSitter" alias="PetSitter"/>
-	<typeAlias type="com.kh.pjtMungHub.shop.model.vo.Product" alias="Product"/>
-	<typeAlias type="com.kh.pjtMungHub.shop.model.vo.Attachment" alias="Attachment"/>
-	<typeAlias type="com.kh.pjtMungHub.kindergartenMap.model.vo.MapVO" alias="MapVO"/>
+		<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Price" alias="Price"/>
+		<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Reservation" alias="Reservation"/>
+    <typeAlias type="com.kh.pjtMungHub.petcare.model.vo.AvailableTimes" alias="AvailableTimes"/>
+    <typeAlias type="com.kh.pjtMungHub.petcare.model.vo.PetSitter" alias="PetSitter"/>
+    <typeAlias type="com.kh.pjtMungHub.shop.model.vo.Product" alias="Product"/>
+    <typeAlias type="com.kh.pjtMungHub.shop.model.vo.Attachment" alias="Attachment"/>
+    <typeAlias type="com.kh.pjtMungHub.kindergartenMap.model.vo.MapVO" alias="MapVO"/>
 
 	</typeAliases>
 </configuration>
