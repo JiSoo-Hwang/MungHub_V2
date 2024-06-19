@@ -1,6 +1,7 @@
 package com.kh.pjtMungHub.member.model.service;
 
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.pjtMungHub.member.model.dao.MemberDao;
@@ -8,8 +9,10 @@ import com.kh.pjtMungHub.member.model.vo.Member;
 
 @Service
 public class MemberServiceImpl implements MemberService{
-	
+	@Autowired
 	private MemberDao dao;
+	
+	@Autowired
 	private SqlSessionTemplate sqlSession;
 
 	@Override
@@ -24,7 +27,19 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public int changePw(Member m) {
-		return dao.changePw(sqlSession, m);
+		return dao.changePw(sqlSession,m);
 	}
+
+	@Override
+	public Member checkId(Member m) {
+		return dao.checkId(sqlSession,m);
+	}
+	
+	@Override
+	public int insertMember(Member m) {
+		return dao.insertMember(sqlSession,m);
+	}
+
+
 
 }

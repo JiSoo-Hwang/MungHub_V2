@@ -282,8 +282,16 @@
             <div id="header_1_center">
             </div>
             <div id="header_1_right">
-                <a href="">로그인</a>
-                <a href="">마이페이지</a>
+	            <c:choose>
+		            <c:when test="${!empty loginUser}">
+						<label>${loginUser.userId }님 환영합니다</label> &nbsp;&nbsp; 
+	                	<a href="logout.me">로그아웃</a>
+	                	<a href="mypage.me">마이페이지</a> <a href="">쪽지함</a>
+		            </c:when>
+		            <c:otherwise>
+		                <a href="enter.me">로그인</a>
+	                </c:otherwise>
+	            </c:choose>
             </div>
         </div>
         <div id="header_2">

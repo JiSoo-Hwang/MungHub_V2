@@ -20,4 +20,14 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.changePw",m);
 	}
 
+	public Member checkId(SqlSessionTemplate sqlSession, Member m) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("memberMapper.checkId",m);
+	}
+	
+	public int insertMember(SqlSessionTemplate sqlSession, Member m) {
+		return sqlSession.insert("memberMapper.insertMember", m);
+	}
+
+
 }

@@ -4,8 +4,10 @@ import com.kh.pjtMungHub.member.model.vo.Member;
 
 public interface MemberService {
 
-	public Member loginMember(Member m);
-	public Member searchId(Member m);
-	public int changePw(Member m);
+	Member loginMember(Member m);
+	Member searchId(Member m);
+	int changePw(Member m);
+	int insertMember(Member m);
+	Member checkId(Member m);
 	
 }

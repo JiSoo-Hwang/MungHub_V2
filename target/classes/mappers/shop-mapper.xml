@@ -27,5 +27,20 @@ FROM PRODUCT
 WHERE STATUS = 'Y'
 </select>
 
+<select id="selectDetail" parameterType="_int" resultMap="productResultSet" >
+ SELECT PRODUCT_NO,
+PRODUCT_NAME,
+SALES_COUNT,
+PRICE,
+DISCOUNT,
+CATEGORY_NO,
+BRAND_CODE
+FROM PRODUCT
+WHERE STATUS = 'Y'
+AND PRODUCT_NO = #{productNo}
+</select>
+
+
+
 
 </mapper>
