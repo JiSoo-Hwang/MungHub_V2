@@ -18,6 +18,37 @@
 		<result column="STATUS" property="status"/>
 	</resultMap>
 	
+	<!-- 요금 resultMap -->
+	<resultMap type="Price" id="priceResultSet">
+	    <result column="DURATION_NO" property="durationNo"/>
+	    <result column="PET_TYPE_NO" property="petTypeNo"/>
+	    <result column="TOTAL_PRICE" property="totalPrice"/>
+	    <result column="PRICE_NAME" property="priceName"/>
+	</resultMap>
+	
+	<!-- 예약 resultMap -->
+	<resultMap type="Reservation" id="reservationResultSet">
+	    <result column="RESERVATION_ID" property="reservationId"/>
+	    <result column="ADDRESS" property="address"/>
+	    <result column="PHONE" property="phone"/>
+	    <result column="VISIT_DATE" property="visitDate"/>
+	    <result column="START_TIME" property="startTime"/>
+	    <result column="END_TIME" property="endTime"/>
+	    <result column="RESERVATION_DATE" property="reservationDate"/>
+	    <result column="CAUTION" property="caution"/>
+	    <result column="PET_NAME" property="petName"/>
+	    <result column="STATUS" property="status"/>
+	    <result column="PET_SITTER_NO" property="petSitterNo"/>
+	    <result column="DURATION" property="duration"/>
+	    <result column="PET_TYPE" property="petType"/>
+	    <result column="ORIGIN_NAME" property="originName"/>
+	    <result column="CHANGE_NAME" property="changeName"/>
+	    <result column="PET_PHOTO_NO" property="petPhotoNo"/>
+	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
+	    <result column="TOTAL_AMOUNT" property="totalAmount"/>
+	</resultMap>
+	
+	
 	<select id="selectSitter" parameterType="AvailableTimes" resultMap="petSitterResultSet">
 		SELECT P.PET_SITTER_NO,P.PET_SITTER_NAME, P.INTRODUCE
 			  ,P.DOG_KEYWORD,P.TYPE_KEYWORD

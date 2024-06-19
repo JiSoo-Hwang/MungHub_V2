@@ -16,4 +16,14 @@
 	FROM KINDERGARTEN
 	WHERE STATUS = 'Y'
 	</select>
+	
+	<select id="selectPet" parameterType="_int" resultType="Pet">
+	SELECT BREED_ID breedId
+	,PET_NAME petName
+	,PET_AGE petAge
+	,PET_GENDER petGender
+	,WEIGHT weight
+	FROM PET 
+	WHERE OWNER_NO = #{ownerNo}
+	</select>
 </mapper>

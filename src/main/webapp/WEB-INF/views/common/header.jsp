@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
 
+<head>
 <meta charset="UTF-8">
 <!-- BootStrap 및 jQuery cdn 시작 -->
 <script
@@ -174,49 +174,14 @@
         #header_2 li a:hover {
             border-bottom: #492F10 2px solid;
         }
-        .kako_talk {
-            background-color: #6B8A7A;
-        }
 
-        .page_up {
-            background-color: #B7B597;
-        }
-
-        .page_down {
-            background-color: #B7B597;
-        }
-
-        .consult {
-            background-color: #3C5B6F;
-        }
-
-        .contact {
-            background-color: #153448;
-        }
+#header_2:after {
+clear: both;
+}
 </style>
-<title>Insert title here</title>
 </head>
+
 <body>
-    <div id="header">
-        <div id="header_1">
-            <div id="header_1_left">
-            </div>
-            <div id="header_1_center">
-            </div>
-            <div id="header_1_right">
-	            <c:choose>
-		            <c:when test="${!empty loginUser}">
-						<label>${loginUser.userId }님 환영합니다</label> &nbsp;&nbsp; 
-	                	<a href="logout.me">로그아웃</a>
-	                	<a href="mypage.me">마이페이지</a> <a href="">쪽지함</a>
-		            </c:when>
-		            <c:otherwise>
-		                <a href="enter.me">로그인</a>
-	                </c:otherwise>
-	            </c:choose>
-            </div>
-        </div>
-    </div>
     <nav id="header">
         <nav id="header_1">
             <ul>
@@ -226,12 +191,13 @@
                 <li><a href="#contact">Board</a></li>
                 <li><a href="/pjtMungHub/list.sp">Shop</a></li>
                 <li><a href="#contact">Realestate</a></li>
-                <li style="float:right"><a class="active" href="#about" style="color: white;">Login</a></li>
+				<li style="float: right"><a class="active" href="#about"
+					style="color: white;">Login</a></li>
             </ul>
         </nav>
         <nav id="header_2">
             <ul>
-                <li><a href="">지도보기</a> </li>
+				<li><a href="map.do">지도보기</a></li>
                 <li><a href="sitter.re">단기돌봄예약</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
