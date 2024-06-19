@@ -6,11 +6,15 @@
 <head>
 <meta charset="UTF-8">
 <title>WELCOME TO MUNGHUB!</title>
+<style>
+#map{
+margin:100px;
+}
+</style>
 </head>
 <body>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
-<div>
-</div>
+<br><br>
 	<div id="map" style="width: 70%; height: 250px;"></div>
 
 	<script type="text/javascript"

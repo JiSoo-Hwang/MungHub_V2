@@ -1,13 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 <!-- BootStrap 및 jQuery cdn 시작 -->
 <script
@@ -107,107 +106,112 @@
 	};
 </script>
 <!-- alertify css 커스터마이징 끝 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        #header {
-            padding: 10px;
-            position: sticky;
-        }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<style>
+#header {
+	padding: 10px;
+	position: sticky;
+}
 
-        /* 메인 메뉴바 */
-        #header_1>ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #F4D3D3;
-            /* position: sticky; */
-        }
+/* 메인 메뉴바 */
+#header_1>ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #F4D3D3;
+	/* position: sticky; */
+}
 
-        #header_1 li {
-            float: left;
-        }
+#header_1 li {
+	float: left;
+}
 
-        #header_1 li a {
-            display: block;
-            color: #492F10;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
+#header_1 li a {
+	display: block;
+	color: #492F10;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+}
 
-        #header_1 li a:hover {
-            background-color: #E8A9A9;
-        }
+#header_1 li a:hover {
+	background-color: #E8A9A9;
+}
 
-        .active {
-            background-color: #090580;
-        }
+.active {
+	background-color: #090580;
+}
 
-        /* 메인 메뉴바 끝 */
-        /* 서브 메뉴바 */
-        #header_2 {
-            display: none;
-        }
+/* 메인 메뉴바 끝 */
+/* 서브 메뉴바 */
+#header_2 {
+	display: none;
+}
 
-        #header_2>ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #FFEAE3;
-            /* position: sticky; */
-        }
+#header_2>ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #FFEAE3;
+	/* position: sticky; */
+}
 
-        #header_2 li {
-            float: left;
-        }
+#header_2 li {
+	float: left;
+}
 
-        #header_2 li a {
-            display: block;
-            color: #492F10;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
+#header_2 li a {
+	display: block;
+	color: #492F10;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+}
 
-        #header_2 li a:hover {
-            border-bottom: #492F10 2px solid;
-        }
-    </style>
+#header_2 li a:hover {
+	border-bottom: #492F10 2px solid;
+}
+
+#header_2:after {
+clear: both;
+}
+</style>
 </head>
 
 <body>
-    <nav id="header">
-        <nav id="header_1">
-            <ul>
-                <li><a href="#home">Kindergarten</a></li>
-                <li><a href="#news">Petcare</a></li>
-                <li><a href="#contact">Wedding</a></li>
-                <li><a href="#contact">Board</a></li>
-                <li><a href="/pjtMungHub/list.sp">Shop</a></li>
-                <li><a href="#contact">Realestate</a></li>
-                <li style="float:right"><a class="active" href="#about" style="color: white;">Login</a></li>
-            </ul>
-        </nav>
-        <nav id="header_2">
-            <ul>
-                <li><a href="">지도보기</a> </li>
-                <li><a href="sitter.re">단기돌봄예약</a> </li>
-                <li><a href="">하위 메뉴1</a> </li>
-                <li><a href="">하위 메뉴1</a> </li>
-                <li><a href="">하위 메뉴1</a> </li>
-            </ul>
-        </nav>
-    </nav>
-    <script>
-        $(function () {
-            $("#header_1").hover(function () {
-                $("#header_2").show();
-            });
-        });
-    </script>
+	<nav id="header">
+		<nav id="header_1">
+			<ul>
+				<li><a href="#home">Kindergarten</a></li>
+				<li><a href="#news">Petcare</a></li>
+				<li><a href="#contact">Wedding</a></li>
+				<li><a href="#contact">Board</a></li>
+				<li><a href="/pjtMungHub/list.sp">Shop</a></li>
+				<li><a href="#contact">Realestate</a></li>
+				<li style="float: right"><a class="active" href="#about"
+					style="color: white;">Login</a></li>
+			</ul>
+		</nav>
+		<nav id="header_2">
+			<ul>
+				<li><a href="map.do">지도보기</a></li>
+				<li><a href="sitter.re">단기돌봄예약</a></li>
+				<li><a href="">하위 메뉴1</a></li>
+				<li><a href="">하위 메뉴1</a></li>
+				<li><a href="">하위 메뉴1</a></li>
+			</ul>
+		</nav>
+	</nav>
+	<script>
+		$(function() {
+			$("#header_1").hover(function() {
+				$("#header_2").show();
+			});
+		});
+	</script>
 </body>
 
 </html>
