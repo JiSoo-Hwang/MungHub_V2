@@ -166,9 +166,6 @@
         #header_2 li a:hover {
             border-bottom: #492F10 2px solid;
         }
-    </style>
-</head>
-
         .kako_talk {
             background-color: #6B8A7A;
         }
@@ -211,20 +208,7 @@
 	            </c:choose>
             </div>
         </div>
-        <div id="header_2">
-    <nav id="header">
-        <nav id="header_1">
-            <ul>
-                <li><a href="#home">Kindergarten</a></li>
-                <li><a href="#news">Petcare</a></li>
-                <li><a href="#contact">Wedding</a></li>
-                <li><a href="#contact">Board</a></li>
-                <li><a href="/pjtMungHub/list.sp">Shop</a></li>
-                <li><a href="#contact">Realestate</a></li>
-                <li style="float:right"><a class="active" href="#about" style="color: white;">Login</a></li>
-            </ul>
-        </nav>
-        <nav id="header_2">
+    </div>
     <nav id="header">
         <nav id="header_1">
             <ul>

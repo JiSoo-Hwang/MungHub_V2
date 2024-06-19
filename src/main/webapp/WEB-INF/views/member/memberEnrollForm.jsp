@@ -286,7 +286,7 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 
-				<!-- 회원탈퇴 요청 처리할 form태그 -->
+				<!-- 회원 가입 요청 처리할 form태그 -->
 				<form action="join.me" method="post">
 					<!-- Modal body -->
 					<div class="modal-body">
@@ -319,10 +319,15 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 									placeholder="" id="address" name="address" >
 						</div>
 							<label for="">반려견 유무 :</label>
-							<input type="radio" id="yesPet" value="Y" name="petYN">
-							<label for="yesPet">있습니다.</label> &nbsp;&nbsp;
-							<input type="radio" id="noPet" value="N" name="petYN">
-							<label for="noPet">없습니다.</label> &nbsp;&nbsp;
+							<div class="petStatus">
+								<input type="radio" id="yesPet" value="Y" name="petYN">
+								<label for="yesPet">있습니다.</label> &nbsp;&nbsp;
+								<input type="radio" id="noPet" value="N" name="petYN">
+								<label for="noPet">없습니다.</label> &nbsp;&nbsp;
+								<div class="pet-data">
+								<button>추가하기</button>
+								</div>
+							</div>
 								
 					</div>
 					<!-- Modal footer -->
@@ -371,12 +376,11 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 			$('#password').keyup(function(){
 				var regExp= new RegExp();
 				var password=$(this).val();
-				regExp=/^[a-zA-Z0-9!@#$%^&*]{8,15}$/;
-				console.log(password);
-                if(!regExp.test($(this).val)){
+				regExp=/^[a-zA-Z0-9!@#$%^&*]{6,20}$/;
+                if(!regExp.test(password)){
                     pwRule.text("유효하지 않은 비밀번호입니다.").css('color','red')
                 }else{
-                    pwRule.text("유효한 비밀번호입니다.").css('color','red')
+                    pwRule.text("유효한 비밀번호입니다.").css('color','green')
                 	
                 }
 			})

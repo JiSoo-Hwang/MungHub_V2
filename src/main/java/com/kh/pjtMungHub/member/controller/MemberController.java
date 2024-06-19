@@ -69,7 +69,6 @@ public class MemberController {
 	
 	@PostMapping("join.me")
 	public String insertMember(Member m, Model model, HttpSession session) {
-		System.out.println(m);
 		String encPwd=bcryptPasswordEncoder.encode(m.getPassword());
 		m.setPassword(encPwd);
 		System.out.println(m.getPassword());
@@ -81,5 +80,17 @@ public class MemberController {
 			model.addAttribute("errorMsg","회원 가입 실패");
 		}
 		return "redirect:/";
+	}
+	
+	@PostMapping("changePw.me")
+	public ModelAndView changePw(Member m, ModelAndView mv, HttpSession session) {
+		Member result=service.searchId(m);
+		if(result==null||result.getUserId()!=m.getUserId()) {
+			mv.addObject("errorMsg", "입력하신 정보를 다시 확인해 주세요.");
+			mv.setViewName("member/memberLoginForm");
+		}else {
+			mv.setViewName("newPw.me");
+		}
+		return mv;
 	}
 }
