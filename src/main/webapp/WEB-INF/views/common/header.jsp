@@ -22,6 +22,9 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- BootStrap 및 jQuery cdn 끝 -->
 <!-- alertify css 커스터마이징 시작 -->
+<script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css" rel="stylesheet">
+
 <script>
 	alertify.defaults = {
 		// dialogs defaults
