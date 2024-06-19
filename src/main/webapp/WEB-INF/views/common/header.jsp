@@ -4,23 +4,20 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<!-- BootStrap 및 jQuery cdn 시작 -->
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-<!-- Popper JS -->
-<script
-	src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<!-- Latest compiled JavaScript -->
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- BootStrap 및 jQuery cdn 끝 -->
-<!-- alertify css 커스터마이징 시작 -->
+    <meta charset="UTF-8">
+    <!-- BootStrap 및 jQuery cdn 시작 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- BootStrap 및 jQuery cdn 끝 -->
+     <!-- alertify css 커스터마이징 시작 -->
 <script>
 	alertify.defaults = {
 		// dialogs defaults
@@ -102,279 +99,107 @@
 	};
 </script>
 <!-- alertify css 커스터마이징 끝 -->
-<style>
-        /* 네비바 */
-        div {
-            box-sizing: border-box;
-        }
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
         #header {
-            width: 80%;
-            height: 100px;
-            padding-top: 20px;
-            margin: auto;
+            padding: 10px;
+            position: sticky;
         }
 
-        #header>div {
-            width: 100%;
-            margin-bottom: 10px;
+        /* 메인 메뉴바 */
+        #header_1>ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #F4D3D3;
+            /* position: sticky; */
         }
 
-        #header_1 {
-            height: 40%;
-        }
-
-        #header_2 {
-            height: 60%;
-        }
-
-        #header_1>div {
-            height: 100%;
+        #header_1 li {
             float: left;
         }
 
-        #header_1_left {
-            width: 30%;
-            position: relative;
-        }
-
-        #header_1_center {
-            width: 30%;
-        }
-
-        #header_1_right {
-            width: 30%;
-        }
-
-        #header_1_center>img {
-            height: 80%;
-            position: relative;
-            margin: auto;
-            top: 0px;
-            bottom: 0px;
-            right: 0px;
-            left: 0px;
-        }
-
-        #header_1_right {
+        #header_1 li a {
+            display: block;
+            color: #492F10;
             text-align: center;
-            line-height: 35px;
-            font-size: 70%;
-            text-indent: 35px;
+            padding: 14px 16px;
+            text-decoration: none;
         }
 
-        #header_1_right>a {
-            margin: 5px;
+        #header_1 li a:hover {
+            background-color: #E8A9A9;
         }
 
-        #header_1_right>a:hover {
-            cursor: pointer;
+        .active {
+            background-color: #090580;
         }
 
+        /* 메인 메뉴바 끝 */
+        /* 서브 메뉴바 */
         #header_2 {
-            clear: left;
+            display: none;
         }
 
         #header_2>ul {
-            width: 100%;
-            height: 100%;
             list-style-type: none;
-            margin: auto;
+            margin: 0;
             padding: 0;
+            overflow: hidden;
+            background-color: #FFEAE3;
+            /* position: sticky; */
         }
 
-        #header_2>ul>li {
+        #header_2 li {
             float: left;
-            /* border: 1px dotted; */
-            width: 15%;
-            height: 100%;
-            line-height: 55px;
+        }
+
+        #header_2 li a {
+            display: block;
+            color: #492F10;
             text-align: center;
-        }
-
-        #header_2>ul>li a {
+            padding: 14px 16px;
             text-decoration: none;
-            color: black;
-            font-size: 100%;
-            font-weight: 900;
         }
 
-        #header_2>ul>li a:hover {
-            color: #153448;
-            font-size: 16px;
+        #header_2 li a:hover {
+            border-bottom: #492F10 2px solid;
         }
-
-        #header_2>ul>li>ul {
-            list-style-type: none;
-            padding: 0px;
-        }
-/*  지금 서브 메뉴 호버 기능 작업중입니다^^,,,
-        #header_2>ul>li:hover {
-            display: block;
-        }
-        #header_2>ul>li>ul:hover {
-            display: block;
-        }
-        #header_2>ul>li a:hover+ul {
-            display: block;
-            border: dotted 1px black;
-        }
- */
-
-        #header_2 {
-            border-top: 1px solid lightgray;
-            border-bottom: 1px solid lightgray;
-        }
-
-        #header a {
-            text-decoration: none;
-            color: black;
-        }
-
-        /* 사이드바 */
-        .quick_menu {
-            text-align: center;
-            float: right;
-            margin-right: 50px;
-        }
-
-        .quick_menu li {
-            list-style-type: none;
-            padding: 30px 10px 30px 10px;
-        }
-
-        .quick_menu a {
-            text-decoration: none;
-            color: white;
-        }
-
-        .bar_open {
-            background-color: #254336;
-        }
-
-        .kako_talk {
-            background-color: #6B8A7A;
-        }
-
-        .page_up {
-            background-color: #B7B597;
-        }
-
-        .page_down {
-            background-color: #B7B597;
-        }
-
-        .consult {
-            background-color: #3C5B6F;
-        }
-
-        .contact {
-            background-color: #153448;
-        }
-</style>
-<title>Insert title here</title>
+    </style>
 </head>
-<body>
-    <div id="header">
-        <div id="header_1">
-            <div id="header_1_left">
-            </div>
-            <div id="header_1_center">
-            </div>
-            <div id="header_1_right">
-                <a href="">로그인</a>
-                <a href="">마이페이지</a>
-            </div>
-        </div>
-        <div id="header_2">
-            <ul>
-                <li><a href="">kindergarten</a>
-                    <!-- 메인메뉴 하위 요소 -->
-                    <ul>
-                        <li><a href="">메뉴1</a> </li>
-                        <li><a href="">메뉴2</a> </li>
-                        <li><a href="">메뉴3</a> </li>
-                        <li><a href="">메뉴4</a> </li>
-                    </ul>
-                </li>
-                <li><a href="">pet care</a>
-                    <!-- 메인메뉴 하위 요소 -->
-                    <ul>
-                        <li><a href="sitter.re">단기돌봄예약</a> </li> <!-- 예약 전 펫시터 선택 화면으로 -->
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                    </ul>
-                </li>
-                <li><a href="">wedding</a>
-                    <!-- 메인메뉴 하위 요소 -->
-                    <ul>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                    </ul>
-                </li>
-                <li><a href="">board</a>
-                    <!-- 메인메뉴 하위 요소 -->
-                    <ul>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                    </ul>
-                </li>
-                <li><a href="/pjtMungHub/list.sp">shop</a>
-                    <!-- 메인메뉴 하위 요소 -->
-                    <ul>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                    </ul>
-                </li>
-                <li><a href="">realestate</a>
-                    <!-- 메인메뉴 하위 요소 -->
-                    <ul>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                        <li><a href=""></a> </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="quick_menu">
-        <ul>
-            <li class="bar_open"><a href="">퀵메뉴</a></li>
-            <li class="kako_talk"><a href="">채팅상담</a></li>
-            <li class="page_up">
-                <a href="">▲</a>
-            </li>
-            <li class="page_down"><a href="">▼</a></li>
-            <li class="consult"><a href="">상담문의</a></li>
-            <li class="contact"><a href="">대표전화</a></li>
-        </ul>
-    </div>
-    <br clear="both">
-    <script>
-        // 화면이 일정 크기로 축소되면 메뉴 구성이 바뀜 (아직 진행중, 편의상 주석처리)
-        // $(window).on("resize", function () {
-        //     var innerWidth = $(window).innerWidth();
-        //     if (innerWidth <= 750) {
-        //         $(".quick_menu").css("display", "none");
-        //         $("#header").css("display","none");
-        //     } else {
-        //         $(".quick_menu").css("display", "");
-        //         $("#header").css("display","");
 
-        //     }
-        
-        // });
-        
+<body>
+    <nav id="header">
+        <nav id="header_1">
+            <ul>
+                <li><a href="#home">Kindergarten</a></li>
+                <li><a href="#news">Petcare</a></li>
+                <li><a href="#contact">Wedding</a></li>
+                <li><a href="#contact">Board</a></li>
+                <li><a href="/pjtMungHub/list.sp">Shop</a></li>
+                <li><a href="#contact">Realestate</a></li>
+                <li style="float:right"><a class="active" href="#about" style="color: white;">Login</a></li>
+            </ul>
+        </nav>
+        <nav id="header_2">
+            <ul>
+                <li><a href="">지도보기</a> </li>
+                <li><a href="sitter.re">단기돌봄예약</a> </li>
+                <li><a href="">하위 메뉴1</a> </li>
+                <li><a href="">하위 메뉴1</a> </li>
+                <li><a href="">하위 메뉴1</a> </li>
+            </ul>
+        </nav>
+    </nav>
+    <script>
+        $(function () {
+            $("#header_1").hover(function () {
+                $("#header_2").show();
+            });
+        });
     </script>
-    <div class="content">
-    </div>
 </body>
+
 </html>
