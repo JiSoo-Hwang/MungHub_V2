@@ -20,6 +20,7 @@ public class MemberController {
 	
 	@Autowired
 	private MemberService service;
+	
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	

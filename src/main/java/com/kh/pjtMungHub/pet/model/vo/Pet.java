@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Pet {
 private int petNo;//	PET_NO
-private String breedId;//	BREED_ID
+private String breed;//	BREED_ID
 private String ownerNo;//	OWNER_NO
 private String petName;//	PET_NAME
 private int petAge;//	PET_AGE

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.pjtMungHub.kindergartenMap.model.service.MapService;
 import com.kh.pjtMungHub.kindergartenMap.model.vo.MapVO;
+import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,7 +51,12 @@ public class KindergartenMapController {
 		return "kindergartenMap/kindergartenMapView";
 	}
 	@RequestMapping("reg.do")
-	public String regForm(@RequestParam(value = "kindNo")int kindNo) {
+	public String regForm(@RequestParam(value = "kindNo")int kindNo, Model model) {
+		int ownerNo = 1;
+		Pet pet = mapService.selectPet(ownerNo);
+		MapVO kindergarten = mapService.selectKindergarten(kindNo);
+		model.addAttribute("pet",pet);
+		model.addAttribute("kindergarten",kindergarten);
 		return "kindergartenReg/insertRegView";
 	}
 }
