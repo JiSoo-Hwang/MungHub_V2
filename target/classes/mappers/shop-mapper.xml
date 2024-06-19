@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="shopMapper">
+
+<resultMap type="Product" id="productResultSet">
+		<result column="PRODUCT_NO" property="productNo"/>
+		<result column="PRODUCT_NAME" property="productName"/>
+		<result column="STATUS" property="statue"/>
+		<result column="SALES_COUNT" property="salesConunt"/>
+		<result column="PRICE" property="price"/>
+		<result column="DISCOUNT" property="discount"/>
+		<result column="CATEGORY_NO" property="categoryNo"/>
+		<result column="BRAND_CODE" property="brandCode"/>
+	</resultMap>
+
+<select id="selectList" resultMap="productResultSet">
+ SELECT PRODUCT_NO,
+PRODUCT_NAME,
+SALES_COUNT,
+PRICE,
+DISCOUNT,
+CATEGORY_NO,
+BRAND_CODE
+FROM PRODUCT
+WHERE STATUS = 'Y'
+</select>
+
+<select id="selectDetail" parameterType="_int" resultMap="productResultSet" >
+ SELECT PRODUCT_NO,
+PRODUCT_NAME,
+SALES_COUNT,
+PRICE,
+DISCOUNT,
+CATEGORY_NO,
+BRAND_CODE
+FROM PRODUCT
+WHERE STATUS = 'Y'
+AND PRODUCT_NO = #{productNo}
+</select>
+
+
+
+
+</mapper>
