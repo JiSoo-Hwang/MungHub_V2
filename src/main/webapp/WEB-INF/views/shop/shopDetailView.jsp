@@ -10,8 +10,9 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 .review-star{
 display:block;
-width:100px;
+width:130px;
 }
+
 .review-star>i{
 color: #F2D106;
 }
@@ -50,7 +51,6 @@ display: table-row;
 .review-img-top4{
 float: left;
 width:100px;
-heighy:100px;
 }
 .btn-review-all{
 float: right;
@@ -66,9 +66,10 @@ border:1px solid lightgray;
 }
 .detail-tag p{padding:10px; margin-right: 10px; color: gray}
 .detail-content p{padding:10px; margin-right: 10px}
+
 #review-write{
-float: right;
-border: 0;
+    float: right;
+    border: 0;
 }
 .progress{
 width: 80%;
@@ -79,6 +80,40 @@ width: 20%;
 display: block;
 float: left;
 }
+
+.qna{
+top: 0px;
+float: right;
+position: relative;
+}
+.qna a{
+font-size:14px;
+}
+
+h2{
+width:50%;
+}
+
+.first{
+
+text-align: center;
+}
+.first p{
+color: orange;
+}
+
+.second{
+
+text-align: center;
+}
+.second p{
+color: gray;
+}
+.question-list>td a{
+text-decoration:none;
+color: gray;
+}
+
 </style>
 </head>
 <body>
@@ -342,9 +377,7 @@ float: left;
 
 <div class="container" id="detail-section02">
 <h2>구매후기</h2>
-<button type="button" id="review-write"> 후기쓰기<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info text-dark">
-    150P 적립
-  </span></button>
+<button type="button" id="review-write">후기쓰기</button>
   
   <div class="py-5" align="center">
 	 <div class="row row-cols-2 align-items-center mt-3 ml-3 mr-3">
@@ -408,7 +441,28 @@ float: left;
 </section>
 
 <div class="container" id="detail-section03">
-
+	<h2>상품문의 <span style="color:gray; font-size: 16px;">(4,666개)</span></h2>
+	
+	<hr>
+	<div class="d-grid gap-2 d-md-block qna">
+	<a href="" class="btn btn-outline-secondary flex-shrink-0">1:1 문의하기</a>
+	<a href="" class="btn btn-outline-dark flex-shrink-0">상품 문의하기</a>
+	</div>
+	
+	<table class="table table-borderless">
+		<tr class="question-list">
+			<td class="first"><p>답변완료</p></td>
+			<td><a href="#">[상품문의]입니다. <i class="bi bi-lock-fill"></i></a></td>
+			<td>작성자</td>
+			<td>2024.06.20</td>
+		</tr>
+		<tr class="question-list">
+			<td class="second"><p>답변대기</p></td>
+			<td><a href="#">[배송문의]입니다. <i class="bi bi-unlock"></i></a></td>
+			<td>작성자</td>
+			<td>2024.06.20</td>
+		</tr>
+	</table>
 </div>
 
 <br> <br>

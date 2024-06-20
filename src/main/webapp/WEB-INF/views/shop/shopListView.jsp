@@ -41,7 +41,7 @@ position : relative;
 <a class="btn btn-primary" href="insert.sp">상품등록</a>
 <div class="row row-cols-2 align-items-center">
 <c:forEach items="${pList }" var="p">
-<div class="col-sm-3 my-3 ">
+<div class="col-sm my-3 ">
 	<div class="card" onclick="location.href='detail.sp/${p.productNo}'">
 	<div>
 	<img class="card-img-top" src="${p.attachment }">
