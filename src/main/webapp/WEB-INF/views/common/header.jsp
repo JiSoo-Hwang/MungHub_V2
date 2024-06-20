@@ -8,19 +8,13 @@
 
 <head>
 <meta charset="UTF-8">
-<!-- BootStrap 및 jQuery cdn 시작 -->
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-<!-- Popper JS -->
-<script
-	src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <!-- Latest compiled JavaScript -->
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- BootStrap 및 jQuery cdn 끝 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- BootStrap 및 jQuery cdn 시작 -->
+<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <!-- alertify css 커스터마이징 시작 -->
 <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css" rel="stylesheet">
@@ -202,6 +196,24 @@ clear: both;
                 <li><a href="">하위 메뉴1</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
+            </ul>
+            <ul>
+                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
+				<li><a href="regList.do?userNo=1">예약내역보기(견주)</a></li>
+                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
+                <li><a href="">하위 메뉴2</a> </li>
+                <li><a href="">하위 메뉴2</a> </li>
+                <li><a href="">하위 메뉴2</a> </li>
+                <li><a href="">하위 메뉴2</a> </li>
+            </ul>
+                <ul>
+                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
+				<li><a href="regList2.do?userNo=1">예약내역보기(원장님)</a></li>
+                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
+                <li><a href="">하위 메뉴3</a> </li>
+                <li><a href="">하위 메뉴3</a> </li>
+                <li><a href="">하위 메뉴3</a> </li>
+                <li><a href="">하위 메뉴3</a> </li>
             </ul>
         </nav>
     </nav>
