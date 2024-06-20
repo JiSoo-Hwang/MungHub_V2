@@ -212,21 +212,19 @@ clear: both;
             </ul>
             <ul>
                 <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
-				<li><a href="regList.do?userNo=1">예약내역보기(견주)</a></li>
+                <c:choose>
+                <c:when test="${loginUser.userGrade == 2 }">
+				<li><a href="regList2.do?userNo=${loginUser.userNo}">예약내역보기(원장님)</a></li>
+                </c:when>
+                <c:otherwise>
+				<li><a href="regList.do?userNo=${loginUser.userNo}">예약내역보기(견주)</a></li>
+                </c:otherwise>
+                </c:choose>
                 <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
                 <li><a href="">하위 메뉴2</a> </li>
                 <li><a href="">하위 메뉴2</a> </li>
                 <li><a href="">하위 메뉴2</a> </li>
                 <li><a href="">하위 메뉴2</a> </li>
-            </ul>
-                <ul>
-                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
-				<li><a href="regList2.do?userNo=1">예약내역보기(원장님)</a></li>
-                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
-                <li><a href="">하위 메뉴3</a> </li>
-                <li><a href="">하위 메뉴3</a> </li>
-                <li><a href="">하위 메뉴3</a> </li>
-                <li><a href="">하위 메뉴3</a> </li>
             </ul>
         </nav>
     </nav>

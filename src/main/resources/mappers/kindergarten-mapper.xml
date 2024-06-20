@@ -17,7 +17,7 @@
 		WHERE STATUS = 'Y'
 	</select>
 
-	<select id="selectPet" parameterType="string" resultType="Pet">
+	<select id="selectPet" parameterType="_int" resultType="Pet">
 		SELECT PET_NO petNo
 		,BREED_NAME breed
 		,PET_NAME petName
@@ -53,6 +53,8 @@
 		,VISIT_DATE
 		,PET_INTRO
 		,PET_NOTE
+		,ORIGIN_NAME
+		,CHANGE_NAME
 		,APPROVAL)
 		VALUES (SEQ_REG.NEXTVAL
 		,#{kindNo}
@@ -61,11 +63,13 @@
 		,#{visitDate}
 		,#{petIntro}
 		,#{petNote}
+		,#{originName}
+		,#{changeName}
 		,DEFAULT
 		)
 	</insert>
 
-	<select id="selectRegList" parameterType="string" resultType="Registration">
+	<select id="selectRegList" parameterType="_int" resultType="Registration">
 		SELECT RESERV_NO reservNo
 		,KIND_NO kindNo
 		,KIND_NAME kindName

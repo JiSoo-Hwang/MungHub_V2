@@ -25,7 +25,7 @@ public class MapDao {
 	}
 
 	//해당 회원의 반려동물 정보 조회 메서드
-	public Pet selectPet(SqlSessionTemplate sqlSession,String ownerNo) {
+	public Pet selectPet(SqlSessionTemplate sqlSession,int ownerNo) {
 
 		
 		return sqlSession.selectOne("kindergartenMapper.selectPet",ownerNo);
@@ -38,7 +38,7 @@ public class MapDao {
 	}
 
 	//상담신청목록 조회 메소드
-	public ArrayList<Registration> selectRegList(SqlSessionTemplate sqlsession, String userNo) {
+	public ArrayList<Registration> selectRegList(SqlSessionTemplate sqlsession, int userNo) {
 		
 		return (ArrayList)sqlsession.selectList("kindergartenMapper.selectRegList",userNo);
 	}

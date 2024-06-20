@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>${pet.petName }의${registration.visitDate}날등록 상담</title>
+<title>${pet.petName }의${registration.visitDate}날등록상담</title>
 <style>
 .form_area {
 	margin: 100px;
@@ -46,16 +46,10 @@ li {
 				<li>
 					<div class="container mt-3" id="reg_upFile">
 						<div class="card img-fluid" style="width: 500px">
-							<img class="card-img-top" src="" alt="" style="width: 100%">
-							<div class="card-img-overlay">
-
-								<p class="card-text">강아지 사진을 올려주세요!</p>
-								<input type="file" id="photoThumb"></input> <label
-									for="photoThumb"><img
-									src="/pjtMungHub/resources/uploadFiles/kindergarten/css/dogPhotoIcon.png"
-									alt=""></label>
-
-							</div>
+							<img class="card-img-top"
+								src="/pjtMungHub/${registration.changeName}" alt=""
+								style="width: 100%">
+							<div class="card-img-overlay"></div>
 						</div>
 					</div>
 				</li>
@@ -111,16 +105,13 @@ li {
 								</tr>
 								<tr>
 									<td></td>
-									<td style="text-align: center;"><br>
-									<br>
-									<br>
-									<br>
-									<br>
-									<br>
-										<button type="button">목록으로</button>
-										<button type="button">신청서수정</button>
-										<button type="button">신청서철회</button>
-										<button type="submit" id="submit-btn">신청하기</button></td>
+									<td style="text-align: center;"><br> <br> <br>
+										<br> <br> <br>
+										<button type="button" class="btn btn-warning">목록으로</button>
+										<button type="button" class="btn btn-outline-info">신청수정</button>
+										<button type="button" class="btn btn-secondary">신청서철회</button>
+										<!-- 					<button type="submit"  id="submit-btn">신청하기</button>-->
+									</td>
 								</tr>
 							</tbody>
 
