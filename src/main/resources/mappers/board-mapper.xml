@@ -13,7 +13,27 @@
 		<result column="RECOMMEND" property="recommend"/>
 		<result column="UPLOAD_DATE" property="uploadDate"/>
 		<result column="REVISE_DATE" property="reviseDate"/>
-		<result column="status" property="status"/>
+		<result column="STATUS" property="status"/>
 	</resultMap>
+	
+	<select id="listCount" resultType="_int" >
+		SELECT(*)
+		FROM BOARD
+		WHERE STATUS ='Y'
+	</select>
+	
+	<select id="selectList" resultMap="boardResultSet">
+		SELECT BOARD_NO
+		      ,BOARD_TITLE
+		      ,BOARD_WRITER
+		      ,COUNT
+		      ,UPLOAD_DATE
+		FROM BOARD
+		WHERE STATUS= 'Y'
+		ORDER BY UPLOAD_DATE DESC	
+	</select>
+	
+	
+	
 	
 </mapper>

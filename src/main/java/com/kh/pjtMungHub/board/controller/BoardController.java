@@ -27,8 +27,9 @@ public class BoardController {
 	public String boardList(@RequestParam(value="currentPage",defaultValue = "1")
 	                        int currentPage,
 	                        Model model) {
+		
 		int listCount = boardService.listCount();
-		int pageLimit = 20;
+		int pageLimit = 5;
 		int boardLimit = 5;
 		
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
@@ -42,6 +43,8 @@ public class BoardController {
 		
 		return "board/boardListView";
 	}
+	
+	
 		
 		
 		
