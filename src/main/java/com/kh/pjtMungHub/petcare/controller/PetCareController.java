@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kh.pjtMungHub.petcare.SaveFile;
 import com.kh.pjtMungHub.petcare.model.service.PetCareServiceImpl;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
+import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
 import com.kh.pjtMungHub.petcare.model.vo.Reservation;
@@ -54,8 +54,6 @@ public class PetCareController {
 		
 		Price p = petCareService.priceTable(at);
 		
-		System.out.println(p);
-		
 		at.setTotalPrice(p.getTotalPrice());
 		at.setPriceName(p.getPriceName());
 		model.addAttribute("at",at);
@@ -65,34 +63,44 @@ public class PetCareController {
 	//예약 정보 저장하기
 	@PostMapping("enroll.re")
 	public String enrollReservation(Reservation re
+								   ,String priceName
+								   ,int totalPrice
 								   ,MultipartFile upfile
 								   ,HttpSession session
 								   ,Model model) {
 		
-		System.out.println(re);
-		
-		/*
 		if(!upfile.getOriginalFilename().equals("")) {
 			
-			String changeName = SaveFile.getSaveFile(upfile, session);
+			String changeName = PetSaveFile.getSaveFile(upfile, session);
 			re.setOriginName(upfile.getOriginalFilename());
-			re.setChangeName("resources/uploadFile/petPhoto/"+changeName);
+			re.setChangeName("resources/uploadFiles/petPhoto/"+changeName);
 		}
-		
+		//예약정보
 		int result = petCareService.enrollReservation(re);
+		
+		//펫시터정보
+		PetSitter sitter = petCareService.sitterInfo(re);
 		
 		if(result>0) {
 			session.setAttribute("alertMsg", "예약에 성공했습니다! 결제 페이지로 이동합니다.");
-			model.addAttribute("amount",re.getTotalAmount());
+			model.addAttribute("re",re);
+			model.addAttribute("sitter",sitter);
+			model.addAttribute("priceName",priceName);
+			model.addAttribute("totalPrice",totalPrice);
 			return "petCare/payment";
 		}else {
 			session.setAttribute("alertMsg", "예약에 실패했습니다. 관리자에게 문의해주세요.");
 			return "petCare/selectSitter";
 		}
+	}
+	@ResponseBody
+	@RequestMapping("insertPayment.re")
+	public int insertPayment(Payment payment) {
 		
-		*/
+		payment.setPaymentStatus(2); //2번 결제완료
+		System.out.println(payment);
 		
-		return "petCare/payment";
+		return 0;
 	}
 	
 	

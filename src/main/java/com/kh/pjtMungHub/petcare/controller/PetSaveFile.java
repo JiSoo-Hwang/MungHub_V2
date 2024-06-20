@@ -1,4 +1,4 @@
-package com.kh.pjtMungHub.petcare;
+package com.kh.pjtMungHub.petcare.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class SaveFile {
+public class PetSaveFile {
 	
 	//파일 업로드 처리 메소드(재활용)
 		public static String getSaveFile(MultipartFile upfile,HttpSession session) {
@@ -31,7 +31,7 @@ public class SaveFile {
 			String changeName = currentTime+ranNum+ext;
 			
 			//6.업로드하고자하는 물리적인 경로 알아내기 (프로젝트 내에 저장될 실제 경로 찾기)
-			String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+			String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/petPhoto/");
 			
 			//7.경로와 수정 파일명을 합쳐서 파일 업로드 처리하기
 			try {

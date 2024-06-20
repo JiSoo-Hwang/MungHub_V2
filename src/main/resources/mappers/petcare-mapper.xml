@@ -29,6 +29,7 @@
 	<!-- 예약 resultMap -->
 	<resultMap type="Reservation" id="reservationResultSet">
 	    <result column="RESERVATION_ID" property="reservationId"/>
+	    <result column="PET_OWNER_NAME" property="petOwnerName"/>
 	    <result column="ADDRESS" property="address"/>
 	    <result column="PHONE" property="phone"/>
 	    <result column="VISIT_DATE" property="visitDate"/>
@@ -40,12 +41,25 @@
 	    <result column="STATUS" property="status"/>
 	    <result column="PET_SITTER_NO" property="petSitterNo"/>
 	    <result column="DURATION" property="duration"/>
-	    <result column="PET_TYPE" property="petType"/>
+	    <result column="PET_TYPE_NO" property="petTypeNo"/>
 	    <result column="ORIGIN_NAME" property="originName"/>
 	    <result column="CHANGE_NAME" property="changeName"/>
-	    <result column="PET_PHOTO_NO" property="petPhotoNo"/>
 	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
 	    <result column="TOTAL_AMOUNT" property="totalAmount"/>
+	</resultMap>
+	
+	<!-- 결제 resultMap -->
+	<resultMap type="Payment" id="paymentResultSet">
+	    <result column="PAYMENT_ID" property="paymentId"/>
+	    <result column="PG_NAME" property="pgName"/>
+	    <result column="USER_NAME" property="userName"/>
+	    <result column="AMOUNT" property="amount"/>
+	    <result column="PHONE" property="phone"/>
+	    <result column="ADDRESS" property="address"/>
+	    <result column="PAYMENT_DATE" property="paymentDate"/>
+	    <result column="RESERVATION_ID" property="reservationId"/>
+	    <result column="PAYMENT_METHOD" property="paymentMethod"/>
+	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
 	</resultMap>
 	
 	
@@ -74,23 +88,21 @@
 		AND PET_TYPE_NO =#{petTypeNo}
 	</select>
 	
-	
-	
-	
 	<!-- 예약정보 저장하기 -->
 	<insert id="enrollReservation" parameterType="Reservation">
 		INSERT INTO RESERVATION (
-		    RESERVATION_ID
+		    RESERVATION_ID,PET_OWNER_NAME
 		   ,ADDRESS, PHONE,VISIT_DATE
 		   ,START_TIME,END_TIME, RESERVATION_DATE
 		   ,CAUTION, PET_NAME
 		   ,STATUS
 		   ,PET_SITTER_NO
-		   ,DURATION, PET_TYPE
+		   ,DURATION, PET_TYPE_NO
 		   ,ORIGIN_NAME, CHANGE_NAME
 		   ,PAYMENT_STATUS, TOTAL_AMOUNT
 		) VALUES (
 		    RESERVATION_SEQ.NEXTVAL,
+		    #{petOwnerName},
 		    #{address},
 		    #{phone},
 		    TO_DATE(#{visitDate}, 'YYYY-MM-DD'),
@@ -102,13 +114,19 @@
 		    DEFAULT,
 		    #{petSitterNo},
 		    #{duration},
-		    #{petType},
+		    #{petTypeNo},
 		    #{originName},
 		    #{changeName},
 		    DEFAULT,
 		    #{totalAmount}
 		)
 	</insert>
+	
+	<select id="sitterInfo" parameterType="Reservation" resultMap="petSitterResultSet">
+		SELECT PET_SITTER_NAME,INTRODUCE,PHONE,ORIGIN_NAME,FILE_PATH
+		FROM PET_SITTER
+		WHERE PET_SITTER_NO = #{petSitterNo}
+	</select>
 	
 	
 	
