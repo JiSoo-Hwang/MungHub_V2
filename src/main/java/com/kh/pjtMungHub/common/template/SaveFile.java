@@ -1,4 +1,4 @@
-package com.kh.pjtMungHub.petcare;
+package com.kh.pjtMungHub.common.template;
 
 import java.io.File;
 import java.io.IOException;
