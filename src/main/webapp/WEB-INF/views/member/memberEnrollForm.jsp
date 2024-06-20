@@ -209,7 +209,7 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 		<br><br>
 		<div class="joinModalBtn">
 			<button type="button" data-toggle="modal" data-target="#joinModal" disabled>반려견주(일반 회원)로 가입</button>	
-			<button disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
+			<button type="reset" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
 		</div>
 	</div>
 	
@@ -272,7 +272,17 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 				}
 			})
 		})
-	
+		$(".joinModalBtn").on("click",function(){
+			$.ajax({
+				url:"userNo.me",
+				success:function(userNo){
+					$("input[type=hidden]").val(userNo);
+				},
+				error:function(){
+					console.log("통신오류");
+				}
+			})
+		})
 	</script>
 	
 		<!-- 회원 가입 클릭시 사용될 모달영역 -->
@@ -291,6 +301,7 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 					<!-- Modal body -->
 					<div class="modal-body">
 						<div class="member-data">
+							<input type="hidden" id="userNo" name="userNo">
 							<label for="userId">아이디 :</label>
 							<input type="text" class="form-control mb-2 mr-sm-2" 
 									placeholder="아이디를 입력하세요" id="userId" name="userId" required>
@@ -324,15 +335,34 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 								<label for="yesPet">있습니다.</label> &nbsp;&nbsp;
 								<input type="radio" id="noPet" value="N" name="petYN">
 								<label for="noPet">없습니다.</label> &nbsp;&nbsp;
-								<div class="pet-data">
-								<button>추가하기</button>
+								<div class="pet-area" style="display:none">
+								<button onclick="addPetData();">추가하기</button>
+									<div class="pet-data">
+										<label for="breed">품종</label>
+										
+										<input type="hidden" id="ownerNo" name="ownerNo">
+										<label for="petName">이름</label>
+										<input type="text" id="petName" name="petName">
+										<label for="">나이</label>
+										<input type="range" id="petAge" name="petAge" min="0" step="1" max="18">
+										<label for="">성별</label>
+										<label for="M">왕자님</label>
+										<input type="radio" name="petGender" value="M">
+										<label for="F">공주님</label>
+										<input type="radio" name="petGender" value="F">
+										<label for="weight">몸무게</label>
+										<input type="number" id="weight" name="weight">
+										<label for="photo">반려견 사진 자랑(1장만!)</label>
+										<input type="file" required>
+									</div>
+									
 								</div>
 							</div>
 								
 					</div>
 					<!-- Modal footer -->
 					<div class="modal-footer">
-						<button type="submit" class="btn btn-danger">회원가입</button>
+						<button type="submit" class="btn btn-danger" disabled>회원가입</button>
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 					</div>
 				</form>
@@ -360,8 +390,7 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 						}else{ //사용가능
 							$(".idCheck").show();
 							$(".idCheck").css("color","green").text("사용가능한 아이디입니다.");
-							//사용가능시 회원가입 버튼 활성화
-							$("button[type=submit]").attr("disabled",false);
+
 						}
 						
 					},
@@ -380,21 +409,40 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
                 if(!regExp.test(password)){
                     pwRule.text("유효하지 않은 비밀번호입니다.").css('color','red')
                 }else{
-                    pwRule.text("유효한 비밀번호입니다.").css('color','green')
-                	
+                    pwRule.text("유효한 비밀번호입니다.").css('color','green') 	
                 }
 			})
 		})
 	
 		$(function(){
 			$('#checkPwd').keyup(function(){
-			    if($('#password').val() == $('#checkPwd').val()){
-			        $('.passwordCheck').text('비밀번호 일치').css('color', 'green')
-			    }else{
+			    if($('#password').val() != $('#checkPwd').val()){
 			        $('.passwordCheck').text('비밀번호 불일치').css('color', 'red')
+			    }else{
+			        $('.passwordCheck').text('비밀번호 일치').css('color', 'green')
+                    if($(".idCheck").text()=="사용가능한 아이디입니다."){
+						//사용가능시 회원가입 버튼 활성화
+						$("button[type=submit]").attr("disabled",false);
+                    }
 			    }
 			})
 		})
+		$(function(){
+			$(".petStatus>input[type=radio]").on("click",function(){
+				var pet=$(".petStatus>input[value='Y']").prop("checked");
+ 				if(pet){
+ 					
+					$(".pet-area").show(0);
+				}else{
+					$(".pet-data").empty();
+					$(".pet-area").hide(0);					
+				}
+			})
+		})
+		function addPetData(){
+			var str="";
+			
+		}
 	</script>
 </body>
 </html>

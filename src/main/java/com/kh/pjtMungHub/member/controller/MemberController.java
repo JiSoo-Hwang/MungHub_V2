@@ -34,7 +34,11 @@ public class MemberController {
 		
 		return "member/memberEnrollForm";
 	}
-
+	
+	@RequestMapping("loginInfo.me")
+	public String loginUpdate() {
+		return "member/memberLoginUpdate";
+	}
 	@RequestMapping("login.me")
 	public ModelAndView loginMember(Member m, ModelAndView mv, HttpSession session) {
 		Member loginUser = service.loginMember(m);
@@ -58,6 +62,17 @@ public class MemberController {
 	}
 	
 	@ResponseBody
+	@GetMapping("userNo.me")
+	public int newUserNo() {
+		int userNo = service.newUserNo();
+		if(userNo>0) {
+			return userNo;
+		}else {
+			return 0;
+		}
+	}
+	
+	@ResponseBody
 	@GetMapping("checkId.me")
 	public String checkId(Member m) {
 		Member mem=service.checkId(m);
@@ -72,9 +87,7 @@ public class MemberController {
 	public String insertMember(Member m, Model model, HttpSession session) {
 		String encPwd=bcryptPasswordEncoder.encode(m.getPassword());
 		m.setPassword(encPwd);
-		System.out.println(m.getPassword());
 		int result = service.insertMember(m);
-		System.out.println(result);
 		if(result>0) {
 			session.setAttribute("errorMsg", "회원 가입이 완료되었습니다.");
 		}else {
@@ -83,15 +96,35 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	@PostMapping("searchId.me")
+	public ModelAndView searchId(Member m, ModelAndView mv, HttpSession session) {
+		Member result = service.searchId(m);
+		if(result!=null) {
+			mv.addObject("errorMsg", "조회하신 아이디는 "+result.getUserId()+" 입니다.");
+			mv.setViewName("member/memberLoginUpdate");
+		}else {
+			mv.addObject("errorMsg","입력한 데이터를 다시 확인해 주세요.");
+			mv.setViewName("member/memberLoginForm");
+		}
+		return mv;
+	}
+	
 	@PostMapping("changePw.me")
 	public ModelAndView changePw(Member m, ModelAndView mv, HttpSession session) {
 		Member result=service.searchId(m);
-		if(result==null||result.getUserId()!=m.getUserId()) {
+		if(result==null||!result.getUserId().equals(m.getUserId())) {
 			mv.addObject("errorMsg", "입력하신 정보를 다시 확인해 주세요.");
-			mv.setViewName("member/memberLoginForm");
 		}else {
-			mv.setViewName("newPw.me");
+			m.setPassword(bcryptPasswordEncoder.encode(m.getPassword()));
+			
+			int rnum=service.changePw(m);
+			if(rnum>0) {
+				mv.addObject("errorMsg", "비밀번호가 변경되었습니다. 다시 로그인해 주세요.");
+			}else {
+				System.out.println("통신오류");
+			}
 		}
+		mv.setViewName("member/memberLoginForm");
 		return mv;
 	}
 }
