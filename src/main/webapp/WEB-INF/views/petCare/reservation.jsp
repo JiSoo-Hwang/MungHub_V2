@@ -18,7 +18,7 @@
       margin-bottom: 1rem;
     }
     /* 시간선택 css */
-    .str-btn {
+    .str-btn{
         width: 100px;
         height: 50px;
         border: 2px solid #ccc;
@@ -113,165 +113,156 @@
 	<div class="contatiner mt-5" id="formBody">
 	<h3>단기돌봄 예약페이지</h3>
 	<br><br>
+    <form action="enroll.re" method="post" enctype="multipart/form-data">
+    <!-- 다음페이지로 보내야 하지만 form에서 입력되지 못할 값들 -->
+	    <input type="hidden" name ="visitDate" value="${at.visitDate }">
+	    <input type="hidden" name ="startTime" value="${at.startTime }">
+	    <input type="hidden" name ="duration" value="${at.duration }">
+	    <input type="hidden" name ="endTime" value="${at.endTime }">
+	    <input type="hidden" name ="petSitterNo" value="${at.petSitterNo }">
+	    <input type="hidden" name ="petTypeNo" value="${at.petTypeNo }">
+	    <input type="hidden" name ="priceName" value="${at.priceName }">
+	    <input type="hidden" name ="totalPrice" value="${at.totalPrice }">
+
+      <!--방문장소-->
+      <div class="form-section">
+        <h5>어디로 방문할까요?</h5>
+        <div class="form-group">
+            성함 <input type="text" class="form-control" name="petOwnerName" id="petOwnerName" placeholder="견주님 성함" style="width:300px;">
+        </div>
+        <div class="form-group">
+            연락처 <input type="text" class="form-control" name="phone" id="phone" placeholder="연락받을 전화번호" style="width:300px;">
+        </div>
+        <!-- Button trigger modal -->
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+		 주소 신규입력
+		</button>
+		<div class="form-group">
+            회원가입 주소 <input type="text" class="form-control" name="address" id="address" value="인천광역시 OO동" style="width:500px;">
+        </div>
+		
+		<!-- Modal -->
+		<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h1 class="modal-title fs-5" id="staticBackdropLabel">주소입력창</h1>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		        <input type="text" id="sample6_postcode" placeholder="우편번호">
+				<input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+				<input type="text" id="sample6_address" placeholder="주소" style="width:400px;"><br>
+				<input type="text" id="sample6_detailAddress" placeholder="상세주소" style="width:300px;">
+				<input type="text" id="sample6_extraAddress" placeholder="참고항목">
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+		        <button type="button" class="btn btn-primary" id="resetBtn">초기화</button>
+		        <button type="button" class="btn btn-primary" id="inputBtn">입력완료</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+      </div>
 	
-	    <form action="enroll.re" method="post" enctype="multipart/form-data">
-	    <!-- 다음페이지로 보내야 하지만 form에서 입력되지 못할 값들 -->
-		    <input type="hidden" name ="visitDate" value="${at.visitDate }">
-		    <input type="hidden" name ="startTime" value="${at.startTime }">
-		    <input type="hidden" name ="duration" value="${at.duration }">
-		    <input type="hidden" name ="endTime" value="${at.endTime }">
-		    <input type="hidden" name ="petSitterNo" value="${at.petSitterNo }">
-		    <input type="hidden" name ="petTypeNo" value="${at.petTypeNo }">
+      <!-- 날짜,시간확인 -->
+      <div class="form-section">
+          <h5>방문 날짜와 시간, 돌봄시간, 반려견 유형을 확인해주세요.</h5><br>
+          <p>(일정 변경은 이전 페이지에서 가능합니다.)</p> <button class="homeBtn" onclick="location.href='sitter.re'">예약 초기화면으로 돌아가기</button>
+          
+          <div class="form-group">
+              <h5>방문날짜</h5>
+              <input type="date" class="form-control" value="${at.visitDate }" name="visitDate" id="visitDate" disabled>
+          </div>
+          
+          <div class="form-group">
+              <h5>방문시간</h5>
+                <div class="" id="startTime">
+                <br> 
+	                <button type="button" class="str-btn" value="900">09:00</button>
+	                <button type="button" class="str-btn" value="1000">10:00</button>
+	                <button type="button" class="str-btn" value="1100">11:00</button>
+	                <button type="button" class="str-btn" value="1200">12:00</button>
+	                <button type="button" class="str-btn" value="1300">13:00</button>
+	                <button type="button" class="str-btn" value="1400">14:00</button>
+	                <button type="button" class="str-btn" value="1500">15:00</button>
+	                <button type="button" class="str-btn" value="1600">16:00</button>
+	                <button type="button" class="str-btn" value="1700">17:00</button>
+           		</div>
+           		
+           	 <h5>돌봄시간</h5>
+	             <div class="duration-btn-group" id="duration"> 
+	             <br>
+	                <button type="button" class="duration-btn" value="100">60분</button>
+	                <button type="button" class="duration-btn" value="200">120분</button>
+	                <button type="button" class="duration-btn" value="300">180분</button>
+	                <button type="button" class="duration-btn" value="400">240분</button>
+	             </div>
+	         <h5>반려견 유형</h5>
+               	 <div class="petType-btn-group" id="petType">
+                    <button type="button" class="petType-btn" name="petType" value="1">소형</button>
+                    <button type="button" class="petType-btn" name="petType" value="2">중형</button>
+                    <button type="button" class="petType-btn" name="petType" value="3">대형</button>
+               	 </div>
+          </div>
+      </div>
 	
-	      <!--방문장소-->
-	      <div class="form-section">
-	        <h5>어디로 방문할까요?</h5>
+      <!--펫 정보 (이름,사진,요청사항) -->
+      <div class="form-section">
+	        <h5>반려동물의 정보를 입력해주세요.</h5>
 	        <div class="form-group">
-	            견주 성함 <input type="text" class="form-control" name="phone" id="phone" placeholder="연락받을 전화번호를 적어주세요.">
+	          	<label for="petName">이름<input type="text" class="form-control" name="petName" id="petName" placeholder="반려동물의 이름을 적어주세요." style="width:300px;" required></label>
+	          	<br>
+	          	<label for="upfile">첨부파일</label>
+	          	<input type="file" onchange="readURL(this);" class="form-control" name="upfile" id="upfile" style="width:500px;">
+	          	<br>
+	          	<img id="preview" style="width:300px;" />
+	          	<br>
+	          	<label for="caution">요청사항</label>
+	          	<br>
+	          	<textarea name="caution" id="caution" rows="4" cols="60" placeholder="돌봄 유의사항을 꼭!! 적어주세요." style="resize: none;" required></textarea>
 	        </div>
-	        <div class="form-group">
-	            연락처 <input type="text" class="form-control" name="phone" id="phone" placeholder="연락받을 전화번호를 적어주세요.">
-	        </div>
-	        <!-- Button trigger modal -->
-			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-			 주소를 입력해주세요.
-			</button>
-			
-			<!-- Modal -->
-			<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <h1 class="modal-title fs-5" id="staticBackdropLabel">주소입력창</h1>
-			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			      </div>
-			      <div class="modal-body">
-			        <input type="text" id="sample6_postcode" placeholder="우편번호">
-					<input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-					<input type="text" id="sample6_address" placeholder="주소" style="width:500px;"><br>
-					<input type="text" id="sample6_detailAddress" placeholder="상세주소" style="width:300px;">
-					<input type="text" id="sample6_extraAddress" placeholder="참고항목">
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-			        <button type="button" class="btn btn-primary" id="resetBtn">초기화</button>
-			        <button type="button" class="btn btn-primary" id="inputBtn">입력완료</button>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-			
-			<div class="form-group">
-	            입력된 주소 <input type="text" class="form-control" name="address" id="address">
-	        </div>
-	        
-	      </div>
+      </div>
 	
-	      <!-- 날짜,시간확인 -->
-	      <div class="form-section">
-	          <h5>방문 날짜와 시간, 돌봄시간, 반려견 유형을 확인해주세요.</h5><br>
-	          <p>(일정 변경은 이전 페이지에서 가능합니다.)</p>
-	          
-	          <div class="form-group">
-	              <h5>방문날짜</h5>
-	              <input type="date" class="form-control" value="${at.visitDate }" name="visitDate" id="visitDate" disabled>
-	          </div>
-	          
-	          <div class="form-group">
-	              <h5>방문시간</h5>
-	                <div class="" id="startTime">
-	                <br> 
-		                <button type="button" class="str-btn" value="900">09:00</button>
-		                <button type="button" class="str-btn" value="1000">10:00</button>
-		                <button type="button" class="str-btn" value="1100">11:00</button>
-		                <button type="button" class="str-btn" value="1200">12:00</button>
-		                <button type="button" class="str-btn" value="1300">13:00</button>
-		                <button type="button" class="str-btn" value="1400">14:00</button>
-		                <button type="button" class="str-btn" value="1500">15:00</button>
-		                <button type="button" class="str-btn" value="1600">16:00</button>
-		                <button type="button" class="str-btn" value="1700">17:00</button>
-	           		</div>
-	           		
-	           	 <h5>돌봄시간</h5>
-		             <div class="duration-btn-group" id="duration"> 
-		             <br>
-		                <button type="button" class="duration-btn" value="100">60분</button>
-		                <button type="button" class="duration-btn" value="200">120분</button>
-		                <button type="button" class="duration-btn" value="300">180분</button>
-		                <button type="button" class="duration-btn" value="400">240분</button>
-		             </div>
-		         <h5>반려견 유형</h5>
-	               	 <div class="petType-btn-group" id="petType">
-	                    <button type="button" class="petType-btn" name="petType" value="1">소형</button>
-	                    <button type="button" class="petType-btn" name="petType" value="2">중형</button>
-	                    <button type="button" class="petType-btn" name="petType" value="3">대형</button>
-	               	 </div>
-	          </div>
-	      </div>
-	
-	      <!--펫 정보 (이름,사진,요청사항) -->
-	      <div class="form-section">
-		        <h5>반려동물의 정보를 입력해주세요.</h5>
-		        <div class="form-group">
-		          	<label for="petName">이름<input type="text" class="form-control" name="petName" id="petName" placeholder="반려동물의 이름을 적어주세요." style="width:300px;"></label>
-		          	<br>
-		          	<label for="upfile">첨부파일</label>
-		          	<input type="file" class="form-control" name="upfile" id="upfile">
-		          	<br>
-		          	<label for="caution">요청사항</label>
-		          	<br>
-		          	<textarea name="caution" id="caution" rows="4" cols="40" placeholder="돌봄 유의사항을 꼭!! 적어주세요." style="resize: none;" required></textarea>
-		        </div>
-	      </div>
-	
-	      <!-- 펫시팅 용품 준비안내 -->
-	      <h5>펫시팅 용품을 준비해주세요.</h5>
-	      <div class="items-row mt-4">
-	          <div class="item">
-	            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/food.png" width="100" height="120" alt="사료">
-	          </div>
-	          <div class="item">
-	            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/snack.png" width="100" height="120" alt="간식">
-	          </div>
-	          <div class="item">
-	            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/toy.png" width="100" height="120" alt="장난감">
-	          </div>
-	          <div class="item">
-	            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/line.png" width="100" height="120" alt="목줄">
-	          </div>
-	          <div class="item">
-	            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/identification.png" width="100" height="120" alt="인식표">
-	          </div>
-	          <div class="item">
-	            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/comb.png" width="100" height="120" alt="빗">
-	          </div>
-	          <div class="item">
-	            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/tissues.png" width="100" height="120" alt="티슈">
-	          </div>
-	          <div class="item">
-	            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/pad.png" width="100" height="120" alt="배변패드">
-	          </div>
-	      </div>
-	
-	      <!--결제금액 및 서비스 확인-->
-	      <div class="form-section">
-	        <h5>고객님께서 받을 서비스와 총 결제 금액입니다.</h5>
-	        <div class="form-group">
-	            받아보시는 서비스는 <input type="text" class="form-control" name="totalPrice" id="totalPrice" value="${at.priceName }" style="width:300px;" readonly>이며,
-	            상품 가격은 <input type="text" class="form-control" name="totalAmount" id="totalPrice" value="${at.totalPrice }" style="width:300px;" readonly> 원 입니다.
-	        </div>
-	      </div>
-	      
-	      <br>
-	      <button type="submit">예약완료 결제하기로 이동</button>
-	    </form>
+      <!-- 펫시팅 용품 준비안내 -->
+      <h5>펫시팅 용품을 준비해주세요.</h5>
+      <div class="items-row mt-4">
+          <div class="item">
+            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/food.png" width="100" height="120" alt="사료">
+          </div>
+          <div class="item">
+            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/snack.png" width="100" height="120" alt="간식">
+          </div>
+          <div class="item">
+            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/toy.png" width="100" height="120" alt="장난감">
+          </div>
+          <div class="item">
+            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/line.png" width="100" height="120" alt="목줄">
+          </div>
+          <div class="item">
+            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/identification.png" width="100" height="120" alt="인식표">
+          </div>
+          <div class="item">
+            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/comb.png" width="100" height="120" alt="빗">
+          </div>
+          <div class="item">
+            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/tissues.png" width="100" height="120" alt="티슈">
+          </div>
+          <div class="item">
+            <img src="/pjtMungHub/resources/uploadFiles/sittingSupplies/pad.png" width="100" height="120" alt="배변패드">
+          </div>
+      </div>
+      
+      <br>
+      <button type="submit">예약완료 결제하기로 이동</button>
+    </form>
   	</div>	
   	
   	<br><br>
   	
   	<script>
   		$(function(){
-  			
   			//모든버튼 비활성화
   			$("#startTime .str-btn").prop("disabled",true);
   			$("#duration .duration-btn").prop("disabled",true);
@@ -348,16 +339,18 @@
 	                }
 	
 	                // 우편번호와 주소 정보를 해당 필드에 넣는다.
-	               document.getElementById('sample6_postcode').value = data.zonecode;
-	               document.getElementById("sample6_address").value = addr; 
+	                document.getElementById('sample6_postcode').value = data.zonecode;
+	                document.getElementById("sample6_address").value = addr; 
 	                // 커서를 상세주소 필드로 이동한다.
 	                document.getElementById("sample6_detailAddress").focus();
 	                
-	                var fullAddress = data.zonecode +''+  document.getElementById("sample6_detailAddress").focus(); +''+ addr;
-	                
-	                console.log(fullAddress);
-	                
-	                $('#address').val(fullAddress);
+	                //주소창에 값을 넣어주는 버튼
+	               $('#inputBtn').click(function(){
+	            	   var fullAddress = addr+'  '+document.getElementById("sample6_detailAddress").value;
+	            	   $('#address').val(fullAddress);
+	            	 //값을 보낸 후 모달창 닫아주기
+						$("#staticBackdrop").modal('hide'); 
+	               });
 	            }
 	        }).open();
     	}
@@ -368,23 +361,23 @@
 			$("#sample6_detailAddress").val('');
 			$("#sample6_extraAddress").val('');
 		});
+		
+		//첨부파일 미리보기
+	function readURL(input) {
+	  if (input.files && input.files[0]) {
+	    var reader = new FileReader();
+	    reader.onload = function(e) {
+	      document.getElementById('preview').src = e.target.result;
+	    };
+	    reader.readAsDataURL(input.files[0]);
+	  } else {
+	    document.getElementById('preview').src = "";
+	  }
+	}
   	
   	</script>
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+	
 		
 		
 		
@@ -393,30 +386,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

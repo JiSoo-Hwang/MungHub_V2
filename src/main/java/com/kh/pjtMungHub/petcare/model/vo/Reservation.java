@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Reservation {
     private int reservationId; // RESERVATION_ID NUMBER PRIMARY KEY
+    private String petOwnerName;//PET_OWNER_NAME VARCHAR2(50) NOT NULL
     private String address; // ADDRESS VARCHAR2(200) NOT NULL
     private String phone; // PHONE VARCHAR2(20) NOT NULL
     private Date visitDate; // VISIT_DATE DATE NOT NULL
