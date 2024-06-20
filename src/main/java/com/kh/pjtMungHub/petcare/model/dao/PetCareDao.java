@@ -28,6 +28,11 @@ public class PetCareDao {
 		return sqlSession.insert("petcareMapper.enrollReservation",re);
 	}
 
+	//펫시터 정보 가져오기
+	public PetSitter sitterInfo(SqlSessionTemplate sqlSession, Reservation re) {
+		return sqlSession.selectOne("petcareMapper.sitterInfo",re);
+	}
+
 	
 
 }

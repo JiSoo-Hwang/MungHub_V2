@@ -29,6 +29,7 @@
 	<!-- 예약 resultMap -->
 	<resultMap type="Reservation" id="reservationResultSet">
 	    <result column="RESERVATION_ID" property="reservationId"/>
+	    <result column="PET_OWNER_NAME" property="petOwnerName"/>
 	    <result column="ADDRESS" property="address"/>
 	    <result column="PHONE" property="phone"/>
 	    <result column="VISIT_DATE" property="visitDate"/>
@@ -46,6 +47,21 @@
 	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
 	    <result column="TOTAL_AMOUNT" property="totalAmount"/>
 	</resultMap>
+	
+	<!-- 결제 resultMap -->
+	<resultMap type="Payment" id="paymentResultSet">
+	    <result column="PAYMENT_ID" property="paymentId"/>
+	    <result column="PG_NAME" property="pgName"/>
+	    <result column="USER_NAME" property="userName"/>
+	    <result column="AMOUNT" property="amount"/>
+	    <result column="PHONE" property="phone"/>
+	    <result column="ADDRESS" property="address"/>
+	    <result column="PAYMENT_DATE" property="paymentDate"/>
+	    <result column="RESERVATION_ID" property="reservationId"/>
+	    <result column="PAYMENT_METHOD" property="paymentMethod"/>
+	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
+	</resultMap>
+	
 	
 	<select id="selectSitter" parameterType="AvailableTimes" resultMap="petSitterResultSet">
 		SELECT P.PET_SITTER_NO,P.PET_SITTER_NAME, P.INTRODUCE
@@ -75,7 +91,7 @@
 	<!-- 예약정보 저장하기 -->
 	<insert id="enrollReservation" parameterType="Reservation">
 		INSERT INTO RESERVATION (
-		    RESERVATION_ID
+		    RESERVATION_ID,PET_OWNER_NAME
 		   ,ADDRESS, PHONE,VISIT_DATE
 		   ,START_TIME,END_TIME, RESERVATION_DATE
 		   ,CAUTION, PET_NAME
@@ -86,6 +102,7 @@
 		   ,PAYMENT_STATUS, TOTAL_AMOUNT
 		) VALUES (
 		    RESERVATION_SEQ.NEXTVAL,
+		    #{petOwnerName},
 		    #{address},
 		    #{phone},
 		    TO_DATE(#{visitDate}, 'YYYY-MM-DD'),
@@ -104,6 +121,12 @@
 		    #{totalAmount}
 		)
 	</insert>
+	
+	<select id="sitterInfo" parameterType="Reservation" resultMap="petSitterResultSet">
+		SELECT PET_SITTER_NAME,INTRODUCE,PHONE,ORIGIN_NAME,FILE_PATH
+		FROM PET_SITTER
+		WHERE PET_SITTER_NO = #{petSitterNo}
+	</select>
 	
 	
 	

@@ -39,6 +39,12 @@ public class PetCareServiceImpl implements PetCareService {
 		return petCareDao.enrollReservation(sqlSession,re);
 	}
 
+	//펫시터 정보 가져오기
+	@Override
+	public PetSitter sitterInfo(Reservation re) {
+		return petCareDao.sitterInfo(sqlSession,re);
+	}
+
 	
 	
 
