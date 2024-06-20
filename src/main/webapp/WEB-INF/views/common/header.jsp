@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <!-- BootStrap 및 jQuery cdn 시작 -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -20,6 +21,7 @@
      <!-- alertify css 커스터마이징 시작 -->
     <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
 	<link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css" rel="stylesheet">
+
 <script>
 	alertify.defaults = {
 		// dialogs defaults
@@ -169,7 +171,11 @@
         #header_2 li a:hover {
             border-bottom: #492F10 2px solid;
         }
-    </style>
+
+#header_2:after {
+clear: both;
+}
+</style>
 </head>
 
 <body>
@@ -182,12 +188,13 @@
                 <li><a href="#contact">Board</a></li>
                 <li><a href="/pjtMungHub/list.sp">Shop</a></li>
                 <li><a href="#contact">Realestate</a></li>
-                <li style="float:right"><a class="active" href="#about" style="color: white;">Login</a></li>
+				<li style="float: right"><a class="active" href="#about"
+					style="color: white;">Login</a></li>
             </ul>
         </nav>
         <nav id="header_2">
             <ul>
-                <li><a href="">지도보기</a> </li>
+				<li><a href="map.do">지도보기</a></li>
                 <li><a href="sitter.re">단기돌봄예약</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
@@ -212,5 +219,4 @@
 	</c:if>
     
 </body>
-
 </html>
