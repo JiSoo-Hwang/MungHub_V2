@@ -40,6 +40,11 @@ public class MemberServiceImpl implements MemberService{
 		return dao.insertMember(sqlSession,m);
 	}
 
+	@Override
+	public int newUserNo() {
+		return dao.newUserNo(sqlSession);
+	}
+
 
 
 }

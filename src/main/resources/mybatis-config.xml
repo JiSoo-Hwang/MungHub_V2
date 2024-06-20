@@ -18,6 +18,7 @@
     <typeAlias type="com.kh.pjtMungHub.kindergartenMap.model.vo.MapVO" alias="MapVO"/>
 	<typeAlias type="com.kh.pjtMungHub.member.model.vo.Member" alias="Member"/>
 	<typeAlias type="com.kh.pjtMungHub.pet.model.vo.Pet" alias="Pet"/>
+	<typeAlias type="com.kh.pjtMungHub.kindergartenMap.model.vo.Registration" alias="Registration"/>
 	</typeAliases>
 	
 </configuration>

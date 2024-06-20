@@ -24,6 +24,7 @@
     <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
 	<link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css" rel="stylesheet">
 
+
 <script>
 	alertify.defaults = {
 		// dialogs defaults
@@ -190,8 +191,19 @@ clear: both;
                 <li><a href="#contact">Board</a></li>
                 <li><a href="/pjtMungHub/list.sp">Shop</a></li>
                 <li><a href="#contact">Realestate</a></li>
-				<li style="float: right"><a class="active" href="#about"
-					style="color: white;">Login</a></li>
+				<li style="float: right">
+					<c:choose>
+						<c:when test="${empty loginUser}">
+							<a class="active" href="enter.me"
+							style="color: white;">Login</a>
+						</c:when>
+						<c:otherwise>
+						<span>${loginUser.userId} 님 환영합니다.</span>
+							<a class="active" href="logout.me"
+							style="color: white;">Logout</a>
+						</c:otherwise>
+					</c:choose>
+				</li>
             </ul>
         </nav>
         <nav id="header_2">
@@ -201,6 +213,24 @@ clear: both;
                 <li><a href="">하위 메뉴1</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
+            </ul>
+            <ul>
+                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
+				<li><a href="regList.do?userNo=1">예약내역보기(견주)</a></li>
+                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
+                <li><a href="">하위 메뉴2</a> </li>
+                <li><a href="">하위 메뉴2</a> </li>
+                <li><a href="">하위 메뉴2</a> </li>
+                <li><a href="">하위 메뉴2</a> </li>
+            </ul>
+                <ul>
+                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
+				<li><a href="regList2.do?userNo=1">예약내역보기(원장님)</a></li>
+                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
+                <li><a href="">하위 메뉴3</a> </li>
+                <li><a href="">하위 메뉴3</a> </li>
+                <li><a href="">하위 메뉴3</a> </li>
+                <li><a href="">하위 메뉴3</a> </li>
             </ul>
         </nav>
     </nav>
