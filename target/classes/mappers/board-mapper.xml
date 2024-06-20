@@ -3,4 +3,17 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="boardMapper">
+
+	<resultMap type="Board" id="boardResultSet">
+		<result column="Board_NO" property="boardNo"/>
+		<result column="BOARD_TITLE" property="boardTitle"/>
+		<result column="BOARD_WRITER" property="boardWriter"/>
+		<result column="BOARD_CONTENT" property="boardContent"/>
+		<result column="COUNT" property="count"/>
+		<result column="RECOMMEND" property="recommend"/>
+		<result column="UPLOAD_DATE" property="uploadDate"/>
+		<result column="REVISE_DATE" property="reviseDate"/>
+		<result column="status" property="status"/>
+	</resultMap>
+	
 </mapper>
