@@ -40,14 +40,12 @@
 	    <result column="STATUS" property="status"/>
 	    <result column="PET_SITTER_NO" property="petSitterNo"/>
 	    <result column="DURATION" property="duration"/>
-	    <result column="PET_TYPE" property="petType"/>
+	    <result column="PET_TYPE_NO" property="petTypeNo"/>
 	    <result column="ORIGIN_NAME" property="originName"/>
 	    <result column="CHANGE_NAME" property="changeName"/>
-	    <result column="PET_PHOTO_NO" property="petPhotoNo"/>
 	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
 	    <result column="TOTAL_AMOUNT" property="totalAmount"/>
 	</resultMap>
-	
 	
 	<select id="selectSitter" parameterType="AvailableTimes" resultMap="petSitterResultSet">
 		SELECT P.PET_SITTER_NO,P.PET_SITTER_NAME, P.INTRODUCE
@@ -74,9 +72,6 @@
 		AND PET_TYPE_NO =#{petTypeNo}
 	</select>
 	
-	
-	
-	
 	<!-- 예약정보 저장하기 -->
 	<insert id="enrollReservation" parameterType="Reservation">
 		INSERT INTO RESERVATION (
@@ -86,7 +81,7 @@
 		   ,CAUTION, PET_NAME
 		   ,STATUS
 		   ,PET_SITTER_NO
-		   ,DURATION, PET_TYPE
+		   ,DURATION, PET_TYPE_NO
 		   ,ORIGIN_NAME, CHANGE_NAME
 		   ,PAYMENT_STATUS, TOTAL_AMOUNT
 		) VALUES (
@@ -102,7 +97,7 @@
 		    DEFAULT,
 		    #{petSitterNo},
 		    #{duration},
-		    #{petType},
+		    #{petTypeNo},
 		    #{originName},
 		    #{changeName},
 		    DEFAULT,
