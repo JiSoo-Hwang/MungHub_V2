@@ -18,12 +18,28 @@
 	</select>
 	
 	<select id="selectPet" parameterType="_int" resultType="Pet">
-	SELECT BREED_ID breedId
+	SELECT BREED_NAME breed
 	,PET_NAME petName
 	,PET_AGE petAge
 	,PET_GENDER petGender
 	,WEIGHT weight
-	FROM PET 
+	FROM PET
+	JOIN BREED USING (BREED_ID)
 	WHERE OWNER_NO = #{ownerNo}
+	</select>
+	
+	<select id="selectKindergarten" parameterType="_int" resultType="MapVO">
+	SELECT KIND_NO kindNo
+	,DIRECTOR_ID directorId
+	,REGION_NAME regionName
+	,KIND_ADDRESS kindAddress
+	,KIND_NAME kindName
+	,KIND_CONTACT kindContact
+	,PLACE_X placeX
+	,PLACE_Y placeY
+	,STATUS
+	FROM KINDERGARTEN
+	WHERE KIND_NO = #{kindNo}
+	AND STATUS = 'Y'
 	</select>
 </mapper>

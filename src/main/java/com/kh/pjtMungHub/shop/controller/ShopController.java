@@ -47,7 +47,9 @@ public class ShopController {
 	public ModelAndView ShopDetail(@PathVariable int productNo, ModelAndView mv) {
 		
 		Product p=shopService.selectProductDetail(productNo);
+		ArrayList<Product> pList = shopService.selectProductList(); 
 		
+		mv.addObject("pList", pList);
 		mv.addObject("p",p);
 		mv.setViewName("shop/shopDetailView");
 		
