@@ -7,23 +7,20 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<!-- BootStrap 및 jQuery cdn 시작 -->
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-<!-- Popper JS -->
-<script
-	src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<!-- Latest compiled JavaScript -->
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- BootStrap 및 jQuery cdn 끝 -->
-<!-- alertify css 커스터마이징 시작 -->
-<script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <!-- BootStrap 및 jQuery cdn 시작 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- BootStrap 및 jQuery cdn 끝 -->
+     <!-- alertify css 커스터마이징 시작 -->
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css" rel="stylesheet">
 
 <script>
 	alertify.defaults = {
@@ -223,5 +220,14 @@ clear: both;
             });
         });
     </script>
+    
+    <!-- 알림창 -->
+    <c:if test="${not empty alertMsg}">
+	    <script>
+	        alertify.alert("${alertMsg}");
+	    </script>
+    	<c:remove var="alertMsg"/>
+	</c:if>
+    
 </body>
 </html>

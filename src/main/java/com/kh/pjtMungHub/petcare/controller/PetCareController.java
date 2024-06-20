@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kh.pjtMungHub.petcare.SaveFile;
+import com.kh.pjtMungHub.common.template.SaveFile;
 import com.kh.pjtMungHub.petcare.model.service.PetCareServiceImpl;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
@@ -54,8 +54,6 @@ public class PetCareController {
 		
 		Price p = petCareService.priceTable(at);
 		
-		System.out.println(p);
-		
 		at.setTotalPrice(p.getTotalPrice());
 		at.setPriceName(p.getPriceName());
 		model.addAttribute("at",at);
@@ -69,9 +67,6 @@ public class PetCareController {
 								   ,HttpSession session
 								   ,Model model) {
 		
-		System.out.println(re);
-		
-		/*
 		if(!upfile.getOriginalFilename().equals("")) {
 			
 			String changeName = SaveFile.getSaveFile(upfile, session);
@@ -80,7 +75,6 @@ public class PetCareController {
 		}
 		
 		int result = petCareService.enrollReservation(re);
-		
 		if(result>0) {
 			session.setAttribute("alertMsg", "예약에 성공했습니다! 결제 페이지로 이동합니다.");
 			model.addAttribute("amount",re.getTotalAmount());
@@ -89,10 +83,6 @@ public class PetCareController {
 			session.setAttribute("alertMsg", "예약에 실패했습니다. 관리자에게 문의해주세요.");
 			return "petCare/selectSitter";
 		}
-		
-		*/
-		
-		return "petCare/payment";
 	}
 	
 	

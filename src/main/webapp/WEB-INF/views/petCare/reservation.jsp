@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>MungHub</title>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!-- 주소 api -->
 
 <style>
 	#formBody{
@@ -109,28 +110,61 @@
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
 	
-	
-	<!-- 펫시터 선택페이지에서 가져온 데이터 : 방문날짜, 방문(시작)시간, 돌봄시간, 종료시간, 펫시터정보
-		 추가할 데이터 : 주소, 연락처, 주의사항, 펫이름, 펫크기, 펫사진, 총금액-->
 	<div class="contatiner mt-5" id="formBody">
 	<h3>단기돌봄 예약페이지</h3>
 	<br><br>
 	
-	    <form action="enroll.re" method="post">
+	    <form action="enroll.re" method="post" enctype="multipart/form-data">
+	    <!-- 다음페이지로 보내야 하지만 form에서 입력되지 못할 값들 -->
 		    <input type="hidden" name ="visitDate" value="${at.visitDate }">
 		    <input type="hidden" name ="startTime" value="${at.startTime }">
 		    <input type="hidden" name ="duration" value="${at.duration }">
 		    <input type="hidden" name ="endTime" value="${at.endTime }">
+		    <input type="hidden" name ="petSitterNo" value="${at.petSitterNo }">
+		    <input type="hidden" name ="petTypeNo" value="${at.petTypeNo }">
 	
 	      <!--방문장소-->
 	      <div class="form-section">
 	        <h5>어디로 방문할까요?</h5>
 	        <div class="form-group">
-	            <input type="text" class="form-control" name="address" id="address" placeholder="펫시터가 방문할 주소를 입력해주세요.">
+	            견주 성함 <input type="text" class="form-control" name="phone" id="phone" placeholder="연락받을 전화번호를 적어주세요.">
 	        </div>
 	        <div class="form-group">
-	            <input type="text" class="form-control" name="phone" id="phone" placeholder="연락받을 전화번호를 적어주세요.">
+	            연락처 <input type="text" class="form-control" name="phone" id="phone" placeholder="연락받을 전화번호를 적어주세요.">
 	        </div>
+	        <!-- Button trigger modal -->
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+			 주소를 입력해주세요.
+			</button>
+			
+			<!-- Modal -->
+			<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h1 class="modal-title fs-5" id="staticBackdropLabel">주소입력창</h1>
+			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			      </div>
+			      <div class="modal-body">
+			        <input type="text" id="sample6_postcode" placeholder="우편번호">
+					<input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+					<input type="text" id="sample6_address" placeholder="주소" style="width:500px;"><br>
+					<input type="text" id="sample6_detailAddress" placeholder="상세주소" style="width:300px;">
+					<input type="text" id="sample6_extraAddress" placeholder="참고항목">
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+			        <button type="button" class="btn btn-primary" id="resetBtn">초기화</button>
+			        <button type="button" class="btn btn-primary" id="inputBtn">입력완료</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			
+			<div class="form-group">
+	            입력된 주소 <input type="text" class="form-control" name="address" id="address">
+	        </div>
+	        
 	      </div>
 	
 	      <!-- 날짜,시간확인 -->
@@ -168,9 +202,9 @@
 		             </div>
 		         <h5>반려견 유형</h5>
 	               	 <div class="petType-btn-group" id="petType">
-	                    <button type="button" class="petType-btn" value="1">소형</button>
-	                    <button type="button" class="petType-btn" value="2">중형</button>
-	                    <button type="button" class="petType-btn" value="3">대형</button>
+	                    <button type="button" class="petType-btn" name="petType" value="1">소형</button>
+	                    <button type="button" class="petType-btn" name="petType" value="2">중형</button>
+	                    <button type="button" class="petType-btn" name="petType" value="3">대형</button>
 	               	 </div>
 	          </div>
 	      </div>
@@ -181,11 +215,12 @@
 		        <div class="form-group">
 		          	<label for="petName">이름<input type="text" class="form-control" name="petName" id="petName" placeholder="반려동물의 이름을 적어주세요." style="width:300px;"></label>
 		          	<br>
-		          	<label for="upfile">첨부파일<input type="file" class="form-control" name="upfile" id="upfile"></label>
+		          	<label for="upfile">첨부파일</label>
+		          	<input type="file" class="form-control" name="upfile" id="upfile">
 		          	<br>
-		          	<label for="requests">요청사항</label>
+		          	<label for="caution">요청사항</label>
 		          	<br>
-		          	<textarea rows="4" cols="40" placeholder="돌봄 유의사항을 꼭!! 적어주세요." style="resize: none;" required></textarea>
+		          	<textarea name="caution" id="caution" rows="4" cols="40" placeholder="돌봄 유의사항을 꼭!! 적어주세요." style="resize: none;" required></textarea>
 		        </div>
 	      </div>
 	
@@ -223,15 +258,16 @@
 	        <h5>고객님께서 받을 서비스와 총 결제 금액입니다.</h5>
 	        <div class="form-group">
 	            받아보시는 서비스는 <input type="text" class="form-control" name="totalPrice" id="totalPrice" value="${at.priceName }" style="width:300px;" readonly>이며,
-	            상품 가격은 <input type="text" class="form-control" name="totalPrice" id="totalPrice" value="${at.totalPrice }" style="width:300px;" readonly> 원 입니다.
+	            상품 가격은 <input type="text" class="form-control" name="totalAmount" id="totalPrice" value="${at.totalPrice }" style="width:300px;" readonly> 원 입니다.
 	        </div>
 	      </div>
 	      
 	      <br>
 	      <button type="submit">예약완료 결제하기로 이동</button>
-	      
 	    </form>
   	</div>	
+  	
+  	<br><br>
   	
   	<script>
   		$(function(){
@@ -249,8 +285,6 @@
   			var startTime = getQueryParam("startTime");
   			var duration = getQueryParam("duration");
   			var petTypeNo = getQueryParam("petTypeNo");
-  			
-  			console.log(petTypeNo);
   			
   			//넘어온 값이 맞다면 button을 변수 지정해서 특정 button만 활성화 시키기
   			if(startTime){
@@ -272,6 +306,68 @@
   				}
   			}
   		});
+  		
+  		//주소 api
+  		function sample6_execDaumPostcode() {
+	        new daum.Postcode({
+	            oncomplete: function(data) {
+	                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+	
+	                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+	                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+	                var addr = ''; // 주소 변수
+	                var extraAddr = ''; // 참고항목 변수
+	
+	                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+	                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+	                    addr = data.roadAddress;
+	                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+	                    addr = data.jibunAddress;
+	                }
+	
+	                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+	                if(data.userSelectedType === 'R'){
+	                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+	                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+	                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+	                        extraAddr += data.bname;
+	                    }
+	                    // 건물명이 있고, 공동주택일 경우 추가한다.
+	                    if(data.buildingName !== '' && data.apartment === 'Y'){
+	                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+	                    }
+	                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+	                    if(extraAddr !== ''){
+	                        extraAddr = ' (' + extraAddr + ')';
+	                    }
+	                    // 조합된 참고항목을 해당 필드에 넣는다.
+	                    document.getElementById("sample6_extraAddress").value = extraAddr;
+	                
+	                } else {
+	                    document.getElementById("sample6_extraAddress").value = '';
+	                }
+	
+	                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+	               document.getElementById('sample6_postcode').value = data.zonecode;
+	               document.getElementById("sample6_address").value = addr; 
+	                // 커서를 상세주소 필드로 이동한다.
+	                document.getElementById("sample6_detailAddress").focus();
+	                
+	                var fullAddress = data.zonecode +''+  document.getElementById("sample6_detailAddress").focus(); +''+ addr;
+	                
+	                console.log(fullAddress);
+	                
+	                $('#address').val(fullAddress);
+	            }
+	        }).open();
+    	}
+		//주소 입력창 초기화 버튼  		
+  		$("#resetBtn").click(function(){ 
+			$("#sample6_postcode").val('');
+			$("#sample6_address").val('');
+			$("#sample6_detailAddress").val('');
+			$("#sample6_extraAddress").val('');
+		});
   	
   	</script>
 		

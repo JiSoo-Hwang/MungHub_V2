@@ -140,20 +140,12 @@
             <li class="nav-item"><a href="#">홈</a></li>
             <li class="nav-item"><a href="#">예약</a></li>
             <li class="nav-item"><a href="#">소식</a></li>
-            <li class="nav-item"><a href="#">가격</a></li>
-            <li class="nav-item"><a href="#">리뷰</a></li>
-            <li class="nav-item"><a href="#">지도</a></li>
             <li class="nav-item"><a href="#" class="active">정보</a></li>
         </ul>
     </div>
      -->
-	
-	<!-- 날짜와 시간을 선택 (비동기로 데이터 전달 후 시터 정보 가져오기)
-		예약 가능한 시터 리스트 출력
-		시터 선택 (선택한 날짜,시간,펫시터 정보 form 으로 전달?)
-	 -->	
 	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dateTimeModal">
-            날짜와 시간으로 가능한 시터를 검색해보세요.
+            여러가지 맞춤 정보를 통해 펫시터를 추천 받아보세요.
     </button>
 	
 	<div class="container mt-5">
@@ -230,13 +222,10 @@
                 $(this).addClass("selected");
             });
 			/* 위 코드가 아래 코드를 합친것. siblings()는 선택된 요소의 형제요소를 선택하는 메소드
-			
 			//버튼 클릭시 활성화/비활성화
 			$(".duration-btn").on("click",function(){
-				
 				// 모든 버튼에서 selected 클래스를 제거하여 비활성화
 				$(".duration-btn").removeClass("selected");
-				
 				// 클릭된 버튼에 selected 클래스를 추가하여 활성화
 				$(this).addClass("selected");
 			});
@@ -245,7 +234,6 @@
 				$(this).addClass("selected");
 			});
 			*/
-			
 			$("#sitterSearch").click(function(){
 				//방문날짜
 				var visitDate = $("#visitDate").val();
@@ -257,9 +245,7 @@
 				//펫크기
 				var petTypeNo = $(".petType-btn.selected").val();
 				
-				console.log(petTypeNo);
-				
-				if(visitDate && startTime){
+				if(visitDate && startTime && duration && petTypeNo){
 					$.ajax({
 						url : "selectSitter.re",
 						type : "post",
@@ -300,30 +286,17 @@
 					$("#dateTimeModal").modal('hide'); 
 				}else{
 					//둘중에 하나라도 비입력시 알림창
-					alert('날짜,시간 모두 입력해주세요.')
+					alert('정보를 모두 입력해주세요.')
 				}
 			});
-			
 			//리셋버튼을 누르면 날짜와 시간 비워주기
 			$("#resetBtn").click(function(){ 
 				$("#visitDate").val('');
 				$(".duration-btn").removeClass("selected");
 				$(".str-btn").removeClass("selected");
+				$(".petType-btn").removeClass("selected");
 			});
-			
-			$("#resBtn").on("click",function(){
-				//방문날짜
-				var visitDate = $("#visitDate").val();
-				//방문시간==시작시간 구하기
-				var startTime = parseInt($(".str-btn.selected").val(),10);
-				//끝나는 시간 구하기
-				var duration = parseInt($(".duration-btn.selected").val(),10); //소요시간 버튼 선택된 값
-				var endTime = startTime+duration;
-			});
-			
 		});
-	
 	</script>
-
 </body>
 </html>
