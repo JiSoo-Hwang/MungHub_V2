@@ -191,7 +191,7 @@ clear: both;
                 <li><a href="#contact">Board</a></li>
                 <li><a href="/pjtMungHub/list.sp">Shop</a></li>
                 <li><a href="#contact">Realestate</a></li>
-				<li style="float: right"><a class="active" href="#about"
+				<li style="float: right"><a class="active" href="enter.me"
 					style="color: white;">Login</a></li>
             </ul>
         </nav>
