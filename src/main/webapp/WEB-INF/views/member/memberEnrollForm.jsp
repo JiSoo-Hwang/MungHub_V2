@@ -339,19 +339,24 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 								<button onclick="addPetData();">추가하기</button>
 									<div class="pet-data">
 										<label for="breed">품종</label>
-										
+										<select>
+											<option value="">해당하는 품종이 없거나 믹스견인 경우 선택해 주세요</option>
+											<c:forEach items="${breed}" varStatus="b">
+												<option value="${b.breedId}">${b.breedName}</option>
+											</c:forEach>
+										</select><br>
 										<input type="hidden" id="ownerNo" name="ownerNo">
 										<label for="petName">이름</label>
-										<input type="text" id="petName" name="petName">
+										<input type="text" id="petName" name="petName"><br>
 										<label for="">나이</label>
-										<input type="range" id="petAge" name="petAge" min="0" step="1" max="18">
+										<input type="range" id="petAge" name="petAge" min="0" step="1" max="18"><br>
 										<label for="">성별</label>
-										<label for="M">왕자님</label>
 										<input type="radio" name="petGender" value="M">
-										<label for="F">공주님</label>
+										<label for="M">왕자님</label>
 										<input type="radio" name="petGender" value="F">
+										<label for="F">공주님</label><br>
 										<label for="weight">몸무게</label>
-										<input type="number" id="weight" name="weight">
+										<input type="number" id="weight" name="weight"><br>
 										<label for="photo">반려견 사진 자랑(1장만!)</label>
 										<input type="file" required>
 									</div>
