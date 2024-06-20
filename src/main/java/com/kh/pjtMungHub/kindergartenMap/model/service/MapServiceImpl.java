@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.kh.pjtMungHub.kindergartenMap.model.dao.MapDao;
 import com.kh.pjtMungHub.kindergartenMap.model.vo.MapVO;
+import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Service
 public class MapServiceImpl implements MapService{
@@ -25,5 +26,19 @@ public class MapServiceImpl implements MapService{
 		
 		return mapList;
 	}
+
+	//해당 회원의 반려동물 정보 조회 메서드
+	@Override
+	public Pet selectPet(int ownerNo) {
+		Pet pet = mapDao.selectPet(sqlsession,ownerNo);
+		return pet;
+	}
+
+	@Override
+	public MapVO selectKindergarten(int kindNo) {
+		MapVO kindergarten = mapDao.selectKindergarten(sqlsession, kindNo);
+		return kindergarten;
+	}
+
 
 }

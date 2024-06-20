@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>${kindergarten.kindName}등록상담신청 페이지 입니다</title>
 <style>
 .content {
 	background-color: white;
@@ -22,8 +22,9 @@
 	padding: 5% 10%;
 	background-color: lightgray;
 }
-#regForm td{
-width: 100px;
+
+#regForm td {
+	width: 100px;
 }
 </style>
 </head>
@@ -36,43 +37,64 @@ width: 100px;
 					<thead>
 						<tr>
 							<th>이름</th>
-							<td> <input type="text" name="petName"> </td>
+							<td><input type="text" name="petName"
+								value="${pet.petName }" readonly></td>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							<th>견종</th>
-							<td> <select>
-							<option></option>
-							</select> </td>
+							<td><input type="text" name="breed" value="${pet.breed }"
+								readonly></td>
 						</tr>
 						<tr>
 							<th>나이</th>
-							<td></td>
+							<td><input type="text" name="petAge" value="${pet.petAge }"
+								readonly></td>
 						</tr>
 						<tr>
 							<th>성별</th>
-							<td></td>
+							<td><c:choose>
+									<c:when test="${pet.petGender eq 'F' }">
+							공주님
+							</c:when>
+									<c:otherwise>
+							왕자님
+							</c:otherwise>
+								</c:choose></td>
 						</tr>
 						<tr>
 							<th>몸무게</th>
-							<td></td>
+							<td>${pet.weight }</td>
 						</tr>
 						<tr>
 							<th>필수접종여부</th>
-							<td></td>
+							<td>
+								<ul>
+									<li><input type="radio" id="vac1"> <label
+										for="vac1">접종1</label></li>
+									<li><input type="radio" id="vac1"> <label
+										for="vac1">접종2</label></li>
+									<li><input type="radio" id="vac1"> <label
+										for="vac1">접종3</label></li>
+									<li><input type="radio" id="vac1"> <label
+										for="vac1">접종4</label></li>
+									<li><input type="radio" id="vac1"> <label
+										for="vac1">접종5</label></li>
+								</ul>
+							</td>
 						</tr>
 						<tr>
 							<th>방문희망일</th>
-							<td></td>
+							<td><input type="date" name=""></td>
 						</tr>
 						<tr>
 							<th>소개</th>
-							<td></td>
+							<td><textarea rows="4" cols="30"></textarea></td>
 						</tr>
 						<tr>
 							<th>특이사항</th>
-							<td></td>
+							<td> <textarea rows="4" cols="30"></textarea> </td>
 						</tr>
 					</tbody>
 
