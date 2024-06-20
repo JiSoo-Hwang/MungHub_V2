@@ -7,6 +7,7 @@
 <title>결제 페이지</title>
 </head>
 <body>
+	<%@include file="/WEB-INF/views/common/header.jsp" %>
 
 	<h3>결제페이지</h3>
 

@@ -7,6 +7,7 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
 <!-- Latest compiled and minified CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,6 +19,7 @@
 <!-- alertify css 커스터마이징 시작 -->
 <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css" rel="stylesheet">
+
 
 <script>
 	alertify.defaults = {
@@ -224,5 +226,14 @@ clear: both;
             });
         });
     </script>
+    
+    <!-- 알림창 -->
+    <c:if test="${not empty alertMsg}">
+	    <script>
+	        alertify.alert("${alertMsg}");
+	    </script>
+    	<c:remove var="alertMsg"/>
+	</c:if>
+    
 </body>
 </html>
