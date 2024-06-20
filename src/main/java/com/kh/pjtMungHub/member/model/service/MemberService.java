@@ -9,5 +9,6 @@ public interface MemberService {
 	int changePw(Member m);
 	int insertMember(Member m);
 	Member checkId(Member m);
+	int newUserNo();
 	
 }

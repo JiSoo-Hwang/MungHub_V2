@@ -25,7 +25,7 @@
 	</div>
 	<script>
 		function loginUpdate(){
-			location.href="/WEB-INF/views/member/memberLoginUpdate.jsp";
+			location.href="loginInfo.me";
 		}
 		function memberEnroll(){
 			location.href="enroll.me";

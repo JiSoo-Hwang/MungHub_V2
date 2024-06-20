@@ -191,8 +191,19 @@ clear: both;
                 <li><a href="#contact">Board</a></li>
                 <li><a href="/pjtMungHub/list.sp">Shop</a></li>
                 <li><a href="#contact">Realestate</a></li>
-				<li style="float: right"><a class="active" href="enter.me"
-					style="color: white;">Login</a></li>
+				<li style="float: right">
+					<c:choose>
+						<c:when test="${empty loginUser}">
+							<a class="active" href="enter.me"
+							style="color: white;">Login</a>
+						</c:when>
+						<c:otherwise>
+						<span>${loginUser.userId} 님 환영합니다.</span>
+							<a class="active" href="logout.me"
+							style="color: white;">Logout</a>
+						</c:otherwise>
+					</c:choose>
+				</li>
             </ul>
         </nav>
         <nav id="header_2">
