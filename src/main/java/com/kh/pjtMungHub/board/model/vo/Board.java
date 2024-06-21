@@ -23,5 +23,6 @@ public class Board {
 	private int recommend;//	RECOMMEND	NUMBER
 	private Date uploadDate;//	UPLOAD_DATE	DATE
 	private Date reviseDate;//	REVISE_DATE	DATE
+	private String status;
 
 }

@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.kh.pjtMungHub.board.model.dao.BoardDao;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 
+@Service
 public class BoardServiceImpl implements BoardService {
 	
 	@Autowired

@@ -2,20 +2,25 @@ package com.kh.pjtMungHub.board.controller;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.pjtMungHub.board.model.service.BoardService;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.template.Pagination;
 
+
+
+
 @Controller
-@RequestMapping("/board")
 public class BoardController {
 	
 	@Autowired
@@ -23,7 +28,7 @@ public class BoardController {
 	
 	
 	//목록페이지로 이동 메소드
-	@GetMapping("/list.bo")
+	@GetMapping("list.bo")
 	public String boardList(@RequestParam(value="currentPage",defaultValue = "1")
 	                        int currentPage,
 	                        Model model) {
@@ -42,6 +47,24 @@ public class BoardController {
 		
 		
 		return "board/boardListView";
+	}
+	
+	//게시물 작성 페이지로 이동하는 메소드
+	@GetMapping("insert.bo")
+	public String boardEnrollForm() {
+		
+		return "board/EnrollForm";
+		
+	}
+	//게시물 등록 메소드
+	@PostMapping
+	public String insertBoard(Board b,
+							  MultipartFile upfile,
+							  HttpSession session) {
+		
+		
+		
+		return null;
 	}
 	
 	

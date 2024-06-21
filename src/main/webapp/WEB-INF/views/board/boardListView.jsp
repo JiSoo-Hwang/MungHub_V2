@@ -38,21 +38,32 @@
         .select {width:20%;}
         .text {width:53%;}
         .searchBtn {width:20%;}
+        
     </style>
-</head>
-<body>
+	</head>
+	<body>
     
     <%@include file="../common/header.jsp" %>
 
     <div class="content">
         <br><br>
         <div class="innerOuter" style="padding:5% 10%;">
-            <h2>게시판</h2>
+            <hr>
+            <nav>
+            <ul>
+	            <li id="category-area">전체</li>
+	            <li id="category-area"></li>
+            </ul>
+            </nav>
+            <hr>
             <br>
             <!-- 로그인 후 상태일 경우만 보여지는 글쓰기 버튼 -->
-            <c:if test="${not empty loginUser}">
-	            <a class="btn btn-secondary" style="float:right;" href="insert.bo">글쓰기</a>
+           <!--  
+           <c:if test="${not empty loginUser}">
             </c:if>
+           
+           --> 
+	            <a class="btn btn-secondary" style="float:right;" href="insert.bo">글쓰기</a>
             <br>
             <br>
             <table id="boardList" class="table table-hover" align="center">
@@ -63,7 +74,6 @@
                         <th>작성자</th>
                         <th>조회수</th>
                         <th>작성일</th>
-                        <th>첨부파일</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,7 +92,7 @@
 			                        <td>${b.boardTitle }</td>
 			                        <td>${b.boardWriter }</td>
 			                        <td>${b.count }</td>
-			                        <td>${b.createDate }</td>
+			                        <td>${b.uploadDate }</td>
 			                        <td>
 			                        	<c:if test="${not empty b.originName}">
 			                        		★
@@ -165,5 +175,5 @@
     </div>
 
 
-</body>
-</html>
+	</body>
+	</html>

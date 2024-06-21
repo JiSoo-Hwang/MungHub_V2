@@ -315,10 +315,10 @@
                         <li><a href=""></a> </li>
                     </ul>
                 </li>
-                <li><a href="">board</a>
+                <li><a href="list.bo">board</a>
                     <!-- 메인메뉴 하위 요소 -->
                     <ul>
-                        <li><a href="list.bo"></a> </li>
+                        <li><a href=""></a> </li>
                         <li><a href=""></a> </li>
                         <li><a href=""></a> </li>
                         <li><a href=""></a> </li>

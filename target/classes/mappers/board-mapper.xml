@@ -5,7 +5,7 @@
 <mapper namespace="boardMapper">
 
 	<resultMap type="Board" id="boardResultSet">
-		<result column="Board_NO" property="boardNo"/>
+		<result column="BOARD_NO" property="boardNo"/>
 		<result column="BOARD_TITLE" property="boardTitle"/>
 		<result column="BOARD_WRITER" property="boardWriter"/>
 		<result column="BOARD_CONTENT" property="boardContent"/>
@@ -17,7 +17,7 @@
 	</resultMap>
 	
 	<select id="listCount" resultType="_int" >
-		SELECT(*)
+		SELECT COUNT(*)
 		FROM BOARD
 		WHERE STATUS ='Y'
 	</select>
@@ -32,8 +32,16 @@
 		WHERE STATUS= 'Y'
 		ORDER BY UPLOAD_DATE DESC	
 	</select>
-	
-	
-	
+	<insert id="insertBoard" parameterType="Board">
+		INSERT INTO BOARD(BOARD_NO
+		                 ,BOARD_TITLE
+		                 ,BOARD_WRITER
+		                 ,BOARD_CONTENT
+		                 )
+        		VALUES (SEQ_BNO.NEXTVAL
+               			,#{boardTitle}
+               			,#{boardWriter}
+               			,#{boardContent}
+	</insert>
 	
 </mapper>
