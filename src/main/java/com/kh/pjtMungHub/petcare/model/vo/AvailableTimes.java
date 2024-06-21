@@ -10,9 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AvailableTimes {
-    private int availableTimeNo; // AVAILABLE_TIME_NO NUMBER PRIMARY KEY
     private int petSitterNo; // PET_SITTER_NO NUMBER NOT NULL
     private String visitDate; // VISIT_DATE DATE NOT NULL
     private String startTime; // START_TIME DATE NOT NULL
     private String endTime; // END_TIME DATE NOT NULL
+    private String duration;
+    private String petTypeNo;
+    private int totalPrice;
+    private String priceName;
 }

@@ -18,5 +18,7 @@ public class Product {
 	private int categoryNo;
 	private int brandCode;
 	
+	private String attachment;
 	private int reviewCount;
+	private double reviewTScore;
 }

@@ -4,7 +4,12 @@ import java.util.ArrayList;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.pjtMungHub.shop.model.vo.Attachment;
+import com.kh.pjtMungHub.shop.model.vo.Brand;
+import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 
 @Repository
@@ -16,8 +21,26 @@ public class ShopDao {
 	}
 
 	public Product selectProductDetail(SqlSessionTemplate sqlSession, int productNo) {
-		// TODO Auto-generated method stub
 		return sqlSession.selectOne("shopMapper.selectDetail",productNo);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public ArrayList<Category> selectCategory(SqlSessionTemplate sqlSession) { //product insert GetMapping시 조회
+		return (ArrayList)sqlSession.selectList("shopMapper.selectCategory");
+	}
+	
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public ArrayList<Brand> selectBrand(SqlSessionTemplate sqlSession) { //product insert GetMapping시 조회
+		return (ArrayList)sqlSession.selectList("shopMapper.selectBrand");
+	}
+	
+	public int insertProduct(SqlSessionTemplate sqlSession, Product p) {
+		return sqlSession.insert("shopMapper.insertProduct",p);
+	}
+
+	public int insertAttachment(SqlSessionTemplate sqlSession, ParameterVo fileParameter) { //product
+		return sqlSession.insert("shopMapper.insertAttachment",fileParameter);
 	}
 
 }
