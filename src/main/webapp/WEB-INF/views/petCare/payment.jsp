@@ -71,9 +71,11 @@
         </div>
 		-->
 	
-	 <input type="hidden" id="reservationId" value="${re.reservationId }">
 	 <div class="container mt-5">
 	 <h3>결제페이지</h3>
+	 
+	 <input type="text" id="userId" value="${member.userId }">
+	 
         <!-- 배송지 섹션 -->
         <div class="order-section">
             <h5>예약정보 확인</h5>
@@ -140,7 +142,7 @@
 	        </div>
             <div class="order-title">결제수단</div>
             <select class="form-select" id="payment">
-                <option value="card">카드결제</option>
+                <option value="card" selected>카드결제</option>
                 <option value="cash">현장결제</option>
                 <option value="bank">무통장입금</option>
             </select>
@@ -157,7 +159,7 @@
 	<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 	<script>
 		
-			var payMethod = "";
+			var payMethod = "card";
 			$('#payment').change(function() {
 				payMethod = $(this).val();
 		    });
@@ -174,47 +176,43 @@
 	        	
 	        	var productName = $("#priceName").val();//선택된 상품명
 	        	var totalPrice = $('#totalPrice').val();//상품 가격
-	        	var userName = $('#petOwnerName').val();
-	        	var phone = $('#phone').val();
-	        	var address = $('#address').val();
+	        	var userName = $('#petOwnerName').val();//견주이름
+	        	var phone = $('#phone').val();//연락처
+	        	var address = $('#address').val();//주소
+            	var userId = $('#userId').val();//회원아이디
 	        	
 	            IMP.request_pay({
+	            	merchant_uid : "IMP"+makeMerchantUid,
 	                pg : 'html5_inicis',
-	                pay_method : payMethod,
-	                merchant_uid: "IMP"+makeMerchantUid,
-	                name : productName,
-	                amount : totalPrice,
-	                custom_data : {
-	                	message : $("textarea[name=message]").val()
-	                },
 	                buyer_name : userName,
+	                amount : totalPrice,
 	                buyer_tel : phone,
 	                buyer_addr : address,
+	                pay_method : payMethod,
+	                buyer_postcode : userId,
+	                name : productName
 	            }, function (rsp) { // callback
 	                if (rsp.success) {//결제 성공시
 	                    console.log(rsp);
 	                	//결제 성공시 비동기 처리로 응답데이터 서버에 전달하기
-	                	
-	                	//예약번호
-	                	//var reservationId = $('#reservationId').val();
-	                	//reservationId : reservationId
-	                	//paymentId : rsp.merchant_uid,
-	                	
 	                	$.ajax({
 	                    	url : "insertPayment.re",
 	                    	data : {
+	                    		paymentId : rsp.merchant_uid,
 	                    		pgName : rsp.pg_provider,
-	                    		userName : rsp.buyre_name,
+	                    		userName : rsp.buyer_name,
 	                    		amount : rsp.paid_amount,
 	                    		phone : rsp.buyer_tel,
 	                    		address : rsp.buyer_addr,
-	                    		paymentMethod : rsp.pay_method
+	                    		userId : rsp.buyer_postcode,
+	                    		paymentMethod : rsp.pay_method,
+	                    		productName : rsp.name
 	                    	}, //rsp 객체를 그대로 전달해보기(응답데이터 키값으로 넘어감)
 	                    	success : function(result){
 	                    		if(result>0){
 	                    			//결제 성공 후 메인페이지로
 	                    			alert('결제 성공 했습니다!');
-	                    			location.href="/pjtMungHub/";
+	                    			location.href="payDetail.re?uid="+rsp.merchant_uid;
 	                    		}else{
 	                    			//결제 실패
 	                    			alert("결제정보 오류 [관리자에게 문의하세요]");
