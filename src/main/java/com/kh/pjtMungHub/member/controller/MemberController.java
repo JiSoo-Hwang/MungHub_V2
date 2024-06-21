@@ -1,5 +1,7 @@
 package com.kh.pjtMungHub.member.controller;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.pjtMungHub.member.model.service.MemberService;
 import com.kh.pjtMungHub.member.model.vo.Member;
+import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Controller
 public class MemberController {
@@ -41,7 +44,15 @@ public class MemberController {
 	}
 	
 	@RequestMapping("myPage.me")
-	public String enterMyPage() {
+	public String enterMyPage(HttpSession session) {
+		Member m=session.getAttribute("loginUser");
+		ArrayList<Pet> petList = service.getPetList(m);
+		ArrayList<petPhoto> petPhotoList;
+		if(petList!=null) {
+			for(int i=0;i<petList.size();i++) {
+				petPhotoList.add(service.getpetPhoto(petList[i].getPhotoNo()));
+			}
+		}
 		return "member/memberMyPage";
 	}
 	

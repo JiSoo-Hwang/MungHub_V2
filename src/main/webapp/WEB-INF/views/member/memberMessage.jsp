@@ -9,5 +9,6 @@
 <body>
 	<%@include file="/WEB-INF/views/member/memberSideBar.jsp" %>
 
+
 </body>
 </html>
