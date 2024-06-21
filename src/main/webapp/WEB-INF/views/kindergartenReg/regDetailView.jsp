@@ -126,7 +126,7 @@ li {
 												<button type="button" class="btn btn-outline-info">신청수정</button>
 											</c:when>
 										</c:choose>
-										<button type="button" class="btn btn-secondary">신청서철회</button>
+										<button type="button" class="btn btn-secondary" id="cancelBtn">신청서철회</button>
 										<!-- 					<button type="submit"  id="submit-btn">신청하기</button>-->
 									</td>
 								</tr>
@@ -143,5 +143,8 @@ li {
 
 		</form>
 	</div>
+	<script>
+	
+	</script>
 </body>
 </html>

@@ -40,35 +40,9 @@
 								<td>${r.breed}</td>
 								<td>${r.visitDate }</td>
 								<td>대기중
-									<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">상세보기</button>
+									<a class="btn btn-primary" href="regDetail.do?reservNo=${r.reservNo}">상세보기</a>
 								</td>
 							</tr>
-<!-- The Modal -->
-<div class="modal fade" id="myModal">
-  <div class="modal-dialog">
-
-    <div class="modal-content">
-
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">${r.userName }님의 ${r.petName} 등록 상담요청입니다</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-       
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">창닫기</button>
-        <button type="submit" class="btn btn-danger">상담거절하기</button>
-      </div>
-
-    </div>
-  </div>
-</div>
 						</c:otherwise>
 					</c:choose>
 				</c:forEach>
