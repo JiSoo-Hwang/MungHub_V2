@@ -41,7 +41,7 @@ li {
 	<div class="form_area">
 		<form method="post" action="reg.do">
 			<input type="hidden" name="kindNo" value="${kindergarten.kindNo}">
-			<input type="hidden" name="userNo" value="1">
+			<input type="hidden" name="userNo" value="${loginUser.userNo }">
 			<ul>
 				<li>
 					<div class="container mt-3" id="reg_upFile">
@@ -103,12 +103,29 @@ li {
 									<th>특이사항</th>
 									<td>${registration.petNote }</td>
 								</tr>
+								<c:choose>
+									<c:when test="${registration.approval eq 'N' }">
+										<tr>
+											<th>승인여부</th>
+											<td>승인대기중</td>
+										</tr>
+									</c:when>
+									<c:otherwise>
+										<tr>
+											<th>승인여부</th>
+											<td>승인완료! 상담일날 뵈어요^^</td>
+										</tr>
+									</c:otherwise>
+								</c:choose>
 								<tr>
 									<td></td>
 									<td style="text-align: center;"><br> <br> <br>
 										<br> <br> <br>
-										<button type="button" class="btn btn-warning">목록으로</button>
-										<button type="button" class="btn btn-outline-info">신청수정</button>
+										<a type="button" class="btn btn-warning" href="regList.do">목록으로</a><c:choose>
+											<c:when test="${registration.approval eq 'N' }">
+												<button type="button" class="btn btn-outline-info">신청수정</button>
+											</c:when>
+										</c:choose>
 										<button type="button" class="btn btn-secondary">신청서철회</button>
 										<!-- 					<button type="submit"  id="submit-btn">신청하기</button>-->
 									</td>

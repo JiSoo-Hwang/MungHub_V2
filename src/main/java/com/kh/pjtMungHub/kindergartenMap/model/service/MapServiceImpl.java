@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.pjtMungHub.kindergartenMap.model.dao.MapDao;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.MapVO;
+import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
 import com.kh.pjtMungHub.kindergartenMap.model.vo.Registration;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
@@ -21,9 +21,9 @@ public class MapServiceImpl implements MapService{
 	private SqlSessionTemplate sqlsession;
 	
 	@Override
-	public ArrayList<MapVO> selectMap() {
+	public ArrayList<Kindergarten> selectMap() {
 		
-		ArrayList<MapVO> mapList = mapDao.selectMap(sqlsession);
+		ArrayList<Kindergarten> mapList = mapDao.selectMap(sqlsession);
 		
 		return mapList;
 	}
@@ -36,8 +36,8 @@ public class MapServiceImpl implements MapService{
 	}
 
 	@Override
-	public MapVO selectKindergarten(int kindNo) {
-		MapVO kindergarten = mapDao.selectKindergarten(sqlsession, kindNo);
+	public Kindergarten selectKindergarten(int kindNo) {
+		Kindergarten kindergarten = mapDao.selectKindergarten(sqlsession, kindNo);
 		return kindergarten;
 	}
 

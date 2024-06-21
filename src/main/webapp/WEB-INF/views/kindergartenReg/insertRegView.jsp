@@ -33,7 +33,7 @@ li {
 
 		<form method="post" action="reg.do" enctype="multipart/form-data">
 			<input type="hidden" name="kindNo" value="${kindergarten.kindNo}">
-			<input type="hidden" name="userNo" value="1">
+			<input type="hidden" name="userNo" value="${loginUser.userNo }">
 			<ul>
 				<li>
 					<div class="container mt-3" id="reg_upFile">

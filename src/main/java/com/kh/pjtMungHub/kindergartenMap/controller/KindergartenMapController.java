@@ -19,8 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.pjtMungHub.kindergartenMap.model.service.MapService;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.MapVO;
+import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
 import com.kh.pjtMungHub.kindergartenMap.model.vo.Registration;
+import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class KindergartenMapController {
 	@RequestMapping("map.do")
 	public String selectMap(Model model) {
 
-		ArrayList<MapVO> mapList = mapService.selectMap();
+		ArrayList<Kindergarten> mapList = mapService.selectMap();
 
 		JSONArray jsonArray = new JSONArray();
 
@@ -62,7 +63,7 @@ public class KindergartenMapController {
 	public String regForm(int kindNo, int ownerNo, Model model, HttpSession session) {
 
 		Pet pet = mapService.selectPet(ownerNo);
-		MapVO kindergarten = mapService.selectKindergarten(kindNo);
+		Kindergarten kindergarten = mapService.selectKindergarten(kindNo);
 		model.addAttribute("pet", pet);
 		model.addAttribute("kindergarten", kindergarten);
 		return "kindergartenReg/insertRegView";
@@ -76,9 +77,10 @@ public class KindergartenMapController {
 			reg.setChangeName("resources/uploadFiles/kindergarten/"+changeName);
 		}
 		int result = mapService.insertReg(reg);
+		reg.setApproval("N");
 		if (result > 0) {
 			Pet pet = mapService.selectPet(reg.getUserNo());
-			MapVO kindergarten = mapService.selectKindergarten(reg.getKindNo());
+			Kindergarten kindergarten = mapService.selectKindergarten(reg.getKindNo());
 			model.addAttribute("pet", pet);
 			model.addAttribute("kindergarten", kindergarten);
 			model.addAttribute("registration", reg);
@@ -93,9 +95,11 @@ public class KindergartenMapController {
 
 	/* 예약내역보기(견주) */
 	@GetMapping("regList.do")
-	public String regList(int userNo, Model model) {
+	public String regList(Model model,HttpSession session) {
+		Member member = (Member)session.getAttribute("loginUser");
+		int userNo = member.getUserNo();
 		ArrayList<Registration> regList = mapService.selectRegList(userNo);
-		ArrayList<MapVO> kindergartenList = new ArrayList<MapVO>();
+		ArrayList<Kindergarten> kindergartenList = new ArrayList<Kindergarten>();
 		for (int i = 0; i < regList.size(); i++) {
 			kindergartenList.add(mapService.selectKindergarten(regList.get(i).getKindNo()));
 		}

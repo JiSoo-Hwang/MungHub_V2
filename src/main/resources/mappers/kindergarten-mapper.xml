@@ -71,17 +71,26 @@
 
 	<select id="selectRegList" parameterType="_int" resultType="Registration">
 		SELECT RESERV_NO reservNo
-		,KIND_NO kindNo
-		,KIND_NAME kindName
-		,PET_NO petNo
-		,USER_NO userNo
-		,VISIT_DATE visitDate
-		,PET_INTRO petIntro
-		,PET_NOTE petNote
-		,APPROVAL approval
-		FROM REGISTRATION
-		JOIN KINDERGARTEN USING(KIND_NO)
-		WHERE USER_NO = #{userNo}
+				,R.KIND_NO kindNo
+				,K.KIND_NAME kindName
+				,R.PET_NO petNo
+				,PET_NAME petName
+				,BREED_NAME breed
+				,R.USER_NO userNo
+				,NAME userName
+				,VISIT_DATE visitDate
+				,PET_INTRO petIntro
+				,PET_NOTE petNote
+				,ORIGIN_NAME originName
+				,CHANGE_NAME changeName
+				,APPROVAL approval
+		FROM REGISTRATION R, PET P, MEMBER M, KINDERGARTEN K, BREED B
+		WHERE R.USER_NO = M.USER_NO
+		AND K.KIND_NO = R.KIND_NO
+		AND R.PET_NO = P.PET_NO
+		AND P.BREED_ID = B.BREED_ID
+		AND P.OWNER_NO = M.USER_NO
+		AND R.USER_NO = #{userNo}
 	</select>
 
 

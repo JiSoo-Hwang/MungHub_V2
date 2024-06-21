@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.kh.pjtMungHub.kindergartenMap.model.vo.MapVO;
+import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
 import com.kh.pjtMungHub.kindergartenMap.model.vo.Registration;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
@@ -27,25 +27,25 @@ public class LoggerTest {
 	
 	@Test
 	public void test1() {
-		String ownerNo = "1";
-		String userNo = "1";
+		int ownerNo = 1;
+		int userNo = 1;
 		ArrayList<Registration> regList = (ArrayList)sqlSession.selectList("kindergartenMapper.selectRegList",userNo);
 		for (Registration reg : regList) {
 			log.debug("예약 목록 : {}",reg);
 		}
-		ArrayList<MapVO> kindergartenList = new ArrayList<MapVO>();
+		ArrayList<Kindergarten> kindergartenList = new ArrayList<Kindergarten>();
 		for(int i=0; i<regList.size();i++) {
 			kindergartenList.add(sqlSession.selectOne("kindergartenMapper.selectKindergarten",regList.get(i).getKindNo()));
 			
 		}
-		for(MapVO mv : kindergartenList) {
+		for(Kindergarten mv : kindergartenList) {
 			log.debug("유치원 목록 : {}",mv);
 		}
 		Pet pet = sqlSession.selectOne("kindergartenMapper.selectPet",ownerNo);
 		log.debug("강아지 정보 : {}",pet);
 		
 		int kindNo = 69;
-		MapVO kindergarten = sqlSession.selectOne("kindergartenMapper.selectKindergarten",kindNo);
+		Kindergarten kindergarten = sqlSession.selectOne("kindergartenMapper.selectKindergarten",kindNo);
 		log.debug("유치원 정보 : {}",kindergarten);
 	}
 	

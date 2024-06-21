@@ -5,20 +5,20 @@ import java.util.ArrayList;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.kh.pjtMungHub.kindergartenMap.model.vo.MapVO;
+import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
 import com.kh.pjtMungHub.kindergartenMap.model.vo.Registration;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Repository
 public class MapDao {
 
-	public ArrayList<MapVO> selectMap(SqlSessionTemplate sqlsession) {
+	public ArrayList<Kindergarten> selectMap(SqlSessionTemplate sqlsession) {
 		
 		
 		return (ArrayList)sqlsession.selectList("kindergartenMapper.selectMap");
 	}
 
-	public MapVO selectKindergarten(SqlSessionTemplate sqlsession, int kindNo) {
+	public Kindergarten selectKindergarten(SqlSessionTemplate sqlsession, int kindNo) {
 		
 		
 		return sqlsession.selectOne("kindergartenMapper.selectKindergarten",kindNo);
