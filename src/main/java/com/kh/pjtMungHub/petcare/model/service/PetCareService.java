@@ -18,6 +18,9 @@ public interface PetCareService {
 	//예약 정보 저장하기
 	int enrollReservation(Reservation re);
 	
+	//펫시터 정보 가져오기
+	PetSitter sitterInfo(Reservation re);
+	
 	
 
 }

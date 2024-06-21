@@ -3,11 +3,24 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <meta charset="UTF-8">
 <title>MUNGHUBSHOP</title>
 <style>
-.review-star>svg{
-fill: #F2D106;
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+.review-star{
+display:block;
+width:130px;
+}
+
+.review-star>i{
+color: #F2D106;
+}
+.detail{
+width:150px;
+}
+.detail>i{
+  font-size: 22px;
 }
 .dl-table-group{
 width:100%;
@@ -35,6 +48,71 @@ display: table-row;
     color: #333;
 }
 
+.review-img-top4{
+float: left;
+width:100px;
+}
+.btn-review-all{
+float: right;
+text-decoration: none;
+color: gray;
+}
+.btn-review-all:hover{
+text-decoration: none;
+color: gray;
+}
+tbody{
+border:1px solid lightgray;
+}
+.detail-tag p{padding:10px; margin-right: 10px; color: gray}
+.detail-content p{padding:10px; margin-right: 10px}
+
+#review-write{
+    float: right;
+    border: 0;
+}
+.progress{
+width: 80%;
+float: right;
+}
+.score{
+width: 20%;
+display: block;
+float: left;
+}
+
+.qna{
+top: 0px;
+float: right;
+position: relative;
+}
+.qna a{
+font-size:14px;
+}
+
+h2{
+width:50%;
+}
+
+.first{
+
+text-align: center;
+}
+.first p{
+color: orange;
+}
+
+.second{
+
+text-align: center;
+}
+.second p{
+color: gray;
+}
+.question-list>td a{
+text-decoration:none;
+color: gray;
+}
 
 </style>
 </head>
@@ -57,21 +135,11 @@ display: table-row;
 	
 	<!-- 별점 -->
 	<span class="review-star">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-half" viewBox="0 0 16 16">
-  <path d="M5.354 5.119 7.538.792A.52.52 0 0 1 8 .5c.183 0 .366.097.465.292l2.184 4.327 4.898.696A.54.54 0 0 1 16 6.32a.55.55 0 0 1-.17.445l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256a.5.5 0 0 1-.146.05c-.342.06-.668-.254-.6-.642l.83-4.73L.173 6.765a.55.55 0 0 1-.172-.403.6.6 0 0 1 .085-.302.51.51 0 0 1 .37-.245zM8 12.027a.5.5 0 0 1 .232.056l3.686 1.894-.694-3.957a.56.56 0 0 1 .162-.505l2.907-2.77-4.052-.576a.53.53 0 0 1-.393-.288L8.001 2.223 8 2.226z"/>
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
-  <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/>
-</svg></span>
+<i class="bi bi-star-fill"></i>
+<i class="bi bi-star-fill"></i>
+<i class="bi bi-star-fill"></i>
+<i class="bi bi-star-fill"></i>
+<i class="bi bi-star-fill"></i></span>
 <span>(<fmt:formatNumber type="number" maxFractionDigits="0" value="${p.reviewCount }" />)</span>
 	<div>
 	
@@ -81,15 +149,11 @@ display: table-row;
 	<input class="form-control text-center me-3" id="inputQuantity" type="number" min="1" value="1" style="max-width: 3rem">
 	&nbsp;&nbsp;
 	<button class="btn btn-outline-dark flex-shrink-0" type="button">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag-plus-fill" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0M8.5 8a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V12a.5.5 0 0 0 1 0v-1.5H10a.5.5 0 0 0 0-1H8.5z"/>
-</svg>&nbsp; 장바구니 추가
+	<i class="bi bi-bag-plus-fill"></i>&nbsp; 장바구니 추가
 	</button>
 	&nbsp;
 	<button class="btn btn-outline-dark flex-shrink-0" type="button">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-</svg>
+	<i class="bi bi-heart"></i>
 	</button>
 	</div>
 	<div class="dl-table-group">
@@ -118,6 +182,288 @@ display: table-row;
 	</div>
 </section>
 <hr>
+<section class="py-5">
+	
+	<div class="container">
+	<h4>베스트 리뷰 (${p.reviewCount })</h4>
+	<a href class="btn-review-all"><span>전체리뷰보기</span><i class="bi bi-caret-right-fill"></i> </a>
+	<br>
+	<div class="row row-cols-2 align-items-center mt-3 ml-3 mr-3">
+	<c:forEach var="index" begin="1" end="4">
+		<div class="col-sm-3">
+			<img src="${p.attachment }" class="review-img-top4">
+			<div class="review-content">
+			<small class="text-muted">작성자</small> <br>	
+			<span class="review-star">
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-half"></i>
+			<i class="bi bi-star"></i>
+			</span><br>
+			<small class="text-muted">2024-06-20</small>
+			</div>
+			<p>
+			맛있어서 또 시켜먹었네요 ^^
+			</p>
+			</div>
+	</c:forEach>
+			</div>
+		</div>
+</section>
+<section class="py-5">
+<div class="container">
+<h4>추천상품</h4>
+
+	<div class="row row-cols-2 align-items-center mt-3 ml-3 mr-3">
+	
+	<c:forEach var="plist" items="${pList }" begin="1" end="4">
+	<div class="col-sm-5 my-3 ">
+	<div class="card" onclick="location.href='/pjtMungHub/detail.sp/${plist.productNo}'">
+	<div>
+	<img class="card-img-top" src="${plist.attachment }">
+	</div>
+	<div class="card-body" style="width:250px;">
+		<h5 class="card-title">${plist.productName }</h5>
+			<span class="review-star">
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-half"></i>
+			<i class="bi bi-star"></i>
+			<span>(<fmt:formatNumber type="number" maxFractionDigits="0" value="${plist.reviewCount }" />)</span>
+			</span>
+		<br> 
+		<del><fmt:formatNumber type="number" maxFractionDigits="0" value="${plist.price}" /></del>
+		<fmt:formatNumber type="number" maxFractionDigits="0" value="${plist.price -(plist.price/plist.discount)}" />
+
+		<strong style="color:rgb(250, 58, 14)">${plist.discount }%</strong>
+		
+	</div> 
+	</div>
+</div>
+	</c:forEach>
+	</div>
+</div>
+</section>
+
+<section class="py-5">
+ <div class="container">
+
+<ul class="nav nav-tabs nav-fill">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#detail-section01">상품상세정보</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#detail-section02">상품리뷰</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#detail-section03">상품문의</a>
+  </li>
+</ul>
+</div> 
+</section>
+
+<section class="py-5">
+<div class="container" id="detail-section01">
+<h4>상품 설명</h4>
+
+<table class="mt-5" align="center">
+
+<tbody>
+	<tr>
+		<td class="detail-tag">
+			<p>품명 및 모델명</p>
+		</td>
+		<td class="detail-content">
+			<p >${p.productName }</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="detail-tag">
+			<p>인증사항</p>
+		</td>
+		<td class="detail-content">
+			<p>해당없음</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="detail-tag">
+			<p>제조국 또는 원산지</p>
+		</td>
+		<td class="detail-content">
+			<p>조선인민민주주의공화국</p>
+		</td>
+	</tr>
+		<tr>
+		<td class="detail-tag">
+			<p>제조자/수입자</p>
+		</td>
+		<td class="detail-content">
+			<p>멍허브</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="detail-tag">
+			<p>소비자 상담관련 전화번호</p>
+		</td>
+		<td class="detail-content">
+			<p>010-6689-5059</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="detail-tag">
+			<p>유통기한</p>
+		</td>
+		<td class="detail-content">
+			<p>별도표기</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="detail-tag">
+			<p>권장연령</p>
+		</td>
+		<td class="detail-content">
+			<p>어덜트</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="detail-tag">
+			<p>중량</p>
+		</td>
+		<td class="detail-content">
+			<p>9.95kg</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="detail-tag">
+			<p>원료구성</p>
+		</td>
+		<td class="detail-content">
+			<p>대충 닭이랑 생선이랑 기타 영양성분</p>
+		</td>
+	</tr>
+	<tr>
+		<td class="detail-tag">
+			<p>성분구성</p>
+		</td>
+		<td class="detail-content">
+			<p>조단백 100% 조지방 100% 칼슘 1%</p>
+		</td>
+	</tr>
+</tbody>
+
+</table>
+
+</div>
+</section>
+
+<section class="py-5">
+ <div class="container">
+
+<ul class="nav nav-tabs nav-fill">
+  <li class="nav-item">
+    <a class="nav-link" href="#detail-section01">상품상세정보</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#detail-section02">상품리뷰</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#detail-section03">상품문의</a>
+  </li>
+</ul>
+</div> 
+</section>
+
+<div class="container" id="detail-section02">
+<h2>구매후기</h2>
+<button type="button" id="review-write">후기쓰기</button>
+  
+  <div class="py-5" align="center">
+	 <div class="row row-cols-2 align-items-center mt-3 ml-3 mr-3">
+	<div class="col-sm-5">
+		<h2><fmt:formatNumber type="number" maxFractionDigits="1" value="${p.reviewTScore}" /></h2>
+			<span class="review-star detail">
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-half"></i>
+			<i class="bi bi-star"></i>
+			</span> <br>
+			<span>총 <fmt:formatNumber type="number" maxFractionDigits="0" value="${p.reviewCount }" />건</span><br>
+			<span style="color:gray">만족도 95%</span>
+	</div>
+	<div class="col-sm-5">
+<div class="score">5점</div><div class="progress my-1">
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 95%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<br>
+<div class="score">4점</div><div class="progress my-1">
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 2%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<br>
+<div class="score">3점</div><div class="progress my-1">
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 1%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<br>
+<div class="score">2점</div><div class="progress my-1">
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 1%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<br>
+<div class="score">1점</div><div class="progress my-1">
+  <div class="progress-bar bg-warning" role="progressbar" style="width: 1%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+	</div>
+</div>
+  </div>
+  <h4>전체후기 <span><fmt:formatNumber type="number" maxFractionDigits="0" value="${p.reviewCount }" />건</span></h4>
+
+  <hr>
+</div>
+
+<section class="py-5">
+ <div class="container" id="detail-section03">
+
+<ul class="nav nav-tabs nav-fill">
+  <li class="nav-item">
+    <a class="nav-link" href="#detail-section01">상품상세정보</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#detail-section02">상품리뷰</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#detail-section03">상품문의</a>
+  </li>
+</ul>
+</div> 
+
+
+</section>
+
+<div class="container" id="detail-section03">
+	<h2>상품문의 <span style="color:gray; font-size: 16px;">(4,666개)</span></h2>
+	
+	<hr>
+	<div class="d-grid gap-2 d-md-block qna">
+	<a href="" class="btn btn-outline-secondary flex-shrink-0">1:1 문의하기</a>
+	<a href="" class="btn btn-outline-dark flex-shrink-0">상품 문의하기</a>
+	</div>
+	
+	<table class="table table-borderless">
+		<tr class="question-list">
+			<td class="first"><p>답변완료</p></td>
+			<td><a href="#">[상품문의]입니다. <i class="bi bi-lock-fill"></i></a></td>
+			<td>작성자</td>
+			<td>2024.06.20</td>
+		</tr>
+		<tr class="question-list">
+			<td class="second"><p>답변대기</p></td>
+			<td><a href="#">[배송문의]입니다. <i class="bi bi-unlock"></i></a></td>
+			<td>작성자</td>
+			<td>2024.06.20</td>
+		</tr>
+	</table>
+</div>
 
 <br> <br>
 </body>

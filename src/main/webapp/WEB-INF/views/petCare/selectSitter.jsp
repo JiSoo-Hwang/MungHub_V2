@@ -21,7 +21,7 @@
         height: 50px;
         border: 2px solid #ccc;
         margin: 5px;
-        transition: background-color 0.3s, color 0.3s;
+        transition: background-color 0.1s, color 0.1s;
     }
     .str-btn.selected {
         background-color: #28a745;
@@ -134,80 +134,67 @@
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
 	
-	<!-- 
-	<div class="reser-nav">
-        <ul class="nav-list">
-            <li class="nav-item"><a href="#">홈</a></li>
-            <li class="nav-item"><a href="#">예약</a></li>
-            <li class="nav-item"><a href="#">소식</a></li>
-            <li class="nav-item"><a href="#" class="active">정보</a></li>
-        </ul>
-    </div>
-     -->
-	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dateTimeModal">
-            여러가지 맞춤 정보를 통해 펫시터를 추천 받아보세요.
-    </button>
+    <!-- 모달창 버튼 -->
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+	  여러가지 맞춤 정보를 통해 펫시터를 추천 받아보세요.
+	</button>
 	
 	<div class="container mt-5">
        <!-- 날짜와 시간 클릭 시 모달영역 -->
-        <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="dateTimeModalLabel">날짜와 시간 선택</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                          <div class="form-group">
-                              <label for="visitDate" class="form-label">원하시는 날짜를 골라주세요.</label>
-                              <input type="date" class="form-control" id="visitDate" name="visitDate" required min="<%= formattedDate %>">
-                              									<%-- 오늘 날짜부터 달력을 클릭하도록 min="<%= formattedDate %>" 로 막아주기--%>
-                              <div class="" id="startTime">방문시간을 선택해주세요. 
-	                              <br> <!-- 처음 input type=time 으로 시도
-	                              				분 단위가 너무 세세하게 나눠지기 때문에 명확하지 시간선택이 명확하지 않음
-	                              				각 시간을 버튼으로 선택하여 숫자처리 -->
-	                                <button type="button" class="str-btn" value="900">09:00</button>
-	                                <button type="button" class="str-btn" value="1000">10:00</button>
-	                                <button type="button" class="str-btn" value="1100">11:00</button>
-	                                <button type="button" class="str-btn" value="1200">12:00</button>
-	                                <button type="button" class="str-btn" value="1300">13:00</button>
-	                                <button type="button" class="str-btn" value="1400">14:00</button>
-	                                <button type="button" class="str-btn" value="1500">15:00</button>
-	                                <button type="button" class="str-btn" value="1600">16:00</button>
-	                                <button type="button" class="str-btn" value="1700">17:00</button>
-                         	  </div>
-                         	  <h5>돌봄시간을 선택해주세요.</h5>
-                           	  <div class="duration-btn-group" id="duration">
-	                                <button type="button" class="duration-btn" value="100">60분</button>
-	                                <button type="button" class="duration-btn" value="200">120분</button>
-	                                <button type="button" class="duration-btn" value="300">180분</button>
-	                                <button type="button" class="duration-btn" value="400">240분</button>
-                         	  </div>
-                         	  <h5>반려견 유형을 선택해주세요.</h5>
-                         	  <div class="petType-btn-group" id="petType">
-	                                <button type="button" class="petType-btn" value="1">
-	                                	<img alt="소형" src="/pjtMungHub/resources/uploadFiles/sittingSupplies/001.png">
-	                                </button>
-	                                <button type="button" class="petType-btn" value="2">
-	                                	<img alt="중형" src="/pjtMungHub/resources/uploadFiles/sittingSupplies/002.png">
-	                                </button>
-	                                <button type="button" class="petType-btn" value="3">
-	                                	<img alt="대형" src="/pjtMungHub/resources/uploadFiles/sittingSupplies/003.png">
-	                                </button>
-                         	  </div>
-                          </div>
-                    </div>
-                    <div class="modal-footer">
-                    	<!-- 모달창 내부에서 초기화 버튼을 만드려면 form 태그에 id 설정, 초기화 버튼에 form="id"를 넣어주면 됨 -->
-                        <button type="reset" class="btn btn-secondary" id="resetBtn">초기화</button>
-                        <button type="button" class="btn btn-primary" id="sitterSearch">펫시터 검색</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+		<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h1 class="modal-title fs-5" id="staticBackdropLabel">날짜와 시간선택</h1>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		          <div class="form-group">
+                      <label for="visitDate" class="form-label">원하시는 날짜를 골라주세요.</label>
+                      <input type="date" class="form-control" id="visitDate" name="visitDate" required min="<%= formattedDate %>">
+                      									<%-- 오늘 날짜부터 달력을 클릭하도록 min="<%= formattedDate %>" 로 막아주기--%>
+                      <div class="" id="startTime">방문시간을 선택해주세요. 
+                       <br> 
+                         <button type="button" class="str-btn" value="900">09:00</button>
+                         <button type="button" class="str-btn" value="1000">10:00</button>
+                         <button type="button" class="str-btn" value="1100">11:00</button>
+                         <button type="button" class="str-btn" value="1200">12:00</button>
+                         <button type="button" class="str-btn" value="1300">13:00</button>
+                         <button type="button" class="str-btn" value="1400">14:00</button>
+                         <button type="button" class="str-btn" value="1500">15:00</button>
+                         <button type="button" class="str-btn" value="1600">16:00</button>
+                         <button type="button" class="str-btn" value="1700">17:00</button>
+                 	  </div>
+                 	  <h5>돌봄시간을 선택해주세요.</h5>
+                   	  <div class="duration-btn-group" id="duration">
+                         <button type="button" class="duration-btn" value="100">60분</button>
+                         <button type="button" class="duration-btn" value="200">120분</button>
+                         <button type="button" class="duration-btn" value="300">180분</button>
+                         <button type="button" class="duration-btn" value="400">240분</button>
+                 	  </div>
+                 	  <h5>반려견 유형을 선택해주세요.</h5>
+                 	  <div class="petType-btn-group" id="petType">
+                         <button type="button" class="petType-btn" value="1">
+                         	<img alt="소형" src="/pjtMungHub/resources/uploadFiles/sittingSupplies/001.png">
+                         </button>
+                         <button type="button" class="petType-btn" value="2">
+                         	<img alt="중형" src="/pjtMungHub/resources/uploadFiles/sittingSupplies/002.png">
+                         </button>
+                         <button type="button" class="petType-btn" value="3">
+                         	<img alt="대형" src="/pjtMungHub/resources/uploadFiles/sittingSupplies/003.png">
+                         </button>
+                 	  </div>
+                  </div>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+		        <button type="reset" class="btn btn-secondary" id="resetBtn">초기화</button>
+                <button type="button" class="btn btn-primary" id="sitterSearch">펫시터 검색</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+      </div>
     
     <br>
     <h4>펫시터 리스트</h4>
@@ -283,7 +270,7 @@
 						}
 					});
 					//값을 보낸 후 모달창 닫아주기
-					$("#dateTimeModal").modal('hide'); 
+					$("#staticBackdrop").modal('hide'); 
 				}else{
 					//둘중에 하나라도 비입력시 알림창
 					alert('정보를 모두 입력해주세요.')
