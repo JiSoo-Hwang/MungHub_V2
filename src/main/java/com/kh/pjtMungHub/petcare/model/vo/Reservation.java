@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reservation {
-    private int reservationId; // RESERVATION_ID NUMBER PRIMARY KEY
+    private String reservationId; // RESERVATION_ID NUMBER PRIMARY KEY
     private String petOwnerName;//PET_OWNER_NAME VARCHAR2(50) NOT NULL
     private String address; // ADDRESS VARCHAR2(200) NOT NULL
     private String phone; // PHONE VARCHAR2(20) NOT NULL
@@ -27,5 +27,6 @@ public class Reservation {
     private String originName;//    ORIGIN_NAME VARCHAR2(1000 BYTE),
     private String changeName;//    CHANGE_NAME VARCHAR2(1000 BYTE),
     private String paymentStatus; // PAYMENT_STATUS NUMBER NOT NULL
+    private String userId;
     private int totalAmount; // TOTAL_AMOUNT NUMBER NOT NULL
 }

@@ -123,22 +123,23 @@
 	    <input type="hidden" name ="petTypeNo" value="${at.petTypeNo }">
 	    <input type="hidden" name ="priceName" value="${at.priceName }">
 	    <input type="hidden" name ="totalPrice" value="${at.totalPrice }">
+	    <input type="hidden" name ="userId" value="${member.userId }">
 
       <!--방문장소-->
       <div class="form-section">
         <h5>어디로 방문할까요?</h5>
         <div class="form-group">
-            성함 <input type="text" class="form-control" name="petOwnerName" id="petOwnerName" placeholder="견주님 성함" style="width:300px;">
+            성함 <input type="text" class="form-control" name="petOwnerName" id="petOwnerName" placeholder="견주님 성함" style="width:300px;" required>
         </div>
         <div class="form-group">
-            연락처 <input type="text" class="form-control" name="phone" id="phone" placeholder="연락받을 전화번호" style="width:300px;">
+            연락처 <input type="text" class="form-control" name="phone" id="phone" placeholder="연락받을 전화번호" style="width:300px;" required>
         </div>
         <!-- Button trigger modal -->
 		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
 		 주소 신규입력
 		</button>
 		<div class="form-group">
-            회원가입 주소 <input type="text" class="form-control" name="address" id="address" value="인천광역시 OO동" style="width:500px;">
+            회원가입 주소 <input type="text" class="form-control" name="address" id="address" value="인천광역시 OO동" style="width:500px;" required>
         </div>
 		
 		<!-- Modal -->
@@ -180,7 +181,6 @@
               <h5>방문시간</h5>
                 <div class="" id="startTime">
                 <br> 
-	                <button type="button" class="str-btn" value="900">09:00</button>
 	                <button type="button" class="str-btn" value="1000">10:00</button>
 	                <button type="button" class="str-btn" value="1100">11:00</button>
 	                <button type="button" class="str-btn" value="1200">12:00</button>
@@ -225,7 +225,7 @@
 	        </div>
       </div>
 	
-      <!-- 펫시팅 용품 준비안내 -->
+      <!-- 펫시팅 용품 준비안내 (차후 상품판매로 연결예정)-->
       <h5>펫시팅 용품을 준비해주세요.</h5>
       <div class="items-row mt-4">
           <div class="item">

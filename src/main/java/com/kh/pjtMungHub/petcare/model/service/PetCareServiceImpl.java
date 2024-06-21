@@ -6,8 +6,10 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.dao.PetCareDao;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
+import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
 import com.kh.pjtMungHub.petcare.model.vo.Reservation;
@@ -20,6 +22,12 @@ public class PetCareServiceImpl implements PetCareService {
 	
 	@Autowired
 	private PetCareDao petCareDao;
+	
+	//가상의 로그인 유저
+	@Override
+	public Member selectMember() {
+		return petCareDao.selectMember(sqlSession);
+	}
 
 	//날짜,시간 지정시 펫시터 리스트형태로 불러오기
 	@Override
@@ -44,6 +52,27 @@ public class PetCareServiceImpl implements PetCareService {
 	public PetSitter sitterInfo(Reservation re) {
 		return petCareDao.sitterInfo(sqlSession,re);
 	}
+	
+	//예약번호 가져오기
+	@Override
+	public String selectReservationId(Payment payment) {
+		return petCareDao.selectReservationId(sqlSession,payment);
+	}
+
+	//결제정보 저장하기
+	@Override
+	public int insertPayment(Payment payment) {
+		return petCareDao.insertPayment(sqlSession,payment);
+	}
+
+	//결제내역 보여주기
+	@Override
+	public Payment payDetail(Payment payment) {
+		return petCareDao.payDetail(sqlSession,payment);
+	}
+
+	
+
 
 	
 	
