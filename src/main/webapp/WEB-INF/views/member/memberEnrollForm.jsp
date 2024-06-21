@@ -209,13 +209,13 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 		<br><br>
 		<div class="joinModalBtn">
 			<button type="button" data-toggle="modal" data-target="#joinModal" disabled>반려견주(일반 회원)로 가입</button>	
-			<button type="reset" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
+			<button type="button" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
 		</div>
 	</div>
 	
 	<script>
-	/*  전부동의 누를 시 자동 동의 체크 <
-		다시 누르면 체크해제(반대로)<
+	/*  전부동의 누를 시 자동 동의 체크 
+		다시 누르면 체크해제(반대로)
 	
 		동의 따로따로 체크할 시 자동으로 전부동의 체크<
 		
@@ -362,61 +362,7 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 										
 										<button onclick="joinPet();">반려견 등록</button>
 									</div>
-									<div class="pet-data 1" style="display:none">
-										
-										<label for="breed">품종</label>
-										<select>
-											<option value="">해당하는 품종이 없거나 믹스견인 경우 선택해 주세요</option>
-											<c:forEach items="${breed}" varStatus="b">
-												<option value="${b.breedId}">${b.breedName}</option>
-											</c:forEach>
-										</select><br>
-										<input type="hidden" id="ownerNo" name="ownerNo">
-										<label for="petName">이름</label>
-										<input type="text" id="petName" name="petName"><br>
-										<label for="">나이</label>
-										<input type="range" id="petAge" name="petAge" min="0" step="1" max="18"><br>
-										<label for="">성별</label>
-										<input type="radio" name="petGender" value="M">
-										<label for="M">왕자님</label>
-										<input type="radio" name="petGender" value="F">
-										<label for="F">공주님</label><br>
-										<label for="weight">몸무게</label>
-										<input type="number" id="weight" name="weight"><br>
-										<label for="photo">반려견 사진 자랑(1장만!)</label>
-										<input type="file" required>
-										
-										<button onclick="joinPet();">반려견 등록</button>
-									</div>
-									<div class="pet-data2" style="display:none">
-										
-										<label for="breed">품종</label>
-										<select>
-											<option value="">비밀(해당하는 품종이 없거나 믹스견인 경우 선택해 주세요)</option>
-											<c:forEach items="${breed}" varStatus="b">
-												<option value="${b.breedId}">${b.breedName}</option>
-											</c:forEach>
-										</select><br>
-										<input type="hidden" id="ownerNo" name="ownerNo"> 
-										<label for="petName">이름</label>
-										<input type="text" id="petName" name="petName"><br>
-										<label for="">나이 : </label><span class="pet-age"></span>
-										<input type="range" id="petAge" name="petAge" min="0" step="1" max="18"><br>
-										<label for="">성별</label>
-										<input type="radio" name="petGender" value="M">
-										<label for="M">왕자님</label>
-										<input type="radio" name="petGender" value="F">
-										<label for="F">공주님</label><br>
-										<label for="weight">몸무게</label>
-										<input type="number" id="weight" name="weight"><br>
-										<label for="photo">반려견 사진 자랑(1장만!)</label>
-										<input type="file" required>
-										
-										<button onclick="joinPet();">반려견 등록</button>
-									</div>
-								</div>
-							</div>
-								
+
 					</div>
 					<!-- Modal footer -->
 					<div class="modal-footer">

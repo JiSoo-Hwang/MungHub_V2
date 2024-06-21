@@ -2,6 +2,8 @@ package com.kh.pjtMungHub.member.controller;
 
 import java.util.ArrayList;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.member.model.service.MemberService;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
@@ -33,8 +36,9 @@ public class MemberController {
 		return "member/memberLoginForm";
 	}
 	@RequestMapping("enroll.me")
-	public String enterEnroll() {
-		
+	public String enterEnroll(HttpSession session) {
+		ArrayList<Kindergarten>
+		session.setAttribute("kindList", kindList);
 		return "member/memberEnrollForm";
 	}
 	
@@ -44,15 +48,17 @@ public class MemberController {
 	}
 	
 	@RequestMapping("myPage.me")
-	public String enterMyPage(HttpSession session) {
-		Member m=session.getAttribute("loginUser");
-		ArrayList<Pet> petList = service.getPetList(m);
-		ArrayList<petPhoto> petPhotoList;
+	public String enterMyPage(HttpSession session, HttpServletRequest request) {
+		Member m=(Member)session.getAttribute("loginUser");
+		ArrayList<Pet> petList = service.selectPetList(m);
+		ArrayList<PetPhoto> petPhotoList=new ArrayList<PetPhoto>();
 		if(petList!=null) {
-			for(int i=0;i<petList.size();i++) {
-				petPhotoList.add(service.getpetPhoto(petList[i].getPhotoNo()));
+			for(Pet p : petList) {
+				petPhotoList.add(service.selectPetPhoto(p));
 			}
 		}
+		request.setAttribute("petList",petList);
+		request.setAttribute("petPhotoList",petPhotoList);
 		return "member/memberMyPage";
 	}
 	
@@ -107,6 +113,10 @@ public class MemberController {
 		int result = service.insertMember(m);
 		if(result>0) {
 			session.setAttribute("errorMsg", "회원 가입이 완료되었습니다.");
+			if(m.getPetYN().equals("Y")) {
+				session.setAttribute("loginUser", m);
+				return "member/memberPetUpdate";
+			}
 		}else {
 			model.addAttribute("errorMsg","회원 가입 실패");
 		}

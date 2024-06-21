@@ -1,11 +1,15 @@
 package com.kh.pjtMungHub.member.model.service;
 
+import java.util.ArrayList;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.member.model.dao.MemberDao;
 import com.kh.pjtMungHub.member.model.vo.Member;
+import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -45,6 +49,14 @@ public class MemberServiceImpl implements MemberService{
 		return dao.newUserNo(sqlSession);
 	}
 
+	@Override
+	public ArrayList<Pet> selectPetList(Member m) {
+		return dao.selectPetList(sqlSession, m);
+	}
 
+	@Override
+	public PetPhoto selectPetPhoto(Pet p) {
+		return dao.selectPetPhoto(sqlSession,p);
+	}
 
 }

@@ -18,6 +18,16 @@
 		<result column="JOIN_DATE" property="joinDate"/>
 		<result column="SITTER_STATUS" property="sitterStatus"/>
 	</resultMap>
+	<resultMap type="Pet" id="petResultSet">
+		<result column="BREED_ID" property="breed"/>
+		<result column="OWNER_NO" property="ownerNo"/>
+		<result column="PET_AGE" property="petAge"/>
+		<result column="PET_GENDER" property="petGender"/>
+		<result column="PET_NAME" property="petName"/>
+		<result column="PET_NO" property="petNo"/>
+		<result column="PHOTO_NO" property="photoNo"/>
+		<result column="WEIGHT" property="weight"/>
+	</resultMap>
 	<select id="loginMember" parameterType="Member" resultMap="memberResultSet">
 		SELECT * FROM MEMBER WHERE USER_ID=#{userId}
 	</select>
@@ -37,4 +47,10 @@
 		INSERT INTO MEMBER(USER_ID,USER_NO,PASSWORD,NAME,PHONE,EMAIL,ADDRESS,PET_YN,USER_GRADE) 
 		VALUES(#{userId},#{userNo},#{password},#{name},#{phone},#{email},#{address},#{petYN},0)
 	</insert>
+	<select id="selectPetList" parameterType="Member" resultMap="petResultSet">
+		SELECT * FROM PET WHERE OWNER_NO=#{userNo}
+	</select>
+<!-- 	<select id="selectPetPhoto" parameterType="Pet" resultMap="PetPhoto"> -->
+<!-- 		SELECT * FROM PET_PHOTO WHERE PHOTO_NO=${photoNo} AND STATUS='Y' -->
+<!-- 	</select> -->
 </mapper>

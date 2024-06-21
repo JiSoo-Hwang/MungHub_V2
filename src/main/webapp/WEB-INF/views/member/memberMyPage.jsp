@@ -45,16 +45,17 @@
 							</c:forEach>
 						</div>
 						<div class="info-right">
-						<c:forEach items="${pList}" var="pet">
-							<div class="petInfo">
-								<label for="">이름 : ${pet.petName}</label>
-								<label for="">품종 : ${pet.breed}</label>
-								<label for="">나이 : ${pet.petAge}</label>
-								<label for="">성별 : ${pet.petGender eq 'M' ? '왕자님':'공주님' }</label>
-								<label for="weight">몸무게 : ${pet.weight}</label>
-							</div>						
-						</c:forEach>
-					</div>					
+							<c:forEach items="${petList}" var="pet">
+								<div class="petInfo">
+									<label for="">이름 : ${pet.petName}</label><br>
+									<label for="">품종 : ${pet.breed}</label><br>
+									<label for="">나이 : ${pet.petAge}</label><br>
+									<label for="">성별 : ${pet.petGender eq 'M' ? '왕자님':'공주님' }</label><br>
+									<label for="weight">몸무게 : ${pet.weight} kg</label><br>
+								</div>						
+							</c:forEach>
+						</div>
+					</div>
 				</c:otherwise>
 			</c:choose>
 		</div>

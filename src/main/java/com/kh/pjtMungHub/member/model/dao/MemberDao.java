@@ -1,9 +1,13 @@
 package com.kh.pjtMungHub.member.model.dao;
 
+import java.util.ArrayList;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.member.model.vo.Member;
+import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Repository
 public class MemberDao {
@@ -31,6 +35,14 @@ public class MemberDao {
 
 	public int newUserNo(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectOne("memberMapper.newUserNo");
+	}
+	
+	public ArrayList<Pet> selectPetList(SqlSessionTemplate sqlSession, Member m){
+		return (ArrayList)sqlSession.selectList("memberMapper.selectPetList",m);
+	}
+
+	public PetPhoto selectPetPhoto(SqlSessionTemplate sqlSession, Pet p) {
+		return null;
 	}
 
 
