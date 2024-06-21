@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kindergartenMapper">
-	<select id="selectMap" resultType="MapVO">
+	<select id="selectMap" resultType="Kindergarten">
 		SELECT KIND_NO kindNo
 		,DIRECTOR_ID directorId
 		,REGION_NAME regionName
