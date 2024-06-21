@@ -37,6 +37,7 @@ margin:100px;
 			positions.push({
 				title : mapList[i].kindName,
 				kindNo : mapList[i].kindNo,
+				ownerNo : ${loginUser.userNo},
 				address : mapList[i].kindAddress,
 				latlng : new kakao.maps.LatLng(mapList[i].placeY,
 						mapList[i].placeX)
@@ -67,7 +68,8 @@ margin:100px;
 							+'<b>'+positions[i].title+'</b><br><br>'
 							+positions[i].address+'<br><br>'
 							+'<a href="reg.do?kindNo='
-									+positions[i].kindNo+'" style="color:blue" target="_blank">등록상담하기</a></div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+									+positions[i].kindNo+'&ownerNo='
+											+positions[i].ownerNo+'" style="color:blue" target="_blank">등록상담하기</a></div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
     			iwPosition = positions[i].latlng; //인포윈도우 표시 위치입니다
 
 			// 인포윈도우를 생성합니다

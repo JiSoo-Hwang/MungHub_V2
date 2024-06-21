@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MapVO {
+public class Kindergarten {
 private int kindNo;//	KIND_NO
 private String directorId;//	DIRECTOR_ID
 private String regionName;//	REGION_NAME
