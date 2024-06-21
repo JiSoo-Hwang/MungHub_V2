@@ -16,4 +16,7 @@ public interface MapService {
 	public int insertReg(Registration reg);
 	//유치원등록상담목록 조회 메서드
 	public ArrayList<Registration> selectRegList(int userNo);
+	public Registration selectRegistration(int reservNo);
+	//상담철회 메서드
+	public int deleteReg(int reservNo);
 }

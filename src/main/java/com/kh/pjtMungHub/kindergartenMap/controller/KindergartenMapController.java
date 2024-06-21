@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.pjtMungHub.kindergartenMap.model.service.MapService;
 import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
@@ -93,6 +94,21 @@ public class KindergartenMapController {
 
 	}
 
+	@RequestMapping("regDetail.do")
+	public ModelAndView selectReg(int reservNo,HttpSession session, ModelAndView mv) {
+		Registration registration = mapService.selectRegistration(reservNo);
+		if(registration!=null) {
+			Pet pet = mapService.selectPet(registration.getUserNo());
+			mv.addObject("registration",registration);
+			mv.addObject("pet",pet);
+			mv.setViewName("kindergartenReg/regDetailView");
+		}else {
+			session.setAttribute("alertMsg", "상세조회실패... 다시 시도해주세요");
+			mv.setViewName("kindergartenReg/regListView2");
+		}
+		return mv;
+	}
+	
 	/* 예약내역보기(견주) */
 	@GetMapping("regList.do")
 	public String regList(Model model,HttpSession session) {
@@ -147,4 +163,15 @@ public class KindergartenMapController {
 		return changeName;
 	}
 
+	@RequestMapping("deleteReg.do")
+	public String deleteReg(int reservNo,HttpSession session) {
+		int result = mapService.deleteReg(reservNo);
+		if(result>0) {
+			session.setAttribute("alertMsg", "상담이 정상적으로 취소되었습니다.");
+			return "kindergartenReg/regListView";
+		}else {
+			session.setAttribute("alertMsg", "처리 실패... 다시 시도바랍니다.");
+			return "kindergartenReg/regListView";
+		}
+	}
 }

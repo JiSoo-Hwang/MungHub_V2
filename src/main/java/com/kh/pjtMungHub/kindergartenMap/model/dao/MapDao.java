@@ -43,6 +43,17 @@ public class MapDao {
 		return (ArrayList)sqlsession.selectList("kindergartenMapper.selectRegList",userNo);
 	}
 
+	//상담신청내역 상세 조회 메소드 
+	public Registration selectRegistration(SqlSessionTemplate sqlsession, int reservNo) {
+
+		return sqlsession.selectOne("kindergartenMapper.selectRegistration",reservNo);
+	}
+
+	public int deleteReg(SqlSessionTemplate sqlsession, int reservNo) {
+		
+		return sqlsession.delete("kindergartenMapper.deleteRegistration",reservNo);
+	}
+
 
 	
 	
