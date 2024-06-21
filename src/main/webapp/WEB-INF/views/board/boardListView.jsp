@@ -93,11 +93,7 @@
 			                        <td>${b.boardWriter }</td>
 			                        <td>${b.count }</td>
 			                        <td>${b.uploadDate }</td>
-			                        <td>
-			                        	<c:if test="${not empty b.originName}">
-			                        		★
-			                        	</c:if>
-			                        </td>
+			                        
 	                  			 </tr>
                    			</c:forEach>
                    		

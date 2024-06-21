@@ -14,4 +14,8 @@ public interface BoardService {
 		//게시글 목록조회
 		ArrayList<Board> selectList(PageInfo pi);
 
+		int increaseCount(int boardNo);
+
+		Board selectBoard(int boardNo);
+
 }

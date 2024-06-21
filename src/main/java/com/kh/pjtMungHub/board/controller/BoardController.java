@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.pjtMungHub.board.model.service.BoardService;
 import com.kh.pjtMungHub.board.model.vo.Board;
@@ -47,6 +48,24 @@ public class BoardController {
 		
 		
 		return "board/boardListView";
+	}
+	
+	@GetMapping("detail.bo")
+	public ModelAndView selectBoard(int boardNo,
+									ModelAndView mv) {
+		//조회수 증가시키기
+		int result = boardService.increaseCount(boardNo);
+		
+		//조회수가 제대로 증가되었다면 상세조회 
+		if(result>0) {
+			Board b = boardService.selectBoard(boardNo);
+			mv.addObject("b",b).setViewName("board/boardDetailView");
+		}else {
+			mv.addObject("errorMsg","상세조회 실패!");
+		}
+		
+		return mv;
+		
 	}
 	
 	//게시물 작성 페이지로 이동하는 메소드

@@ -17,7 +17,7 @@ public class Board {
 	private int fileNo;//	FILE_NO	NUMBER
 	private String breedId;//	BREED_ID	VARCHAR2(4 BYTE)
 	private String boardTitle;//	BOARD_TITLE	VARCHAR2(100 BYTE)
-	private String boardWriter;//	BOARD_WRITER	VARCHAR2(100 BYTE)
+	private int boardWriter;//	BOARD_WRITER	VARCHAR2(100 BYTE)
 	private String boardContent;//	BOARD_CONTENT	VARCHAR2(4000 BYTE)
 	private int count;//	COUNT	NUMBER
 	private int recommend;//	RECOMMEND	NUMBER

@@ -28,4 +28,14 @@ public class BoardDao {
 		return (ArrayList)sqlSession.selectList("boardMapper.selectList",null,rowBounds);
 	}
 
+	public int increaseCount(SqlSessionTemplate sqlSession, int boardNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("boardMapper.increaseCount",boardNo);
+	}
+
+	public Board selectBoard(SqlSessionTemplate sqlSession, int boardNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("boardMapper.selectBoard",boardNo);
+	}
+
 }

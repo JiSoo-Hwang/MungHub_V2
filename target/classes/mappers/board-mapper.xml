@@ -43,5 +43,23 @@
                			,#{boardWriter}
                			,#{boardContent}
 	</insert>
+	<update id="increaseCount" parameterType="_INT">
+		UPDATE INTO BOARD
+		SET COUNT = COUNT +1
+		WHERE BOARD_NO = #{boardNo}
+		AND STATUS ='Y'					 
+	</update>
+	<select id="selectBoard" parameterType="_int" resultMap="boardResultSet">
+		SELECT BOARD_NO
+			  ,BOARD_TITLE
+			  ,BOARD_CONTENT
+			  ,BOARD_WRITER
+			  ,UPLOAD_DATE
+			  ,COUNT
+		 FROM BOARD
+		 WHERE BOARD_NO = #{BOARD_NO}
+		 AND STATUS ='Y'
+	</select>
+	
 	
 </mapper>
