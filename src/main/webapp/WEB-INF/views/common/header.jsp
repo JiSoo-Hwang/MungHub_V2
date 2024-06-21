@@ -198,7 +198,8 @@ clear: both;
 							style="color: white;">Login</a>
 						</c:when>
 						<c:otherwise>
-						<span>${loginUser.userId} 님 환영합니다.</span>
+							<span>${loginUser.userId} 님 환영합니다.</span>
+							<a href="myPage.me">마이페이지</a>
 							<a class="active" href="logout.me"
 							style="color: white;">Logout</a>
 						</c:otherwise>

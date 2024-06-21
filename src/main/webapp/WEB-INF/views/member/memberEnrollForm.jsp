@@ -397,10 +397,10 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 												<option value="${b.breedId}">${b.breedName}</option>
 											</c:forEach>
 										</select><br>
-										<input type="hidden" id="ownerNo" name="ownerNo">
+										<input type="hidden" id="ownerNo" name="ownerNo"> 
 										<label for="petName">이름</label>
 										<input type="text" id="petName" name="petName"><br>
-										<label for="">나이</label>
+										<label for="">나이 : </label><span class="pet-age"></span>
 										<input type="range" id="petAge" name="petAge" min="0" step="1" max="18"><br>
 										<label for="">성별</label>
 										<input type="radio" name="petGender" value="M">
@@ -505,8 +505,18 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 			console.log($('"'+place+'"'));
 			$(this).attr("disabled",true);
 		}
+		$("input[type=range]").on("change",function(){
+			var age=$("input[type=range]").val();
+			age+=" 살";
+			$(".pet-age").text(age);
+		})
 		function joinPet(){
-			var 
+			var ownerNo=$(".ownerNo").val;
+			var petName=$(".petName").val;
+			var petAge=$(".petAge").val;
+			var petGender=$(".petGender").val;
+			var weight=$(".weight").val;
+			
 		}
 	</script>
 </body>

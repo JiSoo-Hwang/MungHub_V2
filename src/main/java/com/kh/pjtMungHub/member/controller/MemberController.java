@@ -39,6 +39,12 @@ public class MemberController {
 	public String loginUpdate() {
 		return "member/memberLoginUpdate";
 	}
+	
+	@RequestMapping("myPage.me")
+	public String enterMyPage() {
+		return "member/memberMyPage";
+	}
+	
 	@RequestMapping("login.me")
 	public ModelAndView loginMember(Member m, ModelAndView mv, HttpSession session) {
 		Member loginUser = service.loginMember(m);
