@@ -3,9 +3,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <meta charset="UTF-8">
 <title>MUNGHUBSHOP</title>
 <style>
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+.review-star>i{
+color: #F2D106;
+}
 .card{
 cursor: pointer;
 }
@@ -33,17 +39,25 @@ position : relative;
 <h1>애견용품</h1>
 </div>
 <a class="btn btn-primary" href="insert.sp">상품등록</a>
-<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+<div class="row row-cols-2 align-items-center">
 <c:forEach items="${pList }" var="p">
-<div class="col-3 my-3">
+<div class="col-sm my-3 ">
 	<div class="card" onclick="location.href='detail.sp/${p.productNo}'">
 	<div>
 	<img class="card-img-top" src="${p.attachment }">
 	</div>
-	<div class="card-body">
+	<div class="card-body" style="width:250px;">
 		<h5 class="card-title">${p.productName }</h5>
-		<del><fmt:formatNumber type="number" maxFractionDigits="0" value="${p.price}" /></del>
+			<span class="review-star">
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-fill"></i>
+			<i class="bi bi-star-half"></i>
+			<i class="bi bi-star"></i>
+			<span>(<fmt:formatNumber type="number" maxFractionDigits="0" value="${p.reviewCount }" />)</span>
+			</span>
 		<br> 
+		<del><fmt:formatNumber type="number" maxFractionDigits="0" value="${p.price}" /></del>
 		<fmt:formatNumber type="number" maxFractionDigits="0" value="${p.price -(p.price/p.discount)}" />
 
 		<strong style="color:rgb(250, 58, 14)">${p.discount }%</strong>
