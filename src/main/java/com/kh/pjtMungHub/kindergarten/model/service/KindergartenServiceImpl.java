@@ -48,11 +48,18 @@ public class KindergartenServiceImpl implements KindergartenService{
 		return result;
 	}
 
-	//상담신청리스트조회메소드
+	//상담신청리스트조회메소드(견주)
 	@Override
 	public ArrayList<Registration> selectRegList(int userNo) {
 		
 		return dao.selectRegList(sqlsession,userNo);
+	}
+	
+	//상담신청리스트조회메소드(원장)
+	@Override
+	public ArrayList<Registration> selectRegList2(int userNo) {
+		
+		return dao.selectRegList2(sqlsession,userNo);
 	}
 
 	//상담신청상세조회메소드
@@ -67,6 +74,12 @@ public class KindergartenServiceImpl implements KindergartenService{
 	public int deleteReg(int reservNo) {
 		
 		return dao.deleteReg(sqlsession,reservNo);
+	}
+
+	//상담신청수정 메서드
+	@Override
+	public int updateReg(Registration reg) {
+		return dao.updateReg(sqlsession,reg);
 	}
 	
 

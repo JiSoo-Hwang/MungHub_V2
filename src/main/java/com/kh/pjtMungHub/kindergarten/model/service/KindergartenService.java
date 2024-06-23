@@ -16,7 +16,10 @@ public interface KindergartenService {
 	public int insertReg(Registration reg);
 	//유치원등록상담목록 조회 메서드
 	public ArrayList<Registration> selectRegList(int userNo);
+	public ArrayList<Registration> selectRegList2(int userNo);
 	public Registration selectRegistration(int reservNo);
 	//상담철회 메서드
 	public int deleteReg(int reservNo);
+	//상담신청수정 메서드
+	public int updateReg(Registration reg);
 }

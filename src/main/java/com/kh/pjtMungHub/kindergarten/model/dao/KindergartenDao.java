@@ -43,6 +43,11 @@ public class KindergartenDao {
 		return (ArrayList)sqlsession.selectList("kindergartenMapper.selectRegList",userNo);
 	}
 
+	//상담신청목록 조회 메소드
+	public ArrayList<Registration> selectRegList2(SqlSessionTemplate sqlsession, int userNo) {
+		
+		return (ArrayList)sqlsession.selectList("kindergartenMapper.selectRegList2",userNo);
+	}
 	//상담신청내역 상세 조회 메소드 
 	public Registration selectRegistration(SqlSessionTemplate sqlsession, int reservNo) {
 
@@ -52,6 +57,12 @@ public class KindergartenDao {
 	public int deleteReg(SqlSessionTemplate sqlsession, int reservNo) {
 		
 		return sqlsession.delete("kindergartenMapper.deleteRegistration",reservNo);
+	}
+	
+	//상담신청수정 메서드
+	public int updateReg(SqlSessionTemplate sqlsession, Registration reg) {
+
+		return sqlsession.update("kindergartenMapper.updateRegistration",reg);
 	}
 
 

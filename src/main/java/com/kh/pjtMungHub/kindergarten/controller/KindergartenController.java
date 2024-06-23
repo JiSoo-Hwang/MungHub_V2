@@ -57,7 +57,7 @@ public class KindergartenController {
 			jsonArray.add(jobj);
 		}
 		model.addAttribute("mapList", jsonArray);
-		return "kindergartenMap/kindergartenMapView";
+		return "kindergarten/kindergartenMapView";
 	}
 
 	@GetMapping("reg.do")
@@ -67,7 +67,7 @@ public class KindergartenController {
 		Kindergarten kindergarten = service.selectKindergarten(kindNo);
 		model.addAttribute("pet", pet);
 		model.addAttribute("kindergarten", kindergarten);
-		return "kindergartenReg/insertRegView";
+		return "kindergarten/insertRegView";
 	}
 
 	@PostMapping("reg.do")
@@ -86,10 +86,10 @@ public class KindergartenController {
 			model.addAttribute("kindergarten", kindergarten);
 			model.addAttribute("registration", reg);
 			session.setAttribute("alertMsg", "상담 신청 성공! 승인 결과를 기다려주세요~!");
-			return "kindergartenReg/regDetailView";
+			return "redirect:/regList.do";
 		} else {
 			session.setAttribute("alertMsg", "상담 신청 실패... 다시 시도해주세요...!");
-			return "kindergartenReg/insertRegView";
+			return "kindergarten/insertRegView";
 		}
 
 	}
@@ -101,10 +101,10 @@ public class KindergartenController {
 			Pet pet = service.selectPet(registration.getUserNo());
 			mv.addObject("registration",registration);
 			mv.addObject("pet",pet);
-			mv.setViewName("kindergartenReg/regDetailView");
+			mv.setViewName("kindergarten/regDetailView");
 		}else {
 			session.setAttribute("alertMsg", "상세조회실패... 다시 시도해주세요");
-			mv.setViewName("kindergartenReg/regListView2");
+			mv.setViewName("kindergarten/regListView2");
 		}
 		return mv;
 	}
@@ -121,15 +121,15 @@ public class KindergartenController {
 		}
 		model.addAttribute("kindergartenList", kindergartenList);
 		model.addAttribute("regList", regList);
-		return "kindergartenReg/regListView";
+		return "kindergarten/regListView";
 	}
 
 	/* 예약내역보기(원장님) */
 	@GetMapping("regList2.do")
 	public String regList2(int userNo, Model model) {
-		ArrayList<Registration> regList = service.selectRegList(userNo);
+		ArrayList<Registration> regList = service.selectRegList2(userNo);
 		model.addAttribute("regList", regList);
-		return "kindergartenReg/regListView2";
+		return "kindergarten/regListView2";
 	}
 
 	// 파일 업로드 처리 메소드(재활용)
@@ -168,10 +168,49 @@ public class KindergartenController {
 		int result = service.deleteReg(reservNo);
 		if(result>0) {
 			session.setAttribute("alertMsg", "상담이 정상적으로 취소되었습니다.");
-			return "kindergartenReg/regListView";
+			return "redirect:/regList.do";
 		}else {
 			session.setAttribute("alertMsg", "처리 실패... 다시 시도바랍니다.");
-			return "kindergartenReg/regListView";
+			return "kindergarten/regListView";
 		}
 	}
+	
+	@GetMapping("updateReg.do")
+	public String updateRegView(int reservNo,Model model,HttpSession session) {
+		Registration r = service.selectRegistration(reservNo);
+		Member member = (Member)session.getAttribute("loginUser");
+		Pet p = service.selectPet(member.getUserNo());
+		model.addAttribute("registration",r);
+		model.addAttribute("pet",p);
+		return "kindergarten/regUpdateView";
+	}
+	
+	@PostMapping("updateReg.do")
+	public String updateReg(Registration reg,MultipartFile reupFile, HttpSession session) {
+		boolean flag = false;
+		String deleteFile = "";
+		if(!reupFile.getOriginalFilename().equals("")) {
+			if(reg.getOriginName() != null) {
+				flag = true;
+				deleteFile = reg.getChangeName();
+			}
+			String changeName = saveFile(reupFile, session);
+			reg.setOriginName(reupFile.getOriginalFilename());
+			reg.setChangeName("resources/uploadFiles/kindergarten/"+changeName);
+		}
+		int result = service.updateReg(reg);
+		String msg = "";
+		if(result>0) {
+			msg = "신청서 수정 성공! 승인을 대기해주세요~";
+			if(flag) {
+				File file = new File(session.getServletContext().getRealPath(deleteFile));
+				file.delete();
+			}
+		}else {
+			msg = "신청서 수정 실패... 다시 시도해주세요!";
+		}
+		session.setAttribute("alertMsg", msg);
+		return "redirect:/regDetail.do?reservNo="+reg.getReservNo();
+	}
+	
 }
