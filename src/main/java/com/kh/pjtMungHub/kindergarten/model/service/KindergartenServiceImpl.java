@@ -1,4 +1,4 @@
-package com.kh.pjtMungHub.kindergartenMap.model.service;
+package com.kh.pjtMungHub.kindergarten.model.service;
 
 import java.util.ArrayList;
 
@@ -6,16 +6,16 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.kh.pjtMungHub.kindergartenMap.model.dao.MapDao;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Registration;
+import com.kh.pjtMungHub.kindergarten.model.dao.KindergartenDao;
+import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
+import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Service
-public class MapServiceImpl implements MapService{
+public class KindergartenServiceImpl implements KindergartenService{
 	
 	@Autowired
-	private MapDao mapDao;
+	private KindergartenDao dao;
 	
 	@Autowired
 	private SqlSessionTemplate sqlsession;
@@ -23,7 +23,7 @@ public class MapServiceImpl implements MapService{
 	@Override
 	public ArrayList<Kindergarten> selectMap() {
 		
-		ArrayList<Kindergarten> mapList = mapDao.selectMap(sqlsession);
+		ArrayList<Kindergarten> mapList = dao.selectMap(sqlsession);
 		
 		return mapList;
 	}
@@ -31,20 +31,20 @@ public class MapServiceImpl implements MapService{
 	//해당 회원의 반려동물 정보 조회 메서드
 	@Override
 	public Pet selectPet(int ownerNo) {
-		Pet pet = mapDao.selectPet(sqlsession,ownerNo);
+		Pet pet = dao.selectPet(sqlsession,ownerNo);
 		return pet;
 	}
 
 	@Override
 	public Kindergarten selectKindergarten(int kindNo) {
-		Kindergarten kindergarten = mapDao.selectKindergarten(sqlsession, kindNo);
+		Kindergarten kindergarten = dao.selectKindergarten(sqlsession, kindNo);
 		return kindergarten;
 	}
 
 	//상담신청등록메소드
 	@Override
 	public int insertReg(Registration reg) {
-		int result = mapDao.insertReg(sqlsession,reg);
+		int result = dao.insertReg(sqlsession,reg);
 		return result;
 	}
 
@@ -52,21 +52,21 @@ public class MapServiceImpl implements MapService{
 	@Override
 	public ArrayList<Registration> selectRegList(int userNo) {
 		
-		return mapDao.selectRegList(sqlsession,userNo);
+		return dao.selectRegList(sqlsession,userNo);
 	}
 
 	//상담신청상세조회메소드
 	@Override
 	public Registration selectRegistration(int reservNo) {
 
-		return mapDao.selectRegistration(sqlsession,reservNo);
+		return dao.selectRegistration(sqlsession,reservNo);
 	}
 
 	//상담취소메소드
 	@Override
 	public int deleteReg(int reservNo) {
 		
-		return mapDao.deleteReg(sqlsession,reservNo);
+		return dao.deleteReg(sqlsession,reservNo);
 	}
 	
 

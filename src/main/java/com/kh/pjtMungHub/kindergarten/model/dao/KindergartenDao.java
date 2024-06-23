@@ -1,16 +1,16 @@
-package com.kh.pjtMungHub.kindergartenMap.model.dao;
+package com.kh.pjtMungHub.kindergarten.model.dao;
 
 import java.util.ArrayList;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Registration;
+import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
+import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Repository
-public class MapDao {
+public class KindergartenDao {
 
 	public ArrayList<Kindergarten> selectMap(SqlSessionTemplate sqlsession) {
 		

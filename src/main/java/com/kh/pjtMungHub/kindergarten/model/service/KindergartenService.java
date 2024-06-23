@@ -1,14 +1,14 @@
-package com.kh.pjtMungHub.kindergartenMap.model.service;
+package com.kh.pjtMungHub.kindergarten.model.service;
 
 import java.util.ArrayList;
 
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Registration;
+import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
+import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 
 
-public interface MapService {
+public interface KindergartenService {
 
 	public ArrayList<Kindergarten> selectMap();
 	public Pet selectPet(int ownerNo);
