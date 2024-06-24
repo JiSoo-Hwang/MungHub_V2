@@ -209,7 +209,7 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 		<br><br>
 		<div class="joinModalBtn">
 			<button type="button" data-toggle="modal" data-target="#joinModal" disabled>반려견주(일반 회원)로 가입</button>	
-			<button type="button" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
+			<button type="button" data-toggle="modal" data-target="#joinModal" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
 		</div>
 	</div>
 	
@@ -328,48 +328,103 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 							<label for="address">주소 :</label>
 							<input type="text" class="form-control mb-2 mr-sm-2" 
 									placeholder="" id="address" name="address" >
-						</div>
 							<label for="">반려견 유무 :</label>
 							<div class="petStatus">
 								<input type="radio" id="yesPet" value="Y" name="petYN">
 								<label for="yesPet">있습니다.</label> &nbsp;&nbsp;
 								<input type="radio" id="noPet" value="N" name="petYN">
 								<label for="noPet">없습니다.</label> &nbsp;&nbsp;
-								<div class="pet-area" style="display:none">
-								<button onclick="addPetData();">추가하기</button>
-									<div class="pet-data0">
-										<label for="breed">품종</label>
-										<select>
-											<option value="">해당하는 품종이 없거나 믹스견인 경우 선택해 주세요</option>
-											<c:forEach items="${breed}" varStatus="b">
-												<option value="${b.breedId}">${b.breedName}</option>
-											</c:forEach>
-										</select><br>
-										<input type="hidden" id="ownerNo" name="ownerNo">
-										<label for="petName">이름</label>
-										<input type="text" id="petName" name="petName"><br>
-										<label for="">나이</label>
-										<input type="range" id="petAge" name="petAge" min="0" step="1" max="18"><br>
-										<label for="">성별</label>
-										<input type="radio" name="petGender" value="M">
-										<label for="M">왕자님</label>
-										<input type="radio" name="petGender" value="F">
-										<label for="F">공주님</label><br>
-										<label for="weight">몸무게</label>
-										<input type="number" id="weight" name="weight"><br>
-										<label for="photo">반려견 사진 자랑(1장만!)</label>
-										<input type="file" required>
-										
-										<button onclick="joinPet();">반려견 등록</button>
-									</div>
-
+							</div>
+						</div>
 					</div>
+				</form>
+								<form action="join.me" method="post">
+					<!-- Modal body -->
+					<div class="modal-body">
+						<div class="member-data">
+							<input type="hidden" id="userNo" name="userNo">
+							<label for="userId">아이디 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="아이디를 입력하세요" id="userId" name="userId" required>
+							<div class="idCheck"></div>		
+							<label for="userPwd">비밀번호 :</label>
+							<input type="password" class="form-control mb-2 mr-sm-2" 
+									placeholder="등록할 비밀번호를 입력하세요" id="password" name="password" required>
+							<span>비밀번호는 6글자 이상 20자 미만으로, 영어, 숫자 및 특수문자를 반드시 포함하여 구성하셔야 합니다.</span>
+							<div class="passwordRule"></div>
+							<label for="checkPwd">비밀번호 확인 :</label>
+							<input type="password" class="form-control mb-2 mr-sm-2" 
+									placeholder="동일한 비밀번호를 입력하세요" id="checkPwd" name="checkPwd" required>
+							<div class="passwordCheck">
+							</div>
+							<label for="name">이름 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="이름을 입력하세요" id="name" name="name" required>
+							<label for="phone">전화번호 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="하이픈(-) 포함 공백없이 입력해 주시기 바랍니다." id="phone" name="phone" required>
+							<label for="phone">이메일 :</label>
+							<input type="email" class="form-control mb-2 mr-sm-2" 
+									placeholder="" id="email" name="email" >
+							<label for="address">주소 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="" id="address" name="address" >
+							<label for="">반려견 유무 :</label>
+							<div class="petStatus">
+								<input type="radio" id="yesPet" value="Y" name="petYN">
+								<label for="yesPet">있습니다.</label> &nbsp;&nbsp;
+								<input type="radio" id="noPet" value="N" name="petYN">
+								<label for="noPet">없습니다.</label> &nbsp;&nbsp;
+							</div>
+						</div>
+					</div>
+				</form>
+								<form action="join.me" method="post">
+					<!-- Modal body -->
+					<div class="modal-body">
+						<div class="member-data">
+							<input type="hidden" id="userNo" name="userNo">
+							<label for="userId">아이디 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="아이디를 입력하세요" id="userId" name="userId" required>
+							<div class="idCheck"></div>		
+							<label for="userPwd">비밀번호 :</label>
+							<input type="password" class="form-control mb-2 mr-sm-2" 
+									placeholder="등록할 비밀번호를 입력하세요" id="password" name="password" required>
+							<span>비밀번호는 6글자 이상 20자 미만으로, 영어, 숫자 및 특수문자를 반드시 포함하여 구성하셔야 합니다.</span>
+							<div class="passwordRule"></div>
+							<label for="checkPwd">비밀번호 확인 :</label>
+							<input type="password" class="form-control mb-2 mr-sm-2" 
+									placeholder="동일한 비밀번호를 입력하세요" id="checkPwd" name="checkPwd" required>
+							<div class="passwordCheck">
+							</div>
+							<label for="name">이름 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="이름을 입력하세요" id="name" name="name" required>
+							<label for="phone">전화번호 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="하이픈(-) 포함 공백없이 입력해 주시기 바랍니다." id="phone" name="phone" required>
+							<label for="phone">이메일 :</label>
+							<input type="email" class="form-control mb-2 mr-sm-2" 
+									placeholder="" id="email" name="email" >
+							<label for="address">주소 :</label>
+							<input type="text" class="form-control mb-2 mr-sm-2" 
+									placeholder="" id="address" name="address" >
+							<label for="">반려견 유무 :</label>
+							<div class="petStatus">
+								<input type="radio" id="yesPet" value="Y" name="petYN">
+								<label for="yesPet">있습니다.</label> &nbsp;&nbsp;
+								<input type="radio" id="noPet" value="N" name="petYN">
+								<label for="noPet">없습니다.</label> &nbsp;&nbsp;
+							</div>
+						</div>
+					</div>
+				</form>
 					<!-- Modal footer -->
 					<div class="modal-footer">
 						<button type="submit" class="btn btn-danger" disabled>회원가입</button>
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 					</div>
-				</form>
 
 			</div>
 		</div>
@@ -432,38 +487,6 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 			    }
 			})
 		})
-		$(function(){
-			$(".petStatus>input[type=radio]").on("click",function(){
-				var pet=$(".petStatus>input[value='Y']").prop("checked");
- 				if(pet){
- 					
-					$(".pet-area").show(0);
-				}else{
-					$(".pet-data").empty();
-					$(".pet-area").hide(0);					
-				}
-			})
-		})
-		function addPetData(){
-			count+=1;
-			console.log(count);
-			var place=".pet-data"+count;
-			console.log($('"'+place+'"'));
-			$(this).attr("disabled",true);
-		}
-		$("input[type=range]").on("change",function(){
-			var age=$("input[type=range]").val();
-			age+=" 살";
-			$(".pet-age").text(age);
-		})
-		function joinPet(){
-			var ownerNo=$(".ownerNo").val;
-			var petName=$(".petName").val;
-			var petAge=$(".petAge").val;
-			var petGender=$(".petGender").val;
-			var weight=$(".weight").val;
-			
-		}
 	</script>
 </body>
 </html>

@@ -48,9 +48,15 @@
 		VALUES(#{userId},#{userNo},#{password},#{name},#{phone},#{email},#{address},#{petYN},0)
 	</insert>
 	<select id="selectPetList" parameterType="Member" resultMap="petResultSet">
-		SELECT * FROM PET WHERE OWNER_NO=#{userNo}
+		SELECT  FROM PET WHERE OWNER_NO=#{userNo}
 	</select>
-<!-- 	<select id="selectPetPhoto" parameterType="Pet" resultMap="PetPhoto"> -->
-<!-- 		SELECT * FROM PET_PHOTO WHERE PHOTO_NO=${photoNo} AND STATUS='Y' -->
-<!-- 	</select> -->
+	<select id="selectPetPhoto" parameterType="Pet" resultMap="PetPhoto">
+		SELECT * FROM PET_PHOTO WHERE PHOTO_NO=${photoNo} AND STATUS='Y'
+	</select>
+	<select id="selectKindList" resultType="Kindergarten">
+		SELECT KIND_NO, KIND_NAME FROM KINDERGARTEN WHERE STATUS='Y'
+	</select>
+	<select id="selectBreedList" resultType="Breed">
+		SELECT BREED_ID breedId, BREED_NAME breedName FROM BREED
+	</select>
 </mapper>
