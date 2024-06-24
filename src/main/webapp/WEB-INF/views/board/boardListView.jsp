@@ -104,7 +104,6 @@
             </table>
             <br>
             
-            
             <script>
             	//글을 클릭했을때 해당 글을 상세보기 할 수 있는 함수 작성 
             	$(function(){
@@ -120,8 +119,6 @@
             	});
             
             </script>
-            
-            
 
             <div id="pagingArea">
                 <ul class="pagination">
