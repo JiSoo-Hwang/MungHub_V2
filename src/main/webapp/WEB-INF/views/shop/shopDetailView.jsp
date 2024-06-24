@@ -203,7 +203,7 @@ h2 {
 		data: {	productNo : ${p.productNo}
 				,amount : $("#inputQuantity").val()
 				,userNo : ${loginUser.userNo}
-				},
+		},
 		success: function(result){
 			console.log(result);
 			console.log("통신성공");
