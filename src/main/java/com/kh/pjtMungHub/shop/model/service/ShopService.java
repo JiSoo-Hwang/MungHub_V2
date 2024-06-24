@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
+import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
@@ -24,5 +25,11 @@ public interface ShopService {
 	ArrayList<Category> selectCategory();
 
 
-	ArrayList<Brand> selectBrand(); 
+	ArrayList<Brand> selectBrand();
+
+
+	int addCart(Cart c);
+
+
+	ArrayList<Cart> selectCartList(int userNo); 
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kh.pjtMungHub.shop.model.dao.ShopDao;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
+import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
@@ -56,6 +57,18 @@ public class ShopServiceImpl implements ShopService {
 		int result2=shopDao.insertAttachment(sqlSession, fileParameter);
 		
 		return result*result2;
+	}
+
+	@Override
+	public int addCart(Cart c) {
+		// TODO Auto-generated method stub
+		return shopDao.addCart(sqlSession,c);
+	}
+
+	@Override
+	public ArrayList<Cart> selectCartList(int userNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectCartList(sqlSession,userNo);
 	}
 
 	
