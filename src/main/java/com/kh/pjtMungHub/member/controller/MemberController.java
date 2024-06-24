@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
+import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
 import com.kh.pjtMungHub.member.model.service.MemberService;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
@@ -37,7 +38,7 @@ public class MemberController {
 	}
 	@RequestMapping("enroll.me")
 	public String enterEnroll(HttpSession session) {
-		ArrayList<Kindergarten>
+		ArrayList<Kindergarten> kindList = service.selectKindList();
 		session.setAttribute("kindList", kindList);
 		return "member/memberEnrollForm";
 	}
@@ -48,7 +49,7 @@ public class MemberController {
 	}
 	
 	@RequestMapping("myPage.me")
-	public String enterMyPage(HttpSession session, HttpServletRequest request) {
+	public String enterMyPage(HttpSession session) {
 		Member m=(Member)session.getAttribute("loginUser");
 		ArrayList<Pet> petList = service.selectPetList(m);
 		ArrayList<PetPhoto> petPhotoList=new ArrayList<PetPhoto>();
@@ -57,8 +58,8 @@ public class MemberController {
 				petPhotoList.add(service.selectPetPhoto(p));
 			}
 		}
-		request.setAttribute("petList",petList);
-		request.setAttribute("petPhotoList",petPhotoList);
+		session.setAttribute("petList",petList);
+		session.setAttribute("petPhotoList",petPhotoList);
 		return "member/memberMyPage";
 	}
 	
@@ -115,6 +116,7 @@ public class MemberController {
 			session.setAttribute("errorMsg", "회원 가입이 완료되었습니다.");
 			if(m.getPetYN().equals("Y")) {
 				session.setAttribute("loginUser", m);
+				session.setAttribute("breed", service.selectBreedList());
 				return "member/memberPetUpdate";
 			}
 		}else {
@@ -152,6 +154,13 @@ public class MemberController {
 			}
 		}
 		mv.setViewName("member/memberLoginForm");
+		return mv;
+	}
+	
+	@PostMapping("enrollPet.me")
+	public ModelAndView enrollPet(Member m, ModelAndView mv, HttpSession session) {
+		session.setAttribute("petList", service.selectPetList(m));
+		mv.setViewName("member/memberPetUpdate");
 		return mv;
 	}
 }
