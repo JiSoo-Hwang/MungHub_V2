@@ -140,7 +140,7 @@ public class ShopController {
 	}
 	
 	
-	@PostMapping(value="addCart.sp", produces="application/json; charset=UTF-8")
+	@PostMapping("addCart.sp")
 	@ResponseBody
 	public int addCart(Cart c) {
 		
