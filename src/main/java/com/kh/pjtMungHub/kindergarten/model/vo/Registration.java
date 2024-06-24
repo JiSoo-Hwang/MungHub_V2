@@ -1,4 +1,4 @@
-package com.kh.pjtMungHub.kindergartenMap.model.vo;
+package com.kh.pjtMungHub.kindergarten.model.vo;
 
 import java.sql.Date;
 

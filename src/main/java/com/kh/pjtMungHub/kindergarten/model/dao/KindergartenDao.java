@@ -1,16 +1,16 @@
-package com.kh.pjtMungHub.kindergartenMap.model.dao;
+package com.kh.pjtMungHub.kindergarten.model.dao;
 
 import java.util.ArrayList;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Registration;
+import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
+import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Repository
-public class MapDao {
+public class KindergartenDao {
 
 	public ArrayList<Kindergarten> selectMap(SqlSessionTemplate sqlsession) {
 		
@@ -43,6 +43,11 @@ public class MapDao {
 		return (ArrayList)sqlsession.selectList("kindergartenMapper.selectRegList",userNo);
 	}
 
+	//상담신청목록 조회 메소드
+	public ArrayList<Registration> selectRegList2(SqlSessionTemplate sqlsession, int userNo) {
+		
+		return (ArrayList)sqlsession.selectList("kindergartenMapper.selectRegList2",userNo);
+	}
 	//상담신청내역 상세 조회 메소드 
 	public Registration selectRegistration(SqlSessionTemplate sqlsession, int reservNo) {
 
@@ -52,6 +57,12 @@ public class MapDao {
 	public int deleteReg(SqlSessionTemplate sqlsession, int reservNo) {
 		
 		return sqlsession.delete("kindergartenMapper.deleteRegistration",reservNo);
+	}
+	
+	//상담신청수정 메서드
+	public int updateReg(SqlSessionTemplate sqlsession, Registration reg) {
+
+		return sqlsession.update("kindergartenMapper.updateRegistration",reg);
 	}
 
 
