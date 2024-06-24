@@ -8,6 +8,9 @@
 	</settings>
 	<typeAliases>
 
+	
+	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.House" alias="House"/>
+	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.HouseReservation" alias="HouseReservation"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Payment" alias="Payment"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Price" alias="Price"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Reservation" alias="Reservation"/>

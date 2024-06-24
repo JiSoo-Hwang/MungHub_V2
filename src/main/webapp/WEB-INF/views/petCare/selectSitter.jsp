@@ -13,7 +13,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MungHub</title>
+<title>MungHub 펫시터 선택페이지</title>
 <style>
 
 	/* 시간선택 css */

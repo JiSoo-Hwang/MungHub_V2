@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MungHub</title>
+<title>MungHub 단기돌봄 예약페이지</title>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!-- 주소 api -->
 
 <style>
@@ -123,7 +123,7 @@
 	    <input type="hidden" name ="petTypeNo" value="${at.petTypeNo }">
 	    <input type="hidden" name ="priceName" value="${at.priceName }">
 	    <input type="hidden" name ="totalPrice" value="${at.totalPrice }">
-	    <input type="hidden" name ="userId" value="${member.userId }">
+	    <input type="text" name ="userId" value="${member.userId }">
 
       <!--방문장소-->
       <div class="form-section">

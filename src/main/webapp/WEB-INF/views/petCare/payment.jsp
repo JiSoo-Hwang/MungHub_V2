@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>결제 페이지</title>
+<title>MungHub 단기돌봄 결제 페이지</title>
 
 <style>
     .order-section {
