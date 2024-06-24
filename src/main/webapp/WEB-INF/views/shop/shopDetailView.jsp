@@ -184,8 +184,7 @@ h2 {
 						<input class="form-control text-center me-3" id="inputQuantity"
 							type="number" min="1" value="1" style="max-width: 3rem">
 						&nbsp;&nbsp;
-						<button class="btn btn-outline-dark flex-shrink-0" type="button"
-							onclick="addCart()">
+						<button class="btn btn-outline-dark flex-shrink-0" id="addCart" type="button">
 							<i class="bi bi-bag-plus-fill"></i>&nbsp; 장바구니 추가
 						</button>
 						&nbsp;
@@ -194,13 +193,25 @@ h2 {
 						</button>
 					</div>
 
-					<script type="text/javascript">
+	<script>
 	
-	function addCart(){
+	$(function(){
 	
+		$("#addCart").click(function(){
+			
+			var productNo =  "${p.productNo}";
+			var amount = $("#inputQuantity").val();
+			var userNo = "${loginUser.userNo}";
+			
+			console.log(productNo);
+			console.log(amount);
+			console.log(userNo);
+		
 	$.ajax({
-		url: "addCart.sp",
-		data: {	productNo : ${p.productNo}
+		url : "addCart.sp",
+		type : "post",
+		 data: {
+				productNo : "${p.productNo}"
 				,amount : $("#inputQuantity").val()
 				,userNo : "${loginUser.userNo}"
 		},
@@ -208,11 +219,12 @@ h2 {
 			console.log(result);
 			console.log("통신성공");
 		},
-		fail: function(){
+		error: function(){
 			console.log("통신실패");
 		}
+	 });
 	});
-}
+});
 </script>
 
 					<div class="dl-table-group">

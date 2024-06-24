@@ -11,8 +11,10 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +29,7 @@ import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 
+import lombok.extern.slf4j.Slf4j;
 
 
 @Controller
@@ -125,7 +128,7 @@ public class ShopController {
 		
 	}
 	
-	@GetMapping("cart.sp/{userNo}")
+	@GetMapping("cart/{userNo}")
 	public ModelAndView cartList(ModelAndView mv,
 			@PathVariable int userNo) {
 		
@@ -136,8 +139,9 @@ public class ShopController {
 		return mv;
 	}
 	
+	
+	@PostMapping(value="addCart.sp", produces="application/json; charset=UTF-8")
 	@ResponseBody
-	@GetMapping("addCart.sp")
 	public int addCart(Cart c) {
 		
 		System.out.println(c);
