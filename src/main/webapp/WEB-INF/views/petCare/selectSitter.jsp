@@ -8,6 +8,7 @@
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String formattedDate = sdf.format(today);
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -136,7 +137,7 @@
 	
     <!-- 모달창 버튼 -->
 	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-	  여러가지 맞춤 정보를 통해 펫시터를 추천 받아보세요.
+	  여러가지 맞춤 정보를 통해 펫시터를 추천 받아보세요. 
 	</button>
 	
 	<div class="container mt-5">
@@ -155,7 +156,6 @@
                       									<%-- 오늘 날짜부터 달력을 클릭하도록 min="<%= formattedDate %>" 로 막아주기--%>
                       <div class="" id="startTime">방문시간을 선택해주세요. 
                        <br> 
-                         <button type="button" class="str-btn" value="900">09:00</button>
                          <button type="button" class="str-btn" value="1000">10:00</button>
                          <button type="button" class="str-btn" value="1100">11:00</button>
                          <button type="button" class="str-btn" value="1200">12:00</button>

@@ -54,6 +54,20 @@ public class MapServiceImpl implements MapService{
 		
 		return mapDao.selectRegList(sqlsession,userNo);
 	}
+
+	//상담신청상세조회메소드
+	@Override
+	public Registration selectRegistration(int reservNo) {
+
+		return mapDao.selectRegistration(sqlsession,reservNo);
+	}
+
+	//상담취소메소드
+	@Override
+	public int deleteReg(int reservNo) {
+		
+		return mapDao.deleteReg(sqlsession,reservNo);
+	}
 	
 
 

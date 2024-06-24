@@ -53,16 +53,40 @@
 	    <result column="PAYMENT_ID" property="paymentId"/>
 	    <result column="PG_NAME" property="pgName"/>
 	    <result column="USER_NAME" property="userName"/>
+	    <result column="USER_ID" property="userId"/>
 	    <result column="AMOUNT" property="amount"/>
 	    <result column="PHONE" property="phone"/>
 	    <result column="ADDRESS" property="address"/>
 	    <result column="PAYMENT_DATE" property="paymentDate"/>
-	    <result column="RESERVATION_ID" property="reservationId"/>
 	    <result column="PAYMENT_METHOD" property="paymentMethod"/>
+	    <result column="USER_ID" property="userId"/>
 	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
 	</resultMap>
 	
+	<resultMap type="Member" id="memberResultSet">
+	    <result column="USER_NO" property="userNo"/>
+	    <result column="USER_ID" property="userId"/>
+	    <result column="PASSWORD" property="password"/>
+	    <result column="NAME" property="name"/>
+	    <result column="PHONE" property="phone"/>
+	    <result column="EMAIL" property="email"/>
+	    <result column="ADDRESS" property="address"/>
+	    <result column="PET_YN" property="petYN"/>
+	    <result column="USER_GRADE" property="userGrade"/>
+	    <result column="KIND_NAME" property="kindName"/>
+	    <result column="STATUS" property="status"/>
+	    <result column="JOIN_DATE" property="joinDate"/>
+	    <result column="SITTER_STATUS" property="sitterStatus"/>
+	</resultMap>
 	
+	<!-- 가상의 로그인유저 -->
+	<select id="selectMember" resultMap="memberResultSet">
+		SELECT USER_ID
+		FROM MEMBER
+		WHERE USER_NO = 3
+	</select>
+	
+	<!-- 펫시터 선택화면 -->
 	<select id="selectSitter" parameterType="AvailableTimes" resultMap="petSitterResultSet">
 		SELECT P.PET_SITTER_NO,P.PET_SITTER_NAME, P.INTRODUCE
 			  ,P.DOG_KEYWORD,P.TYPE_KEYWORD
@@ -99,7 +123,7 @@
 		   ,PET_SITTER_NO
 		   ,DURATION, PET_TYPE_NO
 		   ,ORIGIN_NAME, CHANGE_NAME
-		   ,PAYMENT_STATUS, TOTAL_AMOUNT
+		   ,PAYMENT_STATUS,USER_ID ,TOTAL_AMOUNT
 		) VALUES (
 		    RESERVATION_SEQ.NEXTVAL,
 		    #{petOwnerName},
@@ -118,10 +142,12 @@
 		    #{originName},
 		    #{changeName},
 		    DEFAULT,
+		    #{userId},
 		    #{totalAmount}
 		)
 	</insert>
 	
+	<!-- 결제전 펫시터 정보 보여주기 -->
 	<select id="sitterInfo" parameterType="Reservation" resultMap="petSitterResultSet">
 		SELECT PET_SITTER_NAME,INTRODUCE,PHONE,ORIGIN_NAME,FILE_PATH
 		FROM PET_SITTER
@@ -129,6 +155,53 @@
 	</select>
 	
 	
+	<!-- 예약번호 가져오기 -->
+	<select id="selectReservationId" parameterType="Reservation" resultType="Reservation">
+		SELECT RESERVATION_ID as reservationId
+		FROM RESERVATION
+		JOIN MEMBER USING(USER_ID)
+		WHERE USER_ID= #{userId}
+	</select>
+	
+	
+	<!-- 결제내역 저장하기 -->
+	<insert id="insertPayment" parameterType="Payment">
+		INSERT INTO PAYMENT (
+							 PAYMENT_ID
+							,PG_NAME
+							,USER_NAME
+							,USER_ID
+							,AMOUNT
+							,PHONE
+							,ADDRESS
+							,PAYMENT_METHOD
+							,PRODUCT_NAME
+							,PAYMENT_DATE
+							,PAYMENT_STATUS
+							) 
+		VALUES (
+				 #{paymentId}, #{pgName}, #{userName}, #{userId}
+			   , #{amount}, #{phone}, #{address}, #{paymentMethod}, #{productName}
+			   , SYSDATE,#{paymentStatus}
+				)
+	</insert>
+	
+	<!-- 결제내역 보여주기 -->
+	<select id="payDetail" parameterType="Payment" resultMap="paymentResultSet">
+		 SELECT  PAYMENT_ID
+		 		,PG_NAME
+				,USER_NAME
+				,USER_ID
+				,AMOUNT
+				,PHONE
+				,ADDRESS
+				,PAYMENT_METHOD
+				,PRODUCT_NAME
+				,PAYMENT_DATE
+				,PAYMENT_STATUS
+		FROM PAYMENT
+		WHERE PAYMENT_ID = #{paymentId}
+	</select>
 	
 
 </mapper>
