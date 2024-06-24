@@ -21,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.service.PetCareServiceImpl;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
+import com.kh.pjtMungHub.petcare.model.vo.House;
+import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
@@ -40,14 +42,12 @@ public class PetCareController {
 		return "petCare/selectSitter";
 	}
 	
-	//날짜,시간 지정시 펫시터 리스트형태로 불러오기
+	//날짜,시간 지정시 스케줄 가능한 펫시터 리스트형태로 불러오기
 	@ResponseBody
 	@PostMapping(value="selectSitter.re",produces="application/json;charset=UTF-8")
 	public ArrayList<PetSitter> selectSitter(@ModelAttribute AvailableTimes at) {
 		
 		ArrayList<PetSitter> sList = petCareService.selectSitter(at);
-		//파일 이름과 경로를 지정해서
-		//소개글,사진,각종 정보를 페이지에 표현하기
 		return sList;
 	}
 	
@@ -56,10 +56,6 @@ public class PetCareController {
 	public String shortReservation(AvailableTimes at,Model model) {
 		
 		Price p = petCareService.priceTable(at);
-		
-		//가상의 로그인유저 (지울예정)
-		Member member = petCareService.selectMember();
-		model.addAttribute("member",member);
 		
 		at.setTotalPrice(p.getTotalPrice());
 		at.setPriceName(p.getPriceName());
@@ -86,16 +82,10 @@ public class PetCareController {
 		re.setTotalAmount(totalPrice);
 		int result = petCareService.enrollReservation(re);
 		
-		
 		//펫시터정보
 		PetSitter sitter = petCareService.sitterInfo(re);
-
-		//가상의 로그인유저 (지울예정)
-		Member member = petCareService.selectMember();
-		
 		if(result>0) {
 			session.setAttribute("alertMsg", "예약에 성공했습니다! 결제 페이지로 이동합니다.");
-			model.addAttribute("member",member);//가상 로그인유저
 			model.addAttribute("re",re);
 			model.addAttribute("sitter",sitter);
 			model.addAttribute("priceName",priceName);
@@ -132,6 +122,56 @@ public class PetCareController {
 		return "petCare/payDetail";
 	}
 	
+	//장기돌봄 예약 리스트로 이동
+	@RequestMapping("houseList.re")
+	public String selectHouse() {
+		
+		return "petCare/selectHouse";
+	}
+	
+	//장기돌봄 예약 리스트로 이동
+	@ResponseBody
+	@RequestMapping(value="selectHouseList.re",produces="application/json;charset=UTF-8")
+	public ArrayList<House> selectHouseList(HouseReservation houseRe,Date endJavaDate) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); //날짜형식
+		String formatDate = sdf.format(endJavaDate); //날짜형식으로 적용
+		java.sql.Date sqlDate = java.sql.Date.valueOf(formatDate); //sql 형식으로 변환 성공!!
+		houseRe.setEndDate(sqlDate); //필드에 적용
+		
+		ArrayList<House> houseList = petCareService.selectHouseList(houseRe);
+		
+		return houseList;
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

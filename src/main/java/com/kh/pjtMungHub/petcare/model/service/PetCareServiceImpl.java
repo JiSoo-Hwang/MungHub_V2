@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.dao.PetCareDao;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
+import com.kh.pjtMungHub.petcare.model.vo.House;
+import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
@@ -23,12 +25,6 @@ public class PetCareServiceImpl implements PetCareService {
 	@Autowired
 	private PetCareDao petCareDao;
 	
-	//가상의 로그인 유저
-	@Override
-	public Member selectMember() {
-		return petCareDao.selectMember(sqlSession);
-	}
-
 	//날짜,시간 지정시 펫시터 리스트형태로 불러오기
 	@Override
 	public ArrayList<PetSitter> selectSitter(AvailableTimes at) {
@@ -69,6 +65,12 @@ public class PetCareServiceImpl implements PetCareService {
 	@Override
 	public Payment payDetail(Payment payment) {
 		return petCareDao.payDetail(sqlSession,payment);
+	}
+
+	//장기돌봄 집리스트 조건부로 불러오기
+	@Override
+	public ArrayList<House> selectHouseList(HouseReservation houseRe) {
+		return petCareDao.selectHouseList(sqlSession,houseRe);
 	}
 
 	

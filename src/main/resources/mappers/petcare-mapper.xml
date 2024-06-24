@@ -63,6 +63,7 @@
 	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
 	</resultMap>
 	
+	<!-- 회원 resultSet -->
 	<resultMap type="Member" id="memberResultSet">
 	    <result column="USER_NO" property="userNo"/>
 	    <result column="USER_ID" property="userId"/>
@@ -79,12 +80,44 @@
 	    <result column="SITTER_STATUS" property="sitterStatus"/>
 	</resultMap>
 	
-	<!-- 가상의 로그인유저 -->
-	<select id="selectMember" resultMap="memberResultSet">
-		SELECT USER_ID
-		FROM MEMBER
-		WHERE USER_NO = 3
-	</select>
+	<!-- 장기돌봄 예약 resultSet -->
+	<resultMap type="HouseReservation" id="houseReservationResultSet">
+	    <result column="RESERVATION_HOUSE_NO" property="reservationHouseNo"/>
+	    <result column="HOUSE_NO" property="houseNo"/>
+	    <result column="START_DATE" property="startDate"/>
+	    <result column="END_DATE" property="endDate"/>
+	    <result column="STAY_NO" property="stayNo"/>
+	    <result column="CAUTION" property="caution"/>
+	    <result column="PET_OWNER_NAME" property="petOwnerName"/>
+	    <result column="PHONE" property="phone"/>
+	    <result column="PET_NAME" property="petName"/>
+	    <result column="PET_TYPE_NO" property="petTypeNo"/>
+	    <result column="ORIGIN_NAME" property="originName"/>
+	    <result column="CHANGE_NAME" property="changeName"/>
+	    <result column="STATUS" property="status"/>
+	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
+	    <result column="USER_ID" property="userId"/>
+	    <result column="TOTAL_AMOUNT" property="totalAmount"/>
+	</resultMap>
+	
+	<!-- 집정보 resultSet -->
+	<resultMap type="House" id="houseResultSet">
+	    <result column="HOUSE_NO" property="houseNo"/>
+	    <result column="OWNER_NAME" property="ownerName"/>
+	    <result column="RESERVATION_DATE" property="reservationDate"/>
+	    <result column="INTRODUCTION_SUMMARY" property="introductionSummary"/>
+	    <result column="HOUSE_ADDRESS" property="houseAddress"/>
+	    <result column="INTRODUCTION_DETAILED" property="introductionDetailed"/>
+	    <result column="NEARBY_HOSPITAL" property="nearbyHospital"/>
+	    <result column="ENVIRONMENT_INFO" property="environmentInfo"/>
+	    <result column="SUPPLY_GUIDE" property="supplyGuide"/>
+	    <result column="CERTIFICATION" property="certification"/>
+	    <result column="ORIGIN_NAME" property="originName"/>
+	    <result column="FILE_PATH" property="filePath"/>
+	</resultMap>
+	
+	
+	
 	
 	<!-- 펫시터 선택화면 -->
 	<select id="selectSitter" parameterType="AvailableTimes" resultMap="petSitterResultSet">
@@ -202,6 +235,15 @@
 		FROM PAYMENT
 		WHERE PAYMENT_ID = #{paymentId}
 	</select>
+	
+	<!-- 장기돌봄 집리스트 조건부로 불러오기 -->
+	<select id="selectHouseList" parameterType="HouseReservation" resultMap="houseResultSet">
+		SELECT H.OWNER_NAME, H.HOUSE_ADDRESS, H.INTRODUCTION_SUMMARY,
+        H.ORIGIN_NAME, H.FILE_PATH, H.START_DATE, H.END_DATE
+		FROM HOUSE H
+		WHERE H.START_DATE NOT BETWEEN TO_DATE('2024-07-01', 'YYYY-MM-DD') AND TO_DATE('2024-07-02', 'YYYY-MM-DD')
+		AND H.END_DATE NOT BETWEEN TO_DATE('2024-07-01', 'YYYY-MM-DD') AND TO_DATE('2024-07-02', 'YYYY-MM-DD')
+	</select> 
 	
 
 </mapper>
