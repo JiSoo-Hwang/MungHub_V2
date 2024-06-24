@@ -19,6 +19,7 @@
 	<typeAlias type="com.kh.pjtMungHub.member.model.vo.Member" alias="Member"/>
 	<typeAlias type="com.kh.pjtMungHub.pet.model.vo.Pet" alias="Pet"/>
 	<typeAlias type="com.kh.pjtMungHub.kindergarten.model.vo.Registration" alias="Registration"/>
+	<typeAlias type="com.kh.pjtMungHub.shop.model.vo.Cart" alias="Cart"/>
 	</typeAliases>
 	
 </configuration>

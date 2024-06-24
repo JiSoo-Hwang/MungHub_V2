@@ -4,120 +4,159 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="shopMapper">
 
-<resultMap type="Product" id="productResultSet">
-		<result column="PRODUCT_NO" property="productNo"/>
-		<result column="PRODUCT_NAME" property="productName"/>
-		<result column="STATUS" property="statue"/>
-		<result column="SALES_COUNT" property="salesConunt"/>
-		<result column="PRICE" property="price"/>
-		<result column="DISCOUNT" property="discount"/>
-		<result column="CATEGORY_NO" property="categoryNo"/>
-		<result column="BRAND_CODE" property="brandCode"/>
-		<result column="ATTACHMENT" property="attachment"/>
+	<resultMap type="Product" id="productResultSet">
+		<result column="PRODUCT_NO" property="productNo" />
+		<result column="PRODUCT_NAME" property="productName" />
+		<result column="STATUS" property="statue" />
+		<result column="SALES_COUNT" property="salesConunt" />
+		<result column="PRICE" property="price" />
+		<result column="DISCOUNT" property="discount" />
+		<result column="CATEGORY_NO" property="categoryNo" />
+		<result column="BRAND_CODE" property="brandCode" />
+		<result column="ATTACHMENT" property="attachment" />
 	</resultMap>
 
-<select id="selectList" resultMap="productResultSet">
-SELECT PRODUCT_NO,
-PRODUCT_NAME,
-SALES_COUNT,
-PRICE,
-DISCOUNT,
-CATEGORY_NO,
-P.BRAND_CODE,
-FILE_PATH||CHANGE_NAME ATTACHMENT
-FROM PRODUCT P 
-INNER JOIN PRODUCT_ATTACHMENT PT USING (PRODUCT_NO)
-WHERE P.STATUS = 'Y'
-AND FILE_LEVEL=0
-</select>
+	<select id="selectList" resultMap="productResultSet">
+		SELECT PRODUCT_NO,
+		PRODUCT_NAME,
+		SALES_COUNT,
+		PRICE,
+		DISCOUNT,
+		CATEGORY_NO,
+		P.BRAND_CODE,
+		FILE_PATH||CHANGE_NAME ATTACHMENT
+		FROM PRODUCT P
+		INNER JOIN
+		PRODUCT_ATTACHMENT PT USING (PRODUCT_NO)
+		WHERE P.STATUS = 'Y'
+		AND
+		FILE_LEVEL=0
+	</select>
 
-<select id="selectDetail" parameterType="_int" resultMap="productResultSet" >
- SELECT PRODUCT_NO,
-PRODUCT_NAME,
-SALES_COUNT,
-PRICE,
-DISCOUNT,
-CATEGORY_NO,
-P.BRAND_CODE,
-FILE_PATH||CHANGE_NAME ATTACHMENT
-FROM PRODUCT P
-INNER JOIN PRODUCT_ATTACHMENT pt USING (PRODUCT_NO)
-WHERE P.STATUS = 'Y'
-AND PRODUCT_NO = #{productNo}
-ORDER BY FILE_LEVEL
-</select>
+	<select id="selectDetail" parameterType="_int"
+		resultMap="productResultSet">
+		SELECT PRODUCT_NO,
+		PRODUCT_NAME,
+		SALES_COUNT,
+		PRICE,
+		DISCOUNT,
+		CATEGORY_NO,
+		P.BRAND_CODE,
+		FILE_PATH||CHANGE_NAME ATTACHMENT
+		FROM PRODUCT
+		P
+		INNER JOIN PRODUCT_ATTACHMENT pt USING (PRODUCT_NO)
+		WHERE P.STATUS =
+		'Y'
+		AND PRODUCT_NO = #{productNo}
+		ORDER BY FILE_LEVEL
+	</select>
 
-<select id="selectCategory" resultType="com.kh.pjtMungHub.shop.model.vo.Category">
-	SELECT CATEGORY_NO categoryNo,
-		   CATEGORY_NAME categoryName
-	FROM PRODUCT_CATEGORY
-</select>
-<select id="selectBrand" resultType="com.kh.pjtMungHub.shop.model.vo.Brand">
-	SELECT BRAND_CODE brandCode,
-		   BRAND_NAME brandeName
-	FROM BRAND
-</select>
+	<select id="selectCategory"
+		resultType="com.kh.pjtMungHub.shop.model.vo.Category">
+		SELECT CATEGORY_NO categoryNo,
+		CATEGORY_NAME categoryName
+		FROM PRODUCT_CATEGORY
+	</select>
+	<select id="selectBrand"
+		resultType="com.kh.pjtMungHub.shop.model.vo.Brand">
+		SELECT BRAND_CODE brandCode,
+		BRAND_NAME brandeName
+		FROM BRAND
+	</select>
 
-<insert id="insertProduct" parameterType="Product">
-INSERT INTO PRODUCT(
-PRODUCT_NO,
-PRODUCT_NAME,
-PRICE,
-DISCOUNT,
-CATEGORY_NO,
-BRAND_CODE)
-VALUES(
-SEQ_PRODUCT.NEXTVAL,
-#{productName},
-#{price},
-#{discount},
-#{categoryNo},
-#{brandCode}
-)
-</insert>
+	<insert id="insertProduct" parameterType="Product">
+		INSERT INTO PRODUCT(
+		PRODUCT_NO,
+		PRODUCT_NAME,
+		PRICE,
+		DISCOUNT,
+		CATEGORY_NO,
+		BRAND_CODE)
+		VALUES(
+		SEQ_PRODUCT.NEXTVAL,
+		#{productName},
+		#{price},
+		#{discount},
+		#{categoryNo},
+		#{brandCode}
+		)
+	</insert>
 
-<insert id="insertAttachment" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
-INSERT INTO PRODUCT_ATTACHMENT(
-FILE_NO,
-FILE_LEVEL,
-ORIGIN_NAME,
-CHANGE_NAME,
-FILE_JUSTIFY,
-FILE_PATH,
-<choose>
-<when test="justifying=='product'">
-PRODUCT_NO
-</when>
-<when test="justifying=='review'">
-REVIEW_NO
-</when>
-<when test="justifying=='brand'">
-BRAND_CODE
-</when>
-</choose>
-)VALUES
-<foreach collection="atList" item="arr" separator=",">
-(SEQ_PFILE.NEXTVAL,
-#{arr.fileLev},
-#{arr.originName},
-#{arr.changeName},
-#{arr.fileJustify},
-#{arr.filePath},
-<choose>
-<when test="justifying=='product'">
-SEQ_PRODUCT.CURRVAL
-</when>
-<when test="justifying=='review'">
-SEQ_REVIEW.CURRVAL
-</when>
-<when test="justifying=='brand'">
-SEQ_BRAND.CURRVAL
-</when>
-</choose>
-)
-</foreach>
-</insert>
+	<insert id="insertAttachment"
+		parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
+		INSERT INTO PRODUCT_ATTACHMENT(
+		FILE_NO,
+		FILE_LEVEL,
+		ORIGIN_NAME,
+		CHANGE_NAME,
+		FILE_JUSTIFY,
+		FILE_PATH,
+		<choose>
+			<when test="justifying=='product'">
+				PRODUCT_NO
+			</when>
+			<when test="justifying=='review'">
+				REVIEW_NO
+			</when>
+			<when test="justifying=='brand'">
+				BRAND_CODE
+			</when>
+		</choose>
+		)VALUES
+		<foreach collection="atList" item="arr" separator=",">
+			(SEQ_PFILE.NEXTVAL,
+			#{arr.fileLev},
+			#{arr.originName},
+			#{arr.changeName},
+			#{arr.fileJustify},
+			#{arr.filePath},
+			<choose>
+				<when test="justifying=='product'">
+					SEQ_PRODUCT.CURRVAL
+				</when>
+				<when test="justifying=='review'">
+					SEQ_REVIEW.CURRVAL
+				</when>
+				<when test="justifying=='brand'">
+					SEQ_BRAND.CURRVAL
+				</when>
+			</choose>
+			)
+		</foreach>
+	</insert>
 
 
+	<select id="selectCartList" resultType="Cart"
+		parameterType="_int">
+		SELECT
+		PRODUCT_NO productNo,
+		P_AMOUNT amount,
+		PRODUCT_NAME
+		productName,
+		PRICE price,
+		DISCOUNT discount,
+		BRAND_NAME brandName,
+		CATEGORY_NAME categoryName
+		FROM SHOPPING_CART
+		LEFT JOIN PRODUCT P
+		USING(PRODUCT_NO)
+		JOIN BRAND USING (BRAND_CODE)
+		JOIN PRODUCT_CATEGORY
+		USING (CATEGORY_NO)
+		WHERE USER_NO = #{userNo}
+	</select>
+
+	<insert id="addCart" parameterType="Cart">
+		MERGE INTO SHOPPING_CART
+		USING DUAL
+		ON(USER_NO=#{userNo} AND PRODUCT_NO = #{productNo})
+		WHEN MATCHED THEN
+		UPDATE SET P_AMOUNT = P_AMOUNT+1
+		WHEN NOT MATCHED THEN
+		INSERT (USER_NO,PRODUCT_NO,P_AMOUNT)
+		VALUES(#{userNo},#{productNo},#{amount})
+
+	</insert>
 
 </mapper>
