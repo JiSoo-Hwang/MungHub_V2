@@ -208,7 +208,7 @@ h2 {
 			console.log(userNo);
 		
 	$.ajax({
-		url : "addCart.sp",
+		url : "/pjtMungHub/addCart.sp",
 		type : "post",
 		 data: {
 				productNo : "${p.productNo}"
