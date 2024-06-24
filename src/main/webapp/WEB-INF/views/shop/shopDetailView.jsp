@@ -202,7 +202,7 @@ h2 {
 		url: "addCart.sp",
 		data: {	productNo : ${p.productNo}
 				,amount : $("#inputQuantity").val()
-				,userNo : ${loginUser.userNo}
+				,userNo : "${loginUser.userNo}"
 		},
 		success: function(result){
 			console.log(result);
