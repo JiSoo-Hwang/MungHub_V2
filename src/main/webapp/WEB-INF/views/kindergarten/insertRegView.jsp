@@ -42,10 +42,10 @@ li {
 							<div class="card-img-overlay">
 
 								<p class="card-text">강아지 사진을 올려주세요!</p>
-								<input type="file" name="upFile" id="upFile"></input> <label
+								<input type="file" name="upFile" id="upFile" onchange="loadImg(this,1);"></input> <label
 									for="upFile"><img
 									src="/pjtMungHub/resources/uploadFiles/kindergarten/css/dogPhotoIcon.png"
-									alt=""></label>
+									alt="" style="width: 500px"></label>
 
 							</div>
 						</div>
@@ -135,11 +135,28 @@ li {
 					</table>
 				</li>
 			</ul>
-
-
-
-
 		</form>
 	</div>
+	<script>
+function loadImg(inputFile,num) {
+	if(inputFile.files.length==1){
+		var reader = new FileReader();
+		reader.readAsDataURL(inputFile.files[0]);
+		reader.onload = function (e) {
+			switch (num) {
+			case 1:
+				$("label>img").attr("src",e.target.result);
+				break;
+			}
+		}
+	}else{
+		switch (num) {
+		case 1:
+			$("label>img").attr("src","/pjtMungHub/resources/uploadFiles/kindergarten/css/dogPhotoIcon.png");
+			break;
+		}
+	}
+}
+	</script>
 </body>
 </html>

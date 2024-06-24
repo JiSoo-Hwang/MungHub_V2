@@ -185,12 +185,12 @@ clear: both;
     <nav id="header">
         <nav id="header_1">
             <ul>
-                <li><a href="#home">Kindergarten</a></li>
-                <li><a href="#news">Petcare</a></li>
-                <li><a href="#contact">Wedding</a></li>
-                <li><a href="#contact">Board</a></li>
-                <li><a href="/pjtMungHub/list.sp">Shop</a></li>
-                <li><a href="#contact">Realestate</a></li>
+                <li class="menu"><a href="#home">Kindergarten</a></li>
+                <li class="menu"><a href="#news">Petcare</a></li>
+                <li class="menu"><a href="#contact">Wedding</a></li>
+                <li class="menu"><a href="#contact">Board</a></li>
+                <li class="menu"><a href="/pjtMungHub/list.sp">Shop</a></li>
+                <li class="menu"><a href="#contact">Realestate</a></li>
 				<li style="float: right">
 					<c:choose>
 						<c:when test="${empty loginUser}">
@@ -235,9 +235,12 @@ clear: both;
     </nav>
     <script>
         $(function () {
-            $("#header_1").hover(function () {
+            $(".menu").hover(function () {
                 $("#header_2").show();
             });
+            $("#header_2").mouseleave(function () {
+            	$("#header_2").hide();
+			});
         });
     </script>
     

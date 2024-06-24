@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Registration;
-import com.kh.pjtMungHub.pet.model.vo.Pet;
+import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,12 +26,23 @@ public class LoggerTest {
 	@Test
 	public void test1() {
 //		int ownerNo = 1;
-//		int userNo = 1;
-		int reservNo = 9;
-		int result = sqlSession.delete("kindergartenMapper.deleteRegistration",reservNo);
-		log.debug("삭제 되었는가? :{}",result);
+		int userNo = 1;
+		 
+		Registration registration = Registration.builder()
+												.petIntro("귀여운 댕댕이")
+												.petNote("귀여워쥬금")
+												.originName("D_6.jpg")
+												.changeName("2024062116375136931.jpg")
+												.reservNo(2)
+												.build();
+		int updateResult = sqlSession.update("kindergartenMapper.updateRegistration",registration);
+		log.debug("수정 되었는가? :{}",updateResult);
 		
-//		ArrayList<Registration> regList = (ArrayList)sqlSession.selectList("kindergartenMapper.selectRegList",userNo);
+//		int reservNo = 9;						
+//		int result = sqlSession.delete("kindergartenMapper.deleteRegistration",reservNo);
+//		log.debug("삭제 되었는가? :{}",result);
+		
+//		ArrayList<Registration> regList = (ArrayList)sqlSession.selectList("kindergartenMapper.selectRegList2",userNo);
 //		for (Registration reg : regList) {
 //			log.debug("예약 목록 : {}",reg);
 //		}
