@@ -40,7 +40,7 @@ position : relative;
 <h1>애견용품</h1>
 </div>
 <c:if test="${!empty loginUser }">
-<a class="btn btn-outline-dark" href="cart.sp/${loginUser.userNo }"><i class="bi bi-cart3"></i> 장바구니</a>
+<a class="btn btn-outline-dark" href="cart/${loginUser.userNo }"><i class="bi bi-cart3"></i> 장바구니</a>
 <a class="btn btn-primary" href="insert.sp">상품등록</a>
 </c:if>
 <div class="row row-cols-2 align-items-center">
