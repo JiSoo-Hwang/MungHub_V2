@@ -1,5 +1,7 @@
 package com.kh.pjtMungHub.board.model.service;
 
-public class BoardServiceImpl {
+public class BoardServiceImpl implements BoardService{
+	
+	
 
 }
