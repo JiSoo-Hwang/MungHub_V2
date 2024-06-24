@@ -4,18 +4,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>${pet.petName }의${registration.visitDate}날등록상담</title>
+<title>${pet.petName }의${registration.visitDate}날 등록상담 수정 페이지</title>
 <style>
-.form_area {
-	margin: 100px;
-}
-
 #reg_form {
-	margin: 100px;
-}
-
-input {
-	border: none;
+	margin: 50px;
 }
 
 input[type=file] {
@@ -26,7 +18,6 @@ textarea {
 	width: 70%;
 	resize: none;
 }
-
 ul {
 	list-style: none;
 }
@@ -39,118 +30,133 @@ li {
 <body>
 	<%@ include file="/WEB-INF/views/common/header.jsp"%>
 	<div class="form_area">
+
 		<form method="post" action="updateReg.do" enctype="multipart/form-data">
-			<input type="hidden" name="kindNo" value="${kindergarten.kindNo}">
+			<input type="hidden" name="kindNo" value="${registration.kindNo}">
+			<input type="hidden" name="reservNo" value="${registration.reservNo }">
 			<input type="hidden" name="userNo" value="${loginUser.userNo }">
 			<ul>
 				<li>
 					<div class="container mt-3" id="reg_upFile">
 						<div class="card img-fluid" style="width: 500px">
-							<img class="card-img-top"
-								src="" alt=""
-								style="width: 100%">
+							<img class="card-img-top" src="" alt="" style="width: 100%">
 							<div class="card-img-overlay">
-							<p class="card-text">강아지 사진을 올려주세요!</p>
-								<input type="file" name="reupFile" id="upFile"></input> <label
+
+								<p class="card-text">강아지 사진을 올려주세요!</p>
+								<input type="file" name="reupFile" id="upFile" onchange="loadImg(this,1);"></input> <label
 									for="upFile"><img
 									src="/pjtMungHub/${registration.changeName}"
 									alt="" style="width: 500px"></label>
+
 							</div>
 						</div>
 					</div>
 				</li>
 				<li>
-					<div class="input_area">
-						<table class="table table-hover" id="reg_form">
-							<thead>
-								<tr>
-									<th>이름</th>
-									<td><input type="text" value="${pet.petName }" readonly>
-										<input type="hidden" name="petNo" value="${pet.petNo}"></td>
+					<table class="table table-hover" id="reg_form">
+						<thead>
+							<tr>
+								<th>이름</th>
+								<td><input type="text" value="${pet.petName }" readonly>
+									<input type="hidden" name="petNo" value="${pet.petNo}"></td>
 
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<th>견종</th>
-									<td><input type="text" name="breed" value="${pet.breed }"
-										readonly></td>
-								</tr>
-								<tr>
-									<th>나이</th>
-									<td><input type="text" name="petAge"
-										value="${pet.petAge }" readonly></td>
-								</tr>
-								<tr>
-									<th>성별</th>
-									<td><c:choose>
-											<c:when test="${pet.petGender eq 'F' }">
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th>견종</th>
+								<td><input type="text" name="breed" value="${pet.breed }"
+									readonly></td>
+							</tr>
+							<tr>
+								<th>나이</th>
+								<td><input type="text" name="petAge" value="${pet.petAge }"
+									readonly></td>
+							</tr>
+							<tr>
+								<th>성별</th>
+								<td><c:choose>
+										<c:when test="${pet.petGender eq 'F' }">
                                     공주님
                                 </c:when>
-											<c:otherwise>
+										<c:otherwise>
                                     왕자님
                                 </c:otherwise>
-										</c:choose></td>
-								</tr>
-								<tr>
-									<th>몸무게</th>
-									<td>${pet.weight }</td>
-								</tr>
-								<tr>
-									<th>방문희망일</th>
-									<td><input type="date" name="visitDate"
-										value="${registration.visitDate }"></td>
-								</tr>
-								<tr>
-									<th>소개</th>
-									<td>${registration.petIntro }</td>
-								</tr>
-								<tr>
-									<th>특이사항</th>
-									<td>${registration.petNote }</td>
-								</tr>
-								<c:choose>
-									<c:when test="${registration.approval eq 'N' }">
-										<tr>
-											<th>승인여부</th>
-											<td>승인대기중</td>
-										</tr>
-									</c:when>
-									<c:otherwise>
-										<tr>
-											<th>승인여부</th>
-											<td>승인완료! 상담일날 뵈어요^^</td>
-										</tr>
-									</c:otherwise>
-								</c:choose>
-								<tr>
-									<td></td>
-									<td style="text-align: center;"><br> <br> <br>
-										<br> <br> <br>
-										<a type="button" class="btn btn-warning" href="regList.do">목록으로</a><c:choose>
-											<c:when test="${registration.approval eq 'N' }">
-												<button type="button" class="btn btn-outline-info">신청수정</button>
-											</c:when>
-										</c:choose>
-										<button type="button" class="btn btn-secondary" id="cancelBtn">신청서철회</button>
-										<!-- 					<button type="submit"  id="submit-btn">신청하기</button>-->
-									</td>
-								</tr>
-							</tbody>
+									</c:choose></td>
+							</tr>
+							<tr>
+								<th>몸무게</th>
+								<td>${pet.weight }</td>
+							</tr>
+							<tr>
+								<th>필수접종여부</th>
+								<td>
+									<ul style="list-style-type: none">
+										<li><input class="form-check-input" type="checkbox"
+											id="vac1" value="접종1"> <label
+											class="form-check-label" for="vac1">접종1</label></li>
+										<li><input class="form-check-input" type="checkbox"
+											id="vac1" value="접종2"> <label
+											class="form-check-label" for="vac1">접종2</label></li>
+										<li><input class="form-check-input" type="checkbox"
+											id="vac1" value="접종3"> <label
+											class="form-check-label" for="vac1">접종3</label></li>
+										<li><input class="form-check-input" type="checkbox"
+											id="vac1" value="접종4"> <label
+											class="form-check-label" for="vac1">접종4</label></li>
+										<li><input class="form-check-input" type="checkbox"
+											id="vac1" value="접종5"> <label
+											class="form-check-label" for="vac1">접종5</label></li>
 
-						</table>
-					</div>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<th>방문희망일</th>
+								<td><input type="date" name="visitDate" value="${registration.visitDate}"></td>
+							</tr>
+							<tr>
+								<th>소개</th>
+								<td><textarea rows="4" cols="50" name="petIntro">${registration.petIntro }</textarea></td>
+							</tr>
+							<tr>
+								<th>특이사항</th>
+								<td><textarea rows="4" cols="50" name="petNote">${registration.petNote }</textarea></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td style="text-align: center;">
+									<a href="regList.do?userNo=${loginUser.userNo }" class="btn btn-outline-primary">목록으로</a>
+									<button type="submit" class="btn btn-outline-success">수정하기</button>
+								</td>
+							</tr>
+						</tbody>
 
+					</table>
 				</li>
-
 			</ul>
-
-
-
 		</form>
 	</div>
 	<script>
-	
+function loadImg(inputFile,num) {
+	if(inputFile.files.length==1){
+		var reader = new FileReader();
+		reader.readAsDataURL(inputFile.files[0]);
+		reader.onload = function (e) {
+			switch (num) {
+			case 1:
+				$("label>img").attr("src",e.target.result);
+				break;
+			}
+		}
+	}else{
+		switch (num) {
+		case 1:
+			$("label>img").attr("src","/pjtMungHub/resources/uploadFiles/kindergarten/css/dogPhotoIcon.png");
+			break;
+		}
+	}
+}
 	</script>
 </body>
 </html>

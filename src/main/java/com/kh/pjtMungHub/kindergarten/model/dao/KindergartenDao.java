@@ -65,6 +65,16 @@ public class KindergartenDao {
 		return sqlsession.update("kindergartenMapper.updateRegistration",reg);
 	}
 
+	//상담신청승인 메서드
+	public int approveReg(SqlSessionTemplate sqlsession, int reservNo) {
+		return sqlsession.update("kindergartenMapper.approveReg",reservNo);
+	}
+	
+	//상담신청거절 메서드
+	public int rejectReg(SqlSessionTemplate sqlsession, Registration r) {
+		return sqlsession.update("kindergartenMapper.rejectReg",r);
+	}
+
 
 	
 	

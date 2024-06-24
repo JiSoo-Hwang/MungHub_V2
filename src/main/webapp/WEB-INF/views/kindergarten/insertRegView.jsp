@@ -109,7 +109,6 @@ li {
 
 									</ul>
 								</td>
-								<!-- 						<td><input type="file" name="" id=""></td> -->
 							</tr>
 							<tr>
 								<th>방문희망일</th>
@@ -126,7 +125,7 @@ li {
 							<tr>
 								<td></td>
 								<td style="text-align: center;">
-									<button type="button">목록으로</button>
+									<a href="regList.do?userNo=${loginUser.userNo }" class="btn btn-outline-primary">목록으로</a>
 									<button type="submit">신청하기</button>
 								</td>
 							</tr>

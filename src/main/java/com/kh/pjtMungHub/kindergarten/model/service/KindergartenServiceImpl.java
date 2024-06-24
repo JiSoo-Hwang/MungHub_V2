@@ -81,6 +81,18 @@ public class KindergartenServiceImpl implements KindergartenService{
 	public int updateReg(Registration reg) {
 		return dao.updateReg(sqlsession,reg);
 	}
+
+	//등록상담신청승인 메서드
+	@Override
+	public int approveReg(int reservNo) {
+		return dao.approveReg(sqlsession,reservNo);
+	}
+
+	//등록상담거절 메서드
+	@Override
+	public int rejectReg(Registration r) {
+		return dao.rejectReg(sqlsession,r);
+	}
 	
 
 

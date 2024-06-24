@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
+import com.kh.pjtMungHub.petcare.model.vo.Reservation;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,17 +27,23 @@ public class LoggerTest {
 	@Test
 	public void test1() {
 //		int ownerNo = 1;
-		int userNo = 1;
-		 
+//		int userNo = 1;
 		Registration registration = Registration.builder()
-												.petIntro("귀여운 댕댕이")
-												.petNote("귀여워쥬금")
-												.originName("D_6.jpg")
-												.changeName("2024062116375136931.jpg")
-												.reservNo(2)
+												.reservNo(8)
+												.reason("제가 감당하기엔 너무 버거운 멍멍이네요,,,")
 												.build();
-		int updateResult = sqlSession.update("kindergartenMapper.updateRegistration",registration);
-		log.debug("수정 되었는가? :{}",updateResult);
+		
+		int result = sqlSession.update("kindergartenMapper.rejectReg",registration);
+		log.debug("수정 되었는가? : {}",result);
+//		Registration registration = Registration.builder()
+//												.petIntro("귀여운 댕댕이")
+//												.petNote("귀여워쥬금")
+//												.originName("D_6.jpg")
+//												.changeName("2024062116375136931.jpg")
+//												.reservNo(2)
+//												.build();
+//		int updateResult = sqlSession.update("kindergartenMapper.updateRegistration",registration);
+//		log.debug("수정 되었는가? :{}",updateResult);
 		
 //		int reservNo = 9;						
 //		int result = sqlSession.delete("kindergartenMapper.deleteRegistration",reservNo);

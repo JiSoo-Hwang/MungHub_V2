@@ -22,4 +22,8 @@ public interface KindergartenService {
 	public int deleteReg(int reservNo);
 	//상담신청수정 메서드
 	public int updateReg(Registration reg);
+	//상담신청승인 메서드
+	public int approveReg(int reservNo);
+	//상담신청 거절 메서드
+	public int rejectReg(Registration r);
 }

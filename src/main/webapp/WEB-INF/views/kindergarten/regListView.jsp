@@ -49,19 +49,32 @@ td {
 							<tr class="table-success">
 								<td>${r.visitDate }</td>
 								<td class="kindName">${r.kindName }</td>
-								<td style="color: blue;">승인</td>
+								<td style="color: blue;">승인&ensp; 
+								<a class="btn btn-primary" href="regDetail.do?reservNo=${r.reservNo}">상세보기</a>
+								</td>
 							</tr>
 						</c:when>
-						<c:otherwise>
+						<c:when test="${r.approval == 'N' }">
 							<!-- 대기중인 예약은 회색 행으로 출력 -->
-							<tr class="table-secondary">
+							<tr class="table-warning">
 								<td>${r.visitDate }</td>
 								<td>${r.kindName }</td>
-								<td>대기중&ensp; <a href="updateReg.do?reservNo=${r.reservNo }" class="btn btn-primary">신청수정</a>&ensp;
-									<button class="btn btn-secondary cancelBtn">예약철회</button>
+								<td>대기중&ensp; 
+									<a class="btn btn-primary" href="regDetail.do?reservNo=${r.reservNo}">상세보기</a>
+								&ensp;<a href="updateReg.do?reservNo=${r.reservNo }" class="btn btn-primary">신청수정</a>&ensp;
+								&ensp;<button class="btn btn-secondary cancelBtn">예약철회</button>
 									<input type="hidden" value="${r.reservNo }">
 								</td>
 							</tr>
+						</c:when>
+						<c:otherwise>
+						<tr class="table-secondary"> 
+						<td>${r.visitDate }</td>
+						<td>${r.kindName }</td>
+						<td>상담거절&ensp;
+						<a class="btn btn-secondary" href="regDetail.do?reservNo=${r.reservNo}">상세보기</a>
+						 </td>
+						</tr>
 						</c:otherwise>
 					</c:choose>
 				</c:forEach>

@@ -26,4 +26,5 @@ private String petNote;//	PET_NOTE
 private String originName;	//	ORIGIN_NAME	VARCHAR2(100 BYTE)
 private String changeName;	//	CHANGE_NAME	VARCHAR2(100 BYTE)
 private String approval;//	APPROVAL
+private String reason;// 거절시 거절사유
 }
