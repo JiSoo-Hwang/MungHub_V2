@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
+import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
@@ -41,6 +42,17 @@ public class ShopDao {
 
 	public int insertAttachment(SqlSessionTemplate sqlSession, ParameterVo fileParameter) { //product
 		return sqlSession.insert("shopMapper.insertAttachment",fileParameter);
+	}
+
+	public int addCart(SqlSessionTemplate sqlSession, Cart c) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.addCart",c);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public ArrayList<Cart> selectCartList(SqlSessionTemplate sqlSession, int userNo) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectCartList",userNo);
 	}
 
 }

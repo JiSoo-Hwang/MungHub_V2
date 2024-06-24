@@ -28,6 +28,7 @@ position : relative;
  filter: brightness(0.7);
 }
 
+
 </style>
 </head>
 <body>
@@ -38,10 +39,13 @@ position : relative;
 <div class="jumbotron">
 <h1>애견용품</h1>
 </div>
+<c:if test="${!empty loginUser }">
+<a class="btn btn-outline-dark" href="cart.sp/${loginUser.userNo }"><i class="bi bi-cart3"></i> 장바구니</a>
 <a class="btn btn-primary" href="insert.sp">상품등록</a>
+</c:if>
 <div class="row row-cols-2 align-items-center">
 <c:forEach items="${pList }" var="p">
-<div class="col-sm my-3 ">
+<div class="col-sm-3 my-3 ">
 	<div class="card" onclick="location.href='detail.sp/${p.productNo}'">
 	<div>
 	<img class="card-img-top" src="${p.attachment }">
