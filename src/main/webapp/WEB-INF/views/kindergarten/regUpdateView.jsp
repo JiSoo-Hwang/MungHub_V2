@@ -89,29 +89,6 @@ li {
 								<td>${pet.weight }</td>
 							</tr>
 							<tr>
-								<th>필수접종여부</th>
-								<td>
-									<ul style="list-style-type: none">
-										<li><input class="form-check-input" type="checkbox"
-											id="vac1" value="접종1"> <label
-											class="form-check-label" for="vac1">접종1</label></li>
-										<li><input class="form-check-input" type="checkbox"
-											id="vac1" value="접종2"> <label
-											class="form-check-label" for="vac1">접종2</label></li>
-										<li><input class="form-check-input" type="checkbox"
-											id="vac1" value="접종3"> <label
-											class="form-check-label" for="vac1">접종3</label></li>
-										<li><input class="form-check-input" type="checkbox"
-											id="vac1" value="접종4"> <label
-											class="form-check-label" for="vac1">접종4</label></li>
-										<li><input class="form-check-input" type="checkbox"
-											id="vac1" value="접종5"> <label
-											class="form-check-label" for="vac1">접종5</label></li>
-
-									</ul>
-								</td>
-							</tr>
-							<tr>
 								<th>방문희망일</th>
 								<td><input type="date" name="visitDate" value="${registration.visitDate}"></td>
 							</tr>

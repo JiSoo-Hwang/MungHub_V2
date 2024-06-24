@@ -85,7 +85,7 @@ td {
 		$(function() {
 			$(".cancelBtn").click(function() {
 				if (confirm("정말 상담을 취소하시겠습니까?")) {
-					var reservNo = $(this).siblings(':eq(1)').val();
+					var reservNo = $(this).siblings(':eq(2)').val();
 					location.href="deleteReg.do?reservNo="+reservNo;
 				} else {
 					return false;

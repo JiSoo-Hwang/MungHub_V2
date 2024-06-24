@@ -183,4 +183,15 @@
 	WHERE RESERV_NO = #{reservNo}
 	</update>
 
+	<insert id="insertVac" parameterType="Vaccine">
+	INSERT INTO	VACCINE(FILE_NO
+						,PET_NO
+						,ORIGIN_NAME
+						,CHANGE_NAME)
+	VALUES (SEQ_VAC.NEXTVAL
+			,#{petNo}
+			,#{originName}
+			,#{changeName}
+			)
+	</insert>
 </mapper>

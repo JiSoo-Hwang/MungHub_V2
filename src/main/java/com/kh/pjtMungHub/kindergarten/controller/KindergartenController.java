@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
@@ -23,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.pjtMungHub.kindergarten.model.service.KindergartenService;
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
+import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
@@ -72,15 +72,25 @@ public class KindergartenController {
 	}
 
 	@PostMapping("reg.do")
-	public String insertReg(Registration reg, MultipartFile upFile, Model model, HttpSession session) {
+	public String insertReg(Registration reg, MultipartFile upFile,ArrayList<MultipartFile>vacCert, Model model, HttpSession session) {
+
 		if (!upFile.getOriginalFilename().equals("")) {
 			String changeName = saveFile(upFile, session);
 			reg.setOriginName(upFile.getOriginalFilename());
 			reg.setChangeName("resources/uploadFiles/kindergarten/" + changeName);
 		}
-		int result = service.insertReg(reg);
+		int result1 = service.insertReg(reg);
 		reg.setApproval("N");
-		if (result > 0) {
+		ArrayList<Vaccine> vacList = new ArrayList<Vaccine>();
+		for(MultipartFile m:vacCert) {
+			vacList.add(Vaccine.builder()
+					.petNo(reg.getPetNo())
+					.originName(m.getOriginalFilename())
+					.changeName("resources/uploadFiles/kindergarten/"+saveFile(m, session))
+					.build());
+		}
+		int result2 = service.insertVac(vacList);
+		if (result1*result2 > 0) {
 			Pet pet = service.selectPet(reg.getUserNo());
 			Kindergarten kindergarten = service.selectKindergarten(reg.getKindNo());
 			model.addAttribute("pet", pet);

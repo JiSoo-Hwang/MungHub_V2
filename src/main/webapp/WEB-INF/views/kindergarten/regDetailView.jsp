@@ -140,7 +140,7 @@ li {
 										</c:choose>
 										<c:choose>
 										<c:when test="${registration.approval eq 'N' && loginUser.userNo eq registration.userNo }">
-										<button type="button" class="btn btn-outline-info">신청수정</button>
+										<a type="button" class="btn btn-outline-info" href="updateReg.do?reservNo=${registration.reservNo }">신청수정</a>
 										<button type="button" class="btn btn-secondary" id="cancelBtn">신청서철회</button>
 										</c:when>
 										<c:when test="${loginUser.userNo eq kindergarten.directorId && registration.approval eq 'N' }">
@@ -205,9 +205,15 @@ li {
 			$("body").append(obj);
 			obj.submit();
 		});
-/* 		$("#rejectBtn").click(function() {
-			var flag = confirm("")
-		}); */
+		
+		$("#cancelBtn").click(function() {
+			if (confirm("정말 상담을 취소하시겠습니까?")) {
+				var reservNo = ${registration.reservNo};
+				location.href="deleteReg.do?reservNo="+reservNo;
+			} else {
+				return false;
+			}
+		});
 	});
 	</script>
 </body>
