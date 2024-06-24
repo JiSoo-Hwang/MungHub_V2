@@ -57,9 +57,8 @@ td {
 							<tr class="table-secondary">
 								<td>${r.visitDate }</td>
 								<td>${r.kindName }</td>
-								<td>대기중&ensp; <a href="updateReg.do"
-									class="btn btn-primary">신청수정</a>&ensp;
-									<button class="btn btn-secondary" id="cancelBtn">예약철회</button>
+								<td>대기중&ensp; <a href="updateReg.do?reservNo=${r.reservNo }" class="btn btn-primary">신청수정</a>&ensp;
+									<button class="btn btn-secondary cancelBtn">예약철회</button>
 									<input type="hidden" value="${r.reservNo }">
 								</td>
 							</tr>
@@ -71,7 +70,7 @@ td {
 	</div>
 	<script>
 		$(function() {
-			$("#cancelBtn").click(function() {
+			$(".cancelBtn").click(function() {
 				if (confirm("정말 상담을 취소하시겠습니까?")) {
 					var reservNo = $(this).siblings(':eq(1)').val();
 					location.href="deleteReg.do?reservNo="+reservNo;
