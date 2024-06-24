@@ -14,8 +14,10 @@ public interface BoardService {
 		//게시글 목록조회
 		ArrayList<Board> selectList(PageInfo pi);
 
+		//조회수 증가
 		int increaseCount(int boardNo);
 
+		//게시물 상세보기
 		Board selectBoard(int boardNo);
 
 }

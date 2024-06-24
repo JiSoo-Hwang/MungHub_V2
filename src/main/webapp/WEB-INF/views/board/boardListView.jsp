@@ -134,9 +134,9 @@
                     	</c:otherwise>
                     </c:choose>
                     
-	                    <c:forEach begin="${pi.startPage }" end="${pi.endPage }" var="p">
-		                    <li class="page-item"><a class="page-link" href="list.bo?currentPage=${p}">${p}</a></li>
-	                    </c:forEach>
+                   	<c:forEach begin="${pi.startPage }" end="${pi.endPage }" var="p">
+	                    <li class="page-item"><a class="page-link" href="list.bo?currentPage=${p}">${p}</a></li>
+                    </c:forEach>
 	                    
                      <c:choose>
                     	<c:when test="${pi.currentPage eq pi.maxPage }">
