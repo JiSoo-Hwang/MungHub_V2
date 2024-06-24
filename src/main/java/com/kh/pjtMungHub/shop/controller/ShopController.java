@@ -13,12 +13,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.shop.model.service.ShopService;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
+import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
@@ -121,6 +125,29 @@ public class ShopController {
 		
 	}
 	
+	@GetMapping("cart.sp/{userNo}")
+	public ModelAndView cartList(ModelAndView mv,
+			@PathVariable int userNo) {
+		
+		ArrayList<Cart> cList = shopService.selectCartList(userNo);
+	
+		mv.addObject("cList",cList);
+		mv.setViewName("shop/shoppingCart");
+		return mv;
+	}
+	
+	@ResponseBody
+	@GetMapping("addCart.sp")
+	public int addCart(Cart c) {
+		
+		System.out.println(c);
+		
+		int result=shopService.addCart(c);
+		
+		return result;
+	}
+	
+	
 	public String saveFile(MultipartFile upfile
 						  ,HttpSession session
 						  ,String type) {
@@ -141,6 +168,8 @@ public class ShopController {
 		return changeName;
 		
 	}
+	
+	
 	
 	
 }
