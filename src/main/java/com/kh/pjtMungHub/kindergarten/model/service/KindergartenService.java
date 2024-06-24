@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
+import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 
@@ -22,4 +23,10 @@ public interface KindergartenService {
 	public int deleteReg(int reservNo);
 	//상담신청수정 메서드
 	public int updateReg(Registration reg);
+	//상담신청승인 메서드
+	public int approveReg(int reservNo);
+	//상담신청 거절 메서드
+	public int rejectReg(Registration r);
+	//백신 정보 입력 메서드
+	public int insertVac(ArrayList<Vaccine> vacList);
 }

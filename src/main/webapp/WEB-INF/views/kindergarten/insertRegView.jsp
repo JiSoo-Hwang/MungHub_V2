@@ -10,7 +10,7 @@
 	margin: 50px;
 }
 
-input[type=file] {
+#upFile {
 	display: none;
 }
 
@@ -42,7 +42,7 @@ li {
 							<div class="card-img-overlay">
 
 								<p class="card-text">강아지 사진을 올려주세요!</p>
-								<input type="file" name="upFile" id="upFile" onchange="loadImg(this,1);"></input> <label
+								<input type="file" name="upFile" id="upFile" onchange="loadImg(this,1);" required></input> <label
 									for="upFile"><img
 									src="/pjtMungHub/resources/uploadFiles/kindergarten/css/dogPhotoIcon.png"
 									alt="" style="width: 500px"></label>
@@ -92,28 +92,34 @@ li {
 								<td>
 									<ul style="list-style-type: none">
 										<li><input class="form-check-input" type="checkbox"
-											id="vac1" value="접종1"> <label
-											class="form-check-label" for="vac1">접종1</label></li>
+											id="vac1"> <label
+											class="form-check-label" for="vac1">종합백신</label></li>
 										<li><input class="form-check-input" type="checkbox"
-											id="vac1" value="접종2"> <label
-											class="form-check-label" for="vac1">접종2</label></li>
+											id="vac2"> <label
+											class="form-check-label" for="vac2">코로나장염</label></li>
 										<li><input class="form-check-input" type="checkbox"
-											id="vac1" value="접종3"> <label
-											class="form-check-label" for="vac1">접종3</label></li>
+											id="vac3"> <label
+											class="form-check-label" for="vac3">켄넬코프</label></li>
 										<li><input class="form-check-input" type="checkbox"
-											id="vac1" value="접종4"> <label
-											class="form-check-label" for="vac1">접종4</label></li>
+											id="vac4"> <label
+											class="form-check-label" for="vac4">광견병</label></li>
 										<li><input class="form-check-input" type="checkbox"
-											id="vac1" value="접종5"> <label
-											class="form-check-label" for="vac1">접종5</label></li>
+											id="vac5"> <label
+											class="form-check-label" for="vac5">인플루엔자</label>
+											</li>
 
 									</ul>
 								</td>
-								<!-- 						<td><input type="file" name="" id=""></td> -->
+							</tr>
+							<tr>
+							<th>접종 증명서 첨부</th>
+							<td> 
+							<input type="file" multiple name="vacCert" required>
+							</td>
 							</tr>
 							<tr>
 								<th>방문희망일</th>
-								<td><input type="date" name="visitDate"></td>
+								<td><input type="date" name="visitDate" required></td>
 							</tr>
 							<tr>
 								<th>소개</th>
@@ -126,8 +132,8 @@ li {
 							<tr>
 								<td></td>
 								<td style="text-align: center;">
-									<button type="button">목록으로</button>
-									<button type="submit">신청하기</button>
+									<a href="regList.do?userNo=${loginUser.userNo }" class="btn btn-outline-primary">목록으로</a>
+									<button type="submit" class="btn btn-outline-success" disabled>신청하기</button>
 								</td>
 							</tr>
 						</tbody>
@@ -157,6 +163,14 @@ function loadImg(inputFile,num) {
 		}
 	}
 }
+$(function () {
+	$("input[class='form-check-input']").on('change', function() {
+	var checkNum = $("input[class='form-check-input']:checked").length;
+		if(checkNum==5){
+			$("button[type='submit']").prop("disabled",false);
+		}
+	});
+});
 	</script>
 </body>
 </html>

@@ -39,7 +39,6 @@ li {
 <body>
 	<%@ include file="/WEB-INF/views/common/header.jsp"%>
 	<div class="form_area">
-		<form method="post" action="reg.do">
 			<input type="hidden" name="kindNo" value="${kindergarten.kindNo}">
 			<input type="hidden" name="userNo" value="${loginUser.userNo }">
 			<ul>
@@ -110,6 +109,16 @@ li {
 											<td>승인대기중</td>
 										</tr>
 									</c:when>
+									<c:when test="${registration.approval eq 'R' }">
+										<tr>
+											<th>승인여부</th>
+											<td>상담이 거절되었습니다...</td>
+										</tr>
+										<tr> 
+											<th>거절 사유</th>
+											<td>${registration.reason}</td>
+										</tr>
+									</c:when>
 									<c:otherwise>
 										<tr>
 											<th>승인여부</th>
@@ -121,13 +130,56 @@ li {
 									<td></td>
 									<td style="text-align: center;"><br> <br> <br>
 										<br> <br> <br>
-										<a type="button" class="btn btn-warning" href="regList.do">목록으로</a><c:choose>
-											<c:when test="${registration.approval eq 'N' }">
-												<button type="button" class="btn btn-outline-info">신청수정</button>
-											</c:when>
+										<c:choose>
+										<c:when test="${loginUser.userGrade ne 2 }">
+										<a type="button" class="btn btn-warning" href="regList.do">목록으로</a>
+										</c:when>
+										<c:when test="${loginUser.userGrade eq 2 }">
+										<a type="button" class="btn btn-warning" href="regList2.do">목록으로</a>
+										</c:when>
 										</c:choose>
+										<c:choose>
+										<c:when test="${registration.approval eq 'N' && loginUser.userNo eq registration.userNo }">
+										<a type="button" class="btn btn-outline-info" href="updateReg.do?reservNo=${registration.reservNo }">신청수정</a>
 										<button type="button" class="btn btn-secondary" id="cancelBtn">신청서철회</button>
-										<!-- 					<button type="submit"  id="submit-btn">신청하기</button>-->
+										</c:when>
+										<c:when test="${loginUser.userNo eq kindergarten.directorId && registration.approval eq 'N' }">
+										<button class="btn btn-primary" id="approveBtn">상담 승인</button>
+  
+  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">
+    상담 거절
+  </button>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">상담 거절을 선택하셨습니다...</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+		
+      <!-- Modal body -->
+        <form action="reject.do" method="post">
+      <div class="modal-body">
+      	<input type="hidden" name="reservNo" value="${registration.reservNo}">
+        <textarea rows="4" cols="50" name="reason" placeholder="견주님 마음 상하지 않게 거절 이유를 친절하게 적어주세요."></textarea>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-danger">상담 거절하기</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">창 닫기</button>
+      </div>
+        </form>
+
+    </div>
+  </div>
+</div>
+										</c:when>
+										</c:choose>
 									</td>
 								</tr>
 							</tbody>
@@ -141,10 +193,28 @@ li {
 
 
 
-		</form>
 	</div>
 	<script>
-	
+	$(function () {
+		$("#approveBtn").click(function() {
+			var formObj = $("<form>");
+			var inputObj = $("<input>");
+			formObj.prop("action","approve.do").prop("method","post");
+			inputObj.prop("type","hidden").prop("name","reservNo").prop("value","${registration.reservNo}");
+			var obj = formObj.append(inputObj);
+			$("body").append(obj);
+			obj.submit();
+		});
+		
+		$("#cancelBtn").click(function() {
+			if (confirm("정말 상담을 취소하시겠습니까?")) {
+				var reservNo = ${registration.reservNo};
+				location.href="deleteReg.do?reservNo="+reservNo;
+			} else {
+				return false;
+			}
+		});
+	});
 	</script>
 </body>
 </html>

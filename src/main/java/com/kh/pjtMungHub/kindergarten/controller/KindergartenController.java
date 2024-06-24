@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.pjtMungHub.kindergarten.model.service.KindergartenService;
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
+import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
@@ -71,15 +72,25 @@ public class KindergartenController {
 	}
 
 	@PostMapping("reg.do")
-	public String insertReg(Registration reg, MultipartFile upFile, Model model, HttpSession session) {
-		if(!upFile.getOriginalFilename().equals("")) {
+	public String insertReg(Registration reg, MultipartFile upFile,ArrayList<MultipartFile>vacCert, Model model, HttpSession session) {
+
+		if (!upFile.getOriginalFilename().equals("")) {
 			String changeName = saveFile(upFile, session);
 			reg.setOriginName(upFile.getOriginalFilename());
-			reg.setChangeName("resources/uploadFiles/kindergarten/"+changeName);
+			reg.setChangeName("resources/uploadFiles/kindergarten/" + changeName);
 		}
-		int result = service.insertReg(reg);
+		int result1 = service.insertReg(reg);
 		reg.setApproval("N");
-		if (result > 0) {
+		ArrayList<Vaccine> vacList = new ArrayList<Vaccine>();
+		for(MultipartFile m:vacCert) {
+			vacList.add(Vaccine.builder()
+					.petNo(reg.getPetNo())
+					.originName(m.getOriginalFilename())
+					.changeName("resources/uploadFiles/kindergarten/"+saveFile(m, session))
+					.build());
+		}
+		int result2 = service.insertVac(vacList);
+		if (result1*result2 > 0) {
 			Pet pet = service.selectPet(reg.getUserNo());
 			Kindergarten kindergarten = service.selectKindergarten(reg.getKindNo());
 			model.addAttribute("pet", pet);
@@ -95,24 +106,26 @@ public class KindergartenController {
 	}
 
 	@RequestMapping("regDetail.do")
-	public ModelAndView selectReg(int reservNo,HttpSession session, ModelAndView mv) {
-		Registration registration = service.selectRegistration(reservNo);
-		if(registration!=null) {
-			Pet pet = service.selectPet(registration.getUserNo());
-			mv.addObject("registration",registration);
-			mv.addObject("pet",pet);
+	public ModelAndView selectReg(int reservNo, HttpSession session, ModelAndView mv) {
+		Registration r = service.selectRegistration(reservNo);
+		if (r != null) {
+			Pet pet = service.selectPet(r.getUserNo());
+			Kindergarten k = service.selectKindergarten(r.getKindNo());
+			mv.addObject("registration", r);
+			mv.addObject("pet", pet);
+			mv.addObject("kindergarten", k);
 			mv.setViewName("kindergarten/regDetailView");
-		}else {
+		} else {
 			session.setAttribute("alertMsg", "상세조회실패... 다시 시도해주세요");
-			mv.setViewName("kindergarten/regListView2");
+			mv.setViewName("redirect:/map.do");
 		}
 		return mv;
 	}
-	
+
 	/* 예약내역보기(견주) */
 	@GetMapping("regList.do")
-	public String regList(Model model,HttpSession session) {
-		Member member = (Member)session.getAttribute("loginUser");
+	public String regList(Model model, HttpSession session) {
+		Member member = (Member) session.getAttribute("loginUser");
 		int userNo = member.getUserNo();
 		ArrayList<Registration> regList = service.selectRegList(userNo);
 		ArrayList<Kindergarten> kindergartenList = new ArrayList<Kindergarten>();
@@ -126,7 +139,9 @@ public class KindergartenController {
 
 	/* 예약내역보기(원장님) */
 	@GetMapping("regList2.do")
-	public String regList2(int userNo, Model model) {
+	public String regList2(Model model, HttpSession session) {
+		Member member = (Member) session.getAttribute("loginUser");
+		int userNo = member.getUserNo();
 		ArrayList<Registration> regList = service.selectRegList2(userNo);
 		model.addAttribute("regList", regList);
 		return "kindergarten/regListView2";
@@ -155,62 +170,88 @@ public class KindergartenController {
 		// 6.업로드하고자하는 물리적인 경로 알아내기 (프로젝트 내에 저장될 실제 경로 찾기)
 		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/kindergarten/");
 
-			try {
-				upfile.transferTo(new File(savePath + changeName));
-			} catch (IllegalStateException | IOException e) {
-				e.printStackTrace();
-			}
+		try {
+			upfile.transferTo(new File(savePath + changeName));
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
 		return changeName;
 	}
 
 	@RequestMapping("deleteReg.do")
-	public String deleteReg(int reservNo,HttpSession session) {
+	public String deleteReg(int reservNo, HttpSession session) {
 		int result = service.deleteReg(reservNo);
-		if(result>0) {
+		if (result > 0) {
 			session.setAttribute("alertMsg", "상담이 정상적으로 취소되었습니다.");
 			return "redirect:/regList.do";
-		}else {
+		} else {
 			session.setAttribute("alertMsg", "처리 실패... 다시 시도바랍니다.");
 			return "kindergarten/regListView";
 		}
 	}
-	
+
 	@GetMapping("updateReg.do")
-	public String updateRegView(int reservNo,Model model,HttpSession session) {
+	public String updateRegView(int reservNo, Model model, HttpSession session) {
 		Registration r = service.selectRegistration(reservNo);
-		Member member = (Member)session.getAttribute("loginUser");
+		Member member = (Member) session.getAttribute("loginUser");
 		Pet p = service.selectPet(member.getUserNo());
-		model.addAttribute("registration",r);
-		model.addAttribute("pet",p);
+		model.addAttribute("registration", r);
+		model.addAttribute("pet", p);
 		return "kindergarten/regUpdateView";
 	}
-	
+
 	@PostMapping("updateReg.do")
-	public String updateReg(Registration reg,MultipartFile reupFile, HttpSession session) {
+	public String updateReg(Registration reg, MultipartFile reupFile, HttpSession session) {
 		boolean flag = false;
 		String deleteFile = "";
-		if(!reupFile.getOriginalFilename().equals("")) {
-			if(reg.getOriginName() != null) {
+		if (!reupFile.getOriginalFilename().equals("")) {
+			if (reg.getOriginName() != null) {
 				flag = true;
 				deleteFile = reg.getChangeName();
 			}
 			String changeName = saveFile(reupFile, session);
 			reg.setOriginName(reupFile.getOriginalFilename());
-			reg.setChangeName("resources/uploadFiles/kindergarten/"+changeName);
+			reg.setChangeName("resources/uploadFiles/kindergarten/" + changeName);
 		}
 		int result = service.updateReg(reg);
 		String msg = "";
-		if(result>0) {
+		if (result > 0) {
 			msg = "신청서 수정 성공! 승인을 대기해주세요~";
-			if(flag) {
+			if (flag) {
 				File file = new File(session.getServletContext().getRealPath(deleteFile));
 				file.delete();
 			}
-		}else {
+		} else {
 			msg = "신청서 수정 실패... 다시 시도해주세요!";
 		}
 		session.setAttribute("alertMsg", msg);
-		return "redirect:/regDetail.do?reservNo="+reg.getReservNo();
+		return "redirect:/regDetail.do?reservNo=" + reg.getReservNo();
+	}
+
+	// 등록상담신청승인 메소드
+	@PostMapping("approve.do")
+	public String approveReg(int reservNo, HttpSession session) {
+		int result = service.approveReg(reservNo);
+		if (result > 0) {
+			session.setAttribute("alertMsg", "상담이 정상적으로 승인되었습니다.");
+			return "redirect:/regList2.do";
+		} else {
+			session.setAttribute("alertMsg", "상담 승인 실패. 다시 시도해주세요.");
+			return "redirect:/regList2.do";
+		}
+	}
+	
+	//등록상담거절 메소드
+	@PostMapping("reject.do")
+	public String rejectReg(Registration r,HttpSession session) {
+		int result = service.rejectReg(r);
+		if(result>0) {
+			session.setAttribute("alertMsg", "상담이 정상적으로 거절되었습니다.");
+			return "redirect:/regList2.do";
+		}else {
+			session.setAttribute("alertMsg", "처리 실패. 다시 시도해주세요.");
+			return "redirect:/regList2.do";
+		}
 	}
 	
 }

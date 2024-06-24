@@ -29,18 +29,32 @@
 								<td>${r.petName}</td>
 								<td>${r.breed}</td>
 								<td>${r.visitDate }</td>
-								<td style="color: blue;">승인</td>
+								<td style="color: blue;">승인
+								<a class="btn btn-primary" href="regDetail.do?reservNo=${r.reservNo}">상세보기</a>
+								</td>
 							</tr>
 						</c:when>
-						<c:otherwise>
-							<!-- 대기중인 예약은 회색 행으로 출력 -->
-							<tr class="table-secondary">
+						<c:when test="${r.approval == 'N' }">
+							<!-- 대기중인 예약은 노랑 행으로 출력 -->
+							<tr class="table-warning">
 								<td class="userName">${r.userName }</td>
 								<td>${r.petName}</td>
 								<td>${r.breed}</td>
 								<td>${r.visitDate }</td>
 								<td>대기중
 									<a class="btn btn-primary" href="regDetail.do?reservNo=${r.reservNo}">상세보기</a>
+								</td>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<!-- 거절된 예약은 회색 행으로 출력 -->
+							<tr class="table-secondary">
+								<td class="userName">${r.userName }</td>
+								<td>${r.petName}</td>
+								<td>${r.breed}</td>
+								<td>${r.visitDate }</td>
+								<td>상담거절
+								<a class="btn btn-primary" href="regDetail.do?reservNo=${r.reservNo}">상세보기</a>
 								</td>
 							</tr>
 						</c:otherwise>

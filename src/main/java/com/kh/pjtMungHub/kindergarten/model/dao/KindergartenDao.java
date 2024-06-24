@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
+import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Repository
@@ -63,6 +64,24 @@ public class KindergartenDao {
 	public int updateReg(SqlSessionTemplate sqlsession, Registration reg) {
 
 		return sqlsession.update("kindergartenMapper.updateRegistration",reg);
+	}
+
+	//상담신청승인 메서드
+	public int approveReg(SqlSessionTemplate sqlsession, int reservNo) {
+		return sqlsession.update("kindergartenMapper.approveReg",reservNo);
+	}
+	
+	//상담신청거절 메서드
+	public int rejectReg(SqlSessionTemplate sqlsession, Registration r) {
+		return sqlsession.update("kindergartenMapper.rejectReg",r);
+	}
+
+	public int insertVac(SqlSessionTemplate sqlsession, ArrayList<Vaccine> vacList) {
+		int result = 1;
+		for(Vaccine v:vacList) {
+			result *= sqlsession.insert("kindergartenMapper.insertVac",v);
+		}
+		return result;
 	}
 
 
