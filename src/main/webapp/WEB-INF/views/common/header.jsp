@@ -180,6 +180,103 @@ clear: both;
 }
 </style>
 </head>
+<<<<<<< HEAD
+<body>
+    <div id="header">
+        <div id="header_1">
+            <div id="header_1_left">
+            </div>
+            <div id="header_1_center">
+            </div>
+            <div id="header_1_right">
+                <a href="">로그인</a>
+                <a href="">마이페이지</a>
+            </div>
+        </div>
+        <div id="header_2">
+            <ul>
+                <li><a href="">kindergarten</a>
+                    <!-- 메인메뉴 하위 요소 -->
+                    <ul>
+                        <li><a href="">메뉴1</a> </li>
+                        <li><a href="">메뉴2</a> </li>
+                        <li><a href="">메뉴3</a> </li>
+                        <li><a href="">메뉴4</a> </li>
+                    </ul>
+                </li>
+                <li><a href="">pet care</a>
+                    <!-- 메인메뉴 하위 요소 -->
+                    <ul>
+                        <li><a href="sitter.re">단기돌봄예약</a> </li> <!-- 예약 전 펫시터 선택 화면으로 -->
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                    </ul>
+                </li>
+                <li><a href="">wedding</a>
+                    <!-- 메인메뉴 하위 요소 -->
+                    <ul>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                    </ul>
+                </li>
+                <li><a href="list.bo">board</a>
+                    <!-- 메인메뉴 하위 요소 -->
+                    <ul>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                    </ul>
+                </li>
+                <li><a href="/pjtMungHub/list.sp">shop</a>
+                    <!-- 메인메뉴 하위 요소 -->
+                    <ul>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                    </ul>
+                </li>
+                <li><a href="">realestate</a>
+                    <!-- 메인메뉴 하위 요소 -->
+                    <ul>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                        <li><a href=""></a> </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="quick_menu">
+        <ul>
+            <li class="bar_open"><a href="">퀵메뉴</a></li>
+            <li class="kako_talk"><a href="">채팅상담</a></li>
+            <li class="page_up">
+                <a href="">▲</a>
+            </li>
+            <li class="page_down"><a href="">▼</a></li>
+            <li class="consult"><a href="">상담문의</a></li>
+            <li class="contact"><a href="">대표전화</a></li>
+        </ul>
+    </div>
+    <br clear="both">
+    <script>
+        // 화면이 일정 크기로 축소되면 메뉴 구성이 바뀜 (아직 진행중, 편의상 주석처리)
+        // $(window).on("resize", function () {
+        //     var innerWidth = $(window).innerWidth();
+        //     if (innerWidth <= 750) {
+        //         $(".quick_menu").css("display", "none");
+        //         $("#header").css("display","none");
+        //     } else {
+        //         $(".quick_menu").css("display", "");
+        //         $("#header").css("display","");
+=======
+>>>>>>> refs/remotes/origin/master
 
 <body>
     <nav id="header">
