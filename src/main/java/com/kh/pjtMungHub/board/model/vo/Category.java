@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Category {
 
-	private int categoryNo;// CATEGORY_NO NUMBER
-	private String categoryName;// CATEGORY_NAME VARCHAR2(30 BYTE)
+	private int categoryNo;//CATEGORY_NO	NUMBER
+	private String categryName;//CATEGORY_NAME	VARCHAR2(30 BYTE)
 
 }

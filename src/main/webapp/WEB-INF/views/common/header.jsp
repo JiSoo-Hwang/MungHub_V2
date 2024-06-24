@@ -180,7 +180,6 @@ clear: both;
 }
 </style>
 </head>
-
 <body>
     <nav id="header">
         <nav id="header_1">
