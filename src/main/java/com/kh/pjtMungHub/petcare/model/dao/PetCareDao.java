@@ -2,12 +2,15 @@ package com.kh.pjtMungHub.petcare.model.dao;
 
 import java.util.ArrayList;
 
+import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
 import com.kh.pjtMungHub.petcare.model.vo.House;
+import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
@@ -53,8 +56,28 @@ public class PetCareDao {
 	}
 
 	//장기돌봄 집리스트 조건부로 불러오기
-	public ArrayList<House> selectHouseList(SqlSessionTemplate sqlSession, HouseReservation houseRe) {
-		return (ArrayList)sqlSession.selectList("petcareMapper.selectHouseList",houseRe);
+	public ArrayList<House> selectHouseList(SqlSessionTemplate sqlSession, HouseReservation houseRe,PageInfo pi) {
+		
+		int limit = pi.getBoardLimit();
+		int offset =(pi.getCurrentPage()-1)*limit;
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		return (ArrayList)sqlSession.selectList("petcareMapper.selectHouseList",houseRe,rowBounds);
+	}
+
+	//페이징바처리에 필요한 집 리스트 갯수
+	public int listCount(SqlSessionTemplate sqlSession) {
+		return sqlSession.selectOne("petcareMapper.listCount");
+	}
+
+	//집 상세정보
+	public House detailHouse(SqlSessionTemplate sqlSession, int houseNo) {
+		return sqlSession.selectOne("petcareMapper.detailHouse",houseNo);
+	}
+
+	//집 요금정보
+	public ArrayList<HousePrice> selectHousePrice(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("petcareMapper.selectHousePrice");
 	}
 
 	

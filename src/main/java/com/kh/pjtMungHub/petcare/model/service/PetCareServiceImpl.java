@@ -6,10 +6,12 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.dao.PetCareDao;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
 import com.kh.pjtMungHub.petcare.model.vo.House;
+import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
@@ -69,10 +71,30 @@ public class PetCareServiceImpl implements PetCareService {
 
 	//장기돌봄 집리스트 조건부로 불러오기
 	@Override
-	public ArrayList<House> selectHouseList(HouseReservation houseRe) {
-		return petCareDao.selectHouseList(sqlSession,houseRe);
+	public ArrayList<House> selectHouseList(HouseReservation houseRe,PageInfo pi) {
+		return petCareDao.selectHouseList(sqlSession,houseRe,pi);
 	}
 
+	//페이징바처리에 필요한 집 리스트 갯수
+	@Override
+	public int listCount() {
+		return petCareDao.listCount(sqlSession);
+	}
+
+	//집 상세정보
+	@Override
+	public House detailHouse(int houseNo) {
+		return petCareDao.detailHouse(sqlSession,houseNo);
+	}
+
+	//집 요금정보
+	@Override
+	public ArrayList<HousePrice> selectHousePrice() {
+		return petCareDao.selectHousePrice(sqlSession);
+	}
+
+	
+	
 	
 
 
