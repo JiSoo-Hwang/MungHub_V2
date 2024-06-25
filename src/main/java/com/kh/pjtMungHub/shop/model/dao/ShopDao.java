@@ -55,4 +55,14 @@ public class ShopDao {
 		return (ArrayList)sqlSession.selectList("shopMapper.selectCartList",userNo);
 	}
 
+	public int removeCartItem(SqlSessionTemplate sqlSession,ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("shopMapper.removeCartItem",parameter);
+	}
+
+	public int updateCartAmount(SqlSessionTemplate sqlSession, ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateCartAmount",parameter);
+	}
+
 }

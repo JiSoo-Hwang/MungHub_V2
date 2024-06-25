@@ -71,6 +71,18 @@ public class ShopServiceImpl implements ShopService {
 		return shopDao.selectCartList(sqlSession,userNo);
 	}
 
+	@Override
+	public int removeCartItem(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.removeCartItem(sqlSession,parameter);
+	}
+
+	@Override
+	public int updateCartAmount(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.updateCartAmount(sqlSession,parameter);
+	}
+
 	
 
 }

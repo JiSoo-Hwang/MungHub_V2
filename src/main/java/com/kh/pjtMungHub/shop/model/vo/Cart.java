@@ -18,4 +18,5 @@ public class Cart {
 	private int discount;
 	private String brandName;
 	private String categoryName;
+	private String img;
 }
