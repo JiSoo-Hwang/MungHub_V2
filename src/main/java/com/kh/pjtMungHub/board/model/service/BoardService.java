@@ -20,4 +20,6 @@ public interface BoardService {
 		//게시물 상세보기
 		Board selectBoard(int boardNo);
 
+		int insertBoard(int BoardNo);
+
 }

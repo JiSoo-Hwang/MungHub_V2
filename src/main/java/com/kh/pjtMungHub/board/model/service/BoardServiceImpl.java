@@ -44,6 +44,12 @@ public class BoardServiceImpl implements BoardService {
 		
 		return boardDao.selectBoard(sqlSession,boardNo);
 	}
+
+	@Override
+	public int insertBoard(int boardNo) {
+		// TODO Auto-generated method stub
+		return boardDao.insertBoard(sqlSession,boardNo);
+	}
 	
 
 	

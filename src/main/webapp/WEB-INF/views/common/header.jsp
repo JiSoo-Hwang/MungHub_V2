@@ -187,7 +187,7 @@ clear: both;
                 <li class="menu"><a href="#home">Kindergarten</a></li>
                 <li class="menu"><a href="#news">Petcare</a></li>
                 <li class="menu"><a href="#contact">Wedding</a></li>
-                <li class="menu"><a href="#contact">Board</a></li>
+                <li class="menu"><a href="/pjtMungHub/list.bo">Board</a></li>
                 <li class="menu"><a href="/pjtMungHub/list.sp">Shop</a></li>
                 <li class="menu"><a href="#contact">Realestate</a></li>
 				<li style="float: right">

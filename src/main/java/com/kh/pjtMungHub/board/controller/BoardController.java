@@ -76,15 +76,24 @@ public class BoardController {
 		
 	}
 	//게시물 등록 메소드
-	@PostMapping
+	/*@PostMapping
 	public String insertBoard(Board b,
 							  MultipartFile upfile,
 							  HttpSession session) {
 		
 		
+		int result = boardService.insertBoard(b);
 		
-		return null;
-	}
+		if(result>0) {//게시글 작성 성공
+			session.setAttribute("alertMsg", "게시글 작성 성공!");
+		}else { //게시글 작성 실패
+			session.setAttribute("alertMsg", "게시글 작성 실패!");
+		}
+
+		
+		
+		return "redirect/:list.bo";
+	}*/
 	
 	
 		

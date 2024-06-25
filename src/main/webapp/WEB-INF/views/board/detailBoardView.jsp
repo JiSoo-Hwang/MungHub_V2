@@ -48,9 +48,10 @@
                     <th>작성자</th>
                     <td>${b.boardWriter }</td>
                     <th>작성일</th>
-                    <td>${b.createDate }</td>
+                    <td>${b.uploadDate }</td>
                 </tr>
-                <tr>
+                
+                <!--<tr>
                     <th>첨부파일</th>
                     <td colspan="3">
                     	<c:choose>
@@ -63,7 +64,7 @@
                     	</c:choose>
                     	
                     </td>
-                </tr>
+                </tr>-->
                 <tr>
                     <th>내용</th>
                     <td colspan="3"></td>
@@ -93,7 +94,7 @@
 <%--             	<input type="hidden" value="${b.boardNo }" name="boardNo"> --%>
 <!--             	<input type="submit"> -->
 <!--             </form> -->
-            
+            <!-- 
             <script>
             	//삭제하기 버튼을 눌렀을때 삭제 처리를 post 방식으로 진행하기
             	//mapping 주소만으로 쿼리스트링을 전달해버리면 삭제가 되어버리는 문제 발생 
@@ -130,6 +131,7 @@
             		
             	});
             </script>
+             -->
             <!--
             	댓글 기능 구현하기 ajax이용하여 
             	replyList 메소드명 사용하기 	
@@ -176,7 +178,6 @@
             	//댓글 목록 비동기로 조회해오기
             	
             	function replyList(){
-            		
             		$.ajax({
             			url : "replyList.bo",
             			data : {
@@ -205,13 +206,10 @@
             			}
             			
             		});
-            		
             	}
-  
-            
             </script>
             
-            
+            <!-- 
             <table id="replyArea" class="table" align="center">
                 <thead>
                 	<c:choose>
@@ -239,6 +237,7 @@
                    
                 </tbody>
             </table>
+             -->
         </div>
         <br><br>
     </div>
