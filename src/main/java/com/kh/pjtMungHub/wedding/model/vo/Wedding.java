@@ -1,5 +1,27 @@
 package com.kh.pjtMungHub.wedding.model.vo;
 
-public class Wedding {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Wedding {
+private int weddingNo;//	WEDDING_NO	NUMBER
+private String petName;
+private String breed;
+private int userNo;//	USER_NO	NUMBER
+private int petAge;
+private int weight;
+private String pedigree;//
+private String gender;//PEDIGREE	VARCHAR2(50 BYTE)
+private String meetingMethod;//	MEETING_METHOD	VARCHAR2(20 BYTE)
+private String petIntro;//	PET_INTRO	VARCHAR2(600 BYTE)
+private String petNote;//	PET_NOTE	VARCHAR2(400 BYTE)
+private String originName;//ORIGIN_NAME
+private String changeName;//CHANGE_NAME
+private String approval;//	APPROVAL	CHAR(1 BYTE)
 }

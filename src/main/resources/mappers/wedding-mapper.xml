@@ -3,4 +3,63 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="weddingMapper">
+
+<select id="selectBreeds" resultType="Breed">
+SELECT BREED_ID breedId
+,BREED_NAME breedName
+FROM BREED
+</select>
+
+<select id="selectWeddings" resultType="Wedding">
+SELECT WEDDING_NO weddingNo,
+PET_NAME petName,
+P.PET_GENDER gender,
+B.BREED_NAME breed,
+USER_NO userNo,
+PEDIGREE pedigree,
+MEETING_METHOD meetingMethod,
+PET_INTRO petIntro,
+PET_NOTE petNote,
+ORIGIN_NAME originName,
+CHANGE_NAME changeName
+FROM WEDDING W, PET P, BREED B 
+WHERE W.APPROVAL ='Y'
+AND W.PET_NO = P.PET_NO
+AND P.BREED_ID = B.BREED_ID
+</select>
+
+<select id="selectWedding" resultType="Wedding">
+SELECT WEDDING_NO weddingNo,
+PET_NAME petName,
+P.PET_GENDER gender,
+B.BREED_NAME breed,
+USER_NO userNo,
+PEDIGREE pedigree,
+MEETING_METHOD meetingMethod,
+P.PET_AGE petAge,
+P.WEIGHT weight,
+MEETING_METHOD meetingMethod,
+PET_INTRO petIntro,
+PET_NOTE petNote,
+ORIGIN_NAME originName,
+CHANGE_NAME changeName
+FROM WEDDING W, PET P, BREED B 
+WHERE W.APPROVAL ='Y'
+AND W.PET_NO = P.PET_NO
+AND P.BREED_ID = B.BREED_ID
+AND WEDDING_NO = #{weddingNo}
+</select>
+
+<select id="selectPet" parameterType="_int" resultType="Pet">
+SELECT PET_NO petNo
+,BREED_NAME breed
+,OWNER_NO ownerNo
+,PET_NAME petName
+,PET_AGE petAge
+,PET_GENDER petGender
+,WEIGHT weight
+FROM PET
+JOIN BREED USING(BREED_ID)
+WHERE OWNER_NO = #{userNo}
+</select>
 </mapper>
