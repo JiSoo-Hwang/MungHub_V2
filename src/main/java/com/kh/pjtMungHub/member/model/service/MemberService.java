@@ -3,8 +3,9 @@ package com.kh.pjtMungHub.member.model.service;
 import java.util.ArrayList;
 
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
+import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.member.model.vo.Member;
+import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 public interface MemberService {
@@ -17,6 +18,7 @@ public interface MemberService {
 	int newUserNo();
 	ArrayList<Pet> selectPetList(Member m);
 	PetPhoto selectPetPhoto(Pet p);
-	ArrayList<Kindergarten> selectKindList();
+	ArrayList<Kindergarten> selectKindList(Kindergarten kind);
+	ArrayList<Breed> selectBreedList();
 	
 }

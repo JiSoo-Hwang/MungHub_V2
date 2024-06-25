@@ -90,11 +90,11 @@
 		,ORIGIN_NAME originName
 		,CHANGE_NAME changeName
 		,APPROVAL approval
+		,REASON reason
 		FROM REGISTRATION R, PET P, MEMBER M, KINDERGARTEN K, BREED B
 		WHERE R.USER_NO = M.USER_NO
 		AND K.KIND_NO = R.KIND_NO
-		AND R.PET_NO =
-		P.PET_NO
+		AND R.PET_NO =	P.PET_NO
 		AND P.BREED_ID = B.BREED_ID
 		AND P.OWNER_NO = M.USER_NO
 		AND
@@ -117,6 +117,7 @@
 		,ORIGIN_NAME originName
 		,CHANGE_NAME changeName
 		,APPROVAL approval
+		,REASON reason
 		FROM REGISTRATION R, PET P, MEMBER M, KINDERGARTEN K, BREED B
 		WHERE R.USER_NO = M.USER_NO
 		AND K.KIND_NO = R.KIND_NO
@@ -142,6 +143,7 @@
 		,ORIGIN_NAME originName
 		,CHANGE_NAME changeName
 		,APPROVAL approval
+		,REASON reason
 		FROM REGISTRATION R, PET P, MEMBER M, KINDERGARTEN K, BREED B
 		WHERE R.USER_NO = M.USER_NO
 		AND K.KIND_NO = R.KIND_NO
@@ -162,7 +164,7 @@
 
 	<update id="updateRegistration">
 	UPDATE REGISTRATION SET	
-	<!-- 						VISIT_DATE = #{visitDate}, -->
+							VISIT_DATE = #{visitDate},
 							PET_INTRO = #{petIntro},
 							PET_NOTE = #{petNote},
 							ORIGIN_NAME = #{originName},
@@ -170,9 +172,26 @@
 	WHERE RESERV_NO = #{reservNo}
 	</update>
 
+	<update id="approveReg" parameterType="_int">
+	UPDATE REGISTRATION SET	APPROVAL = 'Y'
+	WHERE RESERV_NO = #{reservNo}
+	</update>
 
+	<update id="rejectReg" parameterType="Registration">
+	UPDATE REGISTRATION SET	APPROVAL = 'R',
+						REASON = #{reason}
+	WHERE RESERV_NO = #{reservNo}
+	</update>
 
-
-
-
+	<insert id="insertVac" parameterType="Vaccine">
+	INSERT INTO	VACCINE(FILE_NO
+						,PET_NO
+						,ORIGIN_NAME
+						,CHANGE_NAME)
+	VALUES (SEQ_VAC.NEXTVAL
+			,#{petNo}
+			,#{originName}
+			,#{changeName}
+			)
+	</insert>
 </mapper>

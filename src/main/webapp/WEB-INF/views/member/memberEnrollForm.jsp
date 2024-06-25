@@ -209,7 +209,7 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 		<br><br>
 		<div class="joinModalBtn">
 			<button type="button" data-toggle="modal" data-target="#joinModal" disabled>반려견주(일반 회원)로 가입</button>	
-			<button type="button" data-toggle="modal" data-target="#joinModal" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
+			<button type="button" onclick="teacherCheck();" data-toggle="modal" data-target="#joinModal" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
 		</div>
 	</div>
 	
@@ -276,13 +276,16 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 			$.ajax({
 				url:"userNo.me",
 				success:function(userNo){
-					$("input[type=hidden]").val(userNo);
+					$(".userNo").val(userNo);
 				},
 				error:function(){
 					console.log("통신오류");
 				}
 			})
 		})
+		function teacherCheck(){
+		$(".teacher-only").attr("hidden",false);
+	}
 	</script>
 	
 		<!-- 회원 가입 클릭시 사용될 모달영역 -->
@@ -306,7 +309,7 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 							<input type="text" class="form-control mb-2 mr-sm-2" 
 									placeholder="아이디를 입력하세요" id="userId" name="userId" required>
 							<div class="idCheck"></div>		
-							<label for="userPwd">비밀번호 :</label>
+							<label for="password">비밀번호 :</label>
 							<input type="password" class="form-control mb-2 mr-sm-2" 
 									placeholder="등록할 비밀번호를 입력하세요" id="password" name="password" required>
 							<span>비밀번호는 6글자 이상 20자 미만으로, 영어, 숫자 및 특수문자를 반드시 포함하여 구성하셔야 합니다.</span>
@@ -325,6 +328,11 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 							<label for="phone">이메일 :</label>
 							<input type="email" class="form-control mb-2 mr-sm-2" 
 									placeholder="" id="email" name="email" >
+							<div class="teacher-only" hidden="true">
+			                    <label for="kindName" class="form-label">소속 유치원 이름 : </label>
+			                    <input type="text" class="form-control" id="kind" name="kind" placeholder="유치원 이름 검색">
+			                    <span class="kindList"></span>
+							</div>
 							<label for="address">주소 :</label>
 							<input type="text" class="form-control mb-2 mr-sm-2" 
 									placeholder="" id="address" name="address" >
@@ -337,95 +345,12 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 							</div>
 						</div>
 					</div>
-				</form>
-								<form action="join.me" method="post">
-					<!-- Modal body -->
-					<div class="modal-body">
-						<div class="member-data">
-							<input type="hidden" id="userNo" name="userNo">
-							<label for="userId">아이디 :</label>
-							<input type="text" class="form-control mb-2 mr-sm-2" 
-									placeholder="아이디를 입력하세요" id="userId" name="userId" required>
-							<div class="idCheck"></div>		
-							<label for="userPwd">비밀번호 :</label>
-							<input type="password" class="form-control mb-2 mr-sm-2" 
-									placeholder="등록할 비밀번호를 입력하세요" id="password" name="password" required>
-							<span>비밀번호는 6글자 이상 20자 미만으로, 영어, 숫자 및 특수문자를 반드시 포함하여 구성하셔야 합니다.</span>
-							<div class="passwordRule"></div>
-							<label for="checkPwd">비밀번호 확인 :</label>
-							<input type="password" class="form-control mb-2 mr-sm-2" 
-									placeholder="동일한 비밀번호를 입력하세요" id="checkPwd" name="checkPwd" required>
-							<div class="passwordCheck">
-							</div>
-							<label for="name">이름 :</label>
-							<input type="text" class="form-control mb-2 mr-sm-2" 
-									placeholder="이름을 입력하세요" id="name" name="name" required>
-							<label for="phone">전화번호 :</label>
-							<input type="text" class="form-control mb-2 mr-sm-2" 
-									placeholder="하이픈(-) 포함 공백없이 입력해 주시기 바랍니다." id="phone" name="phone" required>
-							<label for="phone">이메일 :</label>
-							<input type="email" class="form-control mb-2 mr-sm-2" 
-									placeholder="" id="email" name="email" >
-							<label for="address">주소 :</label>
-							<input type="text" class="form-control mb-2 mr-sm-2" 
-									placeholder="" id="address" name="address" >
-							<label for="">반려견 유무 :</label>
-							<div class="petStatus">
-								<input type="radio" id="yesPet" value="Y" name="petYN">
-								<label for="yesPet">있습니다.</label> &nbsp;&nbsp;
-								<input type="radio" id="noPet" value="N" name="petYN">
-								<label for="noPet">없습니다.</label> &nbsp;&nbsp;
-							</div>
-						</div>
-					</div>
-				</form>
-								<form action="join.me" method="post">
-					<!-- Modal body -->
-					<div class="modal-body">
-						<div class="member-data">
-							<input type="hidden" id="userNo" name="userNo">
-							<label for="userId">아이디 :</label>
-							<input type="text" class="form-control mb-2 mr-sm-2" 
-									placeholder="아이디를 입력하세요" id="userId" name="userId" required>
-							<div class="idCheck"></div>		
-							<label for="userPwd">비밀번호 :</label>
-							<input type="password" class="form-control mb-2 mr-sm-2" 
-									placeholder="등록할 비밀번호를 입력하세요" id="password" name="password" required>
-							<span>비밀번호는 6글자 이상 20자 미만으로, 영어, 숫자 및 특수문자를 반드시 포함하여 구성하셔야 합니다.</span>
-							<div class="passwordRule"></div>
-							<label for="checkPwd">비밀번호 확인 :</label>
-							<input type="password" class="form-control mb-2 mr-sm-2" 
-									placeholder="동일한 비밀번호를 입력하세요" id="checkPwd" name="checkPwd" required>
-							<div class="passwordCheck">
-							</div>
-							<label for="name">이름 :</label>
-							<input type="text" class="form-control mb-2 mr-sm-2" 
-									placeholder="이름을 입력하세요" id="name" name="name" required>
-							<label for="phone">전화번호 :</label>
-							<input type="text" class="form-control mb-2 mr-sm-2" 
-									placeholder="하이픈(-) 포함 공백없이 입력해 주시기 바랍니다." id="phone" name="phone" required>
-							<label for="phone">이메일 :</label>
-							<input type="email" class="form-control mb-2 mr-sm-2" 
-									placeholder="" id="email" name="email" >
-							<label for="address">주소 :</label>
-							<input type="text" class="form-control mb-2 mr-sm-2" 
-									placeholder="" id="address" name="address" >
-							<label for="">반려견 유무 :</label>
-							<div class="petStatus">
-								<input type="radio" id="yesPet" value="Y" name="petYN">
-								<label for="yesPet">있습니다.</label> &nbsp;&nbsp;
-								<input type="radio" id="noPet" value="N" name="petYN">
-								<label for="noPet">없습니다.</label> &nbsp;&nbsp;
-							</div>
-						</div>
-					</div>
-				</form>
 					<!-- Modal footer -->
 					<div class="modal-footer">
 						<button type="submit" class="btn btn-danger" disabled>회원가입</button>
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 					</div>
-
+				</form>
 			</div>
 		</div>
 	</div>
@@ -487,6 +412,35 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 			    }
 			})
 		})
+		$(".kind").keyup(function(){
+	        var kind=$("#kind").val();
+	        var tr="<select name='kindName'>";       
+	        $.ajax({
+	            url : "searchKind.me",
+	            data : {
+	                kindName : kind
+	            },
+	            success : function(kindList){
+	                if(kindList.length==0){
+	                    alert("조회결과가 없습니다.");
+	                    $("#kind").val("");
+	                }else{
+	                    for(var i in cList){
+	                        tr+="<option value='"
+	                            +kindList[i].contentsId+"'>"
+	                            +kindList[i].title
+	                            +"</option>"
+	                    }
+	                    tr+="</select>";
+	                
+	                $(".kindList").html(tr);
+	                }
+	            },
+	            error : function(){
+	                console.log("오류난듯");     
+	            }
+	        })
+	    })
 	</script>
 </body>
 </html>

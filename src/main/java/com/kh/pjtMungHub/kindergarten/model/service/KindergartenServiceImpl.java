@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kh.pjtMungHub.kindergarten.model.dao.KindergartenDao;
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
+import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Service
@@ -80,6 +81,24 @@ public class KindergartenServiceImpl implements KindergartenService{
 	@Override
 	public int updateReg(Registration reg) {
 		return dao.updateReg(sqlsession,reg);
+	}
+
+	//등록상담신청승인 메서드
+	@Override
+	public int approveReg(int reservNo) {
+		return dao.approveReg(sqlsession,reservNo);
+	}
+
+	//등록상담거절 메서드
+	@Override
+	public int rejectReg(Registration r) {
+		return dao.rejectReg(sqlsession,r);
+	}
+	
+	//백신정보추가 메서드
+	@Override
+	public int insertVac(ArrayList<Vaccine> vacList) {
+		return dao.insertVac(sqlsession,vacList);
 	}
 	
 

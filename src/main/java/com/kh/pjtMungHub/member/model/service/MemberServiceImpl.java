@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
+import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.member.model.dao.MemberDao;
 import com.kh.pjtMungHub.member.model.vo.Member;
+import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Service
@@ -61,8 +62,13 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public ArrayList<Kindergarten> selectKindList() {
-		return dao.selectKindList(sqlSession);
+	public ArrayList<Kindergarten> selectKindList(Kindergarten kind) {
+		return dao.selectKindList(sqlSession, kind);
+	}
+
+	@Override
+	public ArrayList<Breed> selectBreedList() {
+		return dao.selectBreedList(sqlSession);
 	}
 
 }

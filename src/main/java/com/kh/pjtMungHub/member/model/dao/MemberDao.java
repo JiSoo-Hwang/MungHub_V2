@@ -6,8 +6,9 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
+import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.member.model.vo.Member;
+import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
 @Repository
@@ -46,9 +47,12 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.selectPetPhoto", p);
 	}
 
-	public ArrayList<Kindergarten> selectKindList(SqlSessionTemplate sqlSession) {
-		// TODO Auto-generated method stub
-		return (ArrayList)sqlSession.selectList("memberMapper.selectKindList");
+	public ArrayList<Kindergarten> selectKindList(SqlSessionTemplate sqlSession,Kindergarten kind) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectKindList",kind);
+	}
+
+	public ArrayList<Breed> selectBreedList(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectBreedList");
 	}
 
 

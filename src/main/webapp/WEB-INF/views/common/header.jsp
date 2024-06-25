@@ -180,7 +180,6 @@ clear: both;
 }
 </style>
 </head>
-
 <body>
     <nav id="header">
         <nav id="header_1">
@@ -211,7 +210,7 @@ clear: both;
             <ul>
 				<li><a href="map.do">지도보기</a></li>
                 <li><a href="sitter.re">단기돌봄예약</a> </li>
-                <li><a href="">하위 메뉴1</a> </li>
+                <li><a href="houseList.re">장기돌봄예약</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
             </ul>

@@ -18,16 +18,6 @@
 		<result column="JOIN_DATE" property="joinDate"/>
 		<result column="SITTER_STATUS" property="sitterStatus"/>
 	</resultMap>
-	<resultMap type="Pet" id="petResultSet">
-		<result column="BREED_ID" property="breed"/>
-		<result column="OWNER_NO" property="ownerNo"/>
-		<result column="PET_AGE" property="petAge"/>
-		<result column="PET_GENDER" property="petGender"/>
-		<result column="PET_NAME" property="petName"/>
-		<result column="PET_NO" property="petNo"/>
-		<result column="PHOTO_NO" property="photoNo"/>
-		<result column="WEIGHT" property="weight"/>
-	</resultMap>
 	<select id="loginMember" parameterType="Member" resultMap="memberResultSet">
 		SELECT * FROM MEMBER WHERE USER_ID=#{userId}
 	</select>
@@ -47,14 +37,18 @@
 		INSERT INTO MEMBER(USER_ID,USER_NO,PASSWORD,NAME,PHONE,EMAIL,ADDRESS,PET_YN,USER_GRADE) 
 		VALUES(#{userId},#{userNo},#{password},#{name},#{phone},#{email},#{address},#{petYN},0)
 	</insert>
-	<select id="selectPetList" parameterType="Member" resultMap="petResultSet">
-		SELECT  FROM PET WHERE OWNER_NO=#{userNo}
+	<insert id="insertTeacher" parameterType="Member">
+		INSERT INTO MEMBER(USER_ID,USER_NO,PASSWORD,NAME,PHONE,EMAIL,ADDRESS,PET_YN,USER_GRADE,KIND_NAME,STATUS) 
+		VALUES(#{userId},#{userNo},#{password},#{name},#{phone},#{email},#{address},#{petYN},1,#{kindName},'F')	
+	</insert>
+	<select id="selectPetList" parameterType="Member" resultType="Pet">
+		SELECT PET_NO petNo, BREED_NAME breed, PET_NAME petName, PET_AGE petAge, PET_GENDER petGender, WEIGHT weight, PHOTO_NO photoNo FROM PET JOIN BREED USING(BREED_ID) WHERE OWNER_NO=#{userNo}
 	</select>
-	<select id="selectPetPhoto" parameterType="Pet" resultMap="PetPhoto">
-		SELECT * FROM PET_PHOTO WHERE PHOTO_NO=${photoNo} AND STATUS='Y'
+	<select id="selectPetPhoto" parameterType="Pet" resultType="PetPhoto">
+		SELECT * FROM PET_PHOTO WHERE PHOTO_NO=#{photoNo} AND STATUS='Y'
 	</select>
 	<select id="selectKindList" resultType="Kindergarten">
-		SELECT KIND_NO, KIND_NAME FROM KINDERGARTEN WHERE STATUS='Y'
+		SELECT KIND_NO, KIND_NAME FROM KINDERGARTEN WHERE STATUS='Y' AND KIND_NAME LIKE #{kindName}
 	</select>
 	<select id="selectBreedList" resultType="Breed">
 		SELECT BREED_ID breedId, BREED_NAME breedName FROM BREED

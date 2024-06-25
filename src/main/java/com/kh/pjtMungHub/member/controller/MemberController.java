@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
-import com.kh.pjtMungHub.kindergartenMap.model.vo.Kindergarten;
+import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.member.model.service.MemberService;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
@@ -38,8 +38,6 @@ public class MemberController {
 	}
 	@RequestMapping("enroll.me")
 	public String enterEnroll(HttpSession session) {
-		ArrayList<Kindergarten> kindList = service.selectKindList();
-		session.setAttribute("kindList", kindList);
 		return "member/memberEnrollForm";
 	}
 	
@@ -62,6 +60,15 @@ public class MemberController {
 		session.setAttribute("petPhotoList",petPhotoList);
 		return "member/memberMyPage";
 	}
+	
+	@RequestMapping("updatePet.me")
+	public String enterUpdatePet() {
+		return "member/memberPetUpdate";
+	}
+	
+	
+	
+	
 	
 	@RequestMapping("login.me")
 	public ModelAndView loginMember(Member m, ModelAndView mv, HttpSession session) {
@@ -162,5 +169,11 @@ public class MemberController {
 		session.setAttribute("petList", service.selectPetList(m));
 		mv.setViewName("member/memberPetUpdate");
 		return mv;
+	}
+	@ResponseBody
+	@GetMapping("selectKind.me")
+	public ArrayList<Kindergarten> searchKind(Kindergarten kind){
+		ArrayList<Kindergarten> kindList = service.selectKindList(kind);
+		return kindList;
 	}
 }

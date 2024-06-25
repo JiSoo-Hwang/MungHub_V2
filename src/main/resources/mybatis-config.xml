@@ -8,6 +8,9 @@
 	</settings>
 	<typeAliases>
 
+	
+	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.House" alias="House"/>
+	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.HouseReservation" alias="HouseReservation"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Payment" alias="Payment"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Price" alias="Price"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Reservation" alias="Reservation"/>
@@ -17,14 +20,13 @@
     <typeAlias type="com.kh.pjtMungHub.shop.model.vo.Attachment" alias="Attachment"/>
     <typeAlias type="com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten" alias="Kindergarten"/>
 	<typeAlias type="com.kh.pjtMungHub.member.model.vo.Member" alias="Member"/>
+	<typeAlias type="com.kh.pjtMungHub.board.model.vo.Board" alias="Board"/>
 	<typeAlias type="com.kh.pjtMungHub.pet.model.vo.Pet" alias="Pet"/>
 	<typeAlias type="com.kh.pjtMungHub.kindergarten.model.vo.Registration" alias="Registration"/>
-<<<<<<< HEAD
 	<typeAlias type="com.kh.pjtMungHub.pet.model.vo.Breed" alias="Breed"/>
 	<typeAlias type="com.kh.pjtMungHub.common.model.vo.PetPhoto" alias="PetPhoto"/>
-=======
+	<typeAlias type="com.kh.pjtMungHub.kindergarten.model.vo.Vaccine" alias="Vaccine"/>
 	<typeAlias type="com.kh.pjtMungHub.shop.model.vo.Cart" alias="Cart"/>
->>>>>>> refs/remotes/origin/master
 	</typeAliases>
 	
 </configuration>
