@@ -137,26 +137,49 @@
 		PRICE price,
 		DISCOUNT discount,
 		BRAND_NAME brandName,
-		CATEGORY_NAME categoryName
-		FROM SHOPPING_CART
+		CATEGORY_NAME categoryName,
+		FILE_PATH || CHANGE_NAME img
+		FROM
+		SHOPPING_CART
 		LEFT JOIN PRODUCT P
 		USING(PRODUCT_NO)
-		JOIN BRAND USING (BRAND_CODE)
-		JOIN PRODUCT_CATEGORY
-		USING (CATEGORY_NO)
+		JOIN BRAND USING
+		(BRAND_CODE)
+		JOIN PRODUCT_CATEGORY USING (CATEGORY_NO)
+		JOIN
+		PRODUCT_ATTACHMENT USING (PRODUCT_NO)
 		WHERE USER_NO = #{userNo}
+		AND FILE_LEVEL= 0
 	</select>
 
 	<insert id="addCart" parameterType="Cart">
 		MERGE INTO SHOPPING_CART
 		USING DUAL
 		ON(USER_NO=#{userNo} AND PRODUCT_NO = #{productNo})
-		WHEN MATCHED THEN
-		UPDATE SET P_AMOUNT = P_AMOUNT+1
-		WHEN NOT MATCHED THEN
+		WHEN
+		MATCHED THEN
+		UPDATE SET P_AMOUNT = P_AMOUNT+#{amount}
+		WHEN NOT MATCHED
+		THEN
 		INSERT (USER_NO,PRODUCT_NO,P_AMOUNT)
 		VALUES(#{userNo},#{productNo},#{amount})
 
 	</insert>
-
+	<delete id="removeCartItem"
+		parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
+		DELETE FROM SHOPPING_CART
+		WHERE USER_NO = #{userNo}
+		AND PRODUCT_NO IN(
+		<foreach collection="items" item="arr" separator=",">
+		#{arr}
+		</foreach>
+		)
+	</delete>
+	<update id="updateCartAmount"
+	parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
+		UPDATE SHOPPING_CART SET
+		P_AMOUNT = P_AMOUNT+#{amount}
+		WHERE PRODUCT_NO = #{productNo}
+		AND USER_NO = #{userNo}
+	</update>
 </mapper>

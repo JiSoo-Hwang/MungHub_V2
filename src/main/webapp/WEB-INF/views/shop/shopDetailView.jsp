@@ -8,9 +8,7 @@
 <meta charset="UTF-8">
 <title>MUNGHUBSHOP</title>
 <style>
-@import
-	url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
-	;
+
 
 .review-star {
 	display: block;
@@ -203,10 +201,6 @@ h2 {
 			var amount = $("#inputQuantity").val();
 			var userNo = "${loginUser.userNo}";
 			
-			console.log(productNo);
-			console.log(amount);
-			console.log(userNo);
-		
 	$.ajax({
 		url : "/pjtMungHub/addCart.sp",
 		type : "post",

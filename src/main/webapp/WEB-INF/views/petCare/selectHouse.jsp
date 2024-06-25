@@ -68,19 +68,19 @@
 	
 	.container {
 	    display: flex;
-	    flex-wrap: wrap; /* 여러 줄로 배치 */
-	    gap: 20px; /* 카드 사이의 간격 */
+	    flex-wrap: wrap; 
+	    gap: 20px; 
 	}
 	
 	.partner-card {
-	    flex: 0 1 calc(50% - 20px); /* 2개씩 정렬, 카드 사이의 간격을 고려 */
-	    display: flex; /* 카드 내부의 레이아웃 */
+	    display: flex; 
 	    align-items: center;
-	    margin-top: 20px;
-	    border: 1px solid #e0e0e0;
+	    margin: 5% 10% 5% 10%; 
+	    border: 1px solid black;
 	    border-radius: 10px;
 	    overflow: hidden;
 	    padding: 10px;
+	    cursor: pointer;
 	}
 	
 	.partner-card img {
@@ -110,7 +110,12 @@
 </head>
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
-
+	
+	<input type="hidden" id="hiddenAddress" name="address">
+	<input type="hidden" id="hiddenStartDate" name="startDate">
+	<input type="hidden" id="hiddenEndDate" name="endDate">
+	<input type="hidden" id="hiddenDaysNight" name="daysNight">
+	
     <header>
     
         <div class="search-bar">
@@ -118,7 +123,7 @@
 		<button type="button" id="addrBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
 		 가까운 장소 찾기
 		</button>
-		<input type="text" id="address" style="width:400px;" readonly placeholder="주소입력">
+		<input type="text" id="inputAddress" style="width:400px;" readonly placeholder="주소입력">
         <!-- 주소 api 모달창으로 -->
         <!-- Modal -->
 		<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -226,36 +231,32 @@
 		    </div>
 		  </div>
 		</div>
+		
+		<div id="pagingArea">
+		
+        </div>
         
-        
-        <div class="partner-card" id="houseList">
+        <div id="houseList">
         
         
         </div>
         
-        
-        
-        
         <div class="partner-card" id="houseList">
             <img src="room-image.jpg" alt="Room Image">
-            <div class="detail-content">
-            	<p class="content">
-            		내용
-            	</p>
-            </div>
             <div class="card-content">
                 <p class="title">아이 휴가는 여기로 보내세요</p>
                 <p class="rating">⭐ 5.0 경기 김포시</p>
                 <p class="price">산책케어 55,000원/24시 ・ 45,000원/당일</p>
             </div>
         </div>
+        
+        
     </section>
-    
     
     <script>
   		//==================== 주소 api ===============================
     	$(function(){
-    		$('#address').on('click',function(){
+    		$('#inputAddress').on('click',function(){
     			$('#addrBtn').click();
     		});
     	});
@@ -297,7 +298,7 @@
 	                
 	               $('#inputBtn').click(function(){
 	            	   var fullAddress = addr+'  '+document.getElementById("sample6_detailAddress").value;
-	            	   $('#address').val(fullAddress);
+	            	   $('#inputAddress').val(fullAddress);
 	            	 //값을 보낸 후 모달창 닫아주기
 						$("#staticBackdrop1").modal('hide'); 
 	               });
@@ -314,6 +315,18 @@
 		
 		//===================== 하우스 리스트 ===================
 		$(function(){
+			houseList();
+			goToPage();
+			$(document).on('click','#houseList .partner-card img',function(){
+				var houseNo = $(this).next('#houseNo').val();
+				console.log(houseNo);
+				location.href="detailHouse.re?houseNo="+houseNo;
+			});
+		});
+			
+			
+			
+		function houseList(){
 			var inputDate = "";
 			var daysNight = "";
 			var endDate = "";
@@ -328,7 +341,7 @@
 				}
 			});
 			$('#searchBtn').click(function(){
-				var address = $("#address").val(); //주소
+				var address = $("#inputAddress").val(); //주소
 				var endDatePlus = parseInt(daysNight);
 				//java.util.Date 로 받았기 때문에, controller에서 sql.Date로 변환예정
 				endDate = new Date(inputDate);
@@ -341,18 +354,47 @@
 						endJavaDate : endDate,
 						stayNo : daysNight
 					},
-					success : function(list){
+					success : function(result){
 						
+						var list = result.houseList; //map에서 꺼내쓰는 방법
+						var pi = result.pi;
+						// Hidden input fields 설정
+			            $('#hiddenAddress').val(address);
+			            $('#hiddenStartDate').val(inputDate);
+			            $('#hiddenEndDate').val(endDate);
+			            $('#hiddenDaysNight').val(daysNight);
+			            
 						var houseList = "";
 						for (var i = 0; i < list.length; i++) {
 							houseList += "<div class='partner-card'>"
-						                + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' alt='Room Image'>"
-						                + "<div class='card-content'>"
-						                + "<p class='title'>" + list[i].introductionSummary + "</p>"
-						                + "<p class='houseAddress'>" + list[i].houseAddress + "</p>"
-						                + "</div>"
-						                + "</div>";
+		                               + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' alt='Room Image'>"
+		                               + "<input id='houseNo' type='hidden' value='" + list[i].houseNo + "'>"
+		                               + "<div class='card-content'>"
+		                               + "<p class='title'>" + list[i].introductionSummary + "</p>"
+		                               + "<p class='houseAddress'>" + list[i].houseAddress + "</p>"
+		                               + "</div>"
+		                               + "</div>";
 						}
+						
+						var pagination = "<ul class='pagination'>";
+			            // 이전버튼
+			            if (pi.currentPage == 1) {
+			                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>◀</a></li>";
+			            } else {
+			                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + (pi.currentPage - 1) + ")'>◀</a></li>";
+			            }
+			            // 페이징번호 반복문
+			            for (var p = pi.startPage; p <= pi.endPage; p++) {
+			                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + p + ")'>" + p + "</a></li>";
+			            }
+			            // 다음버튼
+			            if (pi.currentPage == pi.maxPage) {
+			                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>▶</a></li>";
+			            } else {
+			                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + (pi.currentPage + 1) + ")'>▶</a></li>";
+			            }
+						
+						$('#pagingArea').html(pagination);
 						$('#houseList').html(houseList);
 						console.log('하우스 리스트 불러오기 성공!!');
 					},
@@ -362,13 +404,70 @@
 				});
 				
 			});
-		});
+			
+		};
 		
-		
-		
-		
-		
-		
+		//page 넘버마다 onclick 이벤트를 사용하여 비동기로 페이징이동
+		function goToPage(page) {
+		    var address = $('#hiddenAddress').val();
+		    var startDate = $('#hiddenStartDate').val();
+		    var endDate = $('#hiddenEndDate').val();
+		    var daysNight = $('#hiddenDaysNight').val();
+
+		    $.ajax({
+		        url: "selectHouseList.re",
+		        data: {
+		            address: address,
+		            startDate: startDate,
+		            endJavaDate: endDate,
+		            stayNo: daysNight,
+		            currentPage: page
+		        },
+		        success: function(result) {
+		            var list = result.houseList;
+		            var pi = result.pi;
+
+		            var houseList = "";
+		            for (var i = 0; i < list.length; i++) {
+		            	houseList += "<div class='partner-card'>"
+		                            + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' alt='Room Image'>"
+		                            + "<input id='houseNo' type='hidden' value='" + list[i].houseNo + "'>"
+		                            + "<div class='card-content'>"
+		                            + "<p class='title'>" + list[i].introductionSummary + "</p>"
+		                            + "<p class='houseAddress'>" + list[i].houseAddress + "</p>"
+		                            + "</div>"
+		                            + "</div>";
+		            }
+
+		            var pagination = "<ul class='pagination'>";
+
+		            // 이전버튼
+		            if (pi.currentPage == 1) {
+		                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>◀</a></li>";
+		            } else {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + (pi.currentPage - 1) + ")'>◀</a></li>";
+		            }
+		            // 페이징번호 반복문
+		            for (var p = pi.startPage; p <= pi.endPage; p++) {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + p + ")'>" + p + "</a></li>";
+		            }
+		            // 다음버튼
+		            if (pi.currentPage == pi.maxPage) {
+		                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>▶</a></li>";
+		            } else {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + (pi.currentPage + 1) + ")'>▶</a></li>";
+		            }
+		            pagination += "</ul>";
+
+		            $('#pagingArea').html(pagination);
+		            $('#houseList').html(houseList);
+		            console.log('하우스 리스트 불러오기 성공!!');
+		        },
+		        error: function() {
+		            console.log('통신실패ㅠㅠ');
+		        }
+		    });
+		}
 		
 		
 		//정렬순 필터 입력값
