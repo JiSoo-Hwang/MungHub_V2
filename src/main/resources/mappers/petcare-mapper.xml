@@ -84,6 +84,7 @@
 	<resultMap type="HouseReservation" id="houseReservationResultSet">
 	    <result column="RESERVATION_HOUSE_NO" property="reservationHouseNo"/>
 	    <result column="HOUSE_NO" property="houseNo"/>
+	    <result column="ADDRESS" property="address"/>
 	    <result column="START_DATE" property="startDate"/>
 	    <result column="END_DATE" property="endDate"/>
 	    <result column="STAY_NO" property="stayNo"/>
@@ -104,7 +105,6 @@
 	<resultMap type="House" id="houseResultSet">
 	    <result column="HOUSE_NO" property="houseNo"/>
 	    <result column="OWNER_NAME" property="ownerName"/>
-	    <result column="RESERVATION_DATE" property="reservationDate"/>
 	    <result column="INTRODUCTION_SUMMARY" property="introductionSummary"/>
 	    <result column="HOUSE_ADDRESS" property="houseAddress"/>
 	    <result column="INTRODUCTION_DETAILED" property="introductionDetailed"/>
@@ -114,6 +114,7 @@
 	    <result column="CERTIFICATION" property="certification"/>
 	    <result column="ORIGIN_NAME" property="originName"/>
 	    <result column="FILE_PATH" property="filePath"/>
+	    <result column="STATUS" property="status"/>
 	</resultMap>
 	
 	
@@ -239,11 +240,39 @@
 	<!-- 장기돌봄 집리스트 조건부로 불러오기 -->
 	<select id="selectHouseList" parameterType="HouseReservation" resultMap="houseResultSet">
 		SELECT H.OWNER_NAME, H.HOUSE_ADDRESS, H.INTRODUCTION_SUMMARY,
-        H.ORIGIN_NAME, H.FILE_PATH, H.START_DATE, H.END_DATE
-		FROM HOUSE H
-		WHERE H.START_DATE NOT BETWEEN TO_DATE('2024-07-01', 'YYYY-MM-DD') AND TO_DATE('2024-07-02', 'YYYY-MM-DD')
-		AND H.END_DATE NOT BETWEEN TO_DATE('2024-07-01', 'YYYY-MM-DD') AND TO_DATE('2024-07-02', 'YYYY-MM-DD')
+     		   H.ORIGIN_NAME, H.FILE_PATH, H.HOUSE_NO
+		FROM HOUSE H 
+		WHERE H.HOUSE_ADDRESS LIKE '%'||#{address}||'%'
+		AND NOT EXISTS(
+						SELECT *
+						FROM HOUSE_RESERVATION R
+						WHERE H.HOUSE_NO = R.HOUSE_NO
+						AND R.START_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+						AND R.END_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+					   )
 	</select> 
+	
+	<!-- 페이징바 처리 -->
+	<select id="listCount" resultType="_int">
+		SELECT COUNT(*) FROM HOUSE
+	</select>
+	
+	<!-- 집 상세정보 -->
+	<select id="detailHouse" parameterType="_int" resultMap="houseResultSet">
+		SELECT HOUSE_NO, OWNER_NAME, HOUSE_ADDRESS, INTRODUCTION_SUMMARY, INTRODUCTION_DETAILED,
+			   NEARBY_HOSPITAL, ENVIRONMENT_INFO, SUPPLY_GUIDE, CERTIFICATION, ORIGIN_NAME,
+			   FILE_PATH
+		FROM HOUSE
+		WHERE HOUSE_NO = #{houseNo}
+		AND STATUS = 'Y'
+	</select>
+	
+	<!-- 집 요금정보 -->
+	<select id="selectHousePrice" resultType="HousePrice">
+		SELECT STAY_NO AS stayNo,STAY_NAME AS stayName,PRICE AS price FROM HOUSE_PRICE
+	</select>
+		
+	
 	
 
 </mapper>
