@@ -31,5 +31,11 @@ public interface ShopService {
 	int addCart(Cart c);
 
 
-	ArrayList<Cart> selectCartList(int userNo); 
+	ArrayList<Cart> selectCartList(int userNo);
+
+
+	int removeCartItem(ParameterVo parameter);
+
+
+	int updateCartAmount(ParameterVo parameter); 
 }
