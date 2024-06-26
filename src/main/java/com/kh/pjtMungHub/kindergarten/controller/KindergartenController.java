@@ -71,6 +71,7 @@ public class KindergartenController {
 		return "kindergarten/insertRegView";
 	}
 
+//	트랜잭션 방식 수정할 것
 	@PostMapping("reg.do")
 	public String insertReg(Registration reg, MultipartFile upFile,ArrayList<MultipartFile>vacCert, Model model, HttpSession session) {
 

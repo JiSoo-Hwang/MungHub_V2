@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>${loginUser.name}님의 댕댕이 등록 상담신청 리스트</title>
 <style>
 th {
 	text-align: center;
@@ -21,9 +21,9 @@ td {
 		<table class="table">
 			<thead>
 				<tr>
-					<th>상담 예약 날짜</th>
-					<th>예약 유치원</th>
-					<th>승인 여부</th>
+					<th class="text-center">상담 예약 날짜</th>
+					<th class="text-center">예약 유치원</th>
+					<th class="text-center">승인 여부</th>
 				</tr>
 			</thead>
 			<tbody>

@@ -1,11 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"
+    import="java.util.Date, java.text.SimpleDateFormat"%>
+<%
+	Date today = new Date();
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	String formattedDate = sdf.format(today);
+%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3dcfbff0a780d5171a2a2f039fc60ac0&libraries=services,clusterer,drawing"></script>
+<!-- fullcalender -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
+
+<title>장기돌봄 예약페이지</title>
 <style>
+	@font-face {
+	            font-family: 'MangoDdobak-B';
+	            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-B.woff2') format('woff2');
+	            font-weight: 700;
+	            font-style: normal;
+	}
+	
+	
 	body{
         font-family: arial,sans-serif;
         margin: 0;
@@ -24,10 +42,15 @@
     .introduction p{
         font-size: 16px;
     }
+    .certificate{
+    	display: flex;
+        flex-wrap: wrap; /*한줄에 다 안들어 갈때 다음줄로 이동*/
+    }
     .certificate-item{
-        display: flex;
-        align-items: center;
-        margin-top: 10px;
+         flex: 1;
+        min-width: 100px;
+        text-align: center;
+        margin: 10px;
     }
     .certificate-item img{
         width: 100px;
@@ -46,9 +69,9 @@
         border-radius: 5px;
         font-size: 14px;
     }
-    .services-list{
+    .service-list{
         display: flex;
-        flex-wrap: wrap; /*한줄에 다 안들어 갈때 다음줄로 이동*/
+        flex-wrap: wrap; 
     }
     .service-item{
         flex: 1;
@@ -57,8 +80,8 @@
         margin: 10px;
     }
     .service-item img{
-        width: 50px;
-        height: 50px;
+        width: 100px;
+        height: auto;
     }
 
     .reservation-btn{
@@ -72,138 +95,228 @@
         margin-top: 20px;
         cursor: pointer;
     }
-
-   .pricing-table {
+    
+    .pricing-container {
+        display: flex;
+        flex-wrap: wrap; 
+        justify-content: space-between;
+    }
+    .pricing-item {
+        min-width: 100px;
+        text-align: center;
+        margin: 10px;
+        flex: 1;
+        margin-right: 20px;
+    }
+    .pricing-table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
     }
-
     .pricing-table th, .pricing-table td {
         border: 1px solid #ddd;
         padding: 10px;
         text-align: center;
+        font-family: 'MangoDdobak-B', sans-serif;
+        font-size: 20px;
     }
-
+    .pricing-table td{
+    	cursor:pointer;
+    }
     .pricing-table th {
         background-color: #f1f1f1;
-        font-size: 16px;
     }
-
-    .pricing-table td img {
-        width: 20px;
-        height: 20px;
-        margin-right: 5px;
-        vertical-align: middle;
+    .selected-row {
+	    background-color: #ffcc00 !important;
+	}
+    
+    #calendar {
+        cursor: pointer;
     }
-
-    .pricing-table td {
-        font-size: 16px;
+    .fc-daygrid-day:hover {
+        cursor: pointer;
+    }
+    .fc-day-selected {
+        background-color: #ffcc00 !important;
     }
 
 </style>
 </head>
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
-	
-	House(houseNo=5, ownerName=한지민, introductionSummary=전통적인 집, houseAddress=서울시 강북구
-	, introductionDetailed=전통 한옥 스타일의 집에서 반려동물이 편안하게 지낼 수 있습니다., nearbyHospital=강북동물병원
-	, environmentInfo=한적하고 자연 친화적인 환경입니다., supplyGuide=전통 음식과 물 제공, certification=문화재청 인증
-	, originName=5.png, filePath=resources/uploadFiles/housePhoto/)
+	<input type="hidden" id="formattedDate" value="<%=formattedDate %>">
 	
 	<div class="container">
         <section class="introduction">
-            <h2>자기소개</h2>
+            <h2>보금자리 소개</h2>
             <p>${house.introductionDetailed }</p>
         </section>
 
-        <section class="certificate">
-            <img src="인증 아이콘 사진" alt="인증사진">
-            <img src="인증 아이콘 사진" alt="인증사진">
-            <img src="인증 아이콘 사진" alt="인증사진">
-            <p>${house.certification }</p>
-            <!-- 자세히보기 클릭 시 모달창으로 house 의 certification 의 정보 보여주기 -->
-        </section>
+	<h2>인증정보</h2>
+	<section class="certificate">
+		<c:forEach var="c" items="${cer }">
+				<div class="certificate-item">
+					<img src="${c.filePath }${c.originName}" alt="인증사진">
+	            	<p>${c.certificationName }</p>
+				</div>
+		</c:forEach>
+    </section>
 
-        <section class="environment">
-            <h2>환경정보</h2>
-            <div class="tags">
-                <span>환경정보는 테이블을 하나 더 생성, 키워드 컬럼 추가</span>
-                <span>#1가정 예약</span>
-                <span>#2인이하 가구</span>
-                <span>#빌라</span>
-                <span>#가정집</span>
-                <span>#아파트</span>
-                <span>#단독주택</span>
-                <span>#테라스가 있어요</span>
-                <span>#마당이 있어요</span>
-                <span>#산책로가 있어요</span>
-                <span>#반려동물의 친구가 있어요</span>
-            </div>
-        </section>
+    <section class="environment">
+        <h2>환경정보</h2>
+        <div class="tags">
+        	<c:forEach var="e" items="${env }">
+        		<span>${e.environmentName}</span>
+        	</c:forEach>
+        </div>
+    </section>
 
-        <section class="location">
-            <h2>하우스 위치</h2>
-            <div>맵api 활용</div>
-            <p>house 의 houseAdress</p>
-        </section>
+    <section class="location">
+        <h2>위치</h2>
+        <p>주소 : ${house.houseAddress }</p>
+        <div id="houseLocation" style="width:100%;height:200px;"></div>
+    </section>
 
-        <section class="location">
-            <h2>인근 병원정보</h2>
-            <div>맵api 활용</div>
-            <p>house 의 nearbyHospital</p>
-        </section>
+    <section class="location">
+        <h2>인근 병원정보</h2>
+        <p>${house.nearbyHospital }</p>
+        <div id="hospitalLocation" style="width:100%;height:200px;"></div>
+    </section>
 
-        <section class="services">
-            <div class="services-list">
-                <div class="service-item">
-                    <img src="아이콘사진" alt="">
-                    <p>house 의 suplyGuide</p>
-                </div>
-                <div class="service-item">
-                    <img src="아이콘사진" alt="">
-                    <p>house 의 suplyGuide</p>
-                </div>
-                <div class="service-item">
-                    <img src="아이콘사진" alt="">
-                    <p>house 의 suplyGuide</p>
-                </div>
-                <div class="service-item">
-                    <img src="아이콘사진" alt="">
-                    <p>house 의 suplyGuide</p>
-                </div>
-            </div>
-            
-            <div class="calendar">
+    <section class="services">
+    	<h2>지원가능 서비스</h2>
+        <div class="service-list">
+        	<c:forEach var="s" items="${sup }">
+        		<div class="service-item">
+	                <img src="${s.filePath }${s.originName}" alt="${s.supplyGuideName }">
+	                <p>${s.supplyGuideName }</p>
+            	</div>
+        	</c:forEach>
+        </div>
+    </section>
+        
+        <h2>인증정보</h2>
+		<section class="certificate">
+			<c:forEach var="c" items="${cer }">
+					<div class="certificate-item">
+						<img src="${c.filePath }${c.originName}" alt="인증사진">
+		            	<p>${c.certificationName }</p>
+					</div>
+			</c:forEach>
+	    </section>
 
-            </div>
+        <section class="pricing">
+		    <h2>예약하기</h2>
+		    <div class="pricing-container">
+		        <div class="pricing-item">
+		            <table class="pricing-table">
+		            <h4>요금안내</h4>
+		                <thead>
+		                    <tr>
+		                        <th>숙박일정</th>
+		                        <th>요금</th>
+		                    </tr>
+		                </thead>
+		                <tbody>
+		                    <c:forEach var="p" items="${price}">
+		                         <tr class="click-row" name="amount" value="${p.price }">
+		                            <td>${p.stayName}</td>
+		                            <td>${p.price}</td>
+		                        </tr>
+		                    </c:forEach>
+		                </tbody>
+		            </table>
+		        </div>
+		        <div class="pricing-item">
+		            <div id="calendar"></div>
+		        </div>
+		        <div class="pricing-item">
+		            <input type="text" id="inputDate">
+		        </div>
+		    </div>
+		</section>
+		
+        <button class="reservation-btn">예약 요청</button>
 
-            <!--펫타입 가능 컬럼추가-->
-            <section class="pricing">
-                <h2>이용 금액</h2>
-                <table class="pricing-table">
-                    <thead>
-                        <tr>
-                            <th>숙박일정</th>
-                            <th>요금</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    	<c:forEach var="p" items="${price}">
-                    		<tr>
-	                            <td><img src="small_dog.png" alt=""><br> ${p.stayName } </td>
-	                            <td>${p.price }</td>
-	                        </tr>
-                    	</c:forEach>
-                    </tbody>
-                </table>
-            </section>
-
-
-            <button class="reservation-btn">예약 요청</button>
-
-        </section>
+      
     </div>
+    
+    <script>
+	    $(function(){
+			implementMap('houseLocation','${house.houseAddress}');
+			setTimeout(function(){ 
+				implementMap('hospitalLocation','${house.nearbyHospital}');
+	        }, 2000);
+		});
+    
+	    function implementMap(containerId,inputAddress){
+			var mapContainer = document.getElementById(containerId), // 지도를 표시할 div 
+		    mapOption = {
+		        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+		        level: 4 // 지도의 확대 레벨
+		    };  
+			// 지도를 생성합니다    
+			var map = new kakao.maps.Map(mapContainer, mapOption); 
+			// 주소-좌표 변환 객체를 생성합니다
+			var geocoder = new kakao.maps.services.Geocoder();
+			
+			// 주소로 좌표를 검색합니다
+			geocoder.addressSearch(inputAddress, function(result, status) {
+			    // 정상적으로 검색이 완료됐으면 
+			     if (status === kakao.maps.services.Status.OK) {
+			        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+			        // 결과값으로 받은 위치를 마커로 표시합니다
+			        var marker = new kakao.maps.Marker({
+			            map: map,
+			            position: coords
+			        });
+			        // 인포윈도우로 장소에 대한 설명을 표시합니다
+			        var infowindow = new kakao.maps.InfoWindow({
+			            content: '<div style="width:150px;font-size:10px;text-align:center;padding:0px 0;">'+inputAddress+'</div>'
+			        });
+			        infowindow.open(map, marker);
+			        setTimeout(function(){ 
+			        	map.relayout();
+			        	// 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+				        map.setCenter(coords);
+			        }, 1000);
+			    }
+			});    
+			
+		};
+		
+		//============= 요금표 ===================
+		$(function(){
+			$('.click-row').on('click',function(){
+				$('.click-row').removeClass('selected-row');
+				$(this).addClass('selected-row');
+			});
+		});
+		
+		
+		//============== 달력 ===================
+		$(function() {
+			var formattedDate = $('#formattedDate').val(); //오늘날짜기준
+		    var calendarEl = $('#calendar')[0];
+		    var calendar = new FullCalendar.Calendar(calendarEl, {
+		        initialView: 'dayGridMonth',
+		        locale: 'ko', // 한글 로케일 설정
+		        validRange:{ //오늘날짜 이전 막아주기
+		        	start : formattedDate
+		        },
+		        dateClick: function(info) {
+		            $('#inputDate').val(info.dateStr);
+		            $('.fc-daygrid-day').removeClass('fc-day-selected'); //모든셀 표시제거
+		            $(info.dayEl).addClass('fc-day-selected'); //클릭된 날짜만 표시
+		        }
+		    });
+		    setTimeout(function() {
+		        calendar.render();
+		    }, 5000);
+		});
+
+		
+    </script>
 	
 </body>
 </html>

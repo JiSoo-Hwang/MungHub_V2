@@ -43,7 +43,7 @@ li {
 							<div class="card-img-overlay">
 
 								<p class="card-text">강아지 사진을 올려주세요!</p>
-								<input type="file" name="reupFile" id="upFile" onchange="loadImg(this,1);"></input> <label
+								<input type="file" name="reupFile" id="upFile" onchange="loadImg(this,1);" required></input> <label
 									for="upFile"><img
 									src="/pjtMungHub/${registration.changeName}"
 									alt="" style="width: 500px"></label>

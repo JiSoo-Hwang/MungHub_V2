@@ -9,6 +9,9 @@
 	<typeAliases>
 
 	
+	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.SupplyGuide" alias="SupplyGuide"/>
+	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Environment" alias="Environment"/>
+	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Certification" alias="Certification"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.HousePrice" alias="HousePrice"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.House" alias="House"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.HouseReservation" alias="HouseReservation"/>
@@ -26,6 +29,8 @@
 	<typeAlias type="com.kh.pjtMungHub.kindergarten.model.vo.Registration" alias="Registration"/>
 	<typeAlias type="com.kh.pjtMungHub.kindergarten.model.vo.Vaccine" alias="Vaccine"/>
 	<typeAlias type="com.kh.pjtMungHub.shop.model.vo.Cart" alias="Cart"/>
+	<typeAlias type="com.kh.pjtMungHub.pet.model.vo.Breed" alias="Breed"/>
+	<typeAlias type="com.kh.pjtMungHub.wedding.model.vo.Wedding" alias="Wedding"/>
 	</typeAliases>
 	
 </configuration>

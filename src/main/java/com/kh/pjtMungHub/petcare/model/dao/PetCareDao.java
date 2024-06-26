@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
+import com.kh.pjtMungHub.petcare.model.vo.Certification;
+import com.kh.pjtMungHub.petcare.model.vo.Environment;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
@@ -16,6 +18,7 @@ import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
 import com.kh.pjtMungHub.petcare.model.vo.Reservation;
+import com.kh.pjtMungHub.petcare.model.vo.SupplyGuide;
 
 @Repository
 public class PetCareDao {
@@ -78,6 +81,21 @@ public class PetCareDao {
 	//집 요금정보
 	public ArrayList<HousePrice> selectHousePrice(SqlSessionTemplate sqlSession) {
 		return (ArrayList)sqlSession.selectList("petcareMapper.selectHousePrice");
+	}
+
+	//인증정보
+	public ArrayList<Certification> selectCertification(SqlSessionTemplate sqlSession, int houseNo) {
+		return (ArrayList)sqlSession.selectList("petcareMapper.selectCertification",houseNo);
+	}
+
+	//환경정보
+	public ArrayList<Environment> selectEnvironment(SqlSessionTemplate sqlSession, int houseNo) {
+		return (ArrayList)sqlSession.selectList("petcareMapper.selectEnvironment",houseNo);
+	}
+
+	//지원서비스 정보
+	public ArrayList<SupplyGuide> selectSupplyGuide(SqlSessionTemplate sqlSession, int houseNo) {
+		return (ArrayList)sqlSession.selectList("petcareMapper.selectSupplyGuide",houseNo);
 	}
 
 	

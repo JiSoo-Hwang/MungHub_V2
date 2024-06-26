@@ -127,8 +127,9 @@ li {
 								<th>만남방식</th>
 								<td>
 								<select name="meetingMethod" required>
-									<option value="상대방이 방문">상대방 댕댕이가 방문</option>
-									<option value="우리가 방문">우리가 댕댕이를 찾아가기</option>
+									<option>만남방식을 선택해주세요</option>
+									<option value="강아지방문">상대방 댕댕이가 방문</option>
+									<option value="직접방문">우리가 댕댕이를 찾아가기</option>
 								</select>
 								</td>
 							</tr>
