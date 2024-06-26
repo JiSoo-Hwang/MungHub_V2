@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class HouseReservation {
     private int reservationHouseNo; // RESERVATION_HOUSE_NO NUMBER PRIMARY KEY
     private String houseNo; // HOUSE_NO VARCHAR2(50) NOT NULL
+    private String address;
     private Date startDate; // START_DATE DATE NOT NULL
     private Date endDate; // END_DATE DATE NOT NULL
     private int stayNo; // STAY_NO NUMBER NOT NULL

@@ -1,7 +1,5 @@
 package com.kh.pjtMungHub.petcare.model.vo;
 
-import java.sql.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +10,6 @@ import lombok.NoArgsConstructor;
 public class House {
     private int houseNo; // HOUSE_NO NUMBER PRIMARY KEY
     private String ownerName; // OWNER_NAME VARCHAR2(50) NOT NULL
-    private Date startDate; // RESERVATION_DATE DATE NOT NULL
-    private Date endDate; // RESERVATION_DATE DATE NOT NULL
     private String introductionSummary; // INTRODUCTION_SUMMARY VARCHAR2(255) NOT NULL
     private String houseAddress; // HOUSE_ADDRESS VARCHAR2(255) NOT NULL
     private String introductionDetailed; // INTRODUCTION_DETAILED VARCHAR2(4000) NOT NULL

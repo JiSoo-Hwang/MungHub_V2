@@ -109,6 +109,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+    @import
+	url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
+	;
         #header {
             padding: 10px;
             position: sticky;
@@ -211,7 +214,7 @@ clear: both;
 				<li><a href="map.do">지도보기</a></li>
                 <li><a href="sitter.re">단기돌봄예약</a> </li>
                 <li><a href="houseList.re">장기돌봄예약</a> </li>
-                <li><a href="">하위 메뉴1</a> </li>
+                <li><a href="wedList.wd">웨딩플래너</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
             </ul>
             <ul>

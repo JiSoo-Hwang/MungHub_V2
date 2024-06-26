@@ -11,7 +11,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
 import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
+import com.kh.pjtMungHub.pet.model.vo.Breed;
+import com.kh.pjtMungHub.pet.model.vo.Pet;
 import com.kh.pjtMungHub.petcare.model.vo.Reservation;
+import com.kh.pjtMungHub.wedding.model.vo.Wedding;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,20 +39,37 @@ public class LoggerTest {
 //		
 //		int result = sqlSession.update("kindergartenMapper.rejectReg",registration);
 //		log.debug("수정 되었는가? : {}",result);
-		ArrayList<Vaccine>vacList = new ArrayList<Vaccine>();
-		Vaccine v = Vaccine.builder()
-							.petNo("8")
-							.originName("D_1.jpg")
-							.changeName("2024062116375136931.jpg")
-							.build();
-		vacList.add(v);
-		int result = 1;
-		for(Vaccine vac:vacList) {
-			result *= sqlSession.insert("kindergartenMapper.insertVac",vac);
-		}
+//		ArrayList<Vaccine>vacList = new ArrayList<Vaccine>();
+//		Vaccine v = Vaccine.builder()
+//							.petNo("8")
+//							.originName("D_1.jpg")
+//							.changeName("2024062116375136931.jpg")
+//							.build();
+//		vacList.add(v);
+//		int result = 1;
+//		for(Vaccine vac:vacList) {
+//			result *= sqlSession.insert("kindergartenMapper.insertVac",vac);
+//		}
+//		
+//		log.debug("입력되었는가? : {}",result);
 		
-		log.debug("입력되었는가? : {}",result);
-//		Registration registration = Registration.builder()
+//		ArrayList<Breed> breedList = (ArrayList)sqlSession.selectList("weddingMapper.selectBreeds");
+//		for(Breed b : breedList) {
+//			log.debug("견종 : {}",b);
+//		}
+		
+//		ArrayList<Wedding>weddings = (ArrayList)sqlSession.selectList("weddingMapper.selectWeddings");
+//		for(Wedding w:weddings) {
+//			log.debug("결혼 : {}",w);
+//		}
+//		int weddingNo = 3;
+//		Wedding wedding = sqlSession.selectOne("weddingMapper.selectWedding",weddingNo);
+//		log.debug("결혼 정보 : {}",wedding);
+		
+		int userNo = 1;
+		Pet p = sqlSession.selectOne("weddingMapper.selectPet",userNo);
+		log.debug("강쥐 정보 : {}",p);
+		//		Registration registration = Registration.builder()
 //												.petIntro("귀여운 댕댕이")
 //												.petNote("귀여워쥬금")
 //												.originName("D_6.jpg")

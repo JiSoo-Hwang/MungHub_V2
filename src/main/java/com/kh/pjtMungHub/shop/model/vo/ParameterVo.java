@@ -15,4 +15,11 @@ public class ParameterVo {
 
 	private ArrayList<Attachment> atList;
 	private String justifying;
+	
+	private String[] items;
+	private int userNo;
+	private int productNo;
+	private int amount;
+	
+	private ArrayList<Integer> checkedItem;
 }

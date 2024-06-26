@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,13 +16,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.pjtMungHub.common.model.vo.PageInfo;
+import com.kh.pjtMungHub.common.template.Pagination;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.service.PetCareServiceImpl;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
 import com.kh.pjtMungHub.petcare.model.vo.House;
+import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
@@ -124,24 +129,50 @@ public class PetCareController {
 	
 	//장기돌봄 예약 리스트로 이동
 	@RequestMapping("houseList.re")
-	public String selectHouse() {
+	public String selectHouse(@RequestParam(value="currentPage",defaultValue="1")int currentPage
+							 ,Model model) {
 		
+		model.addAttribute(currentPage);
 		return "petCare/selectHouse";
 	}
 	
 	//장기돌봄 예약 리스트로 이동
 	@ResponseBody
 	@RequestMapping(value="selectHouseList.re",produces="application/json;charset=UTF-8")
-	public ArrayList<House> selectHouseList(HouseReservation houseRe,Date endJavaDate) {
+	public HashMap<String,Object> selectHouseList(@RequestParam(value="currentPage",defaultValue="1")int currentPage
+										   ,HouseReservation houseRe,Date endJavaDate) {
+		
+		int listCount = petCareService.listCount();
+		int pageLimit = 3;
+		int boardLimit = 3;
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); //날짜형식
 		String formatDate = sdf.format(endJavaDate); //날짜형식으로 적용
 		java.sql.Date sqlDate = java.sql.Date.valueOf(formatDate); //sql 형식으로 변환 성공!!
 		houseRe.setEndDate(sqlDate); //필드에 적용
 		
-		ArrayList<House> houseList = petCareService.selectHouseList(houseRe);
+		String address = houseRe.getAddress().substring(0,2); //주소 앞2글자
+		houseRe.setAddress(address);
 		
-		return houseList;
+		ArrayList<House> houseList = petCareService.selectHouseList(houseRe,pi);
+		
+		HashMap<String,Object> result = new HashMap<>(); //ArrayList 와 pi를 같이 보내려면 map 을 활용
+		result.put("houseList",houseList);
+		result.put("pi", pi);
+		
+		return result;
+	}
+	
+	//집 상세정보 페이지 이동 및 정보전달
+	@RequestMapping("detailHouse.re")
+	public String detailHouse(int houseNo,Model model) {
+		
+		ArrayList<HousePrice> price = petCareService.selectHousePrice();
+		House house = petCareService.detailHouse(houseNo);//집 상세정보
+		model.addAttribute("price",price);
+		model.addAttribute("house", house);
+		return "petCare/detailHouse";
 	}
 	
 	

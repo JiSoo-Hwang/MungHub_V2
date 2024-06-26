@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -128,29 +130,75 @@ public class ShopController {
 		
 	}
 	
-	@GetMapping("cart/{userNo}")
-	public ModelAndView cartList(ModelAndView mv,
-			@PathVariable int userNo) {
+	@GetMapping("cart.sp")
+	public String cart() {
+		
+		return "shop/shoppingCart";
+	}
+	
+	@ResponseBody
+	@GetMapping(value="cartList.sp",produces="application/json;charset=UTF-8")
+	public ArrayList<Cart> cartList(int userNo) {
 		
 		ArrayList<Cart> cList = shopService.selectCartList(userNo);
 	
-		mv.addObject("cList",cList);
-		mv.setViewName("shop/shoppingCart");
-		return mv;
+		return cList;
 	}
-	
+	@ResponseBody
+	@PostMapping("updateCartAmount.sp")
+	public int updateCartAmount(@RequestParam int productNo
+								,@RequestParam int userNo
+								,@RequestParam int amount) {
+						
+		ParameterVo parameter = ParameterVo.builder()
+				.productNo(productNo)
+				.userNo(userNo)
+				.amount(amount)
+				.build();
+		
+		int result=shopService.updateCartAmount(parameter);
+		
+		return result;
+	}
 	
 	@PostMapping("addCart.sp")
 	@ResponseBody
 	public int addCart(Cart c) {
-		
-		System.out.println(c);
 		
 		int result=shopService.addCart(c);
 		
 		return result;
 	}
 	
+	@PostMapping("removeCartItem.sp")
+	@ResponseBody
+	public int removeCartItem(@RequestParam String[] items,@RequestParam int userNo) {
+		
+		ParameterVo parameter = ParameterVo.builder()
+				.items(items)
+				.userNo(userNo)
+				.build();
+		
+		int result=shopService.removeCartItem(parameter);
+		
+		return result;
+	}
+	
+	@PostMapping("order.sp")
+	public ModelAndView productOrder(ModelAndView mv ,
+			@RequestParam ArrayList<Integer> chooseOrNot,
+			@RequestParam int userNo) {
+		
+		ParameterVo prameter = ParameterVo.builder()
+				.userNo(userNo)
+				.checkedItem(chooseOrNot)
+				.build();
+		
+		
+		
+		mv.setViewName("shop/orderPage");
+		return mv;
+	}
 	
 	public String saveFile(MultipartFile upfile
 						  ,HttpSession session
