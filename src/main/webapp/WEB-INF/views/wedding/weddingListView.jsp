@@ -52,7 +52,7 @@
                                 <p>왕자님 </p>
                             </c:otherwise>
                         </c:choose>
-                        <a href="detail.wd?weddingNo=${w.weddingNo }" class="btn btn-primary">상세보기</a>
+                        <a href="info.wd?weddingNo=${w.weddingNo }" class="btn btn-primary">상세보기</a>
                     </div>
                 </div>
         </c:forEach>

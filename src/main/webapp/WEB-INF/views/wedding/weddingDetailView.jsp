@@ -110,8 +110,8 @@ li {
 									</c:when>
 									<c:when test="${wedding.approval eq 'R' }">
 										<tr>
-											<th>승인여부</th>
-											<td>상담이 거절되었습니다...</td>
+											<th>수락여부</th>
+											<td>신청이 거절되었습니다...</td>
 										</tr>
 										<tr> 
 											<th>거절 사유</th>
@@ -121,7 +121,7 @@ li {
 									<c:otherwise>
 										<tr>
 											<th>승인여부</th>
-											<td>승인완료! 상담일날 뵈어요^^</td>
+											<td>신청이 승인되었습니다^-^! ${wedding.petName }가 좋은 짝을 만나기를 바랍니다!</td>
 										</tr>
 																		<tr> 
 								<td> </td>
@@ -139,7 +139,7 @@ li {
 								</tr>
 									</c:otherwise>
 								</c:choose>
-																<tr>
+								<tr>
 									<td></td>
 									<td><br> <br> <br>
 										<br> <br> <br>

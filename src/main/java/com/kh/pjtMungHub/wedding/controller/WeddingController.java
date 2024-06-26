@@ -58,6 +58,8 @@ public class WeddingController {
 		return mv;
 	}
 	
+	
+	//최초 웨딩플래너 등록 신청시 상세 뷰페이지
 	@GetMapping("detail.wd")
 	public ModelAndView selectWedding(int weddingNo, ModelAndView mv ) {
 		Wedding w = service.selectWedding(weddingNo);
@@ -66,6 +68,16 @@ public class WeddingController {
 		return mv;
 	}
 	
+	//등록된 신랑/신부 상세 뷰페이지
+	@GetMapping("info.wd")
+	public ModelAndView selectWeddingInfo(int weddingNo, ModelAndView mv) {
+		Wedding w = service.selectWedding(weddingNo);
+		mv.addObject("wedding",w)
+		.setViewName("wedding/weddingInfoView");
+		return mv;
+	}
+	
+	//최초 웨딩플래너 등록 신청페이지 이동
 	@GetMapping("insert.wd")
 	public String insertWeddingForm(HttpSession session, Model model) {
 		Member m = (Member)session.getAttribute("loginUser");
@@ -75,6 +87,7 @@ public class WeddingController {
 		return "wedding/insertWeddingView";
 	}
 	
+	//최초 웨딩플래너 등록 신청
 	@PostMapping("insert.wd")
 	public String insertWedding(Wedding w, MultipartFile upFile, ArrayList<MultipartFile>vacCert, Model model, HttpSession session) {
 		if(!upFile.getOriginalFilename().equals("")) {
@@ -106,7 +119,7 @@ public class WeddingController {
 	@GetMapping("admin.wd")
 	public ModelAndView wedManager(ModelAndView mv) {
 		ArrayList<Wedding>regList = service.selectRegList();
-		mv.addObject("weddingList", regList).setViewName("wedding/weddingRegListView");
+		mv.addObject("weddingList", regList).setViewName("wedding/weddingRegListView4admin");
 		return mv;
 	}
 	

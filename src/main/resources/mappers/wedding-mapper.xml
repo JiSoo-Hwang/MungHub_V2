@@ -45,6 +45,7 @@ SELECT WEDDING_NO weddingNo
 ,ORIGIN_NAME originName
 ,CHANGE_NAME changeName
 ,APPROVAL approval
+,REASON reason
 FROM WEDDING W, PET P, BREED B, MEMBER M
 WHERE W.PET_NO = P.PET_NO
 AND B.BREED_ID = P.BREED_ID
@@ -76,7 +77,8 @@ VALUES(SEQ_WED.NEXTVAL
 ,#{petNote}
 ,#{originName}
 ,#{changeName}
-,DEFAULT)
+,DEFAULT
+,NULL)
 
 </insert>
 
