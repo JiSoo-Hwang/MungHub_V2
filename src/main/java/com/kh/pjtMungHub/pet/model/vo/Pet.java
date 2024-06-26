@@ -17,5 +17,4 @@ private String petName;//	PET_NAME
 private int petAge;//	PET_AGE
 private String petGender;//	PET_GENDER
 private double weight;//	WEIGHT
-private int photoNo;//	PHOTO_NO
 }

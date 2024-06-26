@@ -1,11 +1,13 @@
 package com.kh.pjtMungHub.wedding.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 import com.kh.pjtMungHub.wedding.model.dao.WeddingDao;
@@ -44,5 +46,32 @@ public class WeddingServiceImpl implements WeddingService{
 	public Pet selectPet(int userNo) {
 		return dao.selectPet(sqlSession,userNo);
 	}
+	
+	//신규 웨딩플랜 신청 추가 메서드
+	@Override
+	public int insertWedding(Wedding w, ArrayList<Vaccine> vacList) {
+		return dao.insertWedding(sqlSession,w,vacList);
+	}
+	
+	//웨딩플랜 신청 내역 조회 메서드
+	@Override
+	public ArrayList<Wedding> selectRegList() {
+		return dao.selectRegList(sqlSession);
+	}
+
+	//웨딩플랜 신청 거절 메서드
+	@Override
+	public int rejectReg(Wedding w) {
+		return dao.rejectReg(sqlSession,w);
+	}
+
+	//웨딩플랜 신청 승인 메서드
+	@Override
+	public int approveReg(int weddingNo) {
+	
+		return dao.approveReg(sqlSession,weddingNo);
+	}
+
+
 
 }

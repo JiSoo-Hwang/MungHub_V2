@@ -62,13 +62,16 @@ public class LoggerTest {
 //		for(Wedding w:weddings) {
 //			log.debug("결혼 : {}",w);
 //		}
-//		int weddingNo = 3;
-//		Wedding wedding = sqlSession.selectOne("weddingMapper.selectWedding",weddingNo);
-//		log.debug("결혼 정보 : {}",wedding);
+		int weddingNo = 13;
+		Wedding wedding = sqlSession.selectOne("weddingMapper.selectWedding",weddingNo);
+		log.debug("결혼 정보 : {}",wedding);
+//		int userNo = 6;
+//		Pet pet = sqlSession.selectOne("weddingMapper.selectPet",userNo);
+//		log.debug("반려견 정보 : {}",pet);
 		
-		int userNo = 1;
-		Pet p = sqlSession.selectOne("weddingMapper.selectPet",userNo);
-		log.debug("강쥐 정보 : {}",p);
+//		int userNo = 1;
+//		Pet p = sqlSession.selectOne("weddingMapper.selectPet",userNo);
+//		log.debug("강쥐 정보 : {}",p);
 		//		Registration registration = Registration.builder()
 //												.petIntro("귀여운 댕댕이")
 //												.petNote("귀여워쥬금")
