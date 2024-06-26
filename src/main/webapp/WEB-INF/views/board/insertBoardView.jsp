@@ -33,7 +33,7 @@
     <div class="content">
         <br><br>
         <div class="innerOuter">
-            <h2>게시글 작성하기(꾸짖을 갈 입니다)</h2>
+            <h2>게시글 작성하기</h2>
             <br>
 
             <form id="enrollForm" method="post" action="insert.bo" enctype="multipart/form-data">

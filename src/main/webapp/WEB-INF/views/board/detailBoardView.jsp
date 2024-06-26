@@ -36,20 +36,28 @@
             <h2>게시글 상세보기</h2>
             <br>
 
-            <a class="btn btn-secondary" style="float:right;" href="">목록으로</a>
+            <a class="btn btn-secondary" style="float:right;" href="list.bo">목록으로</a>
             <br><br>
 
             <table id="contentArea" algin="center" class="table">
                 <tr>
                     <th width="100">제목</th>
-                    <td colspan="3">${b.boardTitle }</td>
+                    <td colspan="3">${b.boardTitle}</td>
                 </tr>
                 <tr>
                     <th>작성자</th>
                     <td>${b.boardWriter }</td>
+                    <th>카테고리</th>
+                    <td>${b.categoryName }</td>
+                    <th>조회수</th>
+                    <td>${b.count }</td>
+                    <th>추천수</th>
+                    <td>${b.recommend }</td>
                     <th>작성일</th>
-                    <td>${b.createDate }</td>
+                    <td>${b.uploadDate }</td>
                 </tr>
+                
+                <%--
                 <tr>
                     <th>첨부파일</th>
                     <td colspan="3">
@@ -64,12 +72,15 @@
                     	
                     </td>
                 </tr>
+                --%>
                 <tr>
                     <th>내용</th>
-                    <td colspan="3"></td>
+                    <td colspan="3">${b.boardContent}</td>
                 </tr>
                 <tr>
-                    <td colspan="4"><p style="height:150px;">${b.boardContent}</p></td>
+                    <td colspan="4">
+                    <p style="height:150px;">${b.boardContent}</p>
+                    </td>
                 </tr>
             </table>
             <br>
@@ -93,7 +104,7 @@
 <%--             	<input type="hidden" value="${b.boardNo }" name="boardNo"> --%>
 <!--             	<input type="submit"> -->
 <!--             </form> -->
-            
+            <!-- 
             <script>
             	//삭제하기 버튼을 눌렀을때 삭제 처리를 post 방식으로 진행하기
             	//mapping 주소만으로 쿼리스트링을 전달해버리면 삭제가 되어버리는 문제 발생 
@@ -130,13 +141,14 @@
             		
             	});
             </script>
+             -->
             <!--
             	댓글 기능 구현하기 ajax이용하여 
             	replyList 메소드명 사용하기 	
             
             -->
             <script>
-            	$(function(){
+            	/*$(function(){
             		replyList();
             		
             		//댓글작성 
@@ -170,13 +182,12 @@
                 	});
             	
             	});
-            	
-            	
+            	*/
+            	/*
             	
             	//댓글 목록 비동기로 조회해오기
             	
             	function replyList(){
-            		
             		$.ajax({
             			url : "replyList.bo",
             			data : {
@@ -205,13 +216,10 @@
             			}
             			
             		});
-            		
-            	}
-  
-            
+            	}*/
             </script>
             
-            
+            <!-- 
             <table id="replyArea" class="table" align="center">
                 <thead>
                 	<c:choose>
@@ -239,10 +247,11 @@
                    
                 </tbody>
             </table>
+             -->
+    
         </div>
         <br><br>
     </div>
-    
     
     
 </body>

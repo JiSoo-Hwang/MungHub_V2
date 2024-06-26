@@ -38,4 +38,9 @@ public class BoardDao {
 		return sqlSession.selectOne("boardMapper.selectBoard",boardNo);
 	}
 
+	public int insertBoard(SqlSessionTemplate sqlSession,int boardNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("boardMapper.insertBoard",boardNo);
+	}
+
 }
