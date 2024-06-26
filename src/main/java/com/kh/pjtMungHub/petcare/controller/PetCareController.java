@@ -25,6 +25,8 @@ import com.kh.pjtMungHub.common.template.Pagination;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.service.PetCareServiceImpl;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
+import com.kh.pjtMungHub.petcare.model.vo.Certification;
+import com.kh.pjtMungHub.petcare.model.vo.Environment;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
@@ -32,7 +34,11 @@ import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
 import com.kh.pjtMungHub.petcare.model.vo.Reservation;
+import com.kh.pjtMungHub.petcare.model.vo.SupplyGuide;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class PetCareController {
 	
@@ -168,11 +174,24 @@ public class PetCareController {
 	@RequestMapping("detailHouse.re")
 	public String detailHouse(int houseNo,Model model) {
 		
-		ArrayList<HousePrice> price = petCareService.selectHousePrice();
-		House house = petCareService.detailHouse(houseNo);//집 상세정보
-		model.addAttribute("price",price);
-		model.addAttribute("house", house);
+		House house = petCareService.detailHouse(houseNo); //집
+		ArrayList<HousePrice> price = petCareService.selectHousePrice(); //요금
+		ArrayList<Certification> cer = petCareService.selectCertification(houseNo);//인증
+		ArrayList<Environment> env = petCareService.selectEnvironment(houseNo);//환경
+		ArrayList<SupplyGuide> sup = petCareService.selectSupplyGuide(houseNo);//지원서비스
+		
+		model.addAttribute("house", house); //집번호,집주인이름,주소,간단소개,자세한소개,근처병원,사진이름/경로
+		model.addAttribute("price",price); //숙박 일정에 따른 요금정보 (ex : 1박2일 = 4만원..)
+		model.addAttribute("cer",cer); //인증정보(ex: 신원인증..)
+		model.addAttribute("env",env); //환경정보(ex: #1인가구,#단독주택..)
+		model.addAttribute("sup",sup); //지원서비스(ex: 산책,응급처치..)
 		return "petCare/detailHouse";
+	}
+	
+	//맵이동
+	@RequestMapping("mapTest.do")
+	public String mapTest() {
+		return "petCare/mapTest";
 	}
 	
 	

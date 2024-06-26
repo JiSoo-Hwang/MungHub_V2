@@ -10,6 +10,8 @@ import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.dao.PetCareDao;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
+import com.kh.pjtMungHub.petcare.model.vo.Certification;
+import com.kh.pjtMungHub.petcare.model.vo.Environment;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
@@ -17,6 +19,7 @@ import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
 import com.kh.pjtMungHub.petcare.model.vo.Reservation;
+import com.kh.pjtMungHub.petcare.model.vo.SupplyGuide;
 
 @Service
 public class PetCareServiceImpl implements PetCareService {
@@ -91,6 +94,24 @@ public class PetCareServiceImpl implements PetCareService {
 	@Override
 	public ArrayList<HousePrice> selectHousePrice() {
 		return petCareDao.selectHousePrice(sqlSession);
+	}
+
+	//인증정보
+	@Override
+	public ArrayList<Certification> selectCertification(int houseNo) {
+		return petCareDao.selectCertification(sqlSession,houseNo);
+	}
+
+	//환경정보
+	@Override
+	public ArrayList<Environment> selectEnvironment(int houseNo) {
+		return petCareDao.selectEnvironment(sqlSession,houseNo);
+	}
+
+	//지원서비스 정보
+	@Override
+	public ArrayList<SupplyGuide> selectSupplyGuide(int houseNo) {
+		return petCareDao.selectSupplyGuide(sqlSession,houseNo);
 	}
 
 	
