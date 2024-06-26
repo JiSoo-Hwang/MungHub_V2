@@ -16,6 +16,7 @@
 		<result column="STATUS" property="status"/>
 	</resultMap>
 	
+	
 	<select id="listCount" resultType="_int" >
 		SELECT COUNT(*)
 		FROM BOARD

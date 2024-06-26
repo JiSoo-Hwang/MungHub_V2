@@ -59,7 +59,7 @@ public class BoardController {
 		//조회수가 제대로 증가되었다면 상세조회 
 		if(result>0) {
 			Board b = boardService.selectBoard(boardNo);
-			mv.addObject("b",b).setViewName("board/boardDetailView");
+			mv.addObject("b",b).setViewName("board/detailBoardView");
 		}else {
 			mv.addObject("errorMsg","상세조회 실패!");
 		}

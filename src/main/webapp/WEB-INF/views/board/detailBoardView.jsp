@@ -36,22 +36,29 @@
             <h2>게시글 상세보기</h2>
             <br>
 
-            <a class="btn btn-secondary" style="float:right;" href="">목록으로</a>
+            <a class="btn btn-secondary" style="float:right;" href="list.bo">목록으로</a>
             <br><br>
 
             <table id="contentArea" algin="center" class="table">
                 <tr>
                     <th width="100">제목</th>
-                    <td colspan="3">${b.boardTitle }</td>
+                    <td colspan="3">${b.boardTitle}</td>
                 </tr>
                 <tr>
                     <th>작성자</th>
                     <td>${b.boardWriter }</td>
+                    <th>카테고리</th>
+                    <td>${b.categoryName }</td>
+                    <th>조회수</th>
+                    <td>${b.count }</td>
+                    <th>추천수</th>
+                    <td>${b.recommend }</td>
                     <th>작성일</th>
                     <td>${b.uploadDate }</td>
                 </tr>
                 
-                <!--<tr>
+                <%--
+                <tr>
                     <th>첨부파일</th>
                     <td colspan="3">
                     	<c:choose>
@@ -64,13 +71,16 @@
                     	</c:choose>
                     	
                     </td>
-                </tr>-->
+                </tr>
+                --%>
                 <tr>
                     <th>내용</th>
-                    <td colspan="3"></td>
+                    <td colspan="3">${b.boardContent}</td>
                 </tr>
                 <tr>
-                    <td colspan="4"><p style="height:150px;">${b.boardContent}</p></td>
+                    <td colspan="4">
+                    <p style="height:150px;">${b.boardContent}</p>
+                    </td>
                 </tr>
             </table>
             <br>
@@ -138,7 +148,7 @@
             
             -->
             <script>
-            	$(function(){
+            	/*$(function(){
             		replyList();
             		
             		//댓글작성 
@@ -172,8 +182,8 @@
                 	});
             	
             	});
-            	
-            	
+            	*/
+            	/*
             	
             	//댓글 목록 비동기로 조회해오기
             	
@@ -206,7 +216,7 @@
             			}
             			
             		});
-            	}
+            	}*/
             </script>
             
             <!-- 
@@ -238,10 +248,10 @@
                 </tbody>
             </table>
              -->
+    
         </div>
         <br><br>
     </div>
-    
     
     
 </body>
