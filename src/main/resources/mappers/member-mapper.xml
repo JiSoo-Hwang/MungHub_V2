@@ -22,7 +22,7 @@
 		SELECT * FROM MEMBER WHERE USER_ID=#{userId}
 	</select>
 	<select id="searchId" parameterType="Member" resultMap="memberResultSet">
-		SELECT USER_ID FROM MEMBER WHERE NAME=#{name} AND PHONE=#{phone} AND STATUS='Y'
+		SELECT USER_ID FROM MEMBER WHERE NAME=#{name} AND PHONE=#{phone}
 	</select>
 	<update id="changePw" parameterType="Member">
 		UPDATE MEMBER SET PASSWORD=#{password} WHERE USER_ID=#{userId} AND STATUS='Y'
@@ -30,27 +30,45 @@
 	<select id="checkId" parameterType="Member" resultMap="memberResultSet">
 		SELECT USER_ID FROM MEMBER WHERE USER_ID=#{userId} AND STATUS='Y'
 	</select>
-	<select id="newUserNo" resultType="_int">
-		SELECT SEQ_MEM.NEXTVAL FROM DUAL
-	</select>
 	<insert id="insertMember" parameterType="Member">
 		INSERT INTO MEMBER(USER_ID,USER_NO,PASSWORD,NAME,PHONE,EMAIL,ADDRESS,PET_YN,USER_GRADE) 
-		VALUES(#{userId},#{userNo},#{password},#{name},#{phone},#{email},#{address},#{petYN},0)
+		VALUES(#{userId},SEQ_MEM.NEXTVAL,#{password},#{name},#{phone},#{email},#{address},#{petYN},0)
 	</insert>
 	<insert id="insertTeacher" parameterType="Member">
-		INSERT INTO MEMBER(USER_ID,USER_NO,PASSWORD,NAME,PHONE,EMAIL,ADDRESS,PET_YN,USER_GRADE,KIND_NAME,STATUS) 
-		VALUES(#{userId},#{userNo},#{password},#{name},#{phone},#{email},#{address},#{petYN},1,#{kindName},'F')	
+		INSERT INTO MEMBER(USER_ID,USER_NO,PASSWORD,NAME,PHONE,EMAIL,ADDRESS,PET_YN,USER_GRADE,KIND_NO,STATUS) 
+		VALUES(#{userId},SEQ_MEM.NEXTVAL,#{password},#{name},#{phone},#{email},#{address},#{petYN},1,#{kindName},'N')	
 	</insert>
 	<select id="selectPetList" parameterType="Member" resultType="Pet">
 		SELECT PET_NO petNo, BREED_NAME breed, PET_NAME petName, PET_AGE petAge, PET_GENDER petGender, WEIGHT weight, PHOTO_NO photoNo FROM PET JOIN BREED USING(BREED_ID) WHERE OWNER_NO=#{userNo}
 	</select>
 	<select id="selectPetPhoto" parameterType="Pet" resultType="PetPhoto">
-		SELECT * FROM PET_PHOTO WHERE PHOTO_NO=#{photoNo} AND STATUS='Y'
+		SELECT PHOTO_NO photoNo, ORIGIN_NAME originName,CHANGE_NAME changeName,FILE_PATH filePath,UPLOAD_DATE uploadDate, STATUS status FROM PET_PHOTO WHERE PHOTO_NO=#{photoNo} AND STATUS='Y'
 	</select>
 	<select id="selectKindList" resultType="Kindergarten">
-		SELECT KIND_NO, KIND_NAME FROM KINDERGARTEN WHERE STATUS='Y' AND KIND_NAME LIKE #{kindName}
+		SELECT KIND_NO kindNo, KIND_NAME kindName FROM KINDERGARTEN WHERE STATUS='Y' AND KIND_NAME LIKE #{kindName}
 	</select>
 	<select id="selectBreedList" resultType="Breed">
 		SELECT BREED_ID breedId, BREED_NAME breedName FROM BREED
 	</select>
+	<select id="msgCount" parameterType="Member" resultType="_int">
+		SELECT COUNT(*) messageNo FROM MESSAGE WHERE RECEIVER_NO=#{userNo}
+	</select>
+	<select id="selectMessageList" parameterType="Member" resultType="Message">
+		SELECT MESSAGE_NO messageNo, USER_ID sender, MESSAGE_CONTENT messageContent, MESSAGE_DATE messageDate FROM MESSAGE MSG JOIN MEMBER M ON(MSG.SENDER_NO=M.USER_NO) WHERE MSG.RECEIVER_NO=#{userNo} AND MSG.STATUS LIKE '_Y%'
+	</select>
+	<select id="getPhotoNo" resultType="_int">
+		SELECT PET_PHOTO_SEQ.NEXTVAL FROM DUAL
+	</select>
+	<insert id="insertPetPhoto" parameterType="PetPhoto">
+		INSERT INTO PET_PHOTO VALUES(#{photoNo},#{originName},#{changeName},#{filePath},DEFAULT,DEFAULT)
+	</insert>
+	<insert id="insertPet" parameterType="Pet">
+		INSERT INTO PET VALUES(SEQ_PET.NEXTVAL,#{breed},#{ownerNo},#{petName},#{petAge},#{petGender},#{weight},#{photoNo})
+	</insert>
+	<select id="selectPetByNo" parameterType="Pet" resultType="Pet">
+		SELECT PET_NO petNo, BREED_NAME breed, PET_NAME petName, PET_AGE petAge, PET_GENDER petGender, WEIGHT weight, PHOTO_NO photoNo FROM PET JOIN BREED USING(BREED_ID) WHERE PET_NO=#{petNo}
+	</select>
+	<update id="updatePet" parameterType="Pet">
+		UPDATE PET SET BREED_ID=#{breed},PET_NAME=#{petName},PET_AGE=#{petAge},PET_GENDER=#{petGender},WEIGHT=#{weight},PHOTO_NO=#{photoNo}
+	</update>
 </mapper>

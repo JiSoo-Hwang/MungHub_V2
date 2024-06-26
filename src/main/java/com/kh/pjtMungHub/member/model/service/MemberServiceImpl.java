@@ -10,6 +10,7 @@ import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.member.model.dao.MemberDao;
 import com.kh.pjtMungHub.member.model.vo.Member;
+import com.kh.pjtMungHub.member.model.vo.Message;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 
@@ -47,8 +48,8 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int newUserNo() {
-		return dao.newUserNo(sqlSession);
+	public int insertTeacher(Member m) {
+		return dao.insertTeacher(sqlSession,m);
 	}
 
 	@Override
@@ -70,5 +71,41 @@ public class MemberServiceImpl implements MemberService{
 	public ArrayList<Breed> selectBreedList() {
 		return dao.selectBreedList(sqlSession);
 	}
+	
+	@Override
+	public ArrayList<Message> selectMessageList(Member m, int i) {
+		return dao.selectMessageList(sqlSession,m,i);
+	}
+
+	@Override
+	public int msgCount(Member m) {
+		return dao.msgCount(sqlSession,m);
+	}
+
+	@Override
+	public int getPhotoNo() {
+		return dao.getPhotoNo(sqlSession);
+	}
+
+	@Override
+	public int insertPetPhoto(PetPhoto petPhoto) {
+		return dao.insertPetPhoto(sqlSession,petPhoto);
+	}
+
+	@Override
+	public int insertPet(Pet p) {
+		return dao.insertPet(sqlSession,p);
+	}
+
+	@Override
+	public Pet selectPetByNo(Pet p) {
+		return dao.selectPetByNo(sqlSession,p);
+	}
+
+	@Override
+	public int updatePet(Pet p) {
+		return dao.updatePet(sqlSession,p);
+	}
+
 
 }

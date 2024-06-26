@@ -8,20 +8,21 @@
 </head>
 <body>
 	<form action="enrollPet.me" method="post" enctype="multipart/form-data">
-		<div class="pet-photo">
+		<div class="pet-photo-area">
+			<img id="pet-photo" width="150" height="120">
 		</div>
 		<div class="pet-info">
 				<label for="breed">품종</label>
-				<select>
+				<select name="breed">
 					<option value="">비밀(해당하는 품종이 없거나 믹스견인 경우 선택해 주세요)</option>
-					<c:forEach items="${breed}" varStatus="b">
+					<c:forEach items="${breed}" var="b">
 						<option value="${b.breedId}">${b.breedName}</option>
 					</c:forEach>
 				</select><br>
-				<input type="hidden" id="ownerNo" name="ownerNo">
+				<input type="hidden" id="ownerNo" name="ownerNo" value="${loginUser.userNo}">
 				<label for="petName">이름 : </label>
 				<input type="text" id="petName" name="petName"><br>
-				<label for="">나이 : </label>
+				<label for="">나이 :  </label> <span id="pet-age"> 살</span><br>
 				<input type="range" id="petAge" name="petAge" min="0" step="1" max="18"><br>
 				<label for="">성별 : </label>
 				<input type="radio" name="petGender" value="M">
@@ -29,12 +30,32 @@
 				<input type="radio" name="petGender" value="F">
 				<label for="F">공주님</label><br>
 				<label for="weight">몸무게 : </label>
-				<input type="number" id="weight" name="weight"> kg<br>
+				<input type="number" id="weight" name="weight" step="0.1"> kg<br>
 				<label for="photo">반려견 사진 자랑(1장만!)</label>
-				<input type="file" required>
+				<input type="file" id="upFile" name="upFile" onchange="loadImg(this);" required>
 				
 				<button type="submit">반려견 등록</button>
 		</div>
 	</form>
+	<script>
+		function loadImg(inputFile){
+			var trg=$(".pet-photo-area");
+			if(inputFile.files.length==1){
+				var reader = new FileReader();
+				reader.readAsDataURL(inputFile.files[0]);
+				reader.onload=function(e){
+// 					console.log(e.target);
+					trg.children().attr("src",e.target.result);
+				}
+			}else{
+				trg.children().attr("src",null);
+			}
+		}
+		$("#petAge").on("change",function(){
+			var age=$("#petAge").val();
+			age+=" 살";
+			$("#pet-age").text(age);
+		})
+	</script>
 </body>
 </html>

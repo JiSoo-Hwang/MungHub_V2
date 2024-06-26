@@ -208,8 +208,8 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 		</div>
 		<br><br>
 		<div class="joinModalBtn">
-			<button type="button" data-toggle="modal" data-target="#joinModal" disabled>반려견주(일반 회원)로 가입</button>	
-			<button type="button" onclick="teacherCheck();" data-toggle="modal" data-target="#joinModal" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
+			<button type="button" data-bs-toggle="modal" data-bs-target="#joinModal" disabled>반려견주(일반 회원)로 가입</button>	
+			<button type="button" onclick="teacherCheck();" data-bs-toggle="modal" data-bs-target="#joinModal" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
 		</div>
 	</div>
 	
@@ -272,17 +272,6 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 				}
 			})
 		})
-		$(".joinModalBtn").on("click",function(){
-			$.ajax({
-				url:"userNo.me",
-				success:function(userNo){
-					$(".userNo").val(userNo);
-				},
-				error:function(){
-					console.log("통신오류");
-				}
-			})
-		})
 		function teacherCheck(){
 		$(".teacher-only").attr("hidden",false);
 	}
@@ -296,7 +285,7 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 				<!-- Modal Header -->
 				<div class="modal-header">
 					<h4 class="modal-title">회원 가입</h4>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 				</div>
 
 				<!-- 회원 가입 요청 처리할 form태그 -->
@@ -304,7 +293,6 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 					<!-- Modal body -->
 					<div class="modal-body">
 						<div class="member-data">
-							<input type="hidden" id="userNo" name="userNo">
 							<label for="userId">아이디 :</label>
 							<input type="text" class="form-control mb-2 mr-sm-2" 
 									placeholder="아이디를 입력하세요" id="userId" name="userId" required>
@@ -329,8 +317,8 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 							<input type="email" class="form-control mb-2 mr-sm-2" 
 									placeholder="" id="email" name="email" >
 							<div class="teacher-only" hidden="true">
-			                    <label for="kindName" class="form-label">소속 유치원 이름 : </label>
-			                    <input type="text" class="form-control" id="kind" name="kind" placeholder="유치원 이름 검색">
+			                    <label for="kindName">소속 유치원 이름 : </label>
+			                    <input type="text" id="kind" name="kind" placeholder="유치원 이름 검색"><button onclick="searchKind(); return false;">검색</button>
 			                    <span class="kindList"></span>
 							</div>
 							<label for="address">주소 :</label>
@@ -348,7 +336,7 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 					<!-- Modal footer -->
 					<div class="modal-footer">
 						<button type="submit" class="btn btn-danger" disabled>회원가입</button>
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
 					</div>
 				</form>
 			</div>
@@ -365,10 +353,11 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 						userId: checkId.val()
 					},
 					success:function(result){
+						console.log(result);
 
-						if(result=='NNNNN'){//중복
-							$("#idCheck").show();
-							$("#idCheck").css("color","red").text("사용불가능한 아이디입니다.");
+						if(result=="NNNNN"){//중복
+							$(".idCheck").show();
+							$(".idCheck").css("color","red").text("사용불가능한 아이디입니다.");
 							
 							//중복시 회원가입 버튼 비활성화
 							$("button[type=submit]").attr("disabled",true);
@@ -412,23 +401,26 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 			    }
 			})
 		})
-		$(".kind").keyup(function(){
-	        var kind=$("#kind").val();
+		
+		function searchKind(){
+	        var kind="%";
+	        	kind+=$("#kind").val();
+	        	kind+="%";
+	        console.log(kind);
 	        var tr="<select name='kindName'>";       
 	        $.ajax({
-	            url : "searchKind.me",
+	            url : "selectKind.me",
 	            data : {
 	                kindName : kind
 	            },
-	            success : function(kindList){
-	                if(kindList.length==0){
-	                    alert("조회결과가 없습니다.");
+	            success : function(kList){
+	                if(kList.length==0){
 	                    $("#kind").val("");
 	                }else{
-	                    for(var i in cList){
+	                    for(var i in kList){
 	                        tr+="<option value='"
-	                            +kindList[i].contentsId+"'>"
-	                            +kindList[i].title
+	                            +kList[i].kindNo+"'>"
+	                            +kList[i].kindName
 	                            +"</option>"
 	                    }
 	                    tr+="</select>";
@@ -440,7 +432,9 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 	                console.log("오류난듯");     
 	            }
 	        })
-	    })
+	        return false;
+	    }
+
 	</script>
 </body>
 </html>
