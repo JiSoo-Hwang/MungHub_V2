@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
@@ -57,10 +59,11 @@ public class WeddingController {
 	}
 	
 	@GetMapping("detail.wd")
-	public String selectWedding(int weddingNo, Model model ) {
+	public ModelAndView selectWedding(int weddingNo, ModelAndView mv ) {
 		Wedding w = service.selectWedding(weddingNo);
-		model.addAttribute("wedding",w);
-		return "wedding/weddingDetailView";
+		mv.addObject("wedding",w)
+		.setViewName("wedding/weddingDetailView");
+		return mv;
 	}
 	
 	@GetMapping("insert.wd")
@@ -78,8 +81,42 @@ public class WeddingController {
 			String changeName = saveFile(upFile, session);
 			w.setOriginName(upFile.getOriginalFilename());
 			w.setChangeName("resources/uploadFiles/wedding/"+changeName);
+			w.setApproval("N");
 		}
-		return "wedding/weddingListView";
+		//여기까지가 웨딩 기본 정보 추가, 이후는 백신 정보 추가
+		ArrayList<Vaccine>vacList = new ArrayList<Vaccine>();
+		for(MultipartFile m : vacCert) {
+			vacList.add(Vaccine.builder()
+						.petNo(w.getPetNo())
+						.originName(m.getOriginalFilename())
+						.changeName("resources/uploadFiles/kindergarten/"+saveFile(m, session))
+						.build());
+		}
+		int result = service.insertWedding(w,vacList);
+		if(result>0) {
+			session.setAttribute("alertMsg", "웨딩 신청 성공! 승인 결과를 기다려주세요~♡(ᐢ ᴥ ᐢし)");
+			return "redirect:/wedList.wd";
+		}else {
+			session.setAttribute("alertMsg", "웨딩 신청 실패 └(°ᴥ°)┓...다시 시도해주세요...!");
+			return "redirect:/wedList.wd";
+		}
+	}
+	
+	//관리자만이 접근 가능한 웨딩플래너 신청 조회 페이지로 이동
+	@GetMapping("admin.wd")
+	public ModelAndView wedManager(ModelAndView mv) {
+		ArrayList<Wedding>regList = service.selectRegList();
+		mv.addObject("weddingList", regList).setViewName("wedding/weddingRegListView");
+		return mv;
+	}
+	
+	@GetMapping("update.wd")
+	public ModelAndView updateWedding(int weddingNo, ModelAndView mv, HttpSession session) {
+		Member m = (Member)session.getAttribute("loginUser");
+		Wedding w = service.selectWedding(weddingNo);
+		Pet p = service.selectPet(m.getUserNo());
+		mv.addObject("wedding", w).addObject("pet", p).setViewName("wedding/updateWeddingView");;
+		return mv;
 	}
 	
 	// 파일 업로드 처리 메소드(재활용)
@@ -103,7 +140,7 @@ public class WeddingController {
 		String changeName = currentTime + ranNum + ext;
 
 		// 6.업로드하고자하는 물리적인 경로 알아내기 (프로젝트 내에 저장될 실제 경로 찾기)
-		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/kindergarten/");
+		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/wedding/");
 
 		try {
 			upfile.transferTo(new File(savePath + changeName));

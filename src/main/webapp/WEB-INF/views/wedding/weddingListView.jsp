@@ -29,7 +29,14 @@
             </c:forEach>
         </select>
         <br><br>
+        <c:choose>
+        <c:when test="${loginUser.userId eq 'admin' }">
+        <a href="admin.wd" class="btn btn-warning">서비스 신청한 강아지 조회하기</a>
+        </c:when>
+        <c:otherwise>
 		<a href="insert.wd" class="btn btn-success">나의 강아지 등록하기</a>
+        </c:otherwise>
+        </c:choose>
         <br><br>
         <div class="row">
             <c:forEach items="${weddingList }" var="w">

@@ -28,26 +28,28 @@ AND W.PET_NO = P.PET_NO
 AND P.BREED_ID = B.BREED_ID
 </select>
 
-<select id="selectWedding" resultType="Wedding">
-SELECT WEDDING_NO weddingNo,
-PET_NAME petName,
-P.PET_GENDER gender,
-B.BREED_NAME breed,
-USER_NO userNo,
-PEDIGREE pedigree,
-MEETING_METHOD meetingMethod,
-P.PET_AGE petAge,
-P.WEIGHT weight,
-MEETING_METHOD meetingMethod,
-PET_INTRO petIntro,
-PET_NOTE petNote,
-ORIGIN_NAME originName,
-CHANGE_NAME changeName
-FROM WEDDING W, PET P, BREED B 
-WHERE W.APPROVAL ='Y'
-AND W.PET_NO = P.PET_NO
-AND P.BREED_ID = B.BREED_ID
-AND WEDDING_NO = #{weddingNo}
+<select id="selectWedding" parameterType="_int" resultType="Wedding">
+SELECT WEDDING_NO weddingNo
+,P.PET_NO petNo
+,P.PET_NAME petName
+,B.BREED_NAME breed
+,M.USER_NO userNo
+,M.NAME userName
+,P.PET_AGE petAge
+,P.WEIGHT weight
+,PEDIGREE pedigree
+,P.PET_GENDER gender
+,MEETING_METHOD meetingMethod
+,PET_INTRO petIntro
+,PET_NOTE petNote
+,ORIGIN_NAME originName
+,CHANGE_NAME changeName
+,APPROVAL approval
+FROM WEDDING W, PET P, BREED B, MEMBER M
+WHERE W.PET_NO = P.PET_NO
+AND B.BREED_ID = P.BREED_ID
+AND W.USER_NO = M.USER_NO
+AND WEDDING_NO= #{weddingNo}
 </select>
 
 <select id="selectPet" parameterType="_int" resultType="Pet">
@@ -61,5 +63,46 @@ SELECT PET_NO petNo
 FROM PET
 JOIN BREED USING(BREED_ID)
 WHERE OWNER_NO = #{userNo}
+</select>
+
+<insert id="insertWedding" parameterType="Wedding">
+INSERT INTO WEDDING 
+VALUES(SEQ_WED.NEXTVAL
+,#{petNo}
+,#{userNo}
+,#{pedigree}
+,#{meetingMethod}
+,#{petIntro}
+,#{petNote}
+,#{originName}
+,#{changeName}
+,DEFAULT)
+
+</insert>
+
+<insert id="insertVaccine" parameterType="Vaccine">
+	INSERT INTO	VACCINE VALUES(SEQ_VAC.NEXTVAL
+			,#{petNo}
+			,#{originName}
+			,#{changeName}
+			)
+</insert>
+<select id="selectRegList" resultType="Wedding">
+SELECT WEDDING_NO weddingNo
+,P.PET_NAME petName
+,B.BREED_NAME breed
+,M.NAME userName
+,PEDIGREE pedigree
+,MEETING_METHOD meetingMethod
+,PET_INTRO petIntro
+,PET_NOTE petNote
+,W.ORIGIN_NAME originName
+,W.CHANGE_NAME changeName
+,APPROVAL approval
+FROM WEDDING W,PET P,BREED B, MEMBER M
+WHERE W.PET_NO = P.PET_NO
+AND W.USER_NO = P.OWNER_NO
+AND B.BREED_ID = P.BREED_ID
+AND W.USER_NO = M.USER_NO
 </select>
 </mapper>
