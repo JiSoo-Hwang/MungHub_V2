@@ -260,8 +260,7 @@
 	<!-- 집 상세정보 -->
 	<select id="detailHouse" parameterType="_int" resultMap="houseResultSet">
 		SELECT HOUSE_NO, OWNER_NAME, HOUSE_ADDRESS, INTRODUCTION_SUMMARY, INTRODUCTION_DETAILED,
-			   NEARBY_HOSPITAL, ENVIRONMENT_INFO, SUPPLY_GUIDE, CERTIFICATION, ORIGIN_NAME,
-			   FILE_PATH
+			   NEARBY_HOSPITAL, ORIGIN_NAME, FILE_PATH
 		FROM HOUSE
 		WHERE HOUSE_NO = #{houseNo}
 		AND STATUS = 'Y'
@@ -271,7 +270,39 @@
 	<select id="selectHousePrice" resultType="HousePrice">
 		SELECT STAY_NO AS stayNo,STAY_NAME AS stayName,PRICE AS price FROM HOUSE_PRICE
 	</select>
-		
+	
+	<!-- 인증정보 -->
+	<select id="selectCertification" parameterType="_int" resultType="Certification">
+		SELECT C.CERTIFICATION_NO AS certificationNo,
+			   C.CERTIFICATION_NAME AS certificationName,
+		       C.ORIGIN_NAME AS originName,
+		       C.FILE_PATH AS filePath
+		FROM HOUSE H
+		JOIN HOUSE_CERTIFICATION HC ON H.HOUSE_NO = HC.HOUSE_NO
+		JOIN CERTIFICATION C ON HC.CERTIFICATION_NO = C.CERTIFICATION_NO
+		WHERE H.HOUSE_NO = #{houseNo}
+	</select>
+	
+	<select id="selectEnvironment" parameterType="_int" resultType="Environment">
+		SELECT E.ENVIRONMENT_NO AS environmentNo,
+		       E.ENVIRONMENT_NAME AS environmentName
+		FROM HOUSE H
+		JOIN HOUSE_ENVIRONMENT HE ON H.HOUSE_NO = HE.HOUSE_NO
+		JOIN ENVIRONMENT E ON HE.ENVIRONMENT_NO = E.ENVIRONMENT_NO
+		WHERE H.HOUSE_NO = #{houseNo}
+	</select>
+	
+	<select id="selectSupplyGuide" parameterType="_int" resultType="SupplyGuide">
+		SELECT S.SUPPLY_GUIDE_NO AS supplyGuideNo,
+		       S.SUPPLY_GUIDE_NAME AS supplyGuideName,
+		       S.ORIGIN_NAME AS originName,
+		       S.FILE_PATH AS filePath
+		FROM HOUSE H
+		JOIN HOUSE_SUPPLY_GUIDE HS ON H.HOUSE_NO = HS.HOUSE_NO
+		JOIN SUPPLY_GUIDE S ON HS.SUPPLY_GUIDE_NO = S.SUPPLY_GUIDE_NO
+		WHERE H.HOUSE_NO = #{houseNo}
+	</select>
+	
 	
 	
 
