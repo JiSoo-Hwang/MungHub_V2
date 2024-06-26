@@ -14,6 +14,7 @@ import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 @Service
 public class ShopServiceImpl implements ShopService {
@@ -81,6 +82,28 @@ public class ShopServiceImpl implements ShopService {
 	public int updateCartAmount(ParameterVo parameter) {
 		// TODO Auto-generated method stub
 		return shopDao.updateCartAmount(sqlSession,parameter);
+	}
+
+	@Override
+	@Transactional
+	public int insertShipInfo(ShipInfo s) {
+		// TODO Auto-generated method stub
+		
+		int result1= shopDao.chooseShipInfo(sqlSession,s);
+		int result2 = shopDao.insertShipInfo(sqlSession,s);
+		return result1*result2;
+	}
+
+	@Override
+	public ArrayList<ShipInfo> selectShipInfoList(int userNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectShipInfoList(sqlSession,userNo);
+	}
+
+	@Override
+	public int changeShipInfo(ShipInfo s) {
+		// TODO Auto-generated method stub
+		return shopDao.changeShipInfo(sqlSession,s);
 	}
 
 	

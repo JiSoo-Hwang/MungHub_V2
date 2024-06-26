@@ -196,12 +196,12 @@ clear: both;
 				<li style="float: right">
 					<c:choose>
 						<c:when test="${empty loginUser}">
-							<a class="active" href="enter.me"
+							<a class="active" href="/pjtMungHub/enter.me"
 							style="color: white;">Login</a>
 						</c:when>
 						<c:otherwise>
 						<span>${loginUser.userId} 님 환영합니다.</span>
-							<a class="active" href="logout.me"
+							<a class="active" href="/pjtMungHub/logout.me"
 							style="color: white;">Logout</a>
 						</c:otherwise>
 					</c:choose>

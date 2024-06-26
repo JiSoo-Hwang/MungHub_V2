@@ -163,7 +163,6 @@
 		THEN
 		INSERT (USER_NO,PRODUCT_NO,P_AMOUNT)
 		VALUES(#{userNo},#{productNo},#{amount})
-
 	</insert>
 	<delete id="removeCartItem"
 		parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
@@ -181,5 +180,53 @@
 		P_AMOUNT = P_AMOUNT+#{amount}
 		WHERE PRODUCT_NO = #{productNo}
 		AND USER_NO = #{userNo}
+	</update>
+	
+	<update id="chooseShipInfo">
+		UPDATE SHIP_INFO SET
+		CHOOSED = 'N'
+		WHERE USER_NO = #{userNo}
+	</update>
+	
+	<insert id="insertShipInfo" 
+	parameterType="com.kh.pjtMungHub.shop.model.vo.ShipInfo">
+	INSERT INTO SHIP_INFO(
+	INFO_NO,
+	USER_NO,
+	ADDRESS,
+	ADDRESS_DETAIL,
+	RECIPIENT,
+	PHONE
+	)VALUES(
+	SEQ_SHIP_INFO.NEXTVAL,
+	#{userNo},
+	#{address},
+	#{addressDetail},
+	#{recipient},
+	#{phone}
+	)
+	
+	</insert>
+	<select id="selectShipInfoList"
+	 resultType="com.kh.pjtMungHub.shop.model.vo.ShipInfo" 
+	 parameterType="_int">
+	SELECT INFO_NO infoNo,
+	USER_NO userNo,
+	ADDRESS address,
+	ADDRESS_DETAIL addressDetail,
+	RECIPIENT recipient,
+	PHONE phone,
+	CHOOSED choosed
+	FROM SHIP_INFO
+	WHERE USER_NO = #{userNo}
+	ORDER BY CHOOSED DESC
+	</select>
+	
+	<update id="changeShipInfo" parameterType="com.kh.pjtMungHub.shop.model.vo.ShipInfo">
+	UPDATE SHIP_INFO SET CHOOSED = CASE
+	WHEN INFO_NO=#{infoNo} THEN 'Y'
+	ELSE 'N'
+   	END
+    WHERE USER_NO=#{userNo}
 	</update>
 </mapper>
