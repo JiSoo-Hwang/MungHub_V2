@@ -10,6 +10,22 @@
 font-size: 20px;
 font-weight: bold;
 }
+#modalShipInfoList tr td{
+	border-top: 1rem solid;
+	border-right: 1rem solid;
+	border-left: 1rem solid;
+  border-bottom: 1rem solid;
+  border-color: transparent;
+}
+
+#modalShipInfoList tr:hover{
+	background-color: lightgray;
+	cursor: pointer;
+}
+#choosed{
+color : red;
+}
+
 </style>
 </head>
 <body>
@@ -19,23 +35,246 @@ font-weight: bold;
 			<h2>장바구니</h2>
 		</div>
 	</div>
+	<script>
+		function loadShipInfo(){
+			$.ajax({
+				url : "selectShipInfoList.sp",
+				data : {userNo : ${loginUser.userNo}},
+				success : function(result){
+					var str=""; /* 데이터 유무에 따라 등록 메서드 버튼이나 조회 메서드 html 값을 담을 변수 */
+					var str2=""; /* list모달 html 값 담을 변수 */
+					var choosed="";
+					if(result.length==0){
+						str="<button class='btn btn-outline-primary'"
+						+"type='button' data-bs-toggle='modal'"
+						+"data-bs-target='#shipinfo-insert'>"
+						+"<i class='bi bi-truck'></i> 배송지 등록</button>"
+						
+					}else{
+							str="<p class='order-info'>주문자 정보</p>"
+							+"<div class='order-info-conten'>"
+							+"<span><i class='bi bi-person-circle'></i>"+result[0].recipient+"</span>"
+							+"<span> | </span>"
+							+"<span><i class='bi bi-telephone'></i>"+result[0].phone+" </span>"
+							+"</div>"
+							+"</div>"
+							+"<div align='center'>"
+							+"<span class='address'> 주소 :"+result[0].address+" "+result[0].addressDetail+"  </span> <br>"
+							+"</div><br>"
+							+"<div align='center'>"
+							+"<button class='btn btn-outline-secondary'"
+							+"type='button'"
+							+"data-bs-toggle='modal'" 
+							+"data-bs-target='#ship-infoList'>"
+							+"<i class='bi bi-truck'></i> 배송지 정보수정</button>"
+							for(var i in result){
+								if(result[i].choosed=='Y'){
+									choosed="<i class='bi bi-check-lg' id='choosed'></i>"
+								}else{
+									choosed="";
+								}
+								str2+="<tr onclick='changeInfo("+result[i].infoNo+");'>"
+								+"<td>"+choosed+"</td>"
+								+"<td>"+result[i].recipient+"</td>"
+								+"<td>"+result[i].phone+"</td>"
+								+"<td>"+result[i].address+" "+result[i].addressDetail+"</td>"
+								+"</tr>"
+							}
+						}
+					
+					$("#shippingInfoDiv").html(str);
+					$("#modalShipInfoList").html(str2);
+					},
+					
+					
+				error: function(){
+					console.log("통신오류");
+				}
+				
+			});
+		}
+		
+		$(function(){
+			loadShipInfo();
+		});
+		
+		function changeInfo(num){
+			$.ajax({
+				url: "changeShipInfo.sp",
+				type : "post",
+				data : {infoNo: num
+					   ,userNo: ${loginUser.userNo}},
+				success : function(result){
+					console.log("수정성공")
+					loadShipInfo();
+				},
+				error: function(){
+					console.log("통신오류");
+				}
+				
+			});
+		}
+		
+	</script>
 	<div class="container">
 		<form action="/pjtMungHub/order.sp" method="post">
 		<input type="hidden" name="userNo" value="${loginUser.userNo }"> 
-	<div align="center">
-		<p class="order-info">주문자 정보</p>
-		<div class="order-info-content">
-			<span><i class="bi bi-person-circle"></i> ${loginUser.name }</span>
-			<span> | </span>
-			<span><i class="bi bi-telephone"></i> ${loginUser.phone }</span>
-		</div>
-		<div align="right"><button class="btn btn-outline-secondary" type="button"><i class="bi bi-truck"></i> 배송지 정보수정</button></div>
-		<div align="center">
-			<label for="address">주소</label><input type="text" id="address" name="address" readonly> <br>
-			<label for="address-detail">상세주소</label><input type="text" id="address-detail" name="address-detail" readonly><br>
-			<label for="postNo">우편번호</label><input type="text" id="postNo" name="postNo" readonly>
-		</div>
+	<div align="center" id="shippingInfoDiv">
+
 	</div>
+
+	 <!-- 배송정보 등록 모달  -->
+		<div class="modal fade" id="shipinfo-insert" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-lg">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="staticBackdropLabel">배송정보등록</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	      <input type="text" id="recipient" placeholder="수령인" value="${loginUser.name }" required> <br>
+	      <input type="text" id="phone" placeholder="전화번호" value="${loginUser.phone }" required> (-)입력 <br> <br>
+	      
+	    <input type="text" id="address" placeholder="주소" onclick="execDaumPostcode()" readonly>
+		<input type="button" onclick="execDaumPostcode()" value="주소 검색"><br>
+	    <input type="text" id="address_detail" placeholder="주소상세">
+	    
+	<div id="map" style="width:300px;height:300px;margin-top:10px;display:none"></div>
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=13a263ddbec24d8114711ac7bcacac75&libraries=services"></script>
+<script>
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+            center: new daum.maps.LatLng(37.537187, 127.005476), // 지도의 중심좌표
+            level: 5 // 지도의 확대 레벨
+        };
+
+    //지도를 미리 생성
+    var map = new daum.maps.Map(mapContainer, mapOption);
+    //주소-좌표 변환 객체를 생성
+    var geocoder = new daum.maps.services.Geocoder();
+    //마커를 미리 생성
+    var marker = new daum.maps.Marker({
+        position: new daum.maps.LatLng(37.537187, 127.005476),
+        map: map
+    });
+
+
+    function execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                var addr = data.address; // 최종 주소 변수
+
+                // 주소 정보를 해당 필드에 넣는다.
+                document.getElementById("address").value = addr;
+                // 주소로 상세 정보를 검색
+                geocoder.addressSearch(data.address, function(results, status) {
+                    // 정상적으로 검색이 완료됐으면
+                    if (status === daum.maps.services.Status.OK) {
+
+                        var result = results[0]; //첫번째 결과의 값을 활용
+
+                        // 해당 주소에 대한 좌표를 받아서
+                        var coords = new daum.maps.LatLng(result.y, result.x);
+                        // 지도를 보여준다.
+                        mapContainer.style.display = "block";
+                        map.relayout();
+                        // 지도 중심을 변경한다.
+                        map.setCenter(coords);
+                        // 마커를 결과값으로 받은 위치로 옮긴다.
+                        marker.setPosition(coords)
+                    }
+                });
+            }
+        }).open();
+    }
+</script>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+	        <button type="button" class="btn btn-primary" onclick="saveAddressInfo();">저장</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+
+<!-- 배송리스트 모달 -->
+<div class="modal fade" id="ship-infoList" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">배송정보선택</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <table id="modalShipInfoList">
+      
+      </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle='modal'
+		data-bs-target='#shipinfo-insert'><i class='bi bi-truck'></i> 배송지 등록</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+	<script>
+	function saveAddressInfo(){
+		
+		var userNo = ${loginUser.userNo};
+		var recipient = $("#recipient").val();
+		var phone = $("#phone").val();
+		var address = $("#address").val();
+		var addressDetail = $("#address_detail").val();
+		var errorMsg ="";
+		
+		var regExp = /^\d{3}-{1}\d{4}-{1}\d{4}$/;
+		
+		if(recipient=="" || phone=="" || addressDetail=="" || address==""){
+			if(recipient==""){
+				errorMsg+="수령인(수취인)을 입력해주세요.\n"
+			}
+			if(phone==""){
+				errorMsg+="전화번호를 입력해주세요.\n"
+			}
+			
+			if(!regExp.test(phone)){
+				errorMsg+="연락처 형식을 다시 입력해주세요. ex:010-0000-0000\n"
+			}
+			if(address==""){
+				errorMsg+="주소를 입력해주세요.\n"
+			}
+			if(addressDetail==""){
+				errorMsg+="상세주소를 입력해주세요.\n"
+			}
+			alert(errorMsg);
+		}else{
+			
+		$.ajax({
+			url: "insertShipInfo.sp",
+			type : "post",
+			data : { userNo : userNo,
+					 recipient : recipient,
+					 phone : phone,
+					 address : address,
+					 addressDetail : addressDetail},
+			success : function (result){
+				alert("배송정보를 저장했습니다.");
+				$('#shipinfo-insert').modal('hide');
+				loadShipInfo();
+				
+			},
+			error : function (){
+				console.log("통신오류");
+			}
+		});
+		}
+	}
+	</script>
 			<table width="100%" style="margin: 10px">
 				<tr>
 					<td align="right">
@@ -103,8 +342,28 @@ font-weight: bold;
  		
  		function updateAmount(pNo,uNo,aNo){
  			
+			const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+			const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl)); //부트스트랩 팝오버 초기화(사용준비)
  			
- 
+ 				if($("#pAmount").text()==1 && aNo==-1 ){
+ 					$("div").remove(".popover-body,.popover-arrow,.popover");
+ 					$("#minus").attr("data-bs-toggle","popover");
+ 					$("#minus").attr("data-bs-content","0이하의 숫자로는 지정할 수 없습니다.");
+ 					$("#minus").attr("data-bs-placement","left");
+ 				}else if($("#pAmount").text()==99 && aNo==1){
+ 					$("div").remove(".popover-body,.popover-arrow,.popover");
+ 					$("#plus").attr("data-bs-toggle","popover");
+ 	 				$("#plus").attr("data-bs-content","99이상의 숫자로는 지정할 수 없습니다.");
+ 	 				$("#plus").attr("data-bs-placement","right");
+ 					}else{
+ 					
+ 				$("#minus").removeAttr("data-bs-toggle");
+ 				$("#minus").removeAttr("data-bs-content");
+ 				$("#minus").removeAttr("data-bs-placement");
+ 				$("#plus").removeAttr("data-bs-toggle");
+ 				$("#plus").removeAttr("data-bs-content");
+ 				$("#plus").removeAttr("data-bs-placement");
+ 				$("div").remove(".popover-body,.popover-arrow,.popover");
  			$.ajax({
  				url : "updateCartAmount.sp",
  				type : "post",
@@ -119,7 +378,12 @@ font-weight: bold;
  				}
  				
  			});
- 		}
+ 				}
+ 					
+ 			 		}
+ 				
+ 				
+ 		
  		
  		function shoppingList(){
  			
@@ -129,6 +393,7 @@ font-weight: bold;
  					userNo : ${loginUser.userNo}
  				},
  				success : function(result){
+ 					
  					var str = "";
  					var finalPrice= 0;
  					for(var i in result){
@@ -149,9 +414,9 @@ font-weight: bold;
 							
 							+"<td>"+price.toLocaleString('ko-KR')+" 원</td>"
 							+"<td><div class='btn-group' role='group' aria-label='amount'>"
-							+"<button class='btn btn-dark' type='button' onclick='updateAmount("+productNo+","+${loginUser.userNo}+","+-1+");' ><i class='bi bi-dash-square'></i></button>"
-							+"<button class='btn btn-outline-dark' type='button' disabled>"+amount.toLocaleString('ko-KR')+"</button>" 
-							+"<button class='btn btn-dark' type='button' onclick='updateAmount("+productNo+","+${loginUser.userNo}+","+1+");' ><i class='bi bi-plus-square'></i></button>"
+							+"<button class='btn btn-dark' id='minus' type='button' onclick='updateAmount("+productNo+","+${loginUser.userNo}+","+-1+");' ><i class='bi bi-dash-square'></i></button>"
+							+"<button class='btn btn-outline-dark' id='pAmount' type='button' disabled>"+amount.toLocaleString('ko-KR')+"</button>" 
+							+"<button class='btn btn-dark' id='plus' type='button' onclick='updateAmount("+productNo+","+${loginUser.userNo}+","+1+");' ><i class='bi bi-plus-square'></i></button>"
 							+"</div>"
 							+"</td>"
 							+"<td>"+totalPrice.toLocaleString('ko-KR')+" 원</td>"

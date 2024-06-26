@@ -12,6 +12,7 @@ import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 @Repository
 public class ShopDao {
@@ -64,5 +65,27 @@ public class ShopDao {
 		// TODO Auto-generated method stub
 		return sqlSession.update("shopMapper.updateCartAmount",parameter);
 	}
+	
+	public int chooseShipInfo(SqlSessionTemplate sqlSession, ShipInfo s) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.chooseShipInfo",s);
+	}
+
+	public int insertShipInfo(SqlSessionTemplate sqlSession, ShipInfo s) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.insertShipInfo",s);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<ShipInfo> selectShipInfoList(SqlSessionTemplate sqlSession, int userNo) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectShipInfoList", userNo);
+	}
+
+	public int changeShipInfo(SqlSessionTemplate sqlSession, ShipInfo s) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.changeShipInfo",s);
+	}
+
 
 }

@@ -10,6 +10,7 @@ import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 public interface ShopService {
 
@@ -37,5 +38,14 @@ public interface ShopService {
 	int removeCartItem(ParameterVo parameter);
 
 
-	int updateCartAmount(ParameterVo parameter); 
+	int updateCartAmount(ParameterVo parameter);
+
+
+	int insertShipInfo(ShipInfo s);
+
+
+	ArrayList<ShipInfo> selectShipInfoList(int userNo);
+
+
+	int changeShipInfo(ShipInfo s); 
 }
