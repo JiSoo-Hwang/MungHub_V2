@@ -21,7 +21,6 @@
 	<%@ include file="/WEB-INF/views/common/header.jsp"%>
 <div class="content">
         <p>우리 강아지가 건강하고 행복한 모습으로 새 가족을 맞이할 수 있도록, MUNGHUB가 함께합니다.</p>
-
         <br>
         <select name="breed" id="breedList">
             <c:forEach var="b" items="${breedList}">
