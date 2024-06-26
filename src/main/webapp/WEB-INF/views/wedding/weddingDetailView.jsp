@@ -194,6 +194,15 @@ li {
 					</div>
 				</li>
 			</ul>
-	</div>	
+	</div>
+<script>
+$("#approveBtn").click(function() {
+	var flag = confirm("정말 승인하시겠습니까?");
+	if(flag){
+		location.href="approve.wd?weddingNo=${wedding.weddingNo}";
+	}
+});
+</script>
+		
 </body>
 </html>

@@ -30,6 +30,9 @@ public interface WeddingService {
 	
 	//웨딩플랜 신청 거절 메서드
 	int rejectReg(Wedding w);
+
+	//웨딩플랜 신청 승인 메서드
+	int approveReg(int weddingNo);
 	
 
 }

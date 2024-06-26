@@ -106,10 +106,16 @@ AND B.BREED_ID = P.BREED_ID
 AND W.USER_NO = M.USER_NO
 </select>
 
-<update id="rejectReg">
+<update id="rejectReg" parameterType="Wedding">
 UPDATE WEDDING 
 SET APPROVAL = 'R'
 ,REASON = #{reason}
+WHERE WEDDING_NO = #{weddingNo}
+</update>
+
+<update id="approveReg" parameterType="_int">
+UPDATE WEDDING
+SET APPROVAL = 'Y'
 WHERE WEDDING_NO = #{weddingNo}
 </update>
 </mapper>

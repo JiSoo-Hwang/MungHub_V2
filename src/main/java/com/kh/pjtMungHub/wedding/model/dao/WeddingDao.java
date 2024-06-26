@@ -54,6 +54,12 @@ public class WeddingDao {
 		return sqlSession.update("weddingMapper.rejectReg",w);
 	}
 
+	//웨딩플랜 신청 승인 메서드
+	public int approveReg(SqlSessionTemplate sqlSession, int weddingNo) {
+
+		return sqlSession.update("weddingMapper.approveReg",weddingNo);
+	}
+
 
 	
 }

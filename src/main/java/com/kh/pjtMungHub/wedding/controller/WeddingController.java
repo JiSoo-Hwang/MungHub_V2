@@ -131,6 +131,17 @@ public class WeddingController {
 		}
 	}
 	
+	@GetMapping("approve.wd")
+	public String approveReg(int weddingNo,HttpSession session) {
+		int result = service.approveReg(weddingNo);
+		if(result>0) {
+			session.setAttribute("alertMsg", "승인처리되었습니다 (ᐡ-ܫ•ᐡ)");
+		}else {
+			session.setAttribute("alertMsg", "처리 실패 └(°ᴥ°)┓...다시 시도해주세요...!");
+		}
+		return "redirect:/admin.wd";
+	}
+	
 	// 파일 업로드 처리 메소드(재활용)
 	public String saveFile(MultipartFile upfile, HttpSession session) {
 
