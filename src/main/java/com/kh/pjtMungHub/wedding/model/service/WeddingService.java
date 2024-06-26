@@ -27,6 +27,9 @@ public interface WeddingService {
 
 	//웨딩플랜 신청 내역 조회 메서드
 	ArrayList<Wedding> selectRegList();
-
+	
+	//웨딩플랜 신청 거절 메서드
+	int rejectReg(Wedding w);
+	
 
 }

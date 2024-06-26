@@ -59,6 +59,12 @@ public class WeddingServiceImpl implements WeddingService{
 		return dao.selectRegList(sqlSession);
 	}
 
+	//웨딩플랜 신청 거절 메서드
+	@Override
+	public int rejectReg(Wedding w) {
+		return dao.rejectReg(sqlSession,w);
+	}
+
 
 
 }

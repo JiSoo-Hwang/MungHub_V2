@@ -49,6 +49,11 @@ public class WeddingDao {
 		return (ArrayList)sqlSession.selectList("weddingMapper.selectRegList");
 	}
 
+	//웨딩플랜 신청 거절 메서드
+	public int rejectReg(SqlSessionTemplate sqlSession, Wedding w) {
+		return sqlSession.update("weddingMapper.rejectReg",w);
+	}
+
 
 	
 }

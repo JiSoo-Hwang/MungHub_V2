@@ -119,6 +119,18 @@ public class WeddingController {
 		return mv;
 	}
 	
+	@PostMapping("reject.wd")
+	public String rejectReg(Wedding w,HttpSession session) {
+		int result = service.rejectReg(w);
+		if(result>0) {
+			session.setAttribute("alertMsg", "거절 처리되었습니다.");
+			return "redirect:/admin.wd";
+		}else {
+			session.setAttribute("alertMsg", "처리 실패. 다시 시도해주세요.");
+			return "redirect:/admin.wd";
+		}
+	}
+	
 	// 파일 업로드 처리 메소드(재활용)
 	public String saveFile(MultipartFile upfile, HttpSession session) {
 
