@@ -48,7 +48,7 @@ position : relative;
 <div class="col-sm-3 my-3 ">
 	<div class="card" onclick="location.href='detail.sp/${p.productNo}'">
 	<div>
-	<img class="card-img-top" src="${p.attachment }">
+	<img class="card-img-top img-fluid" src="${p.attachment }">
 	</div>
 	<div class="card-body" style="width:250px;">
 		<h5 class="card-title">${p.productName }</h5>

@@ -410,7 +410,7 @@ color : red;
 							+"name='chooseOrNot' checked value='"+productNo+"'></td>"
 							
 							+"<td><a href='/pjtMungHub/detail.sp/"+productNo+"'>"+productName
-							+"<img src='"+img+"'></a></td>"
+							+"<img src='"+img+"' class='img-fluid'></a></td>"
 							
 							+"<td>"+price.toLocaleString('ko-KR')+" 원</td>"
 							+"<td><div class='btn-group' role='group' aria-label='amount'>"

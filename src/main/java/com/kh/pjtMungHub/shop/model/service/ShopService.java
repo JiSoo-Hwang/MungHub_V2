@@ -47,5 +47,11 @@ public interface ShopService {
 	ArrayList<ShipInfo> selectShipInfoList(int userNo);
 
 
-	int changeShipInfo(ShipInfo s); 
+	int changeShipInfo(ShipInfo s);
+
+
+	ArrayList<Cart> selectOrderList(ParameterVo parameter);
+
+
+	ShipInfo selectShipInfo(int userNo); 
 }
