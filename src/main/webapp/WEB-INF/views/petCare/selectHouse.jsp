@@ -242,14 +242,13 @@
         </div>
         
         <div class="partner-card" id="houseList">
-            <img src="room-image.jpg" alt="Room Image">
+            <img src="/pjtMungHub/resources/uploadFiles/housePhoto/2.png" alt="Room Image">
             <div class="card-content">
                 <p class="title">아이 휴가는 여기로 보내세요</p>
                 <p class="rating">⭐ 5.0 경기 김포시</p>
                 <p class="price">산책케어 55,000원/24시 ・ 45,000원/당일</p>
             </div>
         </div>
-        
         
     </section>
     
@@ -323,8 +322,6 @@
 				location.href="detailHouse.re?houseNo="+houseNo;
 			});
 		});
-			
-			
 			
 		function houseList(){
 			var inputDate = "";

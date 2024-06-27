@@ -190,19 +190,19 @@ clear: both;
                 <li class="menu"><a href="#home">Kindergarten</a></li>
                 <li class="menu"><a href="#news">Petcare</a></li>
                 <li class="menu"><a href="#contact">Wedding</a></li>
-                <li class="menu"><a href="#contact">Board</a></li>
+                <li class="menu"><a href="/pjtMungHub/list.bo">Board</a></li>
                 <li class="menu"><a href="/pjtMungHub/list.sp">Shop</a></li>
                 <li class="menu"><a href="#contact">Realestate</a></li>
 				<li style="float: right">
 					<c:choose>
 						<c:when test="${empty loginUser}">
-							<a class="active" href="enter.me"
+							<a class="active" href="/pjtMungHub/enter.me"
 							style="color: white;">Login</a>
 						</c:when>
 						<c:otherwise>
 							<span>${loginUser.userId} 님 환영합니다.</span>
 							<a href="myPage.me">마이페이지</a>
-							<a class="active" href="logout.me"
+							<a class="active" href="/pjtMungHub/logout.me"
 							style="color: white;">Logout</a>
 						</c:otherwise>
 					</c:choose>

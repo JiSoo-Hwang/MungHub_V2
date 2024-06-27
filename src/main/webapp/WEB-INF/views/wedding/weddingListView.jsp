@@ -21,7 +21,6 @@
 	<%@ include file="/WEB-INF/views/common/header.jsp"%>
 <div class="content">
         <p>우리 강아지가 건강하고 행복한 모습으로 새 가족을 맞이할 수 있도록, MUNGHUB가 함께합니다.</p>
-
         <br>
         <select name="breed" id="breedList">
             <c:forEach var="b" items="${breedList}">
@@ -29,7 +28,14 @@
             </c:forEach>
         </select>
         <br><br>
+        <c:choose>
+        <c:when test="${loginUser.userId eq 'admin' }">
+        <a href="admin.wd" class="btn btn-warning">서비스 신청한 강아지 조회하기</a>
+        </c:when>
+        <c:otherwise>
 		<a href="insert.wd" class="btn btn-success">나의 강아지 등록하기</a>
+        </c:otherwise>
+        </c:choose>
         <br><br>
         <div class="row">
             <c:forEach items="${weddingList }" var="w">
@@ -46,7 +52,7 @@
                                 <p>왕자님 </p>
                             </c:otherwise>
                         </c:choose>
-                        <a href="detail.wd?weddingNo=${w.weddingNo }" class="btn btn-primary">상세보기</a>
+                        <a href="info.wd?weddingNo=${w.weddingNo }" class="btn btn-primary">상세보기</a>
                     </div>
                 </div>
         </c:forEach>

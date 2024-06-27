@@ -9,6 +9,9 @@
 	<typeAliases>
 
 	
+	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.SupplyGuide" alias="SupplyGuide"/>
+	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Environment" alias="Environment"/>
+	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.Certification" alias="Certification"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.HousePrice" alias="HousePrice"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.House" alias="House"/>
 	<typeAlias type="com.kh.pjtMungHub.petcare.model.vo.HouseReservation" alias="HouseReservation"/>

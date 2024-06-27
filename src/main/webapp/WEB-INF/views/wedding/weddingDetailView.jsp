@@ -40,7 +40,7 @@ li {
 <%@ include file="/WEB-INF/views/common/header.jsp"%>
 	<div class="form_area">
 			<input type="hidden" name="kindNo" value="${wedding.weddingNo}">
-			<input type="hidden" name="userNo" value="${loginUser.userNo }">
+			<input type="hidden" name="userNo" value="${wedding.userNo }">
 			<ul>
 				<li>
 					<div class="container mt-3" id="reg_upFile">
@@ -101,50 +101,108 @@ li {
 									<th>특이사항</th>
 									<td>${wedding.petNote }</td>
 								</tr>
-								
-								<tr> 
-								<td> </td>
-								<td class="text-end"> 
-								<br> <br> <br> <br> <br> <br>
-																<c:choose>
-										<c:when test="${loginUser.userGrade ne 2 }">
-										<a type="button" class="btn btn-warning" href="wedList.wd">목록으로</a>
-										</c:when>
-										<c:when test="${loginUser.userGrade eq 2 }">
-										<a type="button" class="btn btn-warning" href="wedList2.wd">목록으로</a>
-										</c:when>
-										</c:choose>
-								</td>
-								</tr>
-<%-- 								<c:choose>
-									<c:when test="${registration.approval eq 'N' }">
+ 								<c:choose>
+									<c:when test="${wedding.approval eq 'N' }">
 										<tr>
 											<th>승인여부</th>
 											<td>승인대기중</td>
 										</tr>
 									</c:when>
-									<c:when test="${registration.approval eq 'R' }">
+									<c:when test="${wedding.approval eq 'R' }">
 										<tr>
-											<th>승인여부</th>
-											<td>상담이 거절되었습니다...</td>
+											<th>수락여부</th>
+											<td>신청이 거절되었습니다...</td>
 										</tr>
 										<tr> 
 											<th>거절 사유</th>
-											<td>${registration.reason}</td>
+											<td>${wedding.reason}</td>
 										</tr>
 									</c:when>
 									<c:otherwise>
 										<tr>
 											<th>승인여부</th>
-											<td>승인완료! 상담일날 뵈어요^^</td>
+											<td>신청이 승인되었습니다^-^! ${wedding.petName }가 좋은 짝을 만나기를 바랍니다!</td>
 										</tr>
+																		<tr> 
+								<td> </td>
+								<td class="text-end"> 
+								<br> <br> <br> <br> <br> <br>
+																<c:choose>
+										<c:when test="${loginUser.userId ne 'admin' }">
+										<a type="button" class="btn btn-warning" href="wedList.wd">목록으로</a>
+										</c:when>
+										<c:otherwise>
+										<a type="button" class="btn btn-warning" href="admin.wd">목록으로</a>
+										</c:otherwise>
+										</c:choose>
+								</td>
+								</tr>
 									</c:otherwise>
-								</c:choose> --%>
+								</c:choose>
+								<tr>
+									<td></td>
+									<td><br> <br> <br>
+										<br> <br> <br>
+										<!-- 지금은 상세 신청 내역. 관리자가 보고 부적합한 신청자면 1차적으로 거절할 수 있음
+											 나중에는 신청된 리스트에 강아지를 선택해서 만남을 신청하는 기능을 별도로 구현해야 함 -->
+										<c:choose>
+										<c:when test="${wedding.approval eq 'N' && loginUser.userNo eq wedding.userNo }">
+										<a type="button" class="btn btn-outline-info" href="update.wd?weddingNo=${wedding.weddingNo }">신청수정</a>
+										<button type="button" class="btn btn-secondary" id="cancelBtn">신청철회</button>
+										</c:when>
+										<c:when test="${loginUser.userId eq 'admin' && wedding.approval eq 'N' }">
+										<button class="btn btn-primary" id="approveBtn">신청승인</button>
+  
+  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">
+    신청거절
+  </button>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">신청 거절을 선택하셨습니다...</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+		
+      <!-- Modal body -->
+        <form action="reject.wd" method="post">
+      <div class="modal-body">
+      	<input type="hidden" name="weddingNo" value="${wedding.weddingNo}">
+        <textarea rows="4" cols="50" name="reason" placeholder="견주님 마음 상하지 않게 거절 이유를 친절하게 적어주세요."></textarea>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-danger">신청 거절하기</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">창 닫기</button>
+      </div>
+        </form>
+
+    </div>
+  </div>
+</div>
+										</c:when>
+										</c:choose>
+									</td>
+								</tr>
 							</tbody>
 						</table>
 					</div>
 				</li>
 			</ul>
-	</div>	
+	</div>
+<script>
+$("#approveBtn").click(function() {
+	var flag = confirm("정말 승인하시겠습니까?");
+	if(flag){
+		location.href="approve.wd?weddingNo=${wedding.weddingNo}";
+	}
+});
+</script>
+		
 </body>
 </html>

@@ -59,7 +59,7 @@ public class BoardController {
 		//조회수가 제대로 증가되었다면 상세조회 
 		if(result>0) {
 			Board b = boardService.selectBoard(boardNo);
-			mv.addObject("b",b).setViewName("board/boardDetailView");
+			mv.addObject("b",b).setViewName("board/detailBoardView");
 		}else {
 			mv.addObject("errorMsg","상세조회 실패!");
 		}
@@ -76,15 +76,24 @@ public class BoardController {
 		
 	}
 	//게시물 등록 메소드
-	@PostMapping
+	/*@PostMapping
 	public String insertBoard(Board b,
 							  MultipartFile upfile,
 							  HttpSession session) {
 		
 		
+		int result = boardService.insertBoard(b);
 		
-		return null;
-	}
+		if(result>0) {//게시글 작성 성공
+			session.setAttribute("alertMsg", "게시글 작성 성공!");
+		}else { //게시글 작성 실패
+			session.setAttribute("alertMsg", "게시글 작성 실패!");
+		}
+
+		
+		
+		return "redirect/:list.bo";
+	}*/
 	
 	
 		
