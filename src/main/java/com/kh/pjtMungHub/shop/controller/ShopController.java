@@ -183,13 +183,28 @@ public class ShopController {
 			@RequestParam ArrayList<Integer> chooseOrNot,
 			@RequestParam int userNo) {
 		
-		ParameterVo prameter = ParameterVo.builder()
+		
+		ParameterVo parameter = ParameterVo.builder()
 				.userNo(userNo)
 				.checkedItem(chooseOrNot)
 				.build();
 		
+		int totalPrice=0;
 		
+		ArrayList<Cart> orderList = shopService.selectOrderList(parameter);
+		ShipInfo shipInfo = shopService.selectShipInfo(userNo);
+		for(int i=0;i<orderList.size();i++) {
+			
+			int price=orderList.get(i).getPrice();
+			int discount=orderList.get(i).getDiscount();
+			int amount=orderList.get(i).getAmount();
+			
+			totalPrice=(price-(price/discount)*amount);
+		}
 		
+		mv.addObject("totalPrice",totalPrice);
+		mv.addObject("shipInfo",shipInfo);
+		mv.addObject("orderList",orderList);
 		mv.setViewName("shop/orderPage");
 		return mv;
 	}

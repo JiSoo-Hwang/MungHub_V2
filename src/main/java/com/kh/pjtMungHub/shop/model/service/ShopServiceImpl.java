@@ -106,6 +106,18 @@ public class ShopServiceImpl implements ShopService {
 		return shopDao.changeShipInfo(sqlSession,s);
 	}
 
+	@Override
+	public ArrayList<Cart> selectOrderList(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.selectOrderList(sqlSession,parameter);
+	}
+
+	@Override
+	public ShipInfo selectShipInfo(int userNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectShipInfo(sqlSession, userNo);
+	}
+
 	
 
 }
