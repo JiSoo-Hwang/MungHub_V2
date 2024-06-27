@@ -27,7 +27,7 @@
 	<typeAlias type="com.kh.pjtMungHub.common.model.vo.PetPhoto" alias="PetPhoto"/>
 	<typeAlias type="com.kh.pjtMungHub.kindergarten.model.vo.Vaccine" alias="Vaccine"/>
 	<typeAlias type="com.kh.pjtMungHub.shop.model.vo.Cart" alias="Cart"/>
-	<typeAlias type="com.kh.pjtMungHub.member.model.vo.Message" alias="Message"/>\	
+	<typeAlias type="com.kh.pjtMungHub.member.model.vo.Message" alias="Message"/>
 	<typeAlias type="com.kh.pjtMungHub.pet.model.vo.Breed" alias="Breed"/>
 	<typeAlias type="com.kh.pjtMungHub.wedding.model.vo.Wedding" alias="Wedding"/>
 	</typeAliases>

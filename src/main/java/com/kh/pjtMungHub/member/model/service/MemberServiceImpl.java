@@ -107,5 +107,55 @@ public class MemberServiceImpl implements MemberService{
 		return dao.updatePet(sqlSession,p);
 	}
 
+	@Override
+	public int updateMember(Member m) {
+		return dao.updateMember(sqlSession,m);
+	}
+
+	@Override
+	public ArrayList<Member> searchUser(Member m) {
+		return dao.searchUser(sqlSession,m);
+	}
+
+	@Override
+	public ArrayList<Kindergarten> myKind(Member m) {
+		return dao.myKind(sqlSession,m);
+	}
+
+	@Override
+	public ArrayList<Member> searchTeacherByKind(Kindergarten k) {
+		return dao.searchTeacherByKind(sqlSession,k);
+	}
+
+	@Override
+	public int acceptTeacher(Member m) {
+		return dao.acceptTeacher(sqlSession,m);
+	}
+
+	@Override
+	public int notTeacher(Member m) {
+		return dao.notTeacher(sqlSession,m);
+	}
+
+	@Override
+	public int newMaster(Member m) {
+		return dao.newMaster(sqlSession,m);
+	}
+
+	@Override
+	public int deletePhoto(Pet p) {
+		return dao.deletePhoto(sqlSession,p);
+	}
+
+	@Override
+	public int updateMsg(Message msg) {
+		return dao.updateMsg(sqlSession,msg);
+	}
+
+	@Override
+	public int sendMsg(Message msg) {
+		return dao.sendMsg(sqlSession,msg);
+	}
+
 
 }

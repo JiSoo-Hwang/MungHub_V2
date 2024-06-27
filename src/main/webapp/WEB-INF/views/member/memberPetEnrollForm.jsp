@@ -8,7 +8,7 @@
 </head>
 <body>
 	<form action="enrollPet.me" method="post" enctype="multipart/form-data">
-		<div class="pet-photo-area">
+		<div id="pet-photo-area" hidden="true">
 			<img id="pet-photo" width="150" height="120">
 		</div>
 		<div class="pet-info">
@@ -32,20 +32,21 @@
 				<label for="weight">몸무게 : </label>
 				<input type="number" id="weight" name="weight" step="0.1"> kg<br>
 				<label for="photo">반려견 사진 자랑(1장만!)</label>
-				<input type="file" id="upFile" name="upFile" onchange="loadImg(this);" required>
+				<input type="file" id="upFile" name="upFile" onchange="loadImage(this);" required>
 				
 				<button type="submit">반려견 등록</button>
 		</div>
 	</form>
 	<script>
-		function loadImg(inputFile){
-			var trg=$(".pet-photo-area");
+		function loadImage(inputFile){
+			var trg=$("#pet-photo-area");
+			console.log(trg);
 			if(inputFile.files.length==1){
 				var reader = new FileReader();
 				reader.readAsDataURL(inputFile.files[0]);
 				reader.onload=function(e){
-// 					console.log(e.target);
 					trg.children().attr("src",e.target.result);
+					trg.attr("hidden",false);
 				}
 			}else{
 				trg.children().attr("src",null);

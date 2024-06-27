@@ -69,6 +69,36 @@
 		SELECT PET_NO petNo, BREED_NAME breed, PET_NAME petName, PET_AGE petAge, PET_GENDER petGender, WEIGHT weight, PHOTO_NO photoNo FROM PET JOIN BREED USING(BREED_ID) WHERE PET_NO=#{petNo}
 	</select>
 	<update id="updatePet" parameterType="Pet">
-		UPDATE PET SET BREED_ID=#{breed},PET_NAME=#{petName},PET_AGE=#{petAge},PET_GENDER=#{petGender},WEIGHT=#{weight},PHOTO_NO=#{photoNo}
+		UPDATE PET SET BREED_ID=#{breed},PET_NAME=#{petName},PET_AGE=#{petAge},PET_GENDER=#{petGender},WEIGHT=#{weight},PHOTO_NO=#{photoNo} WHERE PET_NO=#{petNo}
 	</update>
+	<update id="updateMember" parameterType="Member">
+		UPDATE MEMBER SET USER_NAME=${name},PHONE=#{phone},EMAIL=#{email},ADDRESS=#{address},PET_YN=${petYN} WHERE USER_NO=#{userNo}
+	</update>
+	<select id="searchUser" parameterType="Member" resultMap="memberResultSet">
+		SELECT * FROM MEMBER WHERE USER_ID LIKE #{userId}
+	</select>
+	<select id="myKind" parameterType="Member" resultType="Kindergarten">
+		SELECT KIND_NO kindNO, DIRECTOR_ID directorId, KIND_NAME kindName FROM KINDERGARTEN WHERE DIRECTOR_ID=#{userNo} AND STATUS='Y'
+	</select>
+	<select id="searchTeacherByKind" parameterType="Kindergarten" resultType="Member">
+		SELECT USER_ID userId,USER_NO userNo,NAME name,PHONE phone,EMAIL email,ADDRESS address,PET_YN petYN,KIND_NAME kindName FROM MEMBER JOIN KINDERGARTEN USING(KIND_NO) WHERE KIND_NO=#{kindNo}
+	</select>
+	<update id="acceptTeacher" parameterType="Member">
+		UPDATE MEMBER SET USER_GRADE=#{userGrade}, STATUS='Y' WHERE USER_NO=#{userNo}
+	</update>
+	<update id="notTeacher" parameterType="Member">
+		UPDATE MEMBER SET STATUS='Y', USER_GRADE=#{userGrade}, KIND_NO='' WHERE USER_NO=#{userNo}
+	</update>
+	<update id="newMaster" parameterType="Member">
+		UPDATE KINDERGARTEN SET DIRECTOR_ID=#{userNo} WHERE KIND_NAME=#{kindName} AND STATUS='Y'
+	</update>
+	<update id="deletePhoto" parameterType="Pet">
+		UPDATE PET_PHOTO SET STATUS='N' WHERE PHOTO_NO=#{photoNo} AND STATUS='Y'
+	</update>
+	<update id="updateMsg" parameterType="Message">
+		UPDATE MESSAGE SET STATUS=#{status} WHERE MESSAGE_NO=#{messageNo}
+	</update>
+	<insert id="sendMsg" parameterType="Message">
+		INSERT INTO MESSAGE VALUES(SEQ_MSG.NEXTVAL,#{sender},#{receiver},#{messageContent},DEFAULT,DEFAULT)
+	</insert>
 </mapper>

@@ -28,5 +28,15 @@ public interface MemberService {
 	int insertPet(Pet p);
 	Pet selectPetByNo(Pet p);
 	int updatePet(Pet p);
+	int updateMember(Member m);
+	ArrayList<Member> searchUser(Member m);
+	ArrayList<Kindergarten> myKind(Member m);
+	ArrayList<Member> searchTeacherByKind(Kindergarten k);
+	int acceptTeacher(Member m);
+	int notTeacher(Member m);
+	int newMaster(Member m);
+	int deletePhoto(Pet p);
+	int updateMsg(Message msg);
+	int sendMsg(Message msg);
 	
 }

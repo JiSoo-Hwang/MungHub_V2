@@ -88,5 +88,45 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updatePet", p);
 	}
 
+	public int updateMember(SqlSessionTemplate sqlSession, Member m) {
+		return sqlSession.update("memberMapper.updateMember",m);
+	}
+
+	public ArrayList<Member> searchUser(SqlSessionTemplate sqlSession, Member m) {
+		return (ArrayList)sqlSession.selectList("memberMapper.searchUser",m);
+	}
+
+	public ArrayList<Kindergarten> myKind(SqlSessionTemplate sqlSession, Member m) {
+		return (ArrayList)sqlSession.selectList("memberMapper.myKind",m);
+	}
+
+	public ArrayList<Member> searchTeacherByKind(SqlSessionTemplate sqlSession, Kindergarten k) {
+		return (ArrayList)sqlSession.selectList("memberMapper.searchTeacherByKind", k);
+	}
+
+	public int acceptTeacher(SqlSessionTemplate sqlSession, Member m) {
+		return sqlSession.update("memberMapper.acceptTeacher", m);
+	}
+
+	public int notTeacher(SqlSessionTemplate sqlSession, Member m) {
+		return sqlSession.update("memberMapper.notTeacher",m);
+	}
+
+	public int newMaster(SqlSessionTemplate sqlSession, Member m) {
+		return sqlSession.update("memberMapper.newMaster", m);
+	}
+	
+	public int deletePhoto(SqlSessionTemplate sqlSession, Pet p) {
+		return sqlSession.update("memberMapper.deletePhoto", p);
+	}
+
+	public int updateMsg(SqlSessionTemplate sqlSession, Message msg) {
+		return sqlSession.update("memberMapper.checkMsg", msg);
+	}
+
+	public int sendMsg(SqlSessionTemplate sqlSession, Message msg) {
+		return sqlSession.insert("memberMapper.sendMsg",msg);
+	}
+
 
 }

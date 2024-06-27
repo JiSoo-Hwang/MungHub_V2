@@ -1,8 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    
 <!DOCTYPE html>
 <html>
 <head>
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+  integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
@@ -21,7 +24,10 @@
 			<button onclick="loginUpdate();" >아이디 / 비밀번호 조회</button>
 			<button onclick="memberEnroll();">회원가입</button>
 		</div>
-		
+		<hr>
+		<div id="loginAPIArea">
+			<img src="./resources/uploadFiles/login/kakao.png" onclick="Kakao.Auth.authorize();">
+		</div>
 	</div>
 	<script>
 		function loginUpdate(){

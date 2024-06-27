@@ -11,7 +11,7 @@
 	<ul>
 		<li><h3>마이페이지</h3></li>
 		<li>
-			<a href="update.me">개인 정보 확인 / 수정</a>
+			<a href="myPage.me">개인 정보 확인 / 수정</a>
 		</li>
 		<li>
 			<a href="updatePet.me">반려견 정보 추가 / 수정</a>

@@ -6,8 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +24,9 @@ import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.member.model.service.MemberService;
 import com.kh.pjtMungHub.member.model.vo.Member;
+import com.kh.pjtMungHub.member.model.vo.Message;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
-import com.kh.pjtMungHub.petcare.controller.PetSaveFile;
 
 @Controller
 public class MemberController {
@@ -58,16 +56,13 @@ public class MemberController {
 	public String enterMyPage(HttpSession session) {
 		Member m=(Member)session.getAttribute("loginUser");
 		ArrayList<Pet> petList = service.selectPetList(m);
-		System.out.println(petList);
 		ArrayList<PetPhoto> petPhotoList=new ArrayList<PetPhoto>();
 		if(petList!=null) {
 			for(Pet p : petList) {
 				PetPhoto photo=service.selectPetPhoto(p);
-				System.out.println(photo);
 				petPhotoList.add(photo);
 			}
 		}
-		System.out.println(petPhotoList);
 		session.setAttribute("petList",petList);
 		session.setAttribute("petPhotoList",petPhotoList);
 		return "member/memberMyPage";
@@ -75,8 +70,19 @@ public class MemberController {
 	
 	@RequestMapping("updatePet.me")
 	public String enterUpdatePet(HttpSession session) {
+		Member m=(Member)session.getAttribute("loginUser");
 		ArrayList<Breed> breed=service.selectBreedList();
 		session.setAttribute("breed", breed);
+		ArrayList<Pet> petList = service.selectPetList(m);
+		ArrayList<PetPhoto> petPhotoList=new ArrayList<PetPhoto>();
+		if(petList!=null) {
+			for(Pet p : petList) {
+				PetPhoto photo=service.selectPetPhoto(p);
+				petPhotoList.add(photo);
+			}
+		}
+		session.setAttribute("petList",petList);
+		session.setAttribute("petPhotoList",petPhotoList);
 		return "member/memberPetUpdate";
 	}
 	
@@ -104,6 +110,26 @@ public class MemberController {
 		return "member/memberManage";
 	}
 	
+	@RequestMapping("manageTeacher.me")
+	public String enterManageTeacher(HttpSession session) {
+		Member m=(Member)session.getAttribute("loginUser");
+		ArrayList<Member> tList=new ArrayList<Member>();
+		//원장님 당 하나의 유치원을 운영할 경우
+//		tList=service.searchTeacher(m);
+		// 원장님 한 명이 여러 유치원을 담당할 경우
+		ArrayList<Kindergarten> kindList=service.myKind(m);
+		for(Kindergarten k : kindList) {
+			ArrayList<Member> teacher=service.searchTeacherByKind(k);
+			if(teacher!=null) {				
+				for(Member me:teacher) {
+					tList.add(me);
+				}
+			}
+		}
+		session.setAttribute("kindList",kindList);
+		session.setAttribute("tList", tList);
+		return "member/memberManageTeacher";
+	}
 	
 	@RequestMapping("login.me")
 	public ModelAndView loginMember(Member m, ModelAndView mv, HttpSession session) {
@@ -225,6 +251,8 @@ public class MemberController {
 		result2=service.insertPet(p);
 		if(result1*result2>0) {
 			alertMsg="반려견 등록을 완료하였습니다!";
+			m.setPetYN("Y");
+			service.updateMember(m);
 		}else{
 			alertMsg="반려견 등록을 실패하셨습니다.";
 		}
@@ -235,9 +263,11 @@ public class MemberController {
 	
 	@PostMapping("updatePetStat.me")
 	public String updatePetStat(Pet p, MultipartFile reUpFile, HttpSession session) {
+		System.out.println(p);
 		boolean flag = false; //파일 삭제 필요시 사용할 논리값
 		String deleteFile = "";//파일 저장경로 및 변경파일명 담아놓을 변수
-		
+		int del;
+		int insertPhoto;
 		//새로운 첨부파일이 넘어온 경우(파일명이 넘어왔을때) 
 		if(!reUpFile.getOriginalFilename().equals("")) {
 			PetPhoto photo = new PetPhoto();
@@ -249,21 +279,30 @@ public class MemberController {
 			}
 			//새로운 첨부파일 정보 데이터베이스에 등록,서버에 업로드 
 			String changeName = saveFile(reUpFile,session);
-			
+			del=service.deletePhoto(p);
 			//처리된 변경이름과 원본명을 board에 담아주기
+			int pNum=service.getPhotoNo();
+			photo.setPhotoNo(pNum);
 			photo.setOriginName(reUpFile.getOriginalFilename());
-			photo.setChangeName("resources/uploadFiles/"+changeName);
+			photo.setChangeName(changeName);
+			photo.setFilePath("resources/uploadFiles/"+changeName);
+			p.setPhotoNo(photo.getPhotoNo());
+			insertPhoto=service.insertPetPhoto(photo);
+		}else {
+			del=1;
+			insertPhoto=1;
 		}
+
 		int result = service.updatePet(p);
 		String msg = "";	
-		if(result>0) { //수정 성공시
-			msg = "게시글 수정 성공!";
+		if(result*del*insertPhoto>0) { //수정 성공시
+			msg = "반려견 정보 수정 성공!";
 			if(flag) {
 				File f = new File(session.getServletContext().getRealPath(deleteFile));
 				f.delete(); //삭제
 			}
 		}else {//수정 실패 
-			msg = "게시글 수정 실패!";
+			msg = "반려견 정보 수정 실패!";
 		}
 		session.setAttribute("alertMsg", msg);
 		return "redirect:/updatePet.me";
@@ -291,7 +330,7 @@ public class MemberController {
 		String changeName = currentTime+ranNum+ext;
 		
 		String savePath=session.getServletContext().getRealPath("/resources/uploadFiles/petPhoto/");
-		
+		System.out.println(savePath);
 		try {
 		upfile.transferTo(new File(savePath+changeName));
 		} catch (IllegalStateException | IOException e) {
@@ -299,4 +338,121 @@ public class MemberController {
 		}	
 		return changeName;
 	}
+	
+	@PostMapping("updateMember.me")
+	public String updateMember(Member m, HttpSession session) {
+		int result=service.updateMember(m);
+		String msg="";
+		if(result>0) {
+			msg="회원정보 변경 완료";
+		}else {
+			msg="회원 정보 변경 실패";
+		}
+		session.setAttribute("alertMsg", msg);
+		return"redirect:/myPage.me";
+	}
+	
+	@ResponseBody
+	@GetMapping("searchUser.me")
+	public ArrayList<Member> searchUser(Member m){
+		ArrayList<Member> memList=service.searchUser(m);
+		return memList;
+	}
+	
+	@GetMapping("acceptTeacher.me")
+	public String acceptTeacher(Member m,HttpSession session) {
+		int result=service.acceptTeacher(m);
+		String msg="";
+		if(result>0) {
+			msg="선생님 등록 완료!";
+		}else {
+			msg="선생님 등록 실패. 관리자에게 문의하세요";
+		}
+		session.setAttribute("alertMsg", msg);
+		return "redirect:/manageTeacher.me";
+	}
+	
+	@GetMapping("notTeacher.me")
+	public String notTeacher(Member m,HttpSession session) {
+		int result=service.notTeacher(m);
+		String msg="";
+		if(result>0) {
+			msg="해당 계정의 선생님 권한을 해제하였습니다.";
+		}else {
+			msg="권한 변경 실패. 관리자에게 문의하세요";
+		}
+		session.setAttribute("alertMsg", msg);
+		return "redirect:/manageTeacher.me";
+	}
+	
+	@GetMapping("newMaster.me")
+	public String newMaster(Member m, HttpSession session) {
+		Member mem=(Member)session.getAttribute("loginUser");
+		String msg="";
+		String link="";
+		System.out.println(m);
+		/*
+		 * int result1=service.newMaster(m);
+		 */		
+		int result1=0;
+		int result2=0;
+		int result3=0;
+		if(result1>0) {
+			result2=service.acceptTeacher(m);
+			if(result2>0) {
+				mem.setStatus(m.getStatus());
+				result3=service.acceptTeacher(mem);
+			}
+		}
+		if(result1*result2*result3>0) {
+			msg="고생하셨습니다. 다시 접속해 주시기 바랍니다.";
+			session.removeAttribute("loginUser");
+			link="redirect:/";
+		}else {
+			msg="위임 실패. 관리자에게 문의해 주세요";
+			link="redirect:/manageTeacher.me";
+		}
+		session.setAttribute("alertMsg", msg);
+		return link;
+	}
+	@ResponseBody
+	@GetMapping("selectPetPhoto.me")
+	public PetPhoto getPhoto(Pet p) {
+		PetPhoto photo = service.selectPetPhoto(p);
+		return photo;
+	}
+	@ResponseBody
+	@GetMapping("checkMsg.me")
+	public int checkMsg(Message msg) {
+		String check=msg.getStatus().substring(1);
+		String status="N"+check;
+		msg.setStatus(status);
+		int result=service.updateMsg(msg);
+		return result;
+	}
+	@PostMapping("sendMsg.me")
+	public String sendMsg(Message msg,HttpSession session) {
+		Member m=new Member();
+		int result=0;
+		String alert="";
+		m.setUserId(msg.getReceiver());
+		Member Mem=service.loginMember(m);	
+		if(Mem!=null) {
+			msg.setReceiver(Integer.toString(Mem.getUserNo()));
+			result=service.sendMsg(msg);
+		}
+		if(result>0) {			
+			alert="메시지 전송 완료";
+		}else {
+			alert="메시지 전송 실패. 아이디를 다시 확인해 주세요.";
+		}
+		session.setAttribute("alertMsg", alert);
+		return "redirect:/msg.me";
+	}
+	@GetMapping("kakao.me")
+	public String kakaoLogin() {
+		String url="https://kauth.kakao.com/oauth/authorize";
+		return "";
+	}
 }
+
