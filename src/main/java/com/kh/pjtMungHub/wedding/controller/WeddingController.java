@@ -64,7 +64,7 @@ public class WeddingController {
 	public ModelAndView selectWedding(int weddingNo, ModelAndView mv ) {
 		Wedding w = service.selectWedding(weddingNo);
 		mv.addObject("wedding",w)
-		.setViewName("wedding/weddingDetailView");
+		.setViewName("wedding/weddingResultView");
 		return mv;
 	}
 	
@@ -153,6 +153,29 @@ public class WeddingController {
 			session.setAttribute("alertMsg", "처리 실패 └(°ᴥ°)┓...다시 시도해주세요...!");
 		}
 		return "redirect:/admin.wd";
+	}
+	
+	//만남 신청 페이지로 이동
+	@GetMapping("apply.wd")
+	public String applyMatchingForm(int petNo, HttpSession session,Model model) {
+	Member m = (Member)session.getAttribute("loginUser");
+	int count=service.countAppliedList(m.getUserNo());
+	Pet pet = service.selectPet(m.getUserNo());
+	if(count<=3) {
+		session.setAttribute("alertMsg", "계정당 만남 신청은 3회로 제한되어있습니다 ꌩ-ꌩ");
+		return "redirect:/wedList.wd";
+	}else {
+		model.addAttribute("matchingPet",petNo);
+		model.addAttribute("pet", pet);
+		return "wedding/apply4MatchingView";
+	}	
+	}
+	
+	//만남 신청
+	@PostMapping("apply.wd")
+	public String applyMatching(Wedding w, HttpSession session) {
+		int result = service.applyMatching(w);
+		return "redirect:/wedList.wd";
 	}
 	
 	// 파일 업로드 처리 메소드(재활용)

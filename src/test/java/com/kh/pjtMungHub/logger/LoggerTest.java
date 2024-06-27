@@ -62,9 +62,13 @@ public class LoggerTest {
 //		for(Wedding w:weddings) {
 //			log.debug("결혼 : {}",w);
 //		}
-		int weddingNo = 13;
-		Wedding wedding = sqlSession.selectOne("weddingMapper.selectWedding",weddingNo);
-		log.debug("결혼 정보 : {}",wedding);
+//		int weddingNo = 13;
+//		Wedding wedding = sqlSession.selectOne("weddingMapper.selectWedding",weddingNo);
+//		log.debug("결혼 정보 : {}",wedding);
+		
+		int userNo = 4;
+		int countAppliedList = sqlSession.selectOne("weddingMapper.countAppliedList",userNo);
+		log.debug("신청 건 수 몇 개? : {}",countAppliedList);
 //		int userNo = 6;
 //		Pet pet = sqlSession.selectOne("weddingMapper.selectPet",userNo);
 //		log.debug("반려견 정보 : {}",pet);

@@ -120,4 +120,14 @@ UPDATE WEDDING
 SET APPROVAL = 'Y'
 WHERE WEDDING_NO = #{weddingNo}
 </update>
+
+<select id="countAppliedList" parameterType="_int" resultType="_int">
+SELECT COUNT(*) COUNT FROM WEDDING
+WHERE PET_NO = #{petNo}
+AND APPROVAL = 'N'
+</select>
+
+<update id="applyMatching">
+
+</update>
 </mapper>

@@ -60,6 +60,15 @@ public class WeddingDao {
 		return sqlSession.update("weddingMapper.approveReg",weddingNo);
 	}
 
+	//신청한 만남 조회해오는 메서드
+	public int countAppliedList(SqlSessionTemplate sqlSession, int userNo) {
+		return sqlSession.selectOne("weddingMapper.countAppliedList",userNo);
+	}
+
+	public int applyMatching(SqlSessionTemplate sqlSession, Wedding w) {
+		return sqlSession.update("weddingMapper.applyMatching",w);
+	}
+
 
 	
 }
