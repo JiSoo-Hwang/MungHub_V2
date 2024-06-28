@@ -137,7 +137,7 @@
 	
     <!-- 모달창 버튼 -->
 	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-	  여러가지 맞춤 정보를 통해 펫시터를 추천 받아보세요. 
+	  여러가지 맞춤 정보를 통해 돌보미를 추천 받아보세요. 
 	</button>
 	
 	<div class="container mt-5">
@@ -197,7 +197,7 @@
       </div>
     
     <br>
-    <h4>펫시터 리스트</h4>
+    <h4>돌보미 리스트</h4>
     <div class="container mt-5"  id="sitterListContainer">
         
     </div>
