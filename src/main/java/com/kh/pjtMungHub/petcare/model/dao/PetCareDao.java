@@ -44,7 +44,7 @@ public class PetCareDao {
 	}
 	
 	//예약번호 가져오기
-	public String selectReservationId(SqlSessionTemplate sqlSession, Payment payment) {
+	public int selectReservationId(SqlSessionTemplate sqlSession, Payment payment) {
 		return sqlSession.selectOne("petcareMapper.selectReservationId",payment);
 	}
 
@@ -54,8 +54,21 @@ public class PetCareDao {
 	}
 
 	//결제내역 보여주기
-	public Payment payDetail(SqlSessionTemplate sqlSession, Payment payment) {
-		return sqlSession.selectOne("petcareMapper.payDetail",payment);
+	public Payment payDetail(SqlSessionTemplate sqlSession, String uid) {
+		return sqlSession.selectOne("petcareMapper.payDetail",uid);
+	}
+	
+	//장기돌봄 처음 페이지 화면
+	public ArrayList<House> firstHouseList(SqlSessionTemplate sqlSession,PageInfo pi) {
+		
+		int limit = pi.getBoardLimit();
+		int offset =(pi.getCurrentPage()-1)*limit;
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		return (ArrayList)sqlSession.selectList("petcareMapper.firstHouseList",null,rowBounds);
+	}
+	public int firstListCount(SqlSessionTemplate sqlSession) {
+		return sqlSession.selectOne("petcareMapper.firstListCount");
 	}
 
 	//장기돌봄 집리스트 조건부로 불러오기
@@ -67,10 +80,8 @@ public class PetCareDao {
 		
 		return (ArrayList)sqlSession.selectList("petcareMapper.selectHouseList",houseRe,rowBounds);
 	}
-
-	//페이징바처리에 필요한 집 리스트 갯수
-	public int listCount(SqlSessionTemplate sqlSession) {
-		return sqlSession.selectOne("petcareMapper.listCount");
+	public int listCount(SqlSessionTemplate sqlSession,HouseReservation houseRe) {
+		return sqlSession.selectOne("petcareMapper.listCount",houseRe);
 	}
 
 	//집 상세정보
@@ -97,6 +108,37 @@ public class PetCareDao {
 	public ArrayList<SupplyGuide> selectSupplyGuide(SqlSessionTemplate sqlSession, int houseNo) {
 		return (ArrayList)sqlSession.selectList("petcareMapper.selectSupplyGuide",houseNo);
 	}
+
+	//장기돌봄 예약저장
+	public int enrollHouse(SqlSessionTemplate sqlSession, HouseReservation hr) {
+		return sqlSession.insert("petcareMapper.enrollHouse",hr);
+	}
+
+	//선택한 요금정보
+	public HousePrice selectPriceInfo(SqlSessionTemplate sqlSession, int stayNo) {
+		return sqlSession.selectOne("petcareMapper.selectPriceInfo",stayNo);
+	}
+
+	//결제확정 후 각 paymentStatus 업뎃
+	public int updateReservation(SqlSessionTemplate sqlSession, String reservationNo) {
+		return sqlSession.update("petcareMapper.updateReservation",reservationNo);
+	}
+	public int updateHouseRe(SqlSessionTemplate sqlSession, String reservationHouseNo) {
+		return sqlSession.update("petcareMapper.updateHouseRe",reservationHouseNo);
+	}
+
+	//결제 구분을 위한 houserReservationNo 가져오기
+	public int houserReservationNo(SqlSessionTemplate sqlSession) {
+		return sqlSession.selectOne("petcareMapper.houserReservationNo");
+	}
+	//결제 구분을 위한 reservationId 가져오기
+	public int reservationId(SqlSessionTemplate sqlSession) {
+		return sqlSession.selectOne("petcareMapper.reservationId");
+	}
+
+	
+	
+
 
 	
 

@@ -123,14 +123,43 @@
 	    <input type="hidden" name ="petTypeNo" value="${at.petTypeNo }">
 	    <input type="hidden" name ="priceName" value="${at.priceName }">
 	    <input type="hidden" name ="totalPrice" value="${at.totalPrice }">
-	    <input type="text" name ="userId" value="${member.userId }">
+	    <input type="hidden" name ="userId" value="${loginUser.userId }">
 
       <!--방문장소-->
       <div class="form-section">
         <h5>어디로 방문할까요?</h5>
+        
         <div class="form-group">
             성함 <input type="text" class="form-control" name="petOwnerName" id="petOwnerName" placeholder="견주님 성함" style="width:300px;" required>
-        </div>
+            	<label for="userInfo"><input type="checkbox" id="userInfo"> 기존 회원정보 사용</label>
+        </div> 
+        
+        
+        <script>
+        $(document).ready(function(){
+        	
+        	var chkName = '${loginUser.name}';
+        	var chkPhone = '${loginUser.phone}';
+        	var chkAddress = '${loginUser.address}';
+        	
+        	$('#userInfo').change(function() {
+                if($(this).is(':checked')) {
+
+                	$('#petOwnerName').val(chkName);
+                	$('#phone').val(chkPhone);
+                	$('#address').val(chkAddress);
+                } else {
+                	$('#petOwnerName').val('');
+                	$('#phone').val('');
+                	$('#address').val('');
+                }
+            });
+        });
+            
+        
+        </script>
+        
+       
         <div class="form-group">
             연락처 <input type="text" class="form-control" name="phone" id="phone" placeholder="연락받을 전화번호" style="width:300px;" required>
         </div>

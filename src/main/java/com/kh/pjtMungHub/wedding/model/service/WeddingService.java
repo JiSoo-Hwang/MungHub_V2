@@ -33,6 +33,16 @@ public interface WeddingService {
 
 	//웨딩플랜 신청 승인 메서드
 	int approveReg(int weddingNo);
+
+	//신청한 만남 조회해오는 메서드
+	int countAppliedList(int userNo);
+
+	//만남 신청 메서드
+	int applyMatching(Wedding w, ArrayList<Vaccine> vacList);
+
+	//만남 신청 내역 조회 메서드
+	ArrayList<Wedding> selectAppliedList(Wedding w);
+
 	
 
 }

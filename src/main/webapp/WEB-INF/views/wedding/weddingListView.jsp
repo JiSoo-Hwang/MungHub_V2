@@ -33,10 +33,21 @@
         <a href="admin.wd" class="btn btn-warning">서비스 신청한 강아지 조회하기</a>
         </c:when>
         <c:otherwise>
-		<a href="insert.wd" class="btn btn-success">나의 강아지 등록하기</a>
+		<a href="insert.wd" class="btn btn-success">나의 강아지 등록하기</a> <br>
+		<a href="regList.wd?userNo=${loginUser.userNo }" class="btn btn-warning">나의 신청내역 조회하기</a>
         </c:otherwise>
         </c:choose>
         <br><br>
+        <c:choose>
+        <c:when test="${empty weddingList }">
+        <div class="row">
+        <p class="text-center"> 
+        아직 등록된 강아지가 없습니다 └(°ᴥ°)┓!<br>
+        우리가 먼저 등록을 해볼까요 (ᐡ- ﻌ •ᐡ)♥?
+        </p>
+        </div>
+        </c:when>
+        </c:choose>
         <div class="row">
             <c:forEach items="${weddingList }" var="w">
                 <div class="card" style="width:400px">
