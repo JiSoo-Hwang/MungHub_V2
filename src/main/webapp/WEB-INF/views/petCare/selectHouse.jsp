@@ -115,15 +115,16 @@
 	<input type="hidden" id="hiddenStartDate" name="startDate">
 	<input type="hidden" id="hiddenEndDate" name="endDate">
 	<input type="hidden" id="hiddenDaysNight" name="daysNight">
+	<input type="hidden" id="firstCurrentPage" value="${currentPage }">
+	
 	
     <header>
-    
         <div class="search-bar">
         <!-- Button trigger modal -->
 		<button type="button" id="addrBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
 		 가까운 장소 찾기
 		</button>
-		<input type="text" id="inputAddress" style="width:400px;" readonly placeholder="주소입력">
+		<input type="text" id="inputAddress" style="width:400px;" readonly placeholder="주소입력" required>
         <!-- 주소 api 모달창으로 -->
         <!-- Modal -->
 		<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -153,6 +154,9 @@
 		<button type="button" id="addrBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop3">
 		 날짜 및 돌봄 기간정하기
 		</button>
+		
+		<input type="hidden" id="" value="">
+		
 		<input type="button" class="btn btn-secondary" id="searchBtn" value="검색">
 		<!-- Modal -->
 		<div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -253,67 +257,116 @@
     </section>
     
     <script>
-  		//==================== 주소 api ===============================
-    	$(function(){
-    		$('#inputAddress').on('click',function(){
-    			$('#addrBtn').click();
-    		});
-    	});
 		
-		function sample6_execDaumPostcode() {
-	        new daum.Postcode({
-	            oncomplete: function(data) {
-	            	
-	                var addr = ''; // 주소 변수
-	                var extraAddr = ''; // 참고항목 변수
-	
-	                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-	                    addr = data.roadAddress;
-	                } else { // 사용자가 지번 주소를 선택했을 경우(J)
-	                    addr = data.jibunAddress;
-	                }
-	
-	                if(data.userSelectedType === 'R'){
-	                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-	                        extraAddr += data.bname;
-	                    }
-	                    // 건물명이 있고, 공동주택일 경우 추가한다.
-	                    if(data.buildingName !== '' && data.apartment === 'Y'){
-	                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-	                    }
-	                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-	                    if(extraAddr !== ''){
-	                        extraAddr = ' (' + extraAddr + ')';
-	                    }
-	                    // 조합된 참고항목을 해당 필드에 넣는다.
-	                    document.getElementById("sample6_extraAddress").value = extraAddr;
-	                
-	                } else {
-	                    document.getElementById("sample6_extraAddress").value = '';
-	                }
-	                document.getElementById('sample6_postcode').value = data.zonecode;
-	                document.getElementById("sample6_address").value = addr; 
-	                document.getElementById("sample6_detailAddress").focus();
-	                
-	               $('#inputBtn').click(function(){
-	            	   var fullAddress = addr+'  '+document.getElementById("sample6_detailAddress").value;
-	            	   $('#inputAddress').val(fullAddress);
-	            	 //값을 보낸 후 모달창 닫아주기
-						$("#staticBackdrop1").modal('hide'); 
-	               });
-	            }
-	        }).open();
+//===================== 하우스 리스트 ===================
+		
+	//페이지 처음화면 리스트
+		var firstCurrentPage = $('#firstCurrentPage').val();	
+		function firstList(){
+			$.ajax({
+				url : "firstHouseList.re",
+				data :{
+					firstCurrentPage : firstCurrentPage
+				},
+				success : function(result){
+					var list = result.houseList; //map에서 꺼내쓰는 방법
+					var pi = result.pi;
+					var houseList = "";
+					for (var i = 0; i < list.length; i++) {
+						houseList += "<div class='partner-card'>"
+	                               + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' alt='Room Image'>"
+	                               + "<input id='houseNo' type='hidden' value='" + list[i].houseNo + "'>"
+	                               + "<div class='card-content'>"
+	                               + "<p class='title'>" + list[i].introductionSummary + "</p>"
+	                               + "<p class='houseAddress'>" + list[i].houseAddress + "</p>"
+	                               + "</div>"
+	                               + "</div>";
+					}
+					
+					var pagination = "<ul class='pagination'>";
+		            // 이전버튼
+		            if (pi.currentPage == 1) {
+		                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>◀</a></li>";
+		            } else {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage2(" + (pi.currentPage - 1) + ")'>◀</a></li>";
+		            }
+		            // 페이징번호 반복문
+		            for (var p = pi.startPage; p <= pi.endPage; p++) {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage2(" + p + ")'>" + p + "</a></li>";
+		            }
+		            // 다음버튼
+		            if (pi.currentPage == pi.maxPage) {
+		                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>▶</a></li>";
+		            } else {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage2(" + (pi.currentPage + 1) + ")'>▶</a></li>";
+		            }
+					
+					$('#pagingArea').html(pagination);
+					$('#houseList').html(houseList);
+					console.log('하우스 리스트 불러오기 성공!!');
+				},
+				error : function(){
+					console.log('통신실패ㅠㅠ');
+				}
+			});
+		};
+		
+		//page 넘버마다 onclick 이벤트를 사용하여 비동기로 페이징이동 (페이지 처음화면용)
+		function goToPage2(page) {
+			
+		    $.ajax({
+		        url: "firstHouseList.re",
+		        data: {
+		        	firstCurrentPage : page
+		        },
+		        success: function(result) {
+		            var list = result.houseList;
+		            var pi = result.pi;
+
+		            var houseList = "";
+		            for (var i = 0; i < list.length; i++) {
+		            	houseList += "<div class='partner-card'>"
+		                            + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' alt='Room Image'>"
+		                            + "<input id='houseNo' type='hidden' value='" + list[i].houseNo + "'>"
+		                            + "<div class='card-content'>"
+		                            + "<p class='title'>" + list[i].introductionSummary + "</p>"
+		                            + "<p class='houseAddress'>" + list[i].houseAddress + "</p>"
+		                            + "</div>"
+		                            + "</div>";
+		            }
+
+		            var pagination = "<ul class='pagination'>";
+
+		            // 이전버튼
+		            if (pi.currentPage == 1) {
+		                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>◀</a></li>";
+		            } else {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage2(" + (pi.currentPage - 1) + ")'>◀</a></li>";
+		            }
+		            // 페이징번호 반복문
+		            for (var p = pi.startPage; p <= pi.endPage; p++) {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage2(" + p + ")'>" + p + "</a></li>";
+		            }
+		            // 다음버튼
+		            if (pi.currentPage == pi.maxPage) {
+		                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>▶</a></li>";
+		            } else {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage2(" + (pi.currentPage + 1) + ")'>▶</a></li>";
+		            }
+		            pagination += "</ul>";
+
+		            $('#pagingArea').html(pagination);
+		            $('#houseList').html(houseList);
+		            console.log('하우스 리스트 불러오기 성공!!');
+		        },
+		        error: function() {
+		            console.log('통신실패ㅠㅠ');
+		        }
+		    });
 		}
-		//주소 입력창 초기화 버튼  		
-		$("#resetBtn").click(function(){ 
-			$("#sample6_postcode").val('');
-			$("#sample6_address").val('');
-			$("#sample6_detailAddress").val('');
-			$("#sample6_extraAddress").val('');
-		});
-		
-		//===================== 하우스 리스트 ===================
+			
 		$(function(){
+			firstList();
 			houseList();
 			goToPage();
 			$(document).on('click','#houseList .partner-card img',function(){
@@ -343,6 +396,7 @@
 				//java.util.Date 로 받았기 때문에, controller에서 sql.Date로 변환예정
 				endDate = new Date(inputDate);
 				endDate.setDate(endDate.getDate() + endDatePlus);
+				
 				$.ajax({
 					url : "selectHouseList.re",
 					data : {
@@ -404,7 +458,7 @@
 			
 		};
 		
-		//page 넘버마다 onclick 이벤트를 사용하여 비동기로 페이징이동
+		//page 넘버마다 onclick 이벤트를 사용하여 비동기로 페이징이동 (조건부 리스트용)
 		function goToPage(page) {
 		    var address = $('#hiddenAddress').val();
 		    var startDate = $('#hiddenStartDate').val();
@@ -466,6 +520,65 @@
 		    });
 		}
 		
+		
+		//==================== 주소 api ===============================
+    	$(function(){
+    		$('#inputAddress').on('click',function(){
+    			$('#addrBtn').click();
+    		});
+    	});
+		
+		function sample6_execDaumPostcode() {
+	        new daum.Postcode({
+	            oncomplete: function(data) {
+	            	
+	                var addr = ''; // 주소 변수
+	                var extraAddr = ''; // 참고항목 변수
+	
+	                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+	                    addr = data.roadAddress;
+	                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+	                    addr = data.jibunAddress;
+	                }
+	
+	                if(data.userSelectedType === 'R'){
+	                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+	                        extraAddr += data.bname;
+	                    }
+	                    // 건물명이 있고, 공동주택일 경우 추가한다.
+	                    if(data.buildingName !== '' && data.apartment === 'Y'){
+	                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+	                    }
+	                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+	                    if(extraAddr !== ''){
+	                        extraAddr = ' (' + extraAddr + ')';
+	                    }
+	                    // 조합된 참고항목을 해당 필드에 넣는다.
+	                    document.getElementById("sample6_extraAddress").value = extraAddr;
+	                
+	                } else {
+	                    document.getElementById("sample6_extraAddress").value = '';
+	                }
+	                document.getElementById('sample6_postcode').value = data.zonecode;
+	                document.getElementById("sample6_address").value = addr; 
+	                document.getElementById("sample6_detailAddress").focus();
+	                
+	               $('#inputBtn').click(function(){
+	            	   var fullAddress = addr+'  '+document.getElementById("sample6_detailAddress").value;
+	            	   $('#inputAddress').val(fullAddress);
+	            	 //값을 보낸 후 모달창 닫아주기
+						$("#staticBackdrop1").modal('hide'); 
+	               });
+	            }
+	        }).open();
+		}
+		//주소 입력창 초기화 버튼  		
+		$("#resetBtn").click(function(){ 
+			$("#sample6_postcode").val('');
+			$("#sample6_address").val('');
+			$("#sample6_detailAddress").val('');
+			$("#sample6_extraAddress").val('');
+		});
 		
 		//정렬순 필터 입력값
 		$('#inputBtn2').click(function(){

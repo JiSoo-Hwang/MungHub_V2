@@ -12,15 +12,13 @@ import lombok.NoArgsConstructor;
 public class HouseReservation {
     private int reservationHouseNo; // RESERVATION_HOUSE_NO NUMBER PRIMARY KEY
     private String houseNo; // HOUSE_NO VARCHAR2(50) NOT NULL
-    private String address;
     private Date startDate; // START_DATE DATE NOT NULL
     private Date endDate; // END_DATE DATE NOT NULL
     private int stayNo; // STAY_NO NUMBER NOT NULL
     private String caution; // CAUTION VARCHAR2(2000) NOT NULL
     private String petOwnerName; // PET_OWNER_NAME VARCHAR2(200) NOT NULL
+    private String address;
     private String phone; // PHONE VARCHAR2(50) NOT NULL
-    private String petName; // PET_NAME VARCHAR2(200) NOT NULL
-    private String petTypeNo; // PET_TYPE_NO NUMBER NOT NULL
     private String originName; // ORIGIN_NAME VARCHAR2(1000 BYTE)
     private String changeName; // CHANGE_NAME VARCHAR2(1000 BYTE)
     private int status; // STATUS NUMBER DEFAULT 1 NOT NULL
