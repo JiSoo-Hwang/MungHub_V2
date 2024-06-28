@@ -72,6 +72,23 @@ public class WeddingServiceImpl implements WeddingService{
 		return dao.approveReg(sqlSession,weddingNo);
 	}
 
+	//신청한 만남 조회해오는 메서드
+	@Override
+	public int countAppliedList(int userNo) {
+		return dao.countAppliedList(sqlSession,userNo);
+	}
 
+
+	//만남 신청 조회 메서드
+	@Override
+	public ArrayList<Wedding> selectAppliedList(Wedding w) {
+		return dao.selectAppliedList(sqlSession,w);
+	}
+
+	//만남 신청 메서드
+	@Override
+	public int applyMatching(Wedding w, ArrayList<Vaccine> vacList) {
+		return dao.applyMatching(sqlSession, w,vacList);
+	}
 
 }

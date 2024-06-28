@@ -31,7 +31,8 @@ li {
 	<%@ include file="/WEB-INF/views/common/header.jsp"%>
 	<div class="form_area">
 
-		<form method="post" action="insert.wd" enctype="multipart/form-data">
+		<form method="post" action="apply.wd" enctype="multipart/form-data">
+ 			<input type="hidden" name="partnerNo" value="${matchingPet}"> 
 			<input type="hidden" name="userNo" value="${loginUser.userNo }">
 			<ul>
 				<li>
@@ -112,7 +113,6 @@ li {
 											id="vac5"> <label
 											class="form-check-label" for="vac5">인플루엔자</label>
 											</li>
-
 									</ul>
 								</td>
 							</tr>
@@ -121,6 +121,16 @@ li {
 							<td> 
 							<input type="file" multiple name="vacCert" required>
 							</td>
+							</tr>
+							<tr>
+								<th>만남방식</th>
+								<td>
+								<select name="meetingMethod" required>
+								<!-- 이부분 변경할 것 -->
+									<option value="상대방이 방문">상대방 댕댕이가 방문</option>
+									<option value="우리가 방문">우리가 댕댕이를 찾아가기</option>
+								</select>
+								</td>
 							</tr>
 							<tr>
 								<th>소개</th>
@@ -169,8 +179,6 @@ $(function () {
 	var checkNum = $("input[class='form-check-input']:checked").length;
 		if(checkNum==5){
 			$("button[type='submit']").prop("disabled",false);
-		}else{
-			$("button[type='submit']").prop("disabled",true);
 		}
 	});
 });

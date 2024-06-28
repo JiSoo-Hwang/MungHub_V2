@@ -89,11 +89,6 @@ li {
 									<td>${wedding.weight }</td>
 								</tr>
  								<tr>
-									<th>만남방식</th>
-									<td><input type="text" name="meetingMethod"
-										value="${wedding.meetingMethod }"></td>
-								</tr>
-								<tr>
 									<th>소개</th>
 									<td>${wedding.petIntro }</td>
 								</tr>
@@ -105,7 +100,12 @@ li {
 								<td> </td>
 								<td class="text-end"> 
 								<br> <br> <br> <br> <br> <br>
-										<a type="button" class="btn btn-warning" href="wedList.wd">목록으로</a>
+										<a class="btn btn-warning" href="wedList.wd">목록으로</a>&ensp;
+										<c:choose>
+										<c:when test="${wedding.userNo ne loginUser.userNo }">
+										<a class="btn btn-success" href="apply.wd?petNo=${wedding.petNo}">만남신청하기</a>
+										</c:when>										
+										</c:choose>
 								</td>
 								</tr>
 								<tr>
