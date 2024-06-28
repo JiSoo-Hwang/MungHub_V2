@@ -187,6 +187,7 @@
 		CHOOSED = 'N'
 		WHERE USER_NO = #{userNo}
 	</update>
+	<!--insert되기 전에 해당 유저아이디에 저장된 배송정보 체크아웃 풀기  -->
 	
 	<insert id="insertShipInfo" 
 	parameterType="com.kh.pjtMungHub.shop.model.vo.ShipInfo">
@@ -230,7 +231,13 @@
     WHERE USER_NO=#{userNo}
 	</update>
 	
-	<select id="selectOrderList" resultType="Cart" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
+		
+	<delete id="removeShipInfo" parameterType="com.kh.pjtMungHub.shop.model.vo.ShipInfo">
+		DELETE FROM SHIP_INFO
+		WHERE INFO_NO=#{infoNo}
+	</delete>
+	
+	<select id="selectCartItemList" resultType="Cart" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
 	SELECT
 		PRODUCT_NO productNo,
 		P_AMOUNT amount,
@@ -274,4 +281,66 @@
 	WHERE USER_NO = #{userNo}
 	AND CHOOSED= 'Y'
 	</select>
+	
+	<select id="selectShipInfo2"
+	resultType="com.kh.pjtMungHub.shop.model.vo.ShipInfo" 
+	 parameterType="_int">
+	 SELECT *
+	 FROM(
+	SELECT
+	INFO_NO infoNo,
+	USER_NO userNo,
+	ADDRESS address,
+	ADDRESS_DETAIL addressDetail,
+	RECIPIENT recipient,
+	PHONE phone,
+	CHOOSED choosed
+	FROM SHIP_INFO
+	WHERE USER_NO = #{userNo}
+	ORDER BY CHOOSED DESC
+	)
+	WHERE ROWNUM=1
+	</select>
+	
+	<insert id="insertOrderInfo" parameterType="com.kh.pjtMungHub.shop.model.vo.POrderInfo">
+	INSERT INTO PRODUCT_ORDER(
+	MERCHANT_UID,
+	SHOPPING_LIST,
+	ITMES_QUANTITY,
+	TOTAL_PRICE,
+	USER_NO,
+	MESSAGE,
+	ADDRESS,
+	RECIPIENT,
+	PHONE
+	)VALUES(
+	#{merchantUid},
+	#{items},
+	#{itemsQuantity},
+	#{totalPrice},
+	#{userNo},
+	#{message.message},
+	#{address},
+	#{recipient},
+	#{phone}
+	)
+	</insert>
+	
+	<select id="selectOrder" parameterType="String" resultType="com.kh.pjtMungHub.shop.model.vo.POrderInfo">
+	SELECT MERCHANT_UID merchantUid
+	,ORDER_PROCESS process
+	,SHOPPING_LIST items
+	,ITMES_QUANTITY itemsQuantity
+	,TOTAL_PRICE totalPrice
+	,USER_NO userNo
+	,PAY_DATE payDate
+	,MESSAGE message
+	,ADDRESS address
+	,PHONE phone
+	,RECIPIENT recipient
+	FROM PRODUCT_ORDER
+	WHERE MERCHANT_UID=#{merchantUid}
+	</select>
+
+	
 </mapper>

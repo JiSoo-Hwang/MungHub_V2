@@ -23,6 +23,7 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
@@ -191,7 +192,10 @@ public class ShopController {
 		
 		int totalPrice=0;
 		
-		ArrayList<Cart> orderList = shopService.selectOrderList(parameter);
+		ArrayList<Cart> orderList = shopService.selectCartItemList(parameter);
+		String itemList="";
+		String itemsNo="";
+		String itemsQuantity="";
 		ShipInfo shipInfo = shopService.selectShipInfo(userNo);
 		for(int i=0;i<orderList.size();i++) {
 			
@@ -199,13 +203,64 @@ public class ShopController {
 			int discount=orderList.get(i).getDiscount();
 			int amount=orderList.get(i).getAmount();
 			
+			if(i<orderList.size()-1) {
+				itemList+=orderList.get(i).getProductName()+",";
+				itemsNo+=orderList.get(i).getProductNo()+",";
+				itemsQuantity+=orderList.get(i).getAmount()+",";
+			}else {
+				itemList+=orderList.get(i).getProductName(); //마지막에 추가되는 상품뒤에는 구분자 붙이지 않는 조건문
+				itemsNo+=orderList.get(i).getProductNo();
+				itemsQuantity+=orderList.get(i).getAmount();
+			}
+			
 			totalPrice=(price-(price/discount)*amount);
 		}
 		
+		mv.addObject("itemsNo",itemsNo);
+		mv.addObject("itemsQuantity",itemsQuantity);
+		mv.addObject("itemList",itemList);
 		mv.addObject("totalPrice",totalPrice);
 		mv.addObject("shipInfo",shipInfo);
 		mv.addObject("orderList",orderList);
 		mv.setViewName("shop/orderPage");
+		return mv;
+	}
+	
+	@PostMapping("insertOrderInfo.sp")
+	@ResponseBody
+	public int insertOrderInfo(POrderInfo orderInfo) {
+		
+		int result=shopService.insertOrderInfo(orderInfo);
+		
+		return result;
+	}
+	
+	@GetMapping("orderConfirm/{merchantUid}")
+	public ModelAndView orderConfirm(@PathVariable String merchantUid,ModelAndView mv) {
+		
+		POrderInfo orderInfo = shopService.selectOrder(merchantUid);
+		
+		String itemList =orderInfo.getItems();
+		String itemQuantity =orderInfo.getItemsQuantity();
+		
+		String[] itemListArr = itemList.split(",");
+		String[] itemQuantityArr = itemQuantity.split(",");
+		
+		mv.addObject("itemList",itemListArr);
+		mv.addObject("itemQuantity",itemQuantityArr);
+		mv.addObject("orderInfo",orderInfo);
+		mv.setViewName("shop/orderConfirm");
+		
+		return mv;
+	}
+	
+	@GetMapping("orderList/{userNo}")
+	public ModelAndView orderInfoList(ModelAndView mv,@PathVariable int userNo) {
+		
+		ArrayList<POrderInfo> orderList = shopService.selectOrderList(userNo);
+		
+		mv.addObject("orderList",orderList);
+		mv.setViewName("shop/orderList");
 		return mv;
 	}
 	
@@ -232,6 +287,15 @@ public class ShopController {
 	public int changeShipInfo(ShipInfo s) {
 		
 		int result =shopService.changeShipInfo(s);
+		
+		return result;
+	}
+	
+	@PostMapping("removeShipInfo.sp")
+	@ResponseBody
+	public int removeShipInfo(ShipInfo s) {
+		
+		int result =shopService.removeShipInfo(s);
 		
 		return result;
 	}

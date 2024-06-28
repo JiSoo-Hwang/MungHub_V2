@@ -10,6 +10,7 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
@@ -86,17 +87,46 @@ public class ShopDao {
 		// TODO Auto-generated method stub
 		return sqlSession.update("shopMapper.changeShipInfo",s);
 	}
+	
+	public int removeShipInfo(SqlSessionTemplate sqlSession, ShipInfo s) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("shopMapper.removeShipInfo",s);
+	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ArrayList<Cart> selectOrderList(SqlSessionTemplate sqlSession, ParameterVo parameter) {
+	public ArrayList<Cart> selectCartItemList(SqlSessionTemplate sqlSession, ParameterVo parameter) {
 		// TODO Auto-generated method stub
-		return (ArrayList)sqlSession.selectList("shopMapper.selectOrderList",parameter);
+		return (ArrayList)sqlSession.selectList("shopMapper.selectCartItemList",parameter);
 	}
 
 	public ShipInfo selectShipInfo(SqlSessionTemplate sqlSession, int userNo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("shopMapper.selectShipInfo",userNo);
 	}
+	public ShipInfo selectShipInfo2(SqlSessionTemplate sqlSession, int userNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectShipInfo2",userNo);
+	}
+
+	
+
+	public int insertOrderInfo(SqlSessionTemplate sqlSession, POrderInfo orderInfo) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.insertOrderInfo",orderInfo);
+	}
+
+	public POrderInfo selectOrder(SqlSessionTemplate sqlSession, String merchantUid) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectOrder",merchantUid);
+	}
+
+	public ArrayList<POrderInfo> selectOrderList(int userNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	
 
 
 }

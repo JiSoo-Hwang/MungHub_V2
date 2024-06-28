@@ -12,6 +12,7 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
@@ -100,16 +101,12 @@ public class ShopServiceImpl implements ShopService {
 		return shopDao.selectShipInfoList(sqlSession,userNo);
 	}
 
-	@Override
-	public int changeShipInfo(ShipInfo s) {
-		// TODO Auto-generated method stub
-		return shopDao.changeShipInfo(sqlSession,s);
-	}
+
 
 	@Override
-	public ArrayList<Cart> selectOrderList(ParameterVo parameter) {
+	public ArrayList<Cart> selectCartItemList(ParameterVo parameter) {
 		// TODO Auto-generated method stub
-		return shopDao.selectOrderList(sqlSession,parameter);
+		return shopDao.selectCartItemList(sqlSession,parameter);
 	}
 
 	@Override
@@ -118,6 +115,43 @@ public class ShopServiceImpl implements ShopService {
 		return shopDao.selectShipInfo(sqlSession, userNo);
 	}
 
+	@Override
+	public POrderInfo selectOrder(String merchantUid) {
+		// TODO Auto-generated method stub
+		return shopDao.selectOrder(sqlSession, merchantUid);
+	}
+
+	@Override
+	public int insertOrderInfo(POrderInfo orderInfo) {
+		// TODO Auto-generated method stub
+		return shopDao.insertOrderInfo(sqlSession,orderInfo);
+	}
+
+	@Override
+	public ArrayList<POrderInfo> selectOrderList(int userNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectOrderList(userNo);
+	}
+
+	@Override
+	public int removeShipInfo(ShipInfo s) {
+		// TODO Auto-generated method stub
+		
+		int result=shopDao.removeShipInfo(sqlSession, s);
+		
+		
+		ShipInfo s2=shopDao.selectShipInfo2(sqlSession, s.getUserNo());
+			
+		int result2=shopDao.changeShipInfo(sqlSession, s2);
+		return result*result2;	
+				
+	}
 	
+	@Override
+	public int changeShipInfo(ShipInfo s) {
+		// TODO Auto-generated method stub
+		return shopDao.changeShipInfo(sqlSession,s);
+	}
+
 
 }

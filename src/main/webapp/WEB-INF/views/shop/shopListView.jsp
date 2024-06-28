@@ -42,6 +42,7 @@ position : relative;
 <c:if test="${!empty loginUser }">
 <a class="btn btn-outline-dark" href="cart.sp"><i class="bi bi-cart3"></i> 장바구니</a>
 <a class="btn btn-primary" href="insert.sp">상품등록</a>
+<a href="/pjtMungHub/orderList/${loginUser.userNo }" class="btn btn-secondary">주문 내역 보기</a>
 </c:if>
 <div class="row row-cols-2 align-items-center">
 <c:forEach items="${pList }" var="p">
