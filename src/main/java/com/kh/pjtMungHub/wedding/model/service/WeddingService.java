@@ -38,7 +38,11 @@ public interface WeddingService {
 	int countAppliedList(int userNo);
 
 	//만남 신청 메서드
-	int applyMatching(Wedding w);
+	int applyMatching(Wedding w, ArrayList<Vaccine> vacList);
+
+	//만남 신청 내역 조회 메서드
+	ArrayList<Wedding> selectAppliedList(Wedding w);
+
 	
 
 }

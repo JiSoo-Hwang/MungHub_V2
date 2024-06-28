@@ -72,13 +72,14 @@ VALUES(SEQ_WED.NEXTVAL
 ,#{petNo}
 ,#{userNo}
 ,#{pedigree}
-,#{meetingMethod}
+,DEFAULT
 ,#{petIntro}
 ,#{petNote}
 ,#{originName}
 ,#{changeName}
+,'N'
 ,DEFAULT
-,NULL)
+,DEFAULT)
 
 </insert>
 
@@ -127,7 +128,51 @@ WHERE PET_NO = #{petNo}
 AND APPROVAL = 'N'
 </select>
 
-<update id="applyMatching">
+<insert id="applyMatching" parameterType="Wedding">
+INSERT INTO WEDDING VALUES (SEQ_WED.NEXTVAL
+,#{petNo}
+,#{userNo}
+,#{pedigree}
+,#{meetingMethod}
+,#{petIntro}
+,#{petNote}
+,#{originName}
+,#{changeName}
+,'W'
+,DEFAULT
+,#{partnerNo}
+)
+</insert>
+
+<select id="selectAppliedList" parameterType="_int" resultType="Wedding">
+SELECT W.WEDDING_NO weddingNo
+,W.PET_NO petNo
+,P.PET_NAME petName
+<if test="partnerNo!=0">
+,M.PET_NAME partnerName
+</if>
+,W.PEDIGREE pedigree
+,B.BREED_NAME breed
+,P.PET_AGE petAge
+,P.PET_GENDER gender
+,P.WEIGHT weight
+,W.MEETING_METHOD meetingMethod
+,W.PET_INTRO petIntro
+,W.PET_NOTE petNote
+,W.ORIGIN_NAME originName
+,W.CHANGE_NAME changeName
+,W.APPROVAL approval
+,W.REASON reason
+,W.PARTNER_NO partnerNo
+FROM WEDDING W, PET P, BREED B 
+<if test="partnerNo!=0">
+,(SELECT PET_NAME FROM PET WHERE PET_NO = #{partnerNo})M
+</if>
+WHERE W.PET_NO = P.PET_NO 
+AND P.BREED_ID = B.BREED_ID
+AND USER_NO = #{userNo}
+</select>
+<update id="receiveRequest">
 
 </update>
 </mapper>

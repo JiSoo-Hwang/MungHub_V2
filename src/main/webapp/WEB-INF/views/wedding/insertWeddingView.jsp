@@ -32,7 +32,6 @@ li {
 	<div class="form_area">
 
 		<form method="post" action="insert.wd" enctype="multipart/form-data">
-<%-- 			<input type="hidden" name="kindNo" value="${kindergarten.kindNo}"> --%>
 			<input type="hidden" name="userNo" value="${loginUser.userNo }">
 			<ul>
 				<li>
@@ -124,15 +123,6 @@ li {
 							</td>
 							</tr>
 							<tr>
-								<th>만남방식</th>
-								<td>
-								<select name="meetingMethod" required>
-									<option value="상대방이 방문">상대방 댕댕이가 방문</option>
-									<option value="우리가 방문">우리가 댕댕이를 찾아가기</option>
-								</select>
-								</td>
-							</tr>
-							<tr>
 								<th>소개</th>
 								<td><textarea rows="4" cols="50" name="petIntro"></textarea></td>
 							</tr>
@@ -179,6 +169,8 @@ $(function () {
 	var checkNum = $("input[class='form-check-input']:checked").length;
 		if(checkNum==5){
 			$("button[type='submit']").prop("disabled",false);
+		}else{
+			$("button[type='submit']").prop("disabled",true);
 		}
 	});
 });

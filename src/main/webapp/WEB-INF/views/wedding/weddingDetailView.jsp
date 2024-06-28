@@ -104,8 +104,8 @@ li {
  								<c:choose>
 									<c:when test="${wedding.approval eq 'N' }">
 										<tr>
-											<th>승인여부</th>
-											<td>승인대기중</td>
+											<th>관리자 승인여부</th>
+											<td>관리자 승인대기중</td>
 										</tr>
 									</c:when>
 									<c:when test="${wedding.approval eq 'R' }">
@@ -118,11 +118,27 @@ li {
 											<td>${wedding.reason}</td>
 										</tr>
 									</c:when>
-									<c:otherwise>
+									<c:when test="${wedding.approval eq 'Y' }">
 										<tr>
-											<th>승인여부</th>
+											<th>관리자 승인여부</th>
 											<td>신청이 승인되었습니다^-^! ${wedding.petName }가 좋은 짝을 만나기를 바랍니다!</td>
 										</tr>
+									</c:when>
+									<c:when test="${wedding.approval eq 'W'}">
+										<tr>
+											<th>수락여부</th>
+											<td>대기중</td>
+										</tr>
+									</c:when>
+									<c:otherwise>
+										<tr>
+											<th>수락여부</th>
+											<td>상대방이 수락했습니다૮₍⑅˶•▿•˶⑅₎ა <br>
+											${wedding.petName }(이)가 행복한 만남이 되길 바랄게요 ♡(ᐢ ᴥ ᐢし)
+											</td>
+										</tr>
+									</c:otherwise>
+								</c:choose>
 								<tr> 
 								<td> </td>
 								<td class="text-end"> 
@@ -137,8 +153,6 @@ li {
 										</c:choose>
 								</td>
 								</tr>
-									</c:otherwise>
-								</c:choose>
 								<tr>
 									<td></td>
 									<td><br> <br> <br>

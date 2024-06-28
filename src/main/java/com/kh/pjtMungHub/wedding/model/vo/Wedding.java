@@ -27,4 +27,6 @@ private String originName;//ORIGIN_NAME
 private String changeName;//CHANGE_NAME
 private String approval;//	APPROVAL	CHAR(1 BYTE)
 private String reason;//거절사유 필드
+private int partnerNo;//매칭 상대방 강아지 번호
+private String partnerName;
 }

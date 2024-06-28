@@ -65,8 +65,22 @@ public class WeddingDao {
 		return sqlSession.selectOne("weddingMapper.countAppliedList",userNo);
 	}
 
-	public int applyMatching(SqlSessionTemplate sqlSession, Wedding w) {
-		return sqlSession.update("weddingMapper.applyMatching",w);
+	@Transactional
+	//만남 신청 메서드
+	public int applyMatching(SqlSessionTemplate sqlSession, Wedding w, ArrayList<Vaccine> vacList) {
+		//만남 신청 처리
+		int result1 = sqlSession.insert("weddingMapper.applyMatching",w);
+		//백신 접종 증명서 추가
+		int result2 =1;
+		for(Vaccine v:vacList) {
+		result2 *=sqlSession.insert("weddingMapper.insertVaccine",v);	
+		}
+		return result1 * result2;
+	}
+
+	//만남 신청 내역 조회 메서드
+	public ArrayList<Wedding> selectAppliedList(SqlSessionTemplate sqlSession, Wedding w) {
+		return (ArrayList)sqlSession.selectList("weddingMapper.selectAppliedList",w);
 	}
 
 

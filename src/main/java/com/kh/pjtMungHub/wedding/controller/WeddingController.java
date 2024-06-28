@@ -64,7 +64,7 @@ public class WeddingController {
 	public ModelAndView selectWedding(int weddingNo, ModelAndView mv ) {
 		Wedding w = service.selectWedding(weddingNo);
 		mv.addObject("wedding",w)
-		.setViewName("wedding/weddingResultView");
+		.setViewName("wedding/weddingDetailView");
 		return mv;
 	}
 	
@@ -161,7 +161,7 @@ public class WeddingController {
 	Member m = (Member)session.getAttribute("loginUser");
 	int count=service.countAppliedList(m.getUserNo());
 	Pet pet = service.selectPet(m.getUserNo());
-	if(count<=3) {
+	if(count>=3) {
 		session.setAttribute("alertMsg", "계정당 만남 신청은 3회로 제한되어있습니다 ꌩ-ꌩ");
 		return "redirect:/wedList.wd";
 	}else {
@@ -173,9 +173,39 @@ public class WeddingController {
 	
 	//만남 신청
 	@PostMapping("apply.wd")
-	public String applyMatching(Wedding w, HttpSession session) {
-		int result = service.applyMatching(w);
-		return "redirect:/wedList.wd";
+	public String applyMatching(Wedding w, MultipartFile upFile,ArrayList<MultipartFile>vacCert,Model model,HttpSession session) {
+		
+		if(!upFile.getOriginalFilename().equals("")) {
+			String changeName = saveFile(upFile, session);
+			w.setOriginName(upFile.getOriginalFilename());
+			w.setChangeName("resources/uploadFiles/wedding/"+changeName);
+		}
+		ArrayList<Vaccine>vacList = new ArrayList<Vaccine>();
+		for(MultipartFile m : vacCert) {
+			vacList.add(Vaccine.builder()
+					.petNo(w.getPetNo())
+					.originName(m.getOriginalFilename())
+					.changeName("resources/uploadFiles/wedding/"+saveFile(m, session))
+					.build());
+		}
+		int result = service.applyMatching(w,vacList);
+		if(result>0) {
+			ArrayList<Wedding>appliedList=service.selectAppliedList(w);
+			session.setAttribute("alertMsg", "신청 성공! 상대방의 수락을 기다려보아요(ᐡ-ܫ•ᐡ)♥");
+			model.addAttribute("weddingList",appliedList);
+			return "wedding/weddingRegList";
+		}else {
+			session.setAttribute("alertMsg", "신청실패૮ ºﻌºა...다시 시도해보세요!");
+			return "redirect:/wedList.wd";
+		}
+	}
+	
+	@GetMapping("regList.wd")
+	public ModelAndView selectMyList(Wedding w, ModelAndView mv) {
+		
+		ArrayList<Wedding>myList=service.selectAppliedList(w);
+		mv.addObject("weddingList",myList).setViewName("wedding/weddingRegList");
+		return mv;
 	}
 	
 	// 파일 업로드 처리 메소드(재활용)
