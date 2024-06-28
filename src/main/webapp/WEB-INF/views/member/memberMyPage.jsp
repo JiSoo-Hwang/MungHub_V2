@@ -6,6 +6,11 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
+<style>
+	.left, .right : {
+		display: inline-block;
+	}
+</style>
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
 	<div class="mypage-left">
