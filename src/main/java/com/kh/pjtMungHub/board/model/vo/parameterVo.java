@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
-
-	private int categoryNo;//CATEGORY_NO	NUMBER
-	private String categoryName;//CATEGORY_NAME	VARCHAR2(30 BYTE)
+public class parameterVo {
+	
+	String category;
+	String sortBy;
 
 }
