@@ -70,13 +70,28 @@ public class LoggerTest {
 //		int countAppliedList = sqlSession.selectOne("weddingMapper.countAppliedList",userNo);
 //		log.debug("신청 건 수 몇 개? : {}",countAppliedList);
 				Wedding appliedWedding = Wedding.builder()
-										.userNo(4)
-//										.partnerNo(6)
+										.userNo(6)
+//										.partnerNo(3)
 										.build();
 		ArrayList<Wedding>appliedList = (ArrayList)sqlSession.selectList("weddingMapper.selectAppliedList",appliedWedding);
+		ArrayList<Wedding>receivedList = (ArrayList)sqlSession.selectList("weddingMapper.selectReceivedList",appliedWedding);
+		appliedList.addAll(receivedList);
+//		ArrayList<Wedding>appliedList2 = new ArrayList<Wedding>();
 		for(Wedding w:appliedList) {
-			log.debug("신청 내역 : {}",w);
+//			Wedding wd = sqlSession.selectOne("weddingMapper.selectAppliedList",w);
+			log.debug("신청목록 : {}",w);
 		}
+//		for(Wedding wd: appliedList2) {
+//			log.debug("신청목록 : {}",wd);
+//		}
+//		ArrayList<Wedding> appliedList2 = new ArrayList<Wedding>();
+//		for(Wedding wd:appliedList) {
+//			appliedList2.add(sqlSession.selectOne("weddingMapper.selectAppliedList",wd));
+//			log.debug("신청 내역 : {}", wd);
+//		}
+		/*
+		 * for(Wedding wg:appliedList2) { log.debug("신청 내역 : {}",wg); }
+		 */
 //		Wedding appliedWedding = Wedding.builder()
 //								.petNo("7")
 //								.userNo(1)

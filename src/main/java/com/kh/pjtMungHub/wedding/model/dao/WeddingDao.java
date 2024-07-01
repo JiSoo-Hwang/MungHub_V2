@@ -78,11 +78,25 @@ public class WeddingDao {
 		return result1 * result2;
 	}
 
+	@Transactional
 	//만남 신청 내역 조회 메서드
 	public ArrayList<Wedding> selectAppliedList(SqlSessionTemplate sqlSession, Wedding w) {
-		return (ArrayList)sqlSession.selectList("weddingMapper.selectAppliedList",w);
+		//담아온 userNo만을 가지고 신청한 weddingList 전체 조회
+		ArrayList<Wedding>appliedList = (ArrayList)sqlSession.selectList("weddingMapper.selectAppliedList",w);
+		ArrayList<Wedding>receivedList = (ArrayList)sqlSession.selectList("weddingMapper.selectReceivedList", w);
+		appliedList.addAll(receivedList);
+
+		return appliedList;
 	}
 
+	//만남 수락 메서드
+	public int acceptWedding(SqlSessionTemplate sqlSession, int weddingNo) {
+		
+		return sqlSession.update("weddingMapper.acceptWedding",weddingNo);
+	}
 
+	public ArrayList<Wedding>selectByBreed(SqlSessionTemplate sqlSession,String breedId){
+		return (ArrayList)sqlSession.selectList("weddingMapper.selectByBreed",breedId);
+	}
 	
 }

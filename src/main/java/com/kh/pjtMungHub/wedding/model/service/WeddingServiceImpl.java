@@ -91,4 +91,16 @@ public class WeddingServiceImpl implements WeddingService{
 		return dao.applyMatching(sqlSession, w,vacList);
 	}
 
+	//만남 신청 수락 메서드
+	@Override
+	public int acceptWedding(int weddingNo) {
+		return dao.acceptWedding(sqlSession,weddingNo);
+	}
+
+	//견종별 리스트 추출 메서드
+	@Override
+	public ArrayList<Wedding> selectByBreed(String breedId) {
+		return dao.selectByBreed(sqlSession,breedId);
+	}
+
 }
