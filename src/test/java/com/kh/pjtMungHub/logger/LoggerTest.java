@@ -62,9 +62,34 @@ public class LoggerTest {
 //		for(Wedding w:weddings) {
 //			log.debug("결혼 : {}",w);
 //		}
-		int weddingNo = 13;
-		Wedding wedding = sqlSession.selectOne("weddingMapper.selectWedding",weddingNo);
-		log.debug("결혼 정보 : {}",wedding);
+//		int weddingNo = 13;
+//		Wedding wedding = sqlSession.selectOne("weddingMapper.selectWedding",weddingNo);
+//		log.debug("결혼 정보 : {}",wedding);
+		
+//		int userNo = 1;
+//		int countAppliedList = sqlSession.selectOne("weddingMapper.countAppliedList",userNo);
+//		log.debug("신청 건 수 몇 개? : {}",countAppliedList);
+				Wedding appliedWedding = Wedding.builder()
+										.userNo(4)
+//										.partnerNo(6)
+										.build();
+		ArrayList<Wedding>appliedList = (ArrayList)sqlSession.selectList("weddingMapper.selectAppliedList",appliedWedding);
+		for(Wedding w:appliedList) {
+			log.debug("신청 내역 : {}",w);
+		}
+//		Wedding appliedWedding = Wedding.builder()
+//								.petNo("7")
+//								.userNo(1)
+//								.pedigree("믹스")
+//								.meetingMethod("강아지방문")
+//								.petIntro("강아지소개")
+//								.petNote("강아지특이사항")
+//								.originName("원래경로테스트")
+//								.changeName("변경경로테스트")
+//								.partnerNo(6)
+//								.build();
+//		int result = sqlSession.insert("weddingMapper.applyMatching",appliedWedding);
+//		log.debug("처리되었는가? : {}",result);
 //		int userNo = 6;
 //		Pet pet = sqlSession.selectOne("weddingMapper.selectPet",userNo);
 //		log.debug("반려견 정보 : {}",pet);

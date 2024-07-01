@@ -146,56 +146,20 @@
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
 	<input type="hidden" id="formattedDate" value="<%=formattedDate %>">
 	
-	<div class="container">
-        <section class="introduction">
-            <h2>보금자리 소개</h2>
-            <p>${house.introductionDetailed }</p>
-        </section>
-
-	<h2>인증정보</h2>
-	<section class="certificate">
-		<c:forEach var="c" items="${cer }">
-				<div class="certificate-item">
-					<img src="${c.filePath }${c.originName}" alt="인증사진">
-	            	<p>${c.certificationName }</p>
-				</div>
-		</c:forEach>
-    </section>
-
-    <section class="environment">
-        <h2>환경정보</h2>
-        <div class="tags">
-        	<c:forEach var="e" items="${env }">
-        		<span>${e.environmentName}</span>
-        	</c:forEach>
-        </div>
-    </section>
-
-    <section class="location">
-        <h2>위치</h2>
-        <p>주소 : ${house.houseAddress }</p>
-        <div id="houseLocation" style="width:100%;height:200px;"></div>
-    </section>
-
-    <section class="location">
-        <h2>인근 병원정보</h2>
-        <p>${house.nearbyHospital }</p>
-        <div id="hospitalLocation" style="width:100%;height:200px;"></div>
-    </section>
-
-    <section class="services">
-    	<h2>지원가능 서비스</h2>
-        <div class="service-list">
-        	<c:forEach var="s" items="${sup }">
-        		<div class="service-item">
-	                <img src="${s.filePath }${s.originName}" alt="${s.supplyGuideName }">
-	                <p>${s.supplyGuideName }</p>
-            	</div>
-        	</c:forEach>
-        </div>
-    </section>
-        
-        <h2>인증정보</h2>
+	
+	<form action="enrollHouse.re" method="post">
+		<input type="hidden" id="houseNo" name="houseNo" value="${house.houseNo }"> <!-- houseNo -->
+		<input type="hidden" id="endDate" name="javaDate" value=""> <!-- "endDate" -->
+		<input type="hidden" id="stayNo" name="stayNo" value=""> <!-- stayNo -->
+		<input type="hidden" id="userId" name="userId" value="${loginUser.userId }"> <!-- userId -->
+	
+		<div class="container">
+	        <section class="introduction">
+	            <h2>보금자리 소개</h2>
+	            <p>${house.introductionDetailed }</p>
+	        </section>
+	
+		<h2>인증정보</h2>
 		<section class="certificate">
 			<c:forEach var="c" items="${cer }">
 					<div class="certificate-item">
@@ -204,42 +168,93 @@
 					</div>
 			</c:forEach>
 	    </section>
-
-        <section class="pricing">
-		    <h2>예약하기</h2>
-		    <div class="pricing-container">
-		        <div class="pricing-item">
-		            <table class="pricing-table">
-		            <h4>요금안내</h4>
-		                <thead>
-		                    <tr>
-		                        <th>숙박일정</th>
-		                        <th>요금</th>
-		                    </tr>
-		                </thead>
-		                <tbody>
-		                    <c:forEach var="p" items="${price}">
-		                         <tr class="click-row" name="amount" value="${p.price }">
-		                            <td>${p.stayName}</td>
-		                            <td>${p.price}</td>
-		                        </tr>
-		                    </c:forEach>
-		                </tbody>
-		            </table>
-		        </div>
-		        <div class="pricing-item">
-		            <div id="calendar"></div>
-		        </div>
-		        <div class="pricing-item">
-		            <input type="text" id="inputDate">
-		        </div>
-		    </div>
-		</section>
-		
-        <button class="reservation-btn">예약 요청</button>
-
+	
+	    <section class="environment">
+	        <h2>환경정보</h2>
+	        <div class="tags">
+	        	<c:forEach var="e" items="${env }">
+	        		<span>${e.environmentName}</span>
+	        	</c:forEach>
+	        </div>
+	    </section>
+	
+	    <section class="location">
+	        <h2>위치</h2>
+	        <p>주소 : ${house.houseAddress }</p>
+	        <div id="houseLocation" style="width:100%;height:200px;"></div>
+	    </section>
+	
+	    <section class="location">
+	        <h2>인근 병원정보</h2>
+	        <p>${house.nearbyHospital }</p>
+	        <div id="hospitalLocation" style="width:100%;height:200px;"></div>
+	    </section>
+	
+	    <section class="services">
+	    	<h2>지원가능 서비스</h2>
+	        <div class="service-list">
+	        	<c:forEach var="s" items="${sup }">
+	        		<div class="service-item">
+		                <img src="${s.filePath }${s.originName}" alt="${s.supplyGuideName }">
+		                <p>${s.supplyGuideName }</p>
+	            	</div>
+	        	</c:forEach>
+	        </div>
+	    </section>
+	        
+	        <h2>인증정보</h2>
+			<section class="certificate">
+				<c:forEach var="c" items="${cer }">
+						<div class="certificate-item">
+							<img src="${c.filePath }${c.originName}" alt="인증사진">
+			            	<p>${c.certificationName }</p>
+						</div>
+				</c:forEach>
+		    </section>
+	
+	        <section class="pricing">
+			    <h2>예약하기</h2>
+			    <div class="pricing-container">
+			        <div class="pricing-item">
+			            <table class="pricing-table">
+			            <h5>서비스를 선택해주세요.</h5>
+			                <thead>
+			                    <tr>
+			                        <th>숙박일정</th>
+			                        <th>요금</th>
+			                    </tr>
+			                </thead>
+			                <tbody>
+			                    <c:forEach var="p" items="${price}">
+			                         <tr class="click-row" name="amount" value="${p.price }">
+			                            <td>${p.stayName}</td>
+			                            <td>${p.price}</td>
+			                        </tr>
+			                    </c:forEach>
+			                </tbody>
+			            </table>
+			        </div>
+			        <div class="pricing-item">
+			            <div id="calendar"></div>
+			        </div>
+		            <div class="pricing-item">
+		            <h4>예약확인</h4>
+			            견주님 성함 : <input type="text" id="userName" name="petOwnerName" value="${loginUser.name }" style="width:200px;" readonly required> <br>
+			            견주님 연락처 : <input type="text" id="phone" name="phone" value="${loginUser.phone }" style="width:200px;" required> <br>
+			            돌보미 주소 : <input type="text" id="inputHouseAddress" name="address" value="${house.houseAddress }" style="width:250px;" readonly> <br>
+			            예약 날짜 : <input type="text" id="inputDate" name="inputDate" style="width:200px;" readonly required> <br>
+			            숙박 일정 : <input type="text" id="inputEndDate"  style="width:200px;" readonly required> <br>
+			            예상 요금 : <input type="text" id="inputAmount" name="totalAmount" style="width:200px;" readonly required> <br><br>
+			            <h5>*요청사항(필수입력)*</h5> 
+			            <textarea name="caution" id="caution" rows="4" cols="60" placeholder="돌봄 유의사항을 꼭!! 적어주세요." style="resize: none;" required></textarea>
+			        </div>
+			    </div>
+			</section>
+	        <button type="submit" class="reservation-btn">예약하고 결제페이지로</button>
+		</div>
+	</form>
       
-    </div>
+    
     
     <script>
 	    $(function(){
@@ -286,13 +301,22 @@
 		};
 		
 		//============= 요금표 ===================
+			
+		var stayNo = "";//숙박일정 숫자화
+		
 		$(function(){
 			$('.click-row').on('click',function(){
 				$('.click-row').removeClass('selected-row');
 				$(this).addClass('selected-row');
+				
+				var inputEndDate = $(this).children().eq(0).text();
+				var inputAmount = parseInt($(this).children().eq(1).text());
+				stayNo = parseInt(inputEndDate.substring(0,1));
+				$('#inputEndDate').val(inputEndDate);
+				$('#inputAmount').val(inputAmount);
+				$('#stayNo').val(stayNo);
 			});
 		});
-		
 		
 		//============== 달력 ===================
 		$(function() {
@@ -305,17 +329,22 @@
 		        	start : formattedDate
 		        },
 		        dateClick: function(info) {
-		            $('#inputDate').val(info.dateStr);
+		            var inputDate = $('#inputDate').val(info.dateStr);
+		            
+		            var fullEndDate = new Date(info.dateStr); //fullCanlendar 의 선택한 날짜값을 date 로 형변환
+		            fullEndDate.setDate(fullEndDate.getDate() + stayNo); //숙박날짜 더해주기
+		            var endDate = fullEndDate.toISOString().split('T')[0]; // 날짜 형태로 바꿔주기
+		            $('#endDate').val(endDate);
+		    		
+		            //스타일
 		            $('.fc-daygrid-day').removeClass('fc-day-selected'); //모든셀 표시제거
 		            $(info.dayEl).addClass('fc-day-selected'); //클릭된 날짜만 표시
 		        }
 		    });
 		    setTimeout(function() {
 		        calendar.render();
-		    }, 5000);
+		    }, 3000);
 		});
-
-		
     </script>
 	
 </body>

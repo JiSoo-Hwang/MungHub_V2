@@ -53,14 +53,17 @@
 	    <result column="PAYMENT_ID" property="paymentId"/>
 	    <result column="PG_NAME" property="pgName"/>
 	    <result column="USER_NAME" property="userName"/>
-	    <result column="USER_ID" property="userId"/>
+	    <result column="USER_NO" property="userNo"/>
 	    <result column="AMOUNT" property="amount"/>
 	    <result column="PHONE" property="phone"/>
 	    <result column="ADDRESS" property="address"/>
 	    <result column="PAYMENT_DATE" property="paymentDate"/>
 	    <result column="PAYMENT_METHOD" property="paymentMethod"/>
-	    <result column="USER_ID" property="userId"/>
+	    <result column="PRODUCT_NAME" property="productName"/>
 	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
+	    <result column="DIFFERENT_NO" property="differentNo"/>
+	    <result column="RESERVATION_NO" property="reservationNo"/>
+	    <result column="RESERVATION_HOUSE_NO" property="reservationHouseNo"/>
 	</resultMap>
 	
 	<!-- 회원 resultSet -->
@@ -119,6 +122,7 @@
 	
 	
 	
+	<!-- ============================ 단기예약 ================================ -->
 	
 	<!-- 펫시터 선택화면 -->
 	<select id="selectSitter" parameterType="AvailableTimes" resultMap="petSitterResultSet">
@@ -190,19 +194,21 @@
 	
 	
 	<!-- 예약번호 가져오기 -->
-	<select id="selectReservationId" parameterType="Reservation" resultType="Reservation">
-		SELECT RESERVATION_ID as reservationId
-		FROM RESERVATION
-		JOIN MEMBER USING(USER_ID)
-		WHERE USER_ID= #{userId}
+	<select id="selectReservationId" parameterType="Payment" resultType="_int">
+		SELECT RESERVATION_ID
+		FROM PAYMENT
+		WHERE PAYMENT_ID= #{paymentId}
 	</select>
+	<!-- ============================ 단기예약 ================================ -->
 	
 	
+	<!-- ============================ 결제 ================================ -->
 	<!-- 결제내역 저장하기 -->
 	<insert id="insertPayment" parameterType="Payment">
 		INSERT INTO PAYMENT (
 							 PAYMENT_ID
 							,PG_NAME
+							,USER_NO
 							,USER_NAME
 							,USER_ID
 							,AMOUNT
@@ -212,16 +218,19 @@
 							,PRODUCT_NAME
 							,PAYMENT_DATE
 							,PAYMENT_STATUS
+							,DIFFERENT_NO
+							,RESERVATION_ID
+							,RESERVATION_HOUSE_NO
 							) 
 		VALUES (
-				 #{paymentId}, #{pgName}, #{userName}, #{userId}
+				 #{paymentId}, #{pgName}, #{userNo}, #{userName}, #{userId}
 			   , #{amount}, #{phone}, #{address}, #{paymentMethod}, #{productName}
-			   , SYSDATE,#{paymentStatus}
+			   , SYSDATE,DEFAULT,#{differentNo},#{reservationNo},#{reservationHouseNo}
 				)
 	</insert>
 	
 	<!-- 결제내역 보여주기 -->
-	<select id="payDetail" parameterType="Payment" resultMap="paymentResultSet">
+	<select id="payDetail" parameterType="string" resultMap="paymentResultSet">
 		 SELECT  PAYMENT_ID
 		 		,PG_NAME
 				,USER_NAME
@@ -233,8 +242,42 @@
 				,PRODUCT_NAME
 				,PAYMENT_DATE
 				,PAYMENT_STATUS
+				,DIFFERENT_NO
+				,RESERVATION_ID
+				,RESERVATION_HOUSE_NO
 		FROM PAYMENT
 		WHERE PAYMENT_ID = #{paymentId}
+	</select>
+	
+	<!-- 결제확정 후 각 paymentStatus 업뎃 -->
+	<update id="updateReservation" parameterType="string">
+		UPDATE RESERVATION 
+		SET PAYMENT_STATUS = 2
+		WHERE RESERVATION_ID = #{reservationNo}
+	</update>
+	<update id="updateHouseRe" parameterType="string">
+		UPDATE HOUSE_RESERVATION
+		SET PAYMENT_STATUS = 2 
+		WHERE RESERVATION_HOUSE_NO = #{reservationHouseNo}
+	</update>
+	
+	
+	<!-- ============================ 결제 ================================ -->
+	
+	
+	
+	<!-- ============================ 장기돌봄 예약 ================================ -->
+	
+	<!-- 장기돌봄 처음 페이지 화면 -->
+	
+	<select id="firstHouseList" resultMap="houseResultSet">
+		SELECT H.OWNER_NAME, H.HOUSE_ADDRESS, H.INTRODUCTION_SUMMARY,
+     		   H.ORIGIN_NAME, H.FILE_PATH, H.HOUSE_NO
+		FROM HOUSE H 
+	</select>
+	<select id="firstListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM HOUSE
 	</select>
 	
 	<!-- 장기돌봄 집리스트 조건부로 불러오기 -->
@@ -253,8 +296,17 @@
 	</select> 
 	
 	<!-- 페이징바 처리 -->
-	<select id="listCount" resultType="_int">
-		SELECT COUNT(*) FROM HOUSE
+	<select id="listCount" parameterType="HouseReservation" resultType="_int">
+		SELECT COUNT(*) 
+		FROM HOUSE H
+		WHERE H.HOUSE_ADDRESS LIKE '%'||#{address}||'%'
+		AND NOT EXISTS(
+						SELECT *
+						FROM HOUSE_RESERVATION R
+						WHERE H.HOUSE_NO = R.HOUSE_NO
+						AND R.START_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+						AND R.END_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+					   )
 	</select>
 	
 	<!-- 집 상세정보 -->
@@ -302,6 +354,46 @@
 		JOIN SUPPLY_GUIDE S ON HS.SUPPLY_GUIDE_NO = S.SUPPLY_GUIDE_NO
 		WHERE H.HOUSE_NO = #{houseNo}
 	</select>
+	
+	<insert id="enrollHouse" parameterType="HouseReservation">
+		INSERT INTO HOUSE_RESERVATION (
+									   RESERVATION_HOUSE_NO,HOUSE_NO
+		                              ,START_DATE,END_DATE
+		                              ,STAY_NO,CAUTION
+		                              ,PET_OWNER_NAME,ADDRESS,PHONE
+		                              ,STATUS,PAYMENT_STATUS
+		                              ,USER_ID,TOTAL_AMOUNT
+					                  )
+					                  VALUES(
+			                           HOUSE_RESERVATION_SEQ.NEXTVAL,#{houseNo}
+					                  ,TO_DATE(#{startDate}, 'YYYY-MM-DD'),TO_DATE(#{endDate}, 'YYYY-MM-DD')
+					                  ,#{stayNo},#{caution}
+					                  ,#{petOwnerName},#{address},#{phone}
+					                  ,DEFAULT,DEFAULT
+					                  ,#{userId},#{totalAmount}
+					                  )
+	</insert>
+	
+	<!-- 결제 구분을 위한 reservationId 불러오기 -->
+	<select id="reservationId" resultType="_int">
+		SELECT RESERVATION_SEQ.CURRVAL
+		FROM DUAL
+	</select>
+	
+	<!-- 결제 구분을 위한 reservationHouseNo 불러오기 -->
+	<select id="houserReservationNo" resultType="_int">
+		SELECT HOUSE_RESERVATION_SEQ.CURRVAL
+		FROM DUAL
+	</select>
+	
+	<!-- 장기돌봄 선택한 요금정보 -->
+	<select id="selectPriceInfo" parameterType="_int" resultType="HousePrice">
+		SELECT STAY_NO AS stayNo,STAY_NAME AS stayName,PRICE AS price 
+		FROM HOUSE_PRICE 
+		WHERE STAY_NO =#{stayNo}
+	</select>
+	
+	<!-- ============================ 장기돌봄 예약 ================================ -->
 	
 	
 	
