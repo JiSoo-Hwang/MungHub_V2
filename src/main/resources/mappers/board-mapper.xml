@@ -16,23 +16,33 @@
 		<result column="STATUS" property="status"/>
 	</resultMap>
 	
-	
 	<select id="listCount" resultType="_int" >
 		SELECT COUNT(*)
 		FROM BOARD
 		WHERE STATUS ='Y'
 	</select>
 	
+	
 	<select id="selectList" resultMap="boardResultSet">
 		SELECT BOARD_NO
+			  ,CATEGORY_NAME category_name
 		      ,BOARD_TITLE
-		      ,BOARD_WRITER
+		      ,BOARD_CONTENT
+		      ,USER_ID
+		      ,RECOMMEND
 		      ,COUNT
 		      ,UPLOAD_DATE
 		FROM BOARD
-		WHERE STATUS= 'Y'
-		ORDER BY UPLOAD_DATE DESC	
+		JOIN BOARD_CATEGORY USING(CATEGORY_NO)
+		JOIN MEMBER ON(BOARD_WRITER=USER_NO)
+		WHERE BOARD.STATUS= 'Y'
 	</select>
+	
+	<select id="selectCategory" resultType="com.kh.pjtMungHub.board.model.vo.Category">
+		SELECT CATEGORY_NO categoryNo,CATEGORY_NAME categoryName
+		FROM BOARD_CATEGORY
+	</select>
+	
 
 	<update id="increaseCount" parameterType="_int">
 		UPDATE BOARD
@@ -57,11 +67,15 @@
 		                 ,BOARD_TITLE
 		                 ,BOARD_WRITER
 		                 ,BOARD_CONTENT
+		                 ,ORIGIN_NAME
+		                 ,CHANAGE_NAME
 		                 )
         		VALUES (SEQ_BOARD.NEXTVAL
                			,#{boardTitle}
                			,#{boardWriter}
                			,#{boardContent}
+               			,#{originName}
+               			,#{changeName}
 	</insert>
 	
 </mapper>
