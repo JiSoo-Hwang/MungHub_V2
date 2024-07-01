@@ -35,6 +35,17 @@
 							</tr>
 						</c:when>
 						<c:when test="${w.approval == 'N' }">
+						<tr class="table-warning">
+								<td class="userName">${w.userName }</td>
+								<td>${w.petName}</td>
+								<td>${w.breed}</td>
+								<td>${w.meetingMethod }</td>
+								<td>대기중
+									<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
+								</td>
+							</tr>
+						</c:when>
+						<c:when test="${w.approval == 'W' }">
 							<!-- 대기중인 예약은 노랑 행으로 출력 -->
 							<tr class="table-warning">
 								<td class="userName">${w.userName }</td>
@@ -42,6 +53,17 @@
 								<td>${w.breed}</td>
 								<td>${w.meetingMethod }</td>
 								<td>대기중
+									<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
+								</td>
+							</tr>
+						</c:when>
+						<c:when test="${w.approval == 'A' }">
+						<tr class="table-success">
+								<td class="userName">${w.userName }</td>
+								<td>${w.petName}</td>
+								<td>${w.breed}</td>
+								<td>${w.meetingMethod }</td>
+								<td style="color: blue;">만남성사
 									<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 								</td>
 							</tr>

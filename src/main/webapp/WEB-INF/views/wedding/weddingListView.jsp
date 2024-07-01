@@ -23,10 +23,12 @@
         <p>우리 강아지가 건강하고 행복한 모습으로 새 가족을 맞이할 수 있도록, MUNGHUB가 함께합니다.</p>
         <br>
         <select name="breed" id="breedList">
+        	<option value="ALL">전체견종</option>
             <c:forEach var="b" items="${breedList}">
                 <option value="${b.breedId}">${b.breedName}</option>
             </c:forEach>
         </select>
+		<a href=""></a>
         <br><br>
         <c:choose>
         <c:when test="${loginUser.userId eq 'admin' }">
@@ -68,38 +70,16 @@
                 </div>
         </c:forEach>
         </div>
-                <%-- <div class="col">
-                    <img src="/pjtMungHub/${w.changeName }" class="img-thumbnail" alt="강아지사진" width="304" height="236">
-                    <p>${w.breed} </p>
-                    <p>${w.petName} </p>
-                    <c:choose>
-                        <c:when test="${w.gender == 'F'}">
-                            공주님
-                        </c:when>
-                        <c:otherwise>
-                            왕자님
-                        </c:otherwise>
-                    </c:choose>
-                    <p>${w.gender} </p>
-                    <!-- 강아지 사진, 강아지 견종, 강아지 이름, 강아지 성별 -->
-        </div> --%>
-        <!-- <div class="col">
-				<img src="/pjtMungHub/resources/uploadFiles/kindergarten/css/dogPhotoIcon.png" alt="강아지 사진">
-			</div>
-
-			<div class="col">
-				<img src="/pjtMungHub/resources/uploadFiles/kindergarten/css/dogPhotoIcon.png" alt="강아지 사진">
-			</div> -->
-
-<!--         <div class="col">
-            <img src="/pjtMungHub/resources/uploadFiles/kindergarten/css/dogPhotoIcon.png" alt="강아지 사진">
-        </div> -->
     </div>
     <script>
-        $("img").click(function () {
-        	var img = $(this);
-            console.log(img);
-        });
-    </script>
+    $("#breedList").change(function () {
+		var breed = $(this).val();
+		location.href="selectList.wd?breedId="+breed;
+		
+    });
+    $(function () {
+		$("#breedList").val("${breedId}").prop("selected",true);
+    });
+    </script>    
 </body>
 </html>

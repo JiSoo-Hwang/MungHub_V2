@@ -144,35 +144,65 @@ INSERT INTO WEDDING VALUES (SEQ_WED.NEXTVAL
 )
 </insert>
 
-<select id="selectAppliedList" parameterType="_int" resultType="Wedding">
-SELECT W.WEDDING_NO weddingNo
-,W.PET_NO petNo
-,P.PET_NAME petName
-<if test="partnerNo!=0">
-,M.PET_NAME partnerName
-</if>
-,W.PEDIGREE pedigree
-,B.BREED_NAME breed
-,P.PET_AGE petAge
-,P.PET_GENDER gender
-,P.WEIGHT weight
-,W.MEETING_METHOD meetingMethod
-,W.PET_INTRO petIntro
-,W.PET_NOTE petNote
-,W.ORIGIN_NAME originName
-,W.CHANGE_NAME changeName
-,W.APPROVAL approval
-,W.REASON reason
-,W.PARTNER_NO partnerNo
-FROM WEDDING W, PET P, BREED B 
-<if test="partnerNo!=0">
-,(SELECT PET_NAME FROM PET WHERE PET_NO = #{partnerNo})M
-</if>
-WHERE W.PET_NO = P.PET_NO 
-AND P.BREED_ID = B.BREED_ID
-AND USER_NO = #{userNo}
+<select id="selectAppliedList" parameterType="Wedding" resultType="Wedding">
+SELECT 
+M.WEDDING_NO weddingNo
+,M.PET_NO petNo
+,M.USER_NO userNo
+,M.PET_NAME petName
+,PT.PET_NAME partnerName
+,M.PARTNER_NO partnerNo
+,M.MEETING_METHOD meetingMethod
+,M.APPROVAL approval
+FROM
+(SELECT W.WEDDING_NO
+,W.PET_NO
+,W.USER_NO
+,P.PET_NAME
+,W.PARTNER_NO
+,W.MEETING_METHOD
+,W.APPROVAL
+FROM WEDDING W, PET P
+WHERE W.PET_NO = P.PET_NO
+AND W.USER_NO = #{userNo})M
+LEFT JOIN PET PT ON (PT.PET_NO = M.PARTNER_NO)
 </select>
-<update id="receiveRequest">
-
+<select id="selectReceivedList" parameterType="Wedding" resultType="Wedding" >
+SELECT
+DISTINCT
+W.WEDDING_NO weddingNo
+,W.USER_NO userNo
+,PT.PET_NO petNo
+,PTP.PET_NAME petName
+,P.PET_NAME partnerName
+,W.MEETING_METHOD meetingMethod
+,W.APPROVAL approval
+FROM WEDDING W 
+JOIN WEDDING PT ON (W.PARTNER_NO = PT.PET_NO)
+JOIN PET P ON(W.PET_NO = P.PET_NO)
+JOIN PET PTP ON (PT.PET_NO = PTP.PET_NO)
+WHERE PT.USER_NO = #{userNo}
+</select>
+<update id="acceptWedding" parameterType="_int">
+UPDATE WEDDING SET APPROVAL = 'A'
+WHERE WEDDING_NO = #{weddingNo}
 </update>
+<select id="selectByBreed" parameterType="string" resultType="Wedding">
+SELECT WEDDING_NO weddingNo,
+PET_NAME petName,
+P.PET_GENDER gender,
+B.BREED_NAME breed,
+USER_NO userNo,
+PEDIGREE pedigree,
+MEETING_METHOD meetingMethod,
+PET_INTRO petIntro,
+PET_NOTE petNote,
+ORIGIN_NAME originName,
+CHANGE_NAME changeName
+FROM WEDDING W, PET P, BREED B 
+WHERE W.APPROVAL ='Y'
+AND W.PET_NO = P.PET_NO
+AND P.BREED_ID = B.BREED_ID
+AND P.BREED_ID = #{breedId}
+</select>
 </mapper>
