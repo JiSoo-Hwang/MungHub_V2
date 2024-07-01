@@ -1,6 +1,8 @@
 package com.kh.pjtMungHub.petcare.model.vo;
 
 import java.sql.Date;
+import java.util.HashMap;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,8 +13,9 @@ import lombok.NoArgsConstructor;
 public class Payment {
     private String paymentId; 
     private String pgName; 
+    private String userNo;
     private String userName; 
-    private String userId;
+    private String userId; 
     private String amount; 
     private String phone; 
     private String address; 
@@ -20,4 +23,8 @@ public class Payment {
     private String paymentMethod; 
     private String productName;
     private int paymentStatus; 
+    private String differentNo;
+    private String reservationNo;
+    private String reservationHouseNo;
+    private HashMap<String,String> customData;
 }

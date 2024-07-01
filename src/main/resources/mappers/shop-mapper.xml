@@ -229,4 +229,49 @@
    	END
     WHERE USER_NO=#{userNo}
 	</update>
+	
+	<select id="selectOrderList" resultType="Cart" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
+	SELECT
+		PRODUCT_NO productNo,
+		P_AMOUNT amount,
+		PRODUCT_NAME productName,
+		PRICE price,
+		DISCOUNT discount,
+		BRAND_NAME brandName,
+		CATEGORY_NAME categoryName,
+		FILE_PATH || CHANGE_NAME img
+		FROM
+		SHOPPING_CART
+		LEFT JOIN PRODUCT P
+		USING(PRODUCT_NO)
+		JOIN BRAND USING
+		(BRAND_CODE)
+		JOIN PRODUCT_CATEGORY USING (CATEGORY_NO)
+		JOIN
+		PRODUCT_ATTACHMENT USING (PRODUCT_NO)
+		WHERE USER_NO = #{userNo}
+		AND FILE_LEVEL= 0
+		AND PRODUCT_NO IN(
+	<foreach collection="checkedItem" item="arr" separator=",">
+	#{arr}
+	</foreach>
+	)	
+
+	</select>
+	
+	<select id="selectShipInfo"
+	resultType="com.kh.pjtMungHub.shop.model.vo.ShipInfo" 
+	 parameterType="_int">
+	SELECT
+	INFO_NO infoNo,
+	USER_NO userNo,
+	ADDRESS address,
+	ADDRESS_DETAIL addressDetail,
+	RECIPIENT recipient,
+	PHONE phone,
+	CHOOSED choosed
+	FROM SHIP_INFO
+	WHERE USER_NO = #{userNo}
+	AND CHOOSED= 'Y'
+	</select>
 </mapper>

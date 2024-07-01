@@ -245,7 +245,7 @@ h2 {
 							<dd>
 								<strong><fmt:formatNumber type="number"
 										maxFractionDigits="0"
-										value="${(p.price -(p.price/p.discount))/100}" />P</strong> 적립
+										value="${(p.price -(p.price/p.discount))/200}" />P</strong> 적립
 							</dd>
 						</dl>
 					</div>

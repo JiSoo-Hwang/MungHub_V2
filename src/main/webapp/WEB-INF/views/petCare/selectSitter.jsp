@@ -134,10 +134,11 @@
 </head>
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
+	<input type="hidden" id="firstCurrentPage" value="${currentPage }">
 	
     <!-- 모달창 버튼 -->
 	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-	  여러가지 맞춤 정보를 통해 펫시터를 추천 받아보세요. 
+	  여러가지 맞춤 정보를 통해 돌보미를 추천 받아보세요. 
 	</button>
 	
 	<div class="container mt-5">
@@ -203,24 +204,78 @@
     </div>
 	
 	<script>
-		$(function(){
+	
+		$(document).ready(function(){
+			firstSitterList();
+		});
+	
+		var isLoading = false; //중복요청방지
+		
+		$(window).scroll(function() {
+			
+			if(!isLoading){
+				isLoading = true;
+				var documentHeight = $(document).height(); //문서 전체높이
+				var scrollPosition = $(window).height() + $(window).scrollTop(); //현재 스크롤 위치
+				
+				//스크롤이 맨 밑 100px 지점에서 로드
+				if(scrollPosition >= documentHeight - 100){
+					var nextPage = parseInt($('#firstCurrentPage').val())+1;
+					$('#firstCurrentPage').val(nextPage);
+					
+					firstSitterList();
+				}
+			}
+		});
+		
+		function firstSitterList(){
+			$.ajax({
+				url : "firstSitterList.re",
+				data : {
+					firstCurrentPage : $('#firstCurrentPage').val()
+				},
+				success: function (result) {
+					
+					var list = result.list;
+					var pi = result.pi;
+					
+					 var sitterList = "";
+					 for (var i = 0; i < list.length; i++) {
+						 sitterList += "<form class='sitter-card' action='shortSitter.re' method='get'>" 
+							 	+ "<div class='sitter-info'>"
+		                        + "<h4>" + list[i].petSitterName + "</h4>"
+		                        + "<p>" + list[i].introduce + "</p>"
+		                        + "<p class='popular-style'>" + list[i].dogKeword + "</p>"
+		                        + "<p class='popular-style'>" + list[i].typeKeyword + "</p>"
+		                        + "<input type='hidden' name='petSitterNo' value='" + list[i].petSitterNo + "'>"
+		                        + "<input type='hidden' name='petSitterName' value='" + list[i].petSitterName + "'>"
+		                        + "<input type='hidden' name='introduce' value='" + list[i].introduce + "'>"
+		                        + "<input type='hidden' name='dogKeword' value='" + list[i].dogKeword + "'>"
+		                        + "<input type='hidden' name='typeKeyword' value='" + list[i].typeKeyword + "'>"
+		                        + "<input type='hidden' name='phone' value='" + list[i].phone + "'>"
+		                        + "<input type='hidden' name='originName' value='" + list[i].originName + "'>"
+		                        + "<input type='hidden' name='filePath' value='" + list[i].filePath + "'>"
+		                        + "<button type='submit' class='btn-reserve' id='resBtn'>펫시터 선택</button>"
+		                        + "</div>"
+		                        + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' class='sitter-photo'>"
+		                        + "</form>";
+					 }
+					 $('#sitterListContainer').append(sitterList); //html 대신 append 로 기존 데이터 유지
+					 console.log('데이터 불러오기 성공!!');
+				},
+				error : function(){
+					console.log('통신실패 ㅠㅠ');
+				}
+			});
+		};
+	
+		$(function(){ 
+			//버튼 클릭시 활성화/비활성화
 			$(".duration-btn, .str-btn, .petType-btn").on("click", function() {
                 $(this).siblings().removeClass("selected");
                 $(this).addClass("selected");
             });
-			/* 위 코드가 아래 코드를 합친것. siblings()는 선택된 요소의 형제요소를 선택하는 메소드
-			//버튼 클릭시 활성화/비활성화
-			$(".duration-btn").on("click",function(){
-				// 모든 버튼에서 selected 클래스를 제거하여 비활성화
-				$(".duration-btn").removeClass("selected");
-				// 클릭된 버튼에 selected 클래스를 추가하여 활성화
-				$(this).addClass("selected");
-			});
-			$(".str-btn").on("click",function(){
-				$(".str-btn").removeClass("selected");
-				$(this).addClass("selected");
-			});
-			*/
+			
 			$("#sitterSearch").click(function(){
 				//방문날짜
 				var visitDate = $("#visitDate").val();

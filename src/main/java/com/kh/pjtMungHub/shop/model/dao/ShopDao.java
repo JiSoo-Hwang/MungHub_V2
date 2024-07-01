@@ -87,5 +87,16 @@ public class ShopDao {
 		return sqlSession.update("shopMapper.changeShipInfo",s);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Cart> selectOrderList(SqlSessionTemplate sqlSession, ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectOrderList",parameter);
+	}
+
+	public ShipInfo selectShipInfo(SqlSessionTemplate sqlSession, int userNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectShipInfo",userNo);
+	}
+
 
 }

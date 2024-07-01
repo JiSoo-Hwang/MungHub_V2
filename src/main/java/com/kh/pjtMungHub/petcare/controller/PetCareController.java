@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.template.Pagination;
@@ -48,9 +49,30 @@ public class PetCareController {
 	
 	//펫시터 선택 페이지 이동
 	@RequestMapping("sitter.re")
-	public String enrollSitter() {
+	public String enrollSitter(@RequestParam(value="currentPage",defaultValue="1")int currentPage
+							   ,Model model) {
 		
+		model.addAttribute("currentPage",currentPage);
 		return "petCare/selectSitter";
+	}
+	
+	//페이지 첫화면 펫시터 리스트
+	@ResponseBody
+	@RequestMapping("firstSitterList.re")
+	public HashMap<String,Object> firstSitterList(String firstCurrentPage){
+		
+		int currentPage = Integer.parseInt(firstCurrentPage);
+		int listCount = petCareService.firstListCount();
+		int pageLimit = 3;
+		int boardLimit = 3;
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		ArrayList <PetSitter> list = petCareService.firstSitterList(pi);
+		
+		HashMap<String,Object> result = new HashMap<>();
+		result.put("list", list);
+		result.put("pi", pi);
+		return result;
 	}
 	
 	//날짜,시간 지정시 스케줄 가능한 펫시터 리스트형태로 불러오기
@@ -74,7 +96,30 @@ public class PetCareController {
 		return "petCare/reservation";
 	}
 	
-	//예약 정보 저장하기
+	//단기돌봄 새로운 선택화면 (펫시터 가능 날짜 같이)
+	@GetMapping("shortSitter.re")
+	public ModelAndView shortSitterRe(ModelAndView mv,PetSitter petSitter) {
+		
+		//날짜 지정 후 시간 비활성화에 필요한
+		ArrayList<Reservation> disabledPlan = petCareService.disabledDates(petSitter.getPetSitterNo());
+		
+		mv.addObject("disabledPlan", disabledPlan).setViewName("petCare/reservationSitter");
+		mv.addObject("petSitter", petSitter).setViewName("petCare/reservationSitter");
+		return mv;
+	}
+	
+	//단기돌봄 새로운 예약 페이지
+	@GetMapping("shortSencond.re")
+	public String shortReservationSencond(AvailableTimes at,Model model) {
+		
+		Price p = petCareService.priceTable(at);
+		at.setTotalPrice(p.getTotalPrice());
+		at.setPriceName(p.getPriceName());
+		model.addAttribute("at",at);
+		return "petCare/reservationSitterRe";
+	}
+	
+	//단기돌봄 예약 정보 저장하기
 	@PostMapping("enroll.re")
 	public String enrollReservation(Reservation re
 								   ,String priceName
@@ -93,11 +138,16 @@ public class PetCareController {
 		re.setTotalAmount(totalPrice);
 		int result = petCareService.enrollReservation(re);
 		
+		// reservationNo 가져오기
+		int reservationId = petCareService.reservationId();
+		
 		//펫시터정보
 		PetSitter sitter = petCareService.sitterInfo(re);
+		
 		if(result>0) {
 			session.setAttribute("alertMsg", "예약에 성공했습니다! 결제 페이지로 이동합니다.");
 			model.addAttribute("re",re);
+			model.addAttribute("reservationId",reservationId);
 			model.addAttribute("sitter",sitter);
 			model.addAttribute("priceName",priceName);
 			model.addAttribute("totalPrice",totalPrice);
@@ -113,24 +163,52 @@ public class PetCareController {
 	@RequestMapping(value="insertPayment.re",produces="application/json;charset=UTF-8")
 	public int insertPayment(Payment payment) {
 		
-		payment.setPaymentStatus(2); //2번 '결제완료'
-		int result = petCareService.insertPayment(payment);
+		String reservationId = payment.getCustomData().get("reservationId");
+		String reservationHouseNo = payment.getCustomData().get("reservationHouseNo");
+		String userNo = payment.getCustomData().get("userNo");
+		String userId = payment.getCustomData().get("userId");
+		payment.setReservationNo(reservationId);
+		payment.setReservationHouseNo(reservationHouseNo);
+		payment.setUserNo(userNo);
+		payment.setUserId(userId);
 		
-		return result;
+		return petCareService.insertPayment(payment);
 	}
 	
 	//결제내역 페이지로 이동
 	@RequestMapping("payDetail.re")
-	public String payDetail(String uid,Model model) {
+	public ModelAndView payDetail(String uid,ModelAndView mv,HttpSession session) {
 		
-		Payment payment = new Payment();
-		payment.setPaymentId(uid);
+		Payment payment = petCareService.payDetail(uid);
 		
-		System.out.println(payment);
+		String reservationNo = String.valueOf(petCareService.selectReservationId(payment));
+		String reservationHouseNo = payment.getReservationHouseNo();
 		
-		payment = petCareService.payDetail(payment);
-		model.addAttribute("p",payment);
-		return "petCare/payDetail";
+		
+		//결제성공 후 각 paymentStatus '결제완료' 변경작업
+		if(Integer.parseInt(payment.getDifferentNo())==1) {
+			
+			int result = petCareService.updateReservation(reservationNo);
+			
+			if(result>0) {
+				session.setAttribute("alertMsg", "결제성공!! 내역을 확인해주세요.");
+				mv.addObject("p",payment).setViewName("petCare/payDetail"); 
+			}else {
+				mv.addObject("alertMsg","결제실패..관리자에게 문의해주세요").setViewName("redirect:/houseList.re"); 
+			}
+			
+		}else if(Integer.parseInt(payment.getDifferentNo())==2) {
+			
+			int result = petCareService.updateHouseRe(reservationHouseNo);
+			
+			if(result>0) {
+				session.setAttribute("alertMsg", "결제성공!! 내역을 확인해주세요.");
+				mv.addObject("p",payment).setViewName("petCare/payDetail"); 
+			}else {
+				mv.addObject("alertMsg","결제실패..관리자에게 문의해주세요").setViewName("redirect:/houseList.re"); 
+			}
+		}
+		return mv;
 	}
 	
 	//장기돌봄 예약 리스트로 이동
@@ -138,8 +216,28 @@ public class PetCareController {
 	public String selectHouse(@RequestParam(value="currentPage",defaultValue="1")int currentPage
 							 ,Model model) {
 		
-		model.addAttribute(currentPage);
+		model.addAttribute("currentPage",currentPage);
 		return "petCare/selectHouse";
+	}
+	
+	//장기돌봄 페이지 처음화면
+	@ResponseBody
+	@RequestMapping("firstHouseList.re")
+	public HashMap<String,Object> firstHouseList(String firstCurrentPage) {
+		
+		int currentPage = Integer.parseInt(firstCurrentPage);
+		int listCount = petCareService.firstListCount();
+		int pageLimit = 3;
+		int boardLimit = 3;
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		ArrayList<House> list = petCareService.firstHouseList(pi);
+		
+		HashMap<String,Object> result = new HashMap<>(); //ArrayList 와 pi를 같이 보내려면 map 을 활용
+		result.put("houseList",list);
+		result.put("pi", pi);
+		
+		return result;
 	}
 	
 	//장기돌봄 예약 리스트로 이동
@@ -147,11 +245,6 @@ public class PetCareController {
 	@RequestMapping(value="selectHouseList.re",produces="application/json;charset=UTF-8")
 	public HashMap<String,Object> selectHouseList(@RequestParam(value="currentPage",defaultValue="1")int currentPage
 										   ,HouseReservation houseRe,Date endJavaDate) {
-		
-		int listCount = petCareService.listCount();
-		int pageLimit = 3;
-		int boardLimit = 3;
-		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); //날짜형식
 		String formatDate = sdf.format(endJavaDate); //날짜형식으로 적용
@@ -161,8 +254,13 @@ public class PetCareController {
 		String address = houseRe.getAddress().substring(0,2); //주소 앞2글자
 		houseRe.setAddress(address);
 		
-		ArrayList<House> houseList = petCareService.selectHouseList(houseRe,pi);
+		int listCount = petCareService.listCount(houseRe);
+		int pageLimit = 3;
+		int boardLimit = 3;
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
+		ArrayList<House> houseList = petCareService.selectHouseList(houseRe,pi);
+				
 		HashMap<String,Object> result = new HashMap<>(); //ArrayList 와 pi를 같이 보내려면 map 을 활용
 		result.put("houseList",houseList);
 		result.put("pi", pi);
@@ -194,6 +292,36 @@ public class PetCareController {
 		return "petCare/mapTest";
 	}
 	
+	//장기돌봄 예약 저장 후 결제 페이지로 이동
+	@PostMapping("enrollHouse.re")
+	public ModelAndView enrollHouse(String javaDate,String inputDate,HouseReservation hr
+			   				 ,ModelAndView mv,HttpSession session) {
+		
+		java.sql.Date sqlDate1 = java.sql.Date.valueOf(javaDate);
+		java.sql.Date sqlDate2 = java.sql.Date.valueOf(inputDate);
+		hr.setEndDate(sqlDate1);
+		hr.setStartDate(sqlDate2);
+		
+		int result = petCareService.enrollHouse(hr); //예약정보 저장
+		
+		House house = petCareService.detailHouse(Integer.parseInt(hr.getHouseNo())); //집정보
+		HousePrice price = petCareService.selectPriceInfo(hr.getStayNo()); //선택한 요금정보
+		
+		if(result>0) {
+			
+			int reservationHouseNo = petCareService.houserReservationNo();
+			
+			session.setAttribute("alertMsg", "예약에 성공하셨습니다! 결제를 완료하셔야 예약이 확정 됩니다.");
+			mv.addObject("hr",hr);
+			mv.addObject("reservationHouseNo",reservationHouseNo);
+			mv.addObject("house",house);
+			mv.addObject("price",price);
+			mv.setViewName("petCare/paymentHouse");
+		}else {
+			mv.addObject("alertMsg","오류가 발생 했습니다. 관리자에게 문의해주세요.").setViewName("redirect:/");
+		}
+		return mv;
+	}
 	
 	
 	

@@ -27,19 +27,32 @@ public interface PetCareService {
 	//펫시터 정보 가져오기
 	PetSitter sitterInfo(Reservation re);
 	//예약번호 가져오기
-	String selectReservationId(Payment payment);
+	int selectReservationId(Payment payment);
+	//결제 구분을 위한 houserReservationNo 가져오기
+	int reservationId ();
+	//첫페이지 펫시터 리스트 불러오기
+	ArrayList<PetSitter> firstSitterList(PageInfo pi);
+	//펫시터 선택 불가능한 날짜 가져오기
+	ArrayList<Reservation> disabledDates(int petSitterNo);
 	
 	
 	//결제정보 저장하기
 	int insertPayment(Payment payment);
 	//결제내역 보여주기
-	Payment payDetail(Payment payment);
+	Payment payDetail(String uid);
+	//결제확정 후 각 paymentStatus 업뎃
+	int updateReservation(String reservationNo);
+	int updateHouseRe(String reservationHouseNo);
 	
+	
+	//장기돌봄 페이지 처음화면
+	ArrayList<House> firstHouseList(PageInfo pi);
+	int firstListCount();
 	
 	//장기돌봄 집리스트 조건부로 불러오기
 	ArrayList<House> selectHouseList(HouseReservation houseRe,PageInfo pi);
 	//페이징바처리에 필요한 집 리스트 갯수
-	int listCount();
+	int listCount(HouseReservation houseRe);
 	
 	
 	//집 상세정보
@@ -52,6 +65,14 @@ public interface PetCareService {
 	ArrayList<Environment> selectEnvironment(int houseNo);
 	//지원서비스정보
 	ArrayList<SupplyGuide> selectSupplyGuide(int houseNo);
+	
+	
+	//장기돌봄 예약저장
+	int enrollHouse(HouseReservation hr);
+	//선택한 요금정보
+	HousePrice selectPriceInfo(int stayNo);
+	//결제 구분을 위한 houserReservationNo 가져오기
+	int houserReservationNo();
 	
 
 }
