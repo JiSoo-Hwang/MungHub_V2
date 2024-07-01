@@ -123,7 +123,7 @@
 	    <input type="hidden" name ="petTypeNo" value="${at.petTypeNo }">
 	    <input type="hidden" name ="priceName" value="${at.priceName }">
 	    <input type="hidden" name ="totalPrice" value="${at.totalPrice }">
-	    <input type="hidden" name ="userId" value="${loginUser.userId }">
+	    <input type="hidden" name ="userNo" value="${loginUser.userNo }">
 
       <!--방문장소-->
       <div class="form-section">

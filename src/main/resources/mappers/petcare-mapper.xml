@@ -142,6 +142,22 @@
 			)
 	</select>
 	
+	<!-- 첫페이지 펫시터 리스트 -->
+	<select id="firstSitterList" resultMap="petSitterResultSet">
+		SELECT P.PET_SITTER_NO,P.PET_SITTER_NAME, P.INTRODUCE
+				  ,P.DOG_KEYWORD,P.TYPE_KEYWORD, P.PHONE
+				  ,P.ORIGIN_NAME,P.FILE_PATH
+		FROM PET_SITTER P
+	</select>
+	<!-- 펫시터 선택 불가능한 날짜,시간 가져오기 -->
+	<select id="disabledDates" resultType="_int" resultMap="reservationResultSet">
+		SELECT R.RESERVATION_ID, R.VISIT_DATE, R.START_TIME, R.END_TIME
+		FROM RESERVATION R
+		WHERE PET_SITTER_NO = #{petSitterNo}
+	</select>
+	
+	
+	
 	<!-- 요금테이블에서 가격정보 가져오기 -->
 	<select id="priceTable" parameterType="AvailableTimes" resultMap="priceResultSet">
 		SELECT TOTAL_PRICE,PRICE_NAME
@@ -161,7 +177,7 @@
 		   ,PET_SITTER_NO
 		   ,DURATION, PET_TYPE_NO
 		   ,ORIGIN_NAME, CHANGE_NAME
-		   ,PAYMENT_STATUS,USER_ID ,TOTAL_AMOUNT
+		   ,PAYMENT_STATUS,USER_NO ,TOTAL_AMOUNT
 		) VALUES (
 		    RESERVATION_SEQ.NEXTVAL,
 		    #{petOwnerName},
@@ -180,7 +196,7 @@
 		    #{originName},
 		    #{changeName},
 		    DEFAULT,
-		    #{userId},
+		    #{userNo},
 		    #{totalAmount}
 		)
 	</insert>

@@ -53,6 +53,18 @@ public class PetCareServiceImpl implements PetCareService {
 	public PetSitter sitterInfo(Reservation re) {
 		return petCareDao.sitterInfo(sqlSession,re);
 	}
+
+	//첫페이지 펫시터 리스트 불러오기
+	@Override
+	public ArrayList<PetSitter> firstSitterList(PageInfo pi) {
+		return petCareDao.firstSitterList(sqlSession,pi);
+	}
+	
+	//펫시터 선택 불가능한 날짜 가져오기
+	@Override
+	public ArrayList<Reservation> disabledDates(int petSitterNo) {
+		return petCareDao.disabledDates(sqlSession,petSitterNo);
+	}
 	
 	//예약번호 가져오기
 	@Override
@@ -157,6 +169,9 @@ public class PetCareServiceImpl implements PetCareService {
 	public int reservationId() {
 		return petCareDao.reservationId(sqlSession);
 	}
+
+	
+
 
 	
 

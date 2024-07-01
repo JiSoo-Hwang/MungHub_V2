@@ -17,10 +17,10 @@
 <title>장기돌봄 예약페이지</title>
 <style>
 	@font-face {
-	            font-family: 'MangoDdobak-B';
-	            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-B.woff2') format('woff2');
-	            font-weight: 700;
-	            font-style: normal;
+        font-family: 'MangoDdobak-B';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-B.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
 	}
 	
 	
@@ -257,6 +257,8 @@
     
     
     <script>
+    
+    //=============== 지도 api ========================
 	    $(function(){
 			implementMap('houseLocation','${house.houseAddress}');
 			setTimeout(function(){ 
