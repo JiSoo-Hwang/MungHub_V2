@@ -49,9 +49,30 @@ public class PetCareController {
 	
 	//펫시터 선택 페이지 이동
 	@RequestMapping("sitter.re")
-	public String enrollSitter() {
+	public String enrollSitter(@RequestParam(value="currentPage",defaultValue="1")int currentPage
+							   ,Model model) {
 		
+		model.addAttribute("currentPage",currentPage);
 		return "petCare/selectSitter";
+	}
+	
+	//페이지 첫화면 펫시터 리스트
+	@ResponseBody
+	@RequestMapping("firstSitterList.re")
+	public HashMap<String,Object> firstSitterList(String firstCurrentPage){
+		
+		int currentPage = Integer.parseInt(firstCurrentPage);
+		int listCount = petCareService.firstListCount();
+		int pageLimit = 3;
+		int boardLimit = 3;
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		ArrayList <PetSitter> list = petCareService.firstSitterList(pi);
+		
+		HashMap<String,Object> result = new HashMap<>();
+		result.put("list", list);
+		result.put("pi", pi);
+		return result;
 	}
 	
 	//날짜,시간 지정시 스케줄 가능한 펫시터 리스트형태로 불러오기
@@ -73,6 +94,29 @@ public class PetCareController {
 		at.setPriceName(p.getPriceName());
 		model.addAttribute("at",at);
 		return "petCare/reservation";
+	}
+	
+	//단기돌봄 새로운 선택화면 (펫시터 가능 날짜 같이)
+	@GetMapping("shortSitter.re")
+	public ModelAndView shortSitterRe(ModelAndView mv,PetSitter petSitter) {
+		
+		//날짜 지정 후 시간 비활성화에 필요한
+		ArrayList<Reservation> disabledPlan = petCareService.disabledDates(petSitter.getPetSitterNo());
+		
+		mv.addObject("disabledPlan", disabledPlan).setViewName("petCare/reservationSitter");
+		mv.addObject("petSitter", petSitter).setViewName("petCare/reservationSitter");
+		return mv;
+	}
+	
+	//단기돌봄 새로운 예약 페이지
+	@GetMapping("shortSencond.re")
+	public String shortReservationSencond(AvailableTimes at,Model model) {
+		
+		Price p = petCareService.priceTable(at);
+		at.setTotalPrice(p.getTotalPrice());
+		at.setPriceName(p.getPriceName());
+		model.addAttribute("at",at);
+		return "petCare/reservationSitterRe";
 	}
 	
 	//단기돌봄 예약 정보 저장하기
@@ -128,9 +172,6 @@ public class PetCareController {
 		payment.setUserNo(userNo);
 		payment.setUserId(userId);
 		
-		System.out.println(payment);
-		
-		
 		return petCareService.insertPayment(payment);
 	}
 	
@@ -148,8 +189,6 @@ public class PetCareController {
 		if(Integer.parseInt(payment.getDifferentNo())==1) {
 			
 			int result = petCareService.updateReservation(reservationNo);
-			
-			System.out.println(result);
 			
 			if(result>0) {
 				session.setAttribute("alertMsg", "결제성공!! 내역을 확인해주세요.");

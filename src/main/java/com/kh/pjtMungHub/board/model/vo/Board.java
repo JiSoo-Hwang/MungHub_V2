@@ -1,6 +1,7 @@
 package com.kh.pjtMungHub.board.model.vo;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,5 +25,7 @@ public class Board {
 	private Date reviseDate;//	REVISE_DATE	DATE
 	private String status;
 
-
+	private ArrayList<Reply> rList;
+	private ArrayList<Category> ctList;
+	private ArrayList<Attachment> aList;
 }

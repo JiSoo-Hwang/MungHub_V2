@@ -43,6 +43,12 @@ public interface WeddingService {
 	//만남 신청 내역 조회 메서드
 	ArrayList<Wedding> selectAppliedList(Wedding w);
 
+	//만남 신청 수락 메서드
+	int acceptWedding(int weddingNo);
+
+	//견종별 리스트 추출 메서드
+	ArrayList<Wedding> selectByBreed(String breedId);
+
 	
 
 }

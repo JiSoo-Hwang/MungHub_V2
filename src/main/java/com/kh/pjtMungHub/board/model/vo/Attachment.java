@@ -17,5 +17,8 @@ public class Attachment {
 		private String filePath;//	FILE_PATH	VARCHAR2(1000 BYTE)
 		private String status;//	FILE_STATUS	VARCHAR2(1 BYTE)
 		private int fileLevel;//	FILE_LEVEL	NUMBER
+		
+		
+		
 
 }

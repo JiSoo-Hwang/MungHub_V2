@@ -164,14 +164,29 @@ li {
 										<a type="button" class="btn btn-outline-info" href="update.wd?weddingNo=${wedding.weddingNo }">신청수정</a>
 										<button type="button" class="btn btn-secondary" id="cancelBtn">신청철회</button>
 										</c:when>
+										<c:when test="${wedding.approval eq 'W' && loginUser.userNo ne wedding.userNo }">
+										<button type="button" class="btn btn-primary" id="acceptBtn">만남수락</button>
+										  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">
+    만남거절
+  </button>
+										</c:when>
 										<c:when test="${loginUser.userId eq 'admin' && wedding.approval eq 'N' }">
 										<button class="btn btn-primary" id="approveBtn">신청승인</button>
   
   <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">
     신청거절
   </button>
-
-<!-- The Modal -->
+										</c:when>
+										</c:choose>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</li>
+			</ul>
+	</div>
+	<!-- The Modal -->
 <div class="modal fade" id="myModal">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -199,21 +214,17 @@ li {
     </div>
   </div>
 </div>
-										</c:when>
-										</c:choose>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</li>
-			</ul>
-	</div>
 <script>
 $("#approveBtn").click(function() {
 	var flag = confirm("정말 승인하시겠습니까?");
 	if(flag){
 		location.href="approve.wd?weddingNo=${wedding.weddingNo}";
+	}
+});
+$("#acceptBtn").click(function () {
+	var yn = confirm("정말 수락하시겠습니까?");
+	if(yn){
+		location.href="accept.wd?weddingNo=${wedding.weddingNo}";
 	}
 });
 </script>

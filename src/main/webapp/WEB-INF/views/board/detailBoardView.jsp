@@ -56,8 +56,6 @@
                     <th>작성일</th>
                     <td>${b.uploadDate }</td>
                 </tr>
-                
-                <%--
                 <tr>
                     <th>첨부파일</th>
                     <td colspan="3">
@@ -72,10 +70,8 @@
                     	
                     </td>
                 </tr>
-                --%>
                 <tr>
                     <th>내용</th>
-                    <td colspan="3">${b.boardContent}</td>
                 </tr>
                 <tr>
                     <td colspan="4">

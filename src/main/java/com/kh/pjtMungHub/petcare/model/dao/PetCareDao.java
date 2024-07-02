@@ -43,6 +43,21 @@ public class PetCareDao {
 		return sqlSession.selectOne("petcareMapper.sitterInfo",re);
 	}
 	
+	//첫페이지 펫시터 리스트 불러오기
+	public ArrayList<PetSitter> firstSitterList(SqlSessionTemplate sqlSession, PageInfo pi) {
+		int limit = pi.getBoardLimit();
+		int offset =(pi.getCurrentPage()-1)*limit;
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		return (ArrayList)sqlSession.selectList("petcareMapper.firstSitterList",null,rowBounds);
+	}
+	
+	//펫시터 선택 불가능한 날짜 가져오기
+	public ArrayList<Reservation> disabledDates(SqlSessionTemplate sqlSession, int petSitterNo) {
+		return (ArrayList)sqlSession.selectList("petcareMapper.disabledDates",petSitterNo);
+	}
+	
+	
 	//예약번호 가져오기
 	public int selectReservationId(SqlSessionTemplate sqlSession, Payment payment) {
 		return sqlSession.selectOne("petcareMapper.selectReservationId",payment);
@@ -135,6 +150,10 @@ public class PetCareDao {
 	public int reservationId(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectOne("petcareMapper.reservationId");
 	}
+
+
+
+	
 
 	
 	

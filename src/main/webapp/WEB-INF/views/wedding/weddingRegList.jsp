@@ -15,7 +15,7 @@
 			width: 300px;
 		}
 </style>
-<title>${loginUser.name}님의 댕댕이 웨딩플랜 신청 내역입니다</title>
+<title>${loginUser.name}님의 댕댕이 웨딩플랜 신청/접수 내역입니다</title>
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/common/header.jsp"%>
@@ -52,7 +52,7 @@
 							<tr class="table-success">
 								<td class="text-center">${w.petName }</td>
 								<td class="text-center">${w.partnerName }</td>
-								<td class="text-center" style="color: blue;">승인&ensp; 
+								<td class="text-center" style="color: blue;">수락&ensp; 
 								<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 								&ensp;<button class="btn btn-secondary cancelApplied">만남취소</button>
 								</td>
@@ -65,9 +65,13 @@
 								<td class="text-center">${w.partnerName }</td>
 								<td class="text-center">대기중&ensp; 
 									<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
+									<c:choose>
+									<c:when test="${w.userNo eq loginUser.userNo }">
 								&ensp;<a href="updateReg.do?reservNo=${w.weddingNo}" class="btn btn-primary">신청수정</a>&ensp;
 								&ensp;<button class="btn btn-secondary cancelBtn">만남취소</button>
 									<input type="hidden" value="${w.weddingNo}">
+									</c:when>
+									</c:choose>
 								</td>
 							</tr>
 						</c:when>
@@ -80,10 +84,19 @@
 						 </td>
 						</tr>
 						</c:when>
+						<c:when test="${w.approval =='Y' }">
+						<tr class="table-primary"> 
+						<td class="text-center">${w.petName }</td>
+						<td class="text-center">(해당 없음)</td>
+						<td class="text-center" style="color: blue;">관리자 승인 완료&ensp;
+						<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
+						 </td>
+						</tr>
+						</c:when>
 						<c:otherwise>
 						<tr class="table-secondary"> 
 						<td class="text-center">${w.petName }</td>
-						<td class="text-center">${w.partnerName }</td>
+						<td class="text-center">(해당 없음)</td>
 						<td class="text-center">관리자 승인 대기중&ensp;
 						<a class="btn btn-secondary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 						 </td>
