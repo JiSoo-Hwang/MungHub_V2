@@ -22,6 +22,7 @@ public class WeddingServiceImpl implements WeddingService{
 	@Autowired
 	private SqlSessionTemplate sqlSession;
 	
+	
 	//견종조회 메서드
 	@Override
 	public ArrayList<Breed> selectBreeds() {
