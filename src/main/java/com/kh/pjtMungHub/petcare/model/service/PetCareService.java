@@ -30,6 +30,10 @@ public interface PetCareService {
 	int selectReservationId(Payment payment);
 	//결제 구분을 위한 houserReservationNo 가져오기
 	int reservationId ();
+	//첫페이지 펫시터 리스트 불러오기
+	ArrayList<PetSitter> firstSitterList(PageInfo pi);
+	//펫시터 선택 불가능한 날짜 가져오기
+	ArrayList<Reservation> disabledDates(int petSitterNo);
 	
 	
 	//결제정보 저장하기

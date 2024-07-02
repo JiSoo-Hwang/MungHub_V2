@@ -27,6 +27,6 @@ public class Reservation {
     private String originName;//    ORIGIN_NAME VARCHAR2(1000 BYTE),
     private String changeName;//    CHANGE_NAME VARCHAR2(1000 BYTE),
     private String paymentStatus; // PAYMENT_STATUS NUMBER NOT NULL
-    private String userId;
+    private String userNo;
     private int totalAmount; // TOTAL_AMOUNT NUMBER NOT NULL
 }

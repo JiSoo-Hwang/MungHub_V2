@@ -12,6 +12,7 @@
 <meta charset="UTF-8">
 <title>MungHub 장기돌봄 페이지</title>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!-- 주소 api -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script> <!-- fullcalender -->
 
 <style>
 	body {
@@ -121,10 +122,8 @@
     <header>
         <div class="search-bar">
         <!-- Button trigger modal -->
-		<button type="button" id="addrBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
-		 가까운 장소 찾기
-		</button>
-		<input type="text" id="inputAddress" style="width:400px;" readonly placeholder="주소입력" required>
+		<input type="hidden" id="addrBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
+		<input type="text" id="inputAddress" style="width:400px;" readonly placeholder="주소를 입력해주세요." required>
         <!-- 주소 api 모달창으로 -->
         <!-- Modal -->
 		<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -152,7 +151,7 @@
 		
 		 <!-- Button trigger modal -->
 		<button type="button" id="addrBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop3">
-		 날짜 및 돌봄 기간정하기
+		 다양한 필터 기능으로 알맞는 집을 선택해보세요.
 		</button>
 		
 		<input type="hidden" id="" value="">
@@ -169,7 +168,7 @@
 		      <div class="modal-body">
 			      <h5>날짜를 지정해주세요.</h5>
 			      	<div class="date-container">
-				        <input type="date" id="dateInput" required min="<%=formattedDate%>">
+				        
 			    	</div>
 			      <h5>돌봄 기간을 선택해주세요.(5박이상은 관리자에게 문의해주세요.)</h5>
 			      	<input type="radio" class="btn-check" name="daysNight" id="day1" autocomplete="off" value="1" checked>
@@ -180,34 +179,8 @@
 					<label class="btn btn-secondary" for="day3">3박4일</label>
 					<input type="radio" class="btn-check" name="daysNight" id="day4" autocomplete="off" value="4">
 					<label class="btn btn-secondary" for="day4">4박5일</label>
-			  </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-		        <button type="button" class="btn btn-primary" id="resetBtn3">초기화</button>
-		        <button type="button" class="btn btn-primary" id="inputBtn3">입력완료</button>
-		      </div>
-		    </div>
-		  </div>
-		</div>
-      </div>
-    </header>
-    
-    <section class="partner">
-        <h2>우리집 같은 보금자리</h2>
-        <!-- Button trigger modal -->
-		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-		  정렬하기
-		</button>
-		<!-- Modal -->
-		<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-		  <div class="modal-dialog">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		      </div>
-		      <div class="modal-body">
-			       <div class="radio-btn-group">
+					
+					<div class="radio-btn-group">
 						<h5>돌보미의 반려동물 보유</h5>
 						<div class="form-check form-switch">
 						  <input class="form-check-input" type="checkbox" id="pet">
@@ -226,15 +199,20 @@
 							<input type="radio" class="btn-check" name="petType" id="petType3" autocomplete="off" value="3">
 							<label class="btn btn-secondary" for="petType3">대형견(15kg이상)</label>
 				    </div>
-		      </div>
+			  </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-		        <button type="button" class="btn btn-primary" id="resetBtn2">초기화</button>
-		        <button type="button" class="btn btn-primary" id="inputBtn2">입력완료</button>
+		        <button type="button" class="btn btn-primary" id="resetBtn3">초기화</button>
+		        <button type="button" class="btn btn-primary" id="inputBtn3">입력완료</button>
 		      </div>
 		    </div>
 		  </div>
 		</div>
+      </div>
+    </header>
+    
+    <section class="partner">
+        <h2>우리집 같은 보금자리</h2>
 		
 		<div id="pagingArea">
 		
