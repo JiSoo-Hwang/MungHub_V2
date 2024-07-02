@@ -63,7 +63,7 @@
 								<td>${w.petName}</td>
 								<td>${w.breed}</td>
 								<td>${w.meetingMethod }</td>
-								<td style="color: blue;">만남성사
+								<td style="color: blue;">만남수락
 									<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 								</td>
 							</tr>

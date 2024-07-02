@@ -52,9 +52,35 @@
 							<tr class="table-success">
 								<td class="text-center">${w.petName }</td>
 								<td class="text-center">${w.partnerName }</td>
-								<td class="text-center" style="color: blue;">수락&ensp; 
-								<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
-								&ensp;<button class="btn btn-secondary cancelApplied">만남취소</button>
+								<td class="text-center"> <b style="color: blue;">수락</b>&ensp; 
+								<a class="btn btn-primary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
+								&ensp;<button class="btn btn-secondary btn-sm cancelApplied">만남취소</button>
+								&ensp;<button type="button" class="btn btn-primary btn-sm contactBtn" data-bs-toggle="modal" data-bs-target="#infoModal">
+								 상대방 연락처</button>
+								 <!-- The Modal -->
+								<div class="modal fade" id="infoModal">
+								  <div class="modal-dialog">
+								    <div class="modal-content">
+								
+								      <!-- Modal Header -->
+								      <div class="modal-header">
+								        <h4 class="modal-title">상대방 연락처</h4>
+								        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+								      </div>
+								
+								      <!-- Modal body -->
+								      <div class="modal-body">
+								        상대방 연락처 내용
+								      </div>
+								
+								      <!-- Modal footer -->
+								      <div class="modal-footer">
+								        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
+								      </div>
+								
+								    </div>
+								  </div>
+								</div>
 								</td>
 							</tr>
 						</c:when>
@@ -64,11 +90,11 @@
 								<td class="text-center">${w.petName }</td>
 								<td class="text-center">${w.partnerName }</td>
 								<td class="text-center">대기중&ensp; 
-									<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
+									<a class="btn btn-primary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 									<c:choose>
 									<c:when test="${w.userNo eq loginUser.userNo }">
-								&ensp;<a href="updateReg.do?reservNo=${w.weddingNo}" class="btn btn-primary">신청수정</a>&ensp;
-								&ensp;<button class="btn btn-secondary cancelBtn">만남취소</button>
+								&ensp;<a href="updateReg.do?reservNo=${w.weddingNo}" class="btn btn-primary btn-sm">신청수정</a>&ensp;
+								&ensp;<button class="btn btn-secondary btn-sm cancelBtn">만남취소</button>
 									<input type="hidden" value="${w.weddingNo}">
 									</c:when>
 									</c:choose>
@@ -80,7 +106,7 @@
 						<td class="text-center">${w.petName }</td>
 						<td class="text-center">${w.partnerName }</td>
 						<td class="text-center">만남거절&ensp;
-						<a class="btn btn-secondary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
+						<a class="btn btn-secondary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 						 </td>
 						</tr>
 						</c:when>
@@ -89,7 +115,7 @@
 						<td class="text-center">${w.petName }</td>
 						<td class="text-center">(해당 없음)</td>
 						<td class="text-center" style="color: blue;">관리자 승인 완료&ensp;
-						<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
+						<a class="btn btn-primary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 						 </td>
 						</tr>
 						</c:when>
@@ -98,7 +124,7 @@
 						<td class="text-center">${w.petName }</td>
 						<td class="text-center">(해당 없음)</td>
 						<td class="text-center">관리자 승인 대기중&ensp;
-						<a class="btn btn-secondary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
+						<a class="btn btn-secondary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 						 </td>
 						</tr>
 						</c:otherwise>
@@ -118,14 +144,16 @@
 				return false;
 			}
 		});
-		$(".cancelApplied")click(function () {
+		$(".cancelApplied").click(function () {
 			if(confirm("이미 승인된 만남을 취소하시면 웨딩플래너 서비스가 14일간 제한됩니다. 그래도 취소하실건가요8ㅅ8?")){
-				var weddingNo = $(this).siblings(':eq(2)').val();
-				console.log(weddingNo);
+				/* var weddingNo = $(this).siblings(':eq(2)').val(); */
+				console.log($(this).parent().siblings());
 			}
 		});
 	});
-    
+    $(".contactBtn").click(function () {
+		
+	});
     </script>
 </body>
 </html>
