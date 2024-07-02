@@ -2,6 +2,7 @@ package com.kh.pjtMungHub.shop.model.dao;
 
 import java.util.ArrayList;
 
+import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,8 +20,8 @@ import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 public class ShopDao {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ArrayList<Product> selectProductList(SqlSessionTemplate sqlSession) {
-		return (ArrayList)sqlSession.selectList("shopMapper.selectList");
+	public ArrayList<Product> selectProductList(SqlSessionTemplate sqlSession, String status) {
+		return (ArrayList)sqlSession.selectList("shopMapper.selectList",status);
 	}
 
 	public Product selectProductDetail(SqlSessionTemplate sqlSession, int productNo) {
@@ -120,10 +121,53 @@ public class ShopDao {
 		return sqlSession.selectOne("shopMapper.selectOrder",merchantUid);
 	}
 
-	public ArrayList<POrderInfo> selectOrderList(int userNo) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public ArrayList<POrderInfo> selectOrderList(SqlSessionTemplate sqlSession, int userNo) {
 		// TODO Auto-generated method stub
-		return null;
+		return (ArrayList)sqlSession.selectList("shopMapper.selectOrderList",userNo);
 	}
+
+	public int selectCartCount(SqlSessionTemplate sqlSession, int userNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectCartCount",userNo);
+	}
+
+	public int stopItemPost(SqlSessionTemplate sqlSession, ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.stopItemPost",parameter);
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public ArrayList<Attachment> selectAttachmentList(SqlSessionTemplate sqlSession, ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectAttachmentList",parameter);
+	}
+
+	public int deleteProductData(int productNo, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("shopMapper.deleteProductData",productNo);
+	}
+
+	public int updateAttachment(SqlSessionTemplate sqlSession, ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateAttachment",parameter);
+	}
+
+	public int updateProduct(SqlSessionTemplate sqlSession, Product p) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateProduct",p);
+	}
+
+	public int deleteAttachment(SqlSessionTemplate sqlSession, ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("shopMapper.deleteAttachment",parameter);
+	}
+
+	public int rearrangeAttachment(SqlSessionTemplate sqlSession, ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.rearrangeAttachment",parameter);
+	}
+
 
 
 	

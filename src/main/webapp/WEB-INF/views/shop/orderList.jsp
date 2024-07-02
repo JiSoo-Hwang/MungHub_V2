@@ -21,31 +21,18 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">#123456</th>
-                <td>2024-06-25</td>
-                <td>배송 중</td>
-                <td>50,000원</td>
-                <td><a href="#" class="btn btn-info btn-sm">상세 보기</a></td>
+        	<c:forEach items="${orderList }" var="order">
+        	  <tr>
+                <th scope="row">${order.merchantUid }</th>
+                <td>${order.payDate }</td>
+                <td>${order.process }</td>
+                <td><fmt:formatNumber type="number" maxFractionDigits="0" value="${order.totalPrice }"/>원</td>
+                <td><a href="/pjtMungHub/orderDetail/${order.merchantUid }" class="btn btn-info btn-sm">상세 보기</a></td>
             </tr>
-            <tr>
-                <th scope="row">#123457</th>
-                <td>2024-05-15</td>
-                <td>배송 완료</td>
-                <td>30,000원</td>
-                <td><a href="#" class="btn btn-info btn-sm">상세 보기</a></td>
-            </tr>
-            <tr>
-                <th scope="row">#123458</th>
-                <td>2024-04-10</td>
-                <td>취소됨</td>
-                <td>20,000원</td>
-                <td><a href="#" class="btn btn-info btn-sm">상세 보기</a></td>
-            </tr>
-            <!-- 추가 주문 내역을 여기에 추가 -->
+        	</c:forEach>
         </tbody>
     </table>
-    <a href="#" class="btn btn-primary">계속 쇼핑하기</a>
+    <a href="/pjtMungHub/list.sp" class="btn btn-primary">계속 쇼핑하기</a>
 </div>
 </body>
 </html>

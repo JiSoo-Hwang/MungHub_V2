@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Attachment {
 
-	private int fileNo;
 	private int fileLev;
 	private String originName;
 	private String changeName;

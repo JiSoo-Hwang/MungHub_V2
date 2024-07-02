@@ -7,7 +7,7 @@
 	<resultMap type="Product" id="productResultSet">
 		<result column="PRODUCT_NO" property="productNo" />
 		<result column="PRODUCT_NAME" property="productName" />
-		<result column="STATUS" property="statue" />
+		<result column="STATUS" property="status" />
 		<result column="SALES_COUNT" property="salesConunt" />
 		<result column="PRICE" property="price" />
 		<result column="DISCOUNT" property="discount" />
@@ -16,7 +16,7 @@
 		<result column="ATTACHMENT" property="attachment" />
 	</resultMap>
 
-	<select id="selectList" resultMap="productResultSet">
+	<select id="selectList" resultMap="productResultSet" parameterType="String">
 		SELECT PRODUCT_NO,
 		PRODUCT_NAME,
 		SALES_COUNT,
@@ -28,7 +28,7 @@
 		FROM PRODUCT P
 		INNER JOIN
 		PRODUCT_ATTACHMENT PT USING (PRODUCT_NO)
-		WHERE P.STATUS = 'Y'
+		WHERE P.STATUS = #{status}
 		AND
 		FILE_LEVEL=0
 	</select>
@@ -39,17 +39,15 @@
 		PRODUCT_NAME,
 		SALES_COUNT,
 		PRICE,
+		P.STATUS,
 		DISCOUNT,
 		CATEGORY_NO,
-		P.BRAND_CODE,
-		FILE_PATH||CHANGE_NAME ATTACHMENT
+		P.BRAND_CODE
 		FROM PRODUCT
 		P
 		INNER JOIN PRODUCT_ATTACHMENT pt USING (PRODUCT_NO)
-		WHERE P.STATUS =
-		'Y'
-		AND PRODUCT_NO = #{productNo}
-		ORDER BY FILE_LEVEL
+		WHERE PRODUCT_NO = #{productNo}
+		AND FILE_LEVEL = 0
 	</select>
 
 	<select id="selectCategory"
@@ -82,11 +80,22 @@
 		#{brandCode}
 		)
 	</insert>
+	
+	<update id="updateProduct" parameterType="Product">
+	 UPDATE PRODUCT SET
+		PRODUCT_NAME=#{productName},
+		PRICE=#{price},
+		DISCOUNT=#{discount},
+		CATEGORY_NO=#{categoryNo},
+		BRAND_CODE=#{brandCode}
+	WHERE PRODUCT_NO=#{productNo}
+	</update>
 
 	<insert id="insertAttachment"
 		parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
-		INSERT INTO PRODUCT_ATTACHMENT(
-		FILE_NO,
+		INSERT ALL 
+		<foreach collection="atList" item="arr">
+		INTO PRODUCT_ATTACHMENT(
 		FILE_LEVEL,
 		ORIGIN_NAME,
 		CHANGE_NAME,
@@ -103,9 +112,7 @@
 				BRAND_CODE
 			</when>
 		</choose>
-		)VALUES
-		<foreach collection="atList" item="arr" separator=",">
-			(SEQ_PFILE.NEXTVAL,
+		)VALUES(
 			#{arr.fileLev},
 			#{arr.originName},
 			#{arr.changeName},
@@ -124,9 +131,141 @@
 			</choose>
 			)
 		</foreach>
+		SELECT * FROM DUAL <!-- 없으면 오류남 -->
 	</insert>
+	
+	<select id="selectAttachmentList" 
+	parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Attachment">
+	SELECT
+		FILE_LEVEL fileLev,
+		ORIGIN_NAME originName,
+		CHANGE_NAME changeName,
+		UPLOAD_DATE uploadDate,
+		FILE_JUSTIFY fileJustify,
+		FILE_PATH filePath,
+		<choose>
+			<when test="justifying=='product'">
+				PRODUCT_NO productNo
+			</when>
+			<when test="justifying=='review'">
+				REVIEW_NO reviewNo
+			</when>
+			<when test="justifying=='brand'">
+				BRAND_CODE brandNo
+			</when>
+		</choose>
+	FROM PRODUCT_ATTACHMENT
+	WHERE 
+		<choose>
+			<when test="justifying=='product'">
+				PRODUCT_NO=
+			</when>
+			<when test="justifying=='review'">
+				REVIEW_NO=
+			</when>
+			<when test="justifying=='brand'">
+				BRAND_CODE=
+			</when>
+		</choose>
+		#{number} <!-- 주요키를 담을 공통적으로 사용할 변수  -->
+	ORDER BY FILE_LEVEL
+	</select>
+	
+	<update id="updateAttachment" parameterType="java.util.ArrayList">
+	<foreach collection="atList" item="arr" index="i"
+		open="DECLARE BEGIN" separator=";" close="; END;">
+		MERGE INTO PRODUCT_ATTACHMENT
+		USING DUAL
+		ON(FILE_LEVEL=#{arr.fileLev})
+		WHEN
+		MATCHED THEN
+		UPDATE SET
+		ORIGIN_NAME=#{arr.originName},
+		CHANGE_NAME=#{arr.changeName},
+		UPLOAD_DATE=SYSDATE
+		WHERE 
+		<choose>
+			<when test="justifying=='product'">
+				PRODUCT_NO=
+			</when>
+			<when test="justifying=='review'">
+				REVIEW_NO=
+			</when>
+			<when test="justifying=='brand'">
+				BRAND_CODE=
+			</when>
+		</choose>
+		#{number}
+		WHEN NOT MATCHED
+		THEN
+		INSERT(
+		FILE_LEVEL,
+		ORIGIN_NAME,
+		CHANGE_NAME,
+		FILE_JUSTIFY,
+		FILE_PATH,
+		<choose>
+			<when test="justifying=='product'">
+				PRODUCT_NO
+			</when>
+			<when test="justifying=='review'">
+				REVIEW_NO
+			</when>
+			<when test="justifying=='brand'">
+				BRAND_CODE
+			</when>
+		</choose>
+		)VALUES(
+			#{arr.fileLev},
+			#{arr.originName},
+			#{arr.changeName},
+			#{arr.fileJustify},
+			#{arr.filePath},
+			#{number}
+			)
+	</foreach>
+	</update>
+	
+	<delete id="deleteAttachment" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
+	  DELETE FROM PRODUCT_ATTACHMENT
+    WHERE FILE_LEVEL =#{at.fileLev}
+    AND 
+	<choose>
+			<when test="justifying=='product'">
+				PRODUCT_NO
+			</when>
+			<when test="justifying=='review'">
+				REVIEW_NO
+			</when>
+			<when test="justifying=='brand'">
+				BRAND_CODE
+			</when>
+		</choose>
+		=#{number}
+	
+	</delete>
+	
+	<update id="rearrangeAttachment" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
+	 UPDATE PRODUCT_ATTACHMENT SET
+	   FILE_LEVEL= FILE_LEVEL-1
+	   WHERE FILE_LEVEL BETWEEN #{at.fileLev} AND 100
+	   AND PRODUCT_NO=#{number}
+	</update>
 
-
+	<update id="stopItemPost" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
+	UPDATE PRODUCT SET 
+	STATUS = #{justifying}
+	WHERE PRODUCT_NO=#{productNo}
+	</update>
+	
+	<delete id="deleteProductData" parameterType="_int">
+	DELETE FROM PRODUCT
+	WHERE STATUS='N'
+	AND PRODUCT_NO=#{productNo}
+	</delete>
+	
+	
 	<select id="selectCartList" resultType="Cart"
 		parameterType="_int">
 		SELECT
@@ -164,6 +303,7 @@
 		INSERT (USER_NO,PRODUCT_NO,P_AMOUNT)
 		VALUES(#{userNo},#{productNo},#{amount})
 	</insert>
+	
 	<delete id="removeCartItem"
 		parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
 		DELETE FROM SHOPPING_CART
@@ -181,6 +321,12 @@
 		WHERE PRODUCT_NO = #{productNo}
 		AND USER_NO = #{userNo}
 	</update>
+	
+	<select id="selectCartCount" resultType="_int" parameterType="_int">
+	SELECT MAX(ROWNUM)
+	FROM SHOPPING_CART
+	WHERE USER_NO=#{userNo}
+	</select>
 	
 	<update id="chooseShipInfo">
 		UPDATE SHIP_INFO SET
@@ -341,6 +487,22 @@
 	FROM PRODUCT_ORDER
 	WHERE MERCHANT_UID=#{merchantUid}
 	</select>
-
 	
+	<select id="selectOrderList" parameterType="_int" resultType="com.kh.pjtMungHub.shop.model.vo.POrderInfo">
+		SELECT MERCHANT_UID merchantUid
+		,ORDER_PROCESS process
+		,SHOPPING_LIST items
+		,ITMES_QUANTITY itemsQuantity
+		,TOTAL_PRICE totalPrice
+		,USER_NO userNo
+		,PAY_DATE payDate
+		,MESSAGE message
+		,ADDRESS address
+		,PHONE phone
+		,RECIPIENT recipient
+		FROM PRODUCT_ORDER
+		WHERE USER_NO=#{userNo}
+		ORDER BY PAY_DATE DESC
+	</select>
+
 </mapper>

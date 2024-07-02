@@ -182,8 +182,8 @@ margin-bottom: 20px;
 	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	      </div>
 	      <div class="modal-body">
-	      <input type="text" id="recipient" placeholder="수령인" value="${loginUser.name }" required> <br>
-	      <input type="text" id="phone" placeholder="전화번호" value="${loginUser.phone }" required> (-)입력 <br> <br>
+	      <input type="text" id="recipient" placeholder="수령인" value="${loginUser.name }" required> 수령인 <br>
+	      <input type="text" id="phone" placeholder="전화번호" value="${loginUser.phone }" required> 전화번호 (-)입력 <br> <br>
 	      
 	    <input type="text" id="address" placeholder="주소" onclick="execDaumPostcode()" readonly>
 		<input type="button" onclick="execDaumPostcode()" value="주소 검색"><br>

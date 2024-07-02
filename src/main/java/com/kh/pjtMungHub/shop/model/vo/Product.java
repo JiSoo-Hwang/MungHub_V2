@@ -11,7 +11,7 @@ public class Product {
 
 	private int productNo;
 	private String productName;
-	private String statue;
+	private String status;
 	private int salesConunt;
 	private int price;
 	private int discount;

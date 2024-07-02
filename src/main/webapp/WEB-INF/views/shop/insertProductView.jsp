@@ -51,7 +51,7 @@
                     </tr>
                     <tr>
                         <th><label for="upfile">첨부파일</label></th>
-                        <td><input type="file" id="upfile" class="form-control-file border" name="upfile"></td>
+                        <td><input type="file" id="upfile" class="form-control-file border" multiple name="upfile"></td>
                     </tr>
                 </table>
                 <br>

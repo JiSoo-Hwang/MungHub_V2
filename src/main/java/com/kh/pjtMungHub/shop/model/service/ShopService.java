@@ -15,7 +15,7 @@ import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 public interface ShopService {
 
-	ArrayList<Product> selectProductList();
+	ArrayList<Product> selectProductList(String status);
 
 
 	Product selectProductDetail(int productNo);
@@ -66,5 +66,28 @@ public interface ShopService {
 	ArrayList<POrderInfo> selectOrderList(int userNo);
 
 
-	int removeShipInfo(ShipInfo s); 
+	int removeShipInfo(ShipInfo s);
+
+
+	int selectCartCount(int userNo);
+
+
+	int stopItemPost(ParameterVo parameter);
+
+
+	ArrayList<Attachment> selectAttachmentList(ParameterVo parameter);
+
+
+	int deleteProductData(int productNo);
+
+
+	int updateAttachment(ParameterVo parameter);
+
+
+	int updateProduct(Product p);
+
+
+
+	int deleteAttachment(ParameterVo parameter);
+
 }

@@ -38,7 +38,7 @@ public class ShopController {
 	@GetMapping("list.sp")
 	public ModelAndView ShopList(ModelAndView mv) {
 		
-		ArrayList<Product> pList = shopService.selectProductList(); 
+		ArrayList<Product> pList = shopService.selectProductList("Y"); 
 		
 		mv.addObject("pList", pList);
 		mv.setViewName("shop/shopListView");
@@ -47,21 +47,130 @@ public class ShopController {
 		return mv;
 	}
 	
+	@GetMapping("notPosted.sp")
+	public ModelAndView notPostedList(ModelAndView mv) {
+		
+		ArrayList<Product> pList = shopService.selectProductList("N");
+		
+		mv.addObject("notPostList","N");
+		mv.addObject("pList",pList);
+		mv.setViewName("/shop/shopListView");
+		return mv;
+	}
+	
+	@PostMapping("delete.sp")
+	@ResponseBody
+	public int deleteProductData(int productNo) {
+		
+		int result=shopService.deleteProductData(productNo);
+		
+		
+		return result;
+	}
+	
 	@GetMapping("detail.sp/{productNo}")
 	public ModelAndView ShopDetail(@PathVariable int productNo, ModelAndView mv) {
 		
 		Product p=shopService.selectProductDetail(productNo);
-		ArrayList<Product> pList = shopService.selectProductList(); 
+		ArrayList<Product> pList = shopService.selectProductList("Y"); 
+		ParameterVo parameter = ParameterVo.builder().justifying("product").number(productNo).build();
 		
+		ArrayList<Attachment> atList= shopService.selectAttachmentList(parameter);
+		
+		mv.addObject("atList",atList);
 		mv.addObject("pList", pList);
 		mv.addObject("p",p);
 		mv.setViewName("shop/shopDetailView");
 		
 		return mv;
 	}
+	@GetMapping("update.sp/{productNo}")
+	public ModelAndView updateProduct(@PathVariable int productNo, ModelAndView mv) {
+		
+		Product p=shopService.selectProductDetail(productNo);
+	
+		ParameterVo parameter=ParameterVo.builder().justifying("product").number(p.getProductNo()).build();
+		
+		ArrayList<Category> c=shopService.selectCategory();
+		ArrayList<Brand> b=shopService.selectBrand();
+		ArrayList<Attachment> atList=shopService.selectAttachmentList(parameter);
+		
+		mv.addObject("c",c);
+		mv.addObject("b",b);
+		mv.addObject("atList",atList);
+		mv.addObject("p",p);
+		mv.setViewName("shop/shopUpdateView");
+		return mv;
+	}
+	
+	@PostMapping("update.sp")
+	public String updateProduct(Product p
+							,MultipartFile[] upfile
+							,HttpSession session) {
+		
+		boolean flag= false;
+		String deleteFile= "";
+		
+		ParameterVo parameter=ParameterVo.builder().justifying("product").number(p.getProductNo()).build();
+		
+		ArrayList<Attachment> atList=shopService.selectAttachmentList(parameter);
+		
+		for(int i=0; i<upfile.length; i++) {
+		if(!upfile[i].getOriginalFilename().equals("")) {
+				
+				if(atList.get(i).getChangeName()!=null) {
+					flag = true;
+					deleteFile= atList.get(i).getChangeName();
+					if(flag) {
+						File f= new File(session.getServletContext().getRealPath(deleteFile));
+						f.delete();
+					}
+				}
+				String changeName = saveFile(upfile[i],session,"productFile/");
+				
+				Attachment at=Attachment.builder().
+						fileLev(i).
+						originName(upfile[i].getOriginalFilename()).
+						changeName(changeName).
+						fileJustify("product").
+						filePath("/pjtMungHub/resources/uploadFiles/shopFile/productFile/").
+						productNo(p.getProductNo()).
+						build();
+				
+				atList.add(at);
+			}
+		}
+	    parameter.setAtList(atList);
+		int result = shopService.updateAttachment(parameter);
+		int result2 = shopService.updateProduct(p);
+		
+		
+		if(result*result2>0) {
+			
+			return "redirect:/detail.sp/"+p.getProductNo();
+		}else {
+			return "redirect:/detail.sp/"+p.getProductNo();
+		}
+			
+	}
+	
+	@PostMapping("deleteAttachment.sp")
+	@ResponseBody
+	public int deleteAttachment(Attachment at) {
+		
+		ParameterVo parameter= ParameterVo.builder().
+				justifying("product").
+				at(at).
+				number(at.getProductNo())
+				.build();
+		
+		int result=shopService.deleteAttachment(parameter);
+		
+		return result;
+	}
 	
 	@GetMapping("insert.sp")
-	public ModelAndView shopInsertFrom(ModelAndView mv) {
+	public ModelAndView shopInsertForm(ModelAndView mv) {
 		
 		ArrayList<Category> c=shopService.selectCategory();
 		ArrayList<Brand> b=shopService.selectBrand();
@@ -125,6 +234,32 @@ public class ShopController {
 		
 	}
 	
+	@PostMapping("stopPost.sp")
+	public ModelAndView stopItemPost(ModelAndView mv,
+									@RequestParam int productNo,
+									@RequestParam String justifying) {		
+		ParameterVo parameter = ParameterVo.builder()
+				.justifying(justifying)
+				.productNo(productNo)
+				.build();
+		
+		int result = shopService.stopItemPost(parameter);
+		
+		if(result>0) {
+			if(justifying.equals("Y")) {
+				mv.addObject("alertMsg", "상품게시를 시작합니다.");
+			}else {
+				mv.addObject("alertMsg","상품게시를 중단합니다.");
+			}
+			mv.setViewName("redirect:/list.sp");
+			return mv;
+		}else {
+			mv.addObject("alertMsg","요청에 실패했습니다.");
+			mv.setViewName("redirect:/shopListDetail.sp"+productNo);
+			return mv;
+		}
+	}
+	
 	@GetMapping("cart.sp")
 	public String cart() {
 		
@@ -175,6 +310,15 @@ public class ShopController {
 				.build();
 		
 		int result=shopService.removeCartItem(parameter);
+		
+		return result;
+	}
+	
+	@GetMapping("cartCount.sp")
+	@ResponseBody
+	public int selectCartCount (@RequestParam int userNo) {
+		
+		int result=shopService.selectCartCount(userNo);
 		
 		return result;
 	}
@@ -261,6 +405,31 @@ public class ShopController {
 		
 		mv.addObject("orderList",orderList);
 		mv.setViewName("shop/orderList");
+		return mv;
+	}
+	@GetMapping("orderDetail/{merchantUid}")
+	public ModelAndView orderInfoDetail(ModelAndView mv,@PathVariable String merchantUid) {
+		
+		POrderInfo order = shopService.selectOrder(merchantUid);
+		
+		String[] items=order.getItems().split(",");
+		String[] itemQuantity=order.getItemsQuantity().split(",");
+		
+		ArrayList<Product> itemList=new ArrayList<>();
+		
+		for(int i=0;i< items.length;i++) {
+			int item=Integer.parseInt(items[i]);
+			
+			Product p=shopService.selectProductDetail(item);
+			
+			itemList.add(p);
+		}
+		
+		mv.addObject("itemList",itemList);
+		mv.addObject("itemQuantity",itemQuantity);
+		mv.addObject("order",order);
+		mv.setViewName("shop/orderDetail");
+		
 		return mv;
 	}
 	

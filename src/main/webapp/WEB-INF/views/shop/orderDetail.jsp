@@ -15,25 +15,25 @@
         </div>
         <div class="card-body">
             <h5 class="card-title">주문 정보</h5>
-            <p class="card-text"><strong>주문 번호:</strong> #123456</p>
-            <p class="card-text"><strong>배송 진행 상황:</strong> 배송 중</p>
-            <p class="card-text"><strong>결제일:</strong> 2024-06-25</p>
-            <p class="card-text"><strong>도착 예정일:</strong> 2024-07-01</p>
+            <p class="card-text"><strong>주문 번호:</strong> ${order.merchantUid }</p>
+            <p class="card-text"><strong>배송 진행 상황:</strong> ${order.process }</p>
+            <p class="card-text"><strong>결제일:</strong> ${order.payDate }</p>
+            <p class="card-text"><strong>도착 예정일:</strong> ${order.payDate }</p>
             <h5 class="mt-4">주문한 상품 목록</h5>
             <ul class="list-group">
+            <c:forEach items="${itemList }" var="i" varStatus="status">
+            
                 <li class="list-group-item">
-                    <strong>제품명:</strong> 위젯 A<br>
-                    <strong>수량:</strong> 2<br>
-                    <strong>가격:</strong> 20,000원
+                    <strong>제품명:</strong> <a href="/pjtMungHub/detail.sp/${i.productNo }"> ${i.productName }</a><br>
+                    <strong>수량:</strong> ${itemQuantity[status.index] }<br>
+                    <strong>가격:</strong> 
+                    	<fmt:formatNumber type="number" maxFractionDigits="0"
+					value="${(i.price-(i.price/i.discount))*itemQuantity[status.index]}" />원
                 </li>
-                <li class="list-group-item">
-                    <strong>제품명:</strong> 위젯 B<br>
-                    <strong>수량:</strong> 1<br>
-                    <strong>가격:</strong> 30,000원
-                </li>
+            </c:forEach>
             </ul>
-            <p class="card-text mt-3"><strong>총 가격:</strong> 50,000원</p>
-            <a href="#" class="btn btn-primary">계속 쇼핑하기</a>
+            <p class="card-text mt-3"><strong>총 가격: </strong><fmt:formatNumber type="number" maxFractionDigits="0" value="${order.totalPrice }"/></p>
+            <a href="/pjtMungHub/list.sp" class="btn btn-primary">계속 쇼핑하기</a>
         </div>
     </div>
 </div>

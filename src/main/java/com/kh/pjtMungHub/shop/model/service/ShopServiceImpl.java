@@ -27,9 +27,9 @@ public class ShopServiceImpl implements ShopService {
 	private ShopDao shopDao;
 	
 	@Override
-	public ArrayList<Product> selectProductList() {
+	public ArrayList<Product> selectProductList(String status) {
 		
-		return shopDao.selectProductList(sqlSession);
+		return shopDao.selectProductList(sqlSession,status);
 	}
 
 	@Override
@@ -122,15 +122,25 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
+	@Transactional
 	public int insertOrderInfo(POrderInfo orderInfo) {
-		// TODO Auto-generated method stub
-		return shopDao.insertOrderInfo(sqlSession,orderInfo);
+		
+		int result = shopDao.insertOrderInfo(sqlSession,orderInfo);
+		
+		ParameterVo parameter =ParameterVo.builder().
+				items(orderInfo.getItems().split(",")).
+				userNo(orderInfo.getUserNo()).
+				build();
+		
+		int result2= shopDao.removeCartItem(sqlSession, parameter);
+		
+		return result*result2;
 	}
 
 	@Override
 	public ArrayList<POrderInfo> selectOrderList(int userNo) {
 		// TODO Auto-generated method stub
-		return shopDao.selectOrderList(userNo);
+		return shopDao.selectOrderList(sqlSession,userNo);
 	}
 
 	@Override
@@ -152,6 +162,53 @@ public class ShopServiceImpl implements ShopService {
 		// TODO Auto-generated method stub
 		return shopDao.changeShipInfo(sqlSession,s);
 	}
+
+	@Override
+	public int selectCartCount(int userNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectCartCount(sqlSession,userNo);
+	}
+
+	@Override
+	public int stopItemPost(ParameterVo paremeter) {
+		// TODO Auto-generated method stub
+		return shopDao.stopItemPost(sqlSession,paremeter);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectAttachmentList(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.selectAttachmentList(sqlSession,parameter);
+	}
+
+	@Override
+	public int deleteProductData(int productNo) {
+		// TODO Auto-generated method stub
+		return shopDao.deleteProductData(productNo,sqlSession);
+	}
+
+	@Override
+	public int updateAttachment(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.updateAttachment(sqlSession,parameter);
+	}
+
+	@Override
+	public int updateProduct(Product p) {
+		// TODO Auto-generated method stub
+		return shopDao.updateProduct(sqlSession,p);
+	}
+
+	@Override
+	public int deleteAttachment(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		
+		int result = shopDao.deleteAttachment(sqlSession, parameter);
+		int result2= shopDao.rearrangeAttachment(sqlSession,parameter);
+		
+		return result*result2;
+	}
+
 
 
 }
