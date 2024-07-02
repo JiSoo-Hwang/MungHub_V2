@@ -23,6 +23,7 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
@@ -69,12 +70,12 @@ public class ShopController {
 	}
 	
 	@GetMapping("detail.sp/{productNo}")
-	public ModelAndView ShopDetail(@PathVariable int productNo, ModelAndView mv) {
+	public ModelAndView ShopDetail(@PathVariable int productNo,
+									ModelAndView mv) {
 		
 		Product p=shopService.selectProductDetail(productNo);
 		ArrayList<Product> pList = shopService.selectProductList("Y"); 
 		ParameterVo parameter = ParameterVo.builder().justifying("product").number(productNo).build();
-		
 		ArrayList<Attachment> atList= shopService.selectAttachmentList(parameter);
 		
 		mv.addObject("atList",atList);
@@ -84,6 +85,40 @@ public class ShopController {
 		
 		return mv;
 	}
+	@GetMapping("selectFavorite.sp")
+	@ResponseBody
+	public boolean selectFavorite(Favorite favor) {
+		
+		ParameterVo parameter = ParameterVo.builder()
+				.userNo(favor.getUserNo())
+				.productNo(favor.getProductNo())
+				.justifying("Y")
+				.build();
+		
+		Favorite fav=shopService.selectFavorite(parameter);
+		
+		if(fav==null) {
+			parameter.setJustifying("N");
+			Favorite deleteFav=shopService.selectFavorite(parameter);
+			if(deleteFav!=null) {
+				shopService.convertFavorite(favor);
+			}
+			return false;
+		}else {
+			return true;
+		}
+		
+	}
+	@PostMapping("subscribe.sp")
+	@ResponseBody
+	public int subscribe(Favorite favor) {
+		
+		int result=shopService.convertFavorite(favor);
+		
+		return result;
+	}
+	
+	
 	@GetMapping("update.sp/{productNo}")
 	public ModelAndView updateProduct(@PathVariable int productNo, ModelAndView mv) {
 		

@@ -12,6 +12,7 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
@@ -208,6 +209,20 @@ public class ShopServiceImpl implements ShopService {
 		
 		return result*result2;
 	}
+
+	@Override
+	public Favorite selectFavorite(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.selectFavorite(parameter,sqlSession);
+	}
+
+	@Override
+	public int convertFavorite(Favorite favor) {
+		// TODO Auto-generated method stub
+		return shopDao.convertFavorite(favor,sqlSession);
+	}
+
+
 
 
 

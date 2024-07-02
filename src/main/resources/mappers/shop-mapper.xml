@@ -50,6 +50,31 @@
 		AND FILE_LEVEL = 0
 	</select>
 
+	<select id="selectFavorite" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo" resultType="com.kh.pjtMungHub.shop.model.vo.Favorite">
+		SELECT USER_NO userNo,
+		PRODUCT_NO productNo
+		FROM FAVORITE
+		WHERE PRODUCT_NO=#{productNo}
+		AND USER_NO=#{userNo}
+		AND DELETE_STATUS=#{justifying}
+	</select>
+	
+	<insert id="convertFavorite" parameterType="com.kh.pjtMungHub.shop.model.vo.Favorite">
+	MERGE INTO FAVORITE
+	USING DUAL
+	ON (PRODUCT_NO=#{productNo} AND USER_NO=#{userNo})
+	WHEN MATCHED THEN
+    UPDATE SET 
+    DELETE_STATUS='N'
+    DELETE
+    WHERE DELETE_STATUS='N'
+	WHEN NOT MATCHED THEN
+     INSERT 
+	(PRODUCT_NO,USER_NO)
+	VALUES
+	(#{productNo},#{userNo})
+	</insert>
+
 	<select id="selectCategory"
 		resultType="com.kh.pjtMungHub.shop.model.vo.Category">
 		SELECT CATEGORY_NO categoryNo,

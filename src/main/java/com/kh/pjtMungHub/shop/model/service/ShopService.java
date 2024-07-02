@@ -8,6 +8,7 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
@@ -89,5 +90,13 @@ public interface ShopService {
 
 
 	int deleteAttachment(ParameterVo parameter);
+
+
+	Favorite selectFavorite(ParameterVo parameter);
+
+
+	int convertFavorite(Favorite favor);
+
+
 
 }
