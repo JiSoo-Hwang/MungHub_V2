@@ -55,6 +55,9 @@
 	    	 var phone="${shipInfo.phone}";
 	    	 var addr = "${shipInfo.address} ${shipInfo.addressDetail}";
 	    	 
+	    	
+	    	 
+	    	
 	    	 
 	    	 var productList = "";
 	   	  
@@ -62,7 +65,7 @@
 	    		pg : 'html5_inicis',
 	    		pay_method : 'card',
 	    		merchant_uid: "IMP"+merchantUid,
-	    		name : '물품리스트',
+	    		name : '${itemList}',
 	    		amount : 100,
 	    		custom_data : {
 	    			message : $("#request-area").val()
@@ -74,12 +77,32 @@
 	    			if(rsp.success) {
 	    				alert('결제완료!');
 	    				$.ajax({
-	    					url : "insertOrderInfo",
+	    					url : "insertOrderInfo.sp",
+	    					type : "post",
 	    					data : {
-	    						 
+	    						 merchantUid : rsp.merchant_uid,
+	    						 items : "${itemsNo}",
+	    						 itemsQuantity : "${itemsQuantity}",
+	    						 totalPrice : rsp.paid_amount,
+	    						 userNo : ${loginUser.userNo},
+	    						 message : rsp.custom_data,
+	    						 address : "${shipInfo.address } ${shipInfo.addressDetail}",
+	    						 recipient : "${shipInfo.recipient }",
+	    						 phone : "${shipInfo.phone }"
+	    					},
+	    					success: function(result){
+	    						
+	    						if(result>0){
+	    							location.href="/pjtMungHub/orderConfirm/"+rsp.merchant_uid;
+	    						}else{
+	    							alert("관리자에게 문의하세요.");
+	    						}
+	    					},
+	    					error: function(){
+	    						console.log("통신 실패");
 	    					}
-	    				});
 	    				
+	    				});
 	    				
 	    			}else{
 	    				console.log(rsp);
@@ -100,7 +123,7 @@
             <div class="col-md-5 order-details mr-5">
                 <h3>주문한 물품</h3>
                 <c:forEach items="${orderList }" var="order">
-                <div class="card sm-3">
+                <div class="card sm-3 my-3">
                 <div class="row g-0">
                 <div class="col-sm-4">
                 <img class="img-fluid" src="${order.img }">
@@ -115,6 +138,8 @@
                          <fmt:formatNumber type="number"
 						maxFractionDigits="0"
 						value="${((order.price -(order.price/order.discount))/200)*order.amount}" />P</strong> 적립</p>
+						
+						<input type="hidden" value="${((order.price -(order.price/order.discount))/200)*order.amount}" name="mileage"> <!-- 마일리지 값 -->
 						
                         <p class="card-text"><fmt:formatNumber type="number"
 										maxFractionDigits="0" value="${(order.price-(order.price/order.discount))*order.amount }" />원</p>
@@ -133,7 +158,9 @@
                     <div class="form-group row">
                         <label for="price" class="col-sm-4 col-form-label">가격:</label>
                         <div class="col-sm-8">
-                            <span id="price" class="form-control-plaintext">₩${totalPrice }원</span>
+                            <span id="price" class="form-control-plaintext">₩
+                            <fmt:formatNumber type="number"
+							maxFractionDigits="0" value="${totalPrice }" /> 원</span>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -142,17 +169,47 @@
                             <span id="tax" class="form-control-plaintext">
 		
 						 <c:if test="${totalPrice > 30000 }">배송비 무료</c:if>
-						 <c:if test="${totalPrice < 30000 }">₩2,500원</c:if>
+						 <c:if test="${totalPrice < 30000 }">₩2,500 원</c:if>
+
+							</span>
+                        </div>
+                        
+                    </div>
+                    
+                              <div class="form-group row">
+                        <label for="tax" class="col-sm-4 col-form-label">적립 포인트:</label>
+                        <div class="col-sm-8">
+                            <span id="point" class="form-control-plaintext">
+									
+									<script type="text/javascript">
+										$(function(){
+											
+											var point=0;
+											
+											$("input[name=mileage]").each(function(index){
+													point+=parseInt($(this).val());
+											});
+											
+											$("#point").html(point.toLocaleString("ko-KR")+" P");
+											
+										});
+									
+									</script>
 
 							</span>
                         </div>
                     </div>
+                    
                     <div class="form-group row">
                         <label for="total" class="col-sm-4 col-form-label">총 결제 금액:</label>
                         <div class="col-sm-8">
                             <span id="total" class="form-control-plaintext">
-                           <c:if test="${totalPrice > 30000 }">₩${totalPrice }원</c:if>
-						 <c:if test="${totalPrice < 30000 }">₩${totalPrice+2500 }원</c:if>
+                           <c:if test="${totalPrice > 30000 }">₩
+             				 <fmt:formatNumber type="number"
+							maxFractionDigits="0" value="${totalPrice }" /> 원</c:if>
+						 <c:if test="${totalPrice < 30000 }">₩
+              					<fmt:formatNumber type="number"
+							maxFractionDigits="0" value="${totalPrice+2500 }" /> 원</c:if>
                             </span>
                         </div>
                     </div>

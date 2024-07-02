@@ -146,13 +146,70 @@ h2 {
 <body>
 
 	<%@ include file="../common/header.jsp"%>
-
-
+	
 	<section class="py-5">
 		<div class="container px-4 px-lg-5 my-5">
 			<div class="row gx-4 gx-lg-5 align-items-center">
 				<div class="col-md-6">
-					<img class="card-img-top mb-5 mb-md-0" src="${p.attachment }">
+					
+					<div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+  <c:forEach items="${atList }" var="at" varStatus="status">
+    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="${status.index }" <c:if test="${status.index eq 0 }">class="active" aria-current="true"</c:if> aria-label="Slide ${status.count }"></button>
+  </c:forEach>
+  </div>
+					  <div class="carousel-inner" style="height:700px;">
+  <c:forEach items="${atList }" var="at" varStatus="status">
+					    <div class="carousel-item <c:if test="${status.index eq 0 }">active</c:if>"  data-bs-interval="10000">
+					    	<input type="hidden" value="${status.index }">
+					      <img src="${at.filePath }${at.changeName}" class="d-block w-100" style="height: 100%;">
+					    </div>
+				</c:forEach>
+					  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+				<c:if test="${loginUser.userGrade >0 }">
+				<button type="button" class="btn btn-outline-danger" id="deleteSlide"><i class="bi bi-trash3"></i>현재 슬라이드 삭제</button>
+				
+				<script>
+				$(function(){
+					$("#deleteSlide").click(function(){
+						var currentSlide = $(".active").children("input:hidden").val();
+						if(currentSlide!=0){
+							
+						
+ 						$.ajax({
+							url : "/pjtMungHub/deleteAttachment.sp",
+ 							type : "post",
+							data : {productNo : ${p.productNo},
+ 									fileLev : currentSlide},
+ 							success: function(result){
+ 								alert("삭제가 완료되었습니다.");
+ 								location.href="/pjtMungHub/detail.sp/"+${p.productNo};
+ 							},
+ 							error: function(){
+ 								console.log("통신오류");
+ 							}
+ 						});
+						}else{
+							alert("첫번째 슬라이드는 지울 수 없습니다.");
+						}
+					});
+				});
+				
+				</script>
+				
+				</c:if>
+				
+				
+				
 				</div>
 				<div class="col-md-6">
 					<h1 class="display-5 fw-bolder">${p.productName}</h1>
@@ -218,6 +275,8 @@ h2 {
 		}
 	 });
 	});
+		
+		
 });
 </script>
 
@@ -243,7 +302,7 @@ h2 {
 						<dl class="dl-row">
 							<dt>적립혜택</dt>
 							<dd>
-								<strong><fmt:formatNumber type="number"
+								<strong style="color:red"><fmt:formatNumber type="number"
 										maxFractionDigits="0"
 										value="${(p.price -(p.price/p.discount))/200}" />P</strong> 적립
 							</dd>
@@ -251,14 +310,58 @@ h2 {
 					</div>
 				</div>
 			</div>
+		<div align="right">
+		
+		<c:if test="${loginUser.userGrade > 0 }">
+		<form action="/pjtMungHub/stopPost.sp" method="post">
+		<input type="hidden" value="${p.productNo }" name="productNo">
+		<c:if test="${p.status eq 'Y' }">
+		<input type="hidden" value="N" name="justifying">
+		<button type="submit" class="btn btn-danger">상품게시중단</button>
+		</c:if>
+		<c:if test="${p.status eq 'N' }">
+		<input type="hidden" value="Y" name="justifying">
+		<button type="submit" class="btn btn-primary">상품게시</button>
+		<button type="button" class="btn btn-danger" id="delete">상품정보삭제</button>
+		<script type="text/javascript">
+			$(function(){
+				$("#delete").click(function(){
+					
+						if(confirm("해당 물품 데이터와 연결된 장바구니,주문내역 데이터도 사라집니다.\n 정말 삭제하시겠습니까?")){
+				$.ajax({
+					url: "/pjtMungHub/delete.sp",
+					type: "post",
+					data : {productNo : ${p.productNo}},
+					success : function(result){
+					
+								alert("물품삭제완료");
+								location.href="/pjtMungHub/notPosted.sp";
+							
+					},
+					error : function(){
+						console.log("통신실패");
+					
+					}
+						});
+					}
+					});
+				});
+			
+		</script>
+		</c:if>
+		</form>
+		<a class="btn btn-info" href="/pjtMungHub/update.sp/${p.productNo }">상품 정보 업데이트</a>
+		</c:if>
 		</div>
+		</div>
+			
 	</section>
 	<hr>
 	<section class="py-5">
 
 		<div class="container">
 			<h4>베스트 리뷰 (${p.reviewCount })</h4>
-			<a href class="btn-review-all"><span>전체리뷰보기</span><i
+			<a href="#detail-section02" class="btn-review-all"><span>전체리뷰보기</span><i
 				class="bi bi-caret-right-fill"></i> </a> <br>
 			<div class="row row-cols-2 align-items-center mt-3 ml-3 mr-3">
 				<c:forEach var="index" begin="1" end="4">

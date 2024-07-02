@@ -12,6 +12,7 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
@@ -26,9 +27,9 @@ public class ShopServiceImpl implements ShopService {
 	private ShopDao shopDao;
 	
 	@Override
-	public ArrayList<Product> selectProductList() {
+	public ArrayList<Product> selectProductList(String status) {
 		
-		return shopDao.selectProductList(sqlSession);
+		return shopDao.selectProductList(sqlSession,status);
 	}
 
 	@Override
@@ -100,16 +101,12 @@ public class ShopServiceImpl implements ShopService {
 		return shopDao.selectShipInfoList(sqlSession,userNo);
 	}
 
-	@Override
-	public int changeShipInfo(ShipInfo s) {
-		// TODO Auto-generated method stub
-		return shopDao.changeShipInfo(sqlSession,s);
-	}
+
 
 	@Override
-	public ArrayList<Cart> selectOrderList(ParameterVo parameter) {
+	public ArrayList<Cart> selectCartItemList(ParameterVo parameter) {
 		// TODO Auto-generated method stub
-		return shopDao.selectOrderList(sqlSession,parameter);
+		return shopDao.selectCartItemList(sqlSession,parameter);
 	}
 
 	@Override
@@ -118,6 +115,100 @@ public class ShopServiceImpl implements ShopService {
 		return shopDao.selectShipInfo(sqlSession, userNo);
 	}
 
+	@Override
+	public POrderInfo selectOrder(String merchantUid) {
+		// TODO Auto-generated method stub
+		return shopDao.selectOrder(sqlSession, merchantUid);
+	}
+
+	@Override
+	@Transactional
+	public int insertOrderInfo(POrderInfo orderInfo) {
+		
+		int result = shopDao.insertOrderInfo(sqlSession,orderInfo);
+		
+		ParameterVo parameter =ParameterVo.builder().
+				items(orderInfo.getItems().split(",")).
+				userNo(orderInfo.getUserNo()).
+				build();
+		
+		int result2= shopDao.removeCartItem(sqlSession, parameter);
+		
+		return result*result2;
+	}
+
+	@Override
+	public ArrayList<POrderInfo> selectOrderList(int userNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectOrderList(sqlSession,userNo);
+	}
+
+	@Override
+	public int removeShipInfo(ShipInfo s) {
+		// TODO Auto-generated method stub
+		
+		int result=shopDao.removeShipInfo(sqlSession, s);
+		
+		
+		ShipInfo s2=shopDao.selectShipInfo2(sqlSession, s.getUserNo());
+			
+		int result2=shopDao.changeShipInfo(sqlSession, s2);
+		return result*result2;	
+				
+	}
 	
+	@Override
+	public int changeShipInfo(ShipInfo s) {
+		// TODO Auto-generated method stub
+		return shopDao.changeShipInfo(sqlSession,s);
+	}
+
+	@Override
+	public int selectCartCount(int userNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectCartCount(sqlSession,userNo);
+	}
+
+	@Override
+	public int stopItemPost(ParameterVo paremeter) {
+		// TODO Auto-generated method stub
+		return shopDao.stopItemPost(sqlSession,paremeter);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectAttachmentList(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.selectAttachmentList(sqlSession,parameter);
+	}
+
+	@Override
+	public int deleteProductData(int productNo) {
+		// TODO Auto-generated method stub
+		return shopDao.deleteProductData(productNo,sqlSession);
+	}
+
+	@Override
+	public int updateAttachment(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.updateAttachment(sqlSession,parameter);
+	}
+
+	@Override
+	public int updateProduct(Product p) {
+		// TODO Auto-generated method stub
+		return shopDao.updateProduct(sqlSession,p);
+	}
+
+	@Override
+	public int deleteAttachment(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		
+		int result = shopDao.deleteAttachment(sqlSession, parameter);
+		int result2= shopDao.rearrangeAttachment(sqlSession,parameter);
+		
+		return result*result2;
+	}
+
+
 
 }

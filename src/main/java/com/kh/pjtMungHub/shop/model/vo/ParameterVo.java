@@ -14,7 +14,10 @@ import lombok.NoArgsConstructor;
 public class ParameterVo {
 
 	private ArrayList<Attachment> atList;
+	private Attachment at;
 	private String justifying;
+	private int number;
+	
 	
 	private String[] items;
 	private int userNo;

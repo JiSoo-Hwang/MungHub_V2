@@ -10,20 +10,26 @@
 font-size: 20px;
 font-weight: bold;
 }
-#modalShipInfoList tr td{
-	border-top: 1rem solid;
-	border-right: 1rem solid;
-	border-left: 1rem solid;
-  border-bottom: 1rem solid;
-  border-color: transparent;
-}
 
-#modalShipInfoList tr:hover{
+.info:hover{
 	background-color: lightgray;
 	cursor: pointer;
 }
 #choosed{
 color : red;
+}
+.empty-cart {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+height: 50vh;
+text-align: center;
+}
+.empty-cart .message {
+color: gray;
+font-size: 2em;
+margin-bottom: 20px;
 }
 
 </style>
@@ -36,6 +42,8 @@ color : red;
 		</div>
 	</div>
 	<script>
+	
+	
 		function loadShipInfo(){
 			$.ajax({
 				url : "selectShipInfoList.sp",
@@ -44,11 +52,19 @@ color : red;
 					var str=""; /* 데이터 유무에 따라 등록 메서드 버튼이나 조회 메서드 html 값을 담을 변수 */
 					var str2=""; /* list모달 html 값 담을 변수 */
 					var choosed="";
+					var choosedNo=0;
 					if(result.length==0){
 						str="<button class='btn btn-outline-primary'"
 						+"type='button' data-bs-toggle='modal'"
 						+"data-bs-target='#shipinfo-insert'>"
 						+"<i class='bi bi-truck'></i> 배송지 등록</button>"
+						
+						$("#form").on("submit",function(e){
+							 alert("배송지를 등록해주세요");
+							 e.preventDefault(); //요소작동 정지
+							 e.stopPropagatuin(); //부모태그에게 전달되는 것 막기
+						});
+						
 						
 					}else{
 							str="<p class='order-info'>주문자 정보</p>"
@@ -69,17 +85,26 @@ color : red;
 							+"<i class='bi bi-truck'></i> 배송지 정보수정</button>"
 							for(var i in result){
 								if(result[i].choosed=='Y'){
-									choosed="<i class='bi bi-check-lg' id='choosed'></i>"
+									choosed="<i class='bi bi-check-lg' id='choosed'></i>";
+									choosedNo=1;
 								}else{
 									choosed="";
+									choosedNo=0;
 								}
-								str2+="<tr onclick='changeInfo("+result[i].infoNo+");'>"
-								+"<td>"+choosed+"</td>"
-								+"<td>"+result[i].recipient+"</td>"
-								+"<td>"+result[i].phone+"</td>"
-								+"<td>"+result[i].address+" "+result[i].addressDetail+"</td>"
-								+"</tr>"
+								str2+="<div class='row my-1 ml-3'>"
+								+"<div class='col-sm-1'>"+choosed+"</div>"
+								+"<div class='row col-sm-10 info' align='center' onclick='changeInfo("+result[i].infoNo+");'>"
+								+"<div class='col-sm-3'>"+result[i].recipient+"</div>"
+								+"<div class='col-sm-3'>"+result[i].phone+"</div>"
+								+"<div class='col-sm-6'>"+result[i].address+" "+result[i].addressDetail+"</div>"
+								+"</div>"
+								+"<div class='col-sm-1 ml-2' align='right'>"
+								+"<button type='button' class='btn btn-outline-dark' onclick='removeInfo("+result[i].infoNo+","+choosedNo+")'><i class='bi bi-trash-fill'></i></button>"
+								+"</div>"
+								+"</div>"
 							}
+							
+							$("#form").unbind();
 						}
 					
 					$("#shippingInfoDiv").html(str);
@@ -115,9 +140,34 @@ color : red;
 			});
 		}
 		
+		function removeInfo(num,YN){
+			var YesOrNot;
+			if(YN==1){
+				YesOrNot="Y";
+			}else{
+				YesOrNot="N";
+			}
+			
+			$.ajax({
+				url: "removeShipInfo.sp",
+				type : "post",
+				data : {infoNo: num
+					   ,userNo: ${loginUser.userNo}
+					   ,choosed: YesOrNot},
+				success : function(result){
+					console.log("삭제성공")
+					loadShipInfo();
+				},
+				error: function(){
+					console.log("통신오류");
+				}
+				
+			});
+		}
+		
 	</script>
 	<div class="container">
-		<form action="/pjtMungHub/order.sp" method="post">
+		<form action="/pjtMungHub/order.sp" id="form" method="post">
 		<input type="hidden" name="userNo" value="${loginUser.userNo }"> 
 	<div align="center" id="shippingInfoDiv">
 
@@ -125,15 +175,15 @@ color : red;
 
 	 <!-- 배송정보 등록 모달  -->
 		<div class="modal fade" id="shipinfo-insert" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-	  <div class="modal-dialog modal-lg">
+	  <div class="modal-dialog modal-md">
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <h1 class="modal-title fs-5" id="staticBackdropLabel">배송정보등록</h1>
 	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	      </div>
 	      <div class="modal-body">
-	      <input type="text" id="recipient" placeholder="수령인" value="${loginUser.name }" required> <br>
-	      <input type="text" id="phone" placeholder="전화번호" value="${loginUser.phone }" required> (-)입력 <br> <br>
+	      <input type="text" id="recipient" placeholder="수령인" value="${loginUser.name }" required> 수령인 <br>
+	      <input type="text" id="phone" placeholder="전화번호" value="${loginUser.phone }" required> 전화번호 (-)입력 <br> <br>
 	      
 	    <input type="text" id="address" placeholder="주소" onclick="execDaumPostcode()" readonly>
 		<input type="button" onclick="execDaumPostcode()" value="주소 검색"><br>
@@ -208,10 +258,8 @@ color : red;
         <h1 class="modal-title fs-5" id="staticBackdropLabel">배송정보선택</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-      <table id="modalShipInfoList">
-      
-      </table>
+      <div class="modal-body" id="modalShipInfoList">
+   
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -278,14 +326,16 @@ color : red;
 			<table width="100%" style="margin: 10px">
 				<tr>
 					<td align="right">
-						<button class="btn btn-outline-dark flex-shrink-0"
+						<button id="clean" class="btn btn-outline-dark flex-shrink-0"
 							type="button" onclick="removeItems();">
 							<i class="bi bi-trash2-fill"></i> 카트비우기
 						</button>
+					
 						<button id="order" class="btn btn-outline-dark flex-shrink-0"
 							type="submit">
 							<i class="bi bi-credit-card-fill"></i> 주문하기
 						</button>
+					
 					</td>
 				</tr>
 			</table>
@@ -394,8 +444,25 @@ color : red;
  				},
  				success : function(result){
  					
+ 						
  					var str = "";
  					var finalPrice= 0;
+ 					
+ 					if(result==""){
+ 						
+ 						str="<div class='container empty-cart'>"
+ 					    +"<div class='message'>"
+ 				        +"등록된 상품이 없습니다."
+ 				    	+"</div>"
+ 				   		+"<a href='/pjtMungHub/list.sp' class='btn btn-primary'>쇼핑하러 가기</a>"
+ 						+"</div>"
+ 						
+ 						$("#clean").attr("disabled","true");
+ 						$("#order").attr("disabled","true");
+ 						
+ 						$("#shoppingList").html(str);
+ 					}else{
+ 					
  					for(var i in result){
  						
  						var productNo = result[i].productNo;
@@ -424,10 +491,10 @@ color : red;
 							+"onclick='deleteItem("+productNo+");'>"
 							+"<i class='bi bi-trash3-fill'></i></button></td>"
 							+"</tr>"
+ 							+"<tr><td colspan=6 align='right' id='total'>총합 : "+finalPrice.toLocaleString('ko-KR')+"</td></tr>"
  					}
- 					str+="<tr><td colspan=6 align='right'>총합 : "+finalPrice.toLocaleString('ko-KR')+"</td></tr>"
  					$("#shoppingList tbody").html(str);
- 				},
+ 				}},
  				error : function(){
  					console.log("통신오류");
  				}
