@@ -6,6 +6,37 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
+<style>
+	.petInfo{
+		height:200px;
+		position:relative;
+	}
+	div .left, .right{
+		display:inline-block;
+		height:100%;
+	}
+	.left{
+		width:60%;
+		position:relative;
+		overflow:hidden;
+		
+	}
+	.left>img{
+		top:50%;
+		left:50%;
+		position:absolute;
+		transform: translate(-50%, -50%);
+		
+	}
+	.right{
+		position:absolute;
+		transform: translate(0%, 0%);
+	}
+
+	.mypage-left, .mypage-main{
+		margin-bottom: 100%;
+	}
+</style>
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
 	<div class="mypage-left">
@@ -21,24 +52,26 @@
 			<c:if test="${not empty petList}">
 				<h3>기존 반려견 정보 수정하기</h3>
 				<div class="info-area">
-					<div class="info-left">
-						<c:forEach items="${petPhotoList}" var="photo">
-							<div class="petPhoto">
-							<img src=".${photo.filePath}" width="150" height="120">
-							</div>
-						</c:forEach>
-					</div>
 					<div class="info-right">
 						<c:forEach items="${petList}" var="pet">
 							<div class="petInfo">
-								<input type="hidden" name="petNo" value="${pet.petNo}">
-								<label for="">이름 : ${pet.petName}</label><br>
-								<label for="">품종 : <c:forEach items="${breed}" var="b">${b.breedId eq pet.breed ? b.breedName:''}</c:forEach>${empty pet.breed ? '비밀':''}</label><br>
-								<label for="">나이 : ${pet.petAge}</label><br>
-								<label for="">성별 : ${pet.petGender eq 'M' ? '왕자님':'공주님'}</label><br>
-								<label for="weight">몸무게 : ${pet.weight} kg</label><br>
-								<button type="button" data-bs-toggle="modal" data-bs-target="#petModal">수정하기</button><br><br>
-							</div>						
+								<c:forEach items="${petPhotoList}" var="photo">
+									<c:if test="${photo.photoNo eq pet.photoNo}">
+										<div class="petPhoto left">
+											<img src=".${photo.filePath}" height="100%">
+										</div>
+									</c:if>
+								</c:forEach>
+								<div class="petInfo right">
+									<input type="hidden" name="petNo" value="${pet.petNo}">
+									<label for="">이름 : ${pet.petName}</label><br>
+									<label for="">품종 : <c:forEach items="${breed}" var="b">${b.breedId eq pet.breed ? b.breedName:''}</c:forEach>${empty pet.breed ? '비밀':''}</label><br>
+									<label for="">나이 : ${pet.petAge}</label><br>
+									<label for="">성별 : ${pet.petGender eq 'M' ? '왕자님':'공주님'}</label><br>
+									<label for="weight">몸무게 : ${pet.weight} kg</label><br>
+									<button type="button" data-bs-toggle="modal" data-bs-target="#petModal">수정하기</button><br><br>
+								</div>
+							</div><br>
 						</c:forEach>
 					</div>
 				</div>

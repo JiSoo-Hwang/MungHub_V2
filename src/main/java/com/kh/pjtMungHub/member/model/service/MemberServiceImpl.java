@@ -157,5 +157,10 @@ public class MemberServiceImpl implements MemberService{
 		return dao.sendMsg(sqlSession,msg);
 	}
 
+	@Override
+	public Member socialMember(Member m) {
+		return dao.socialMember(sqlSession,m);
+	}
+
 
 }

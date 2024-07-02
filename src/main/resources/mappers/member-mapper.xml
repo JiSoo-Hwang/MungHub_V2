@@ -39,7 +39,7 @@
 		VALUES(#{userId},SEQ_MEM.NEXTVAL,#{password},#{name},#{phone},#{email},#{address},#{petYN},1,#{kindName},'N')	
 	</insert>
 	<select id="selectPetList" parameterType="Member" resultType="Pet">
-		SELECT PET_NO petNo, BREED_NAME breed, PET_NAME petName, PET_AGE petAge, PET_GENDER petGender, WEIGHT weight, PHOTO_NO photoNo FROM PET JOIN BREED USING(BREED_ID) WHERE OWNER_NO=#{userNo}
+		SELECT PET_NO petNo, BREED_ID breed, PET_NAME petName, PET_AGE petAge, PET_GENDER petGender, WEIGHT weight, PHOTO_NO photoNo FROM PET WHERE OWNER_NO=#{userNo}
 	</select>
 	<select id="selectPetPhoto" parameterType="Pet" resultType="PetPhoto">
 		SELECT PHOTO_NO photoNo, ORIGIN_NAME originName,CHANGE_NAME changeName,FILE_PATH filePath,UPLOAD_DATE uploadDate, STATUS status FROM PET_PHOTO WHERE PHOTO_NO=#{photoNo} AND STATUS='Y'
@@ -101,4 +101,7 @@
 	<insert id="sendMsg" parameterType="Message">
 		INSERT INTO MESSAGE VALUES(SEQ_MSG.NEXTVAL,#{sender},#{receiver},#{messageContent},DEFAULT,DEFAULT)
 	</insert>
+	<select id="socialMember" parameterType="Member" resultMap="memberResultSet">
+		SELECT * FROM MEMBER WHERE (USER_ID=#{email} OR EMAIL=#{email}) AND NAME=#{name}
+	</select>
 </mapper>

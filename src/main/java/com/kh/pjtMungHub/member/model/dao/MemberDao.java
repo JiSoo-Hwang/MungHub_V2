@@ -128,5 +128,9 @@ public class MemberDao {
 		return sqlSession.insert("memberMapper.sendMsg",msg);
 	}
 
+	public Member socialMember(SqlSessionTemplate sqlSession, Member m) {
+		return sqlSession.selectOne("memberMapper.socialMember",m);
+	}
+
 
 }

@@ -38,5 +38,6 @@ public interface MemberService {
 	int deletePhoto(Pet p);
 	int updateMsg(Message msg);
 	int sendMsg(Message msg);
+	Member socialMember(Member m);
 	
 }
