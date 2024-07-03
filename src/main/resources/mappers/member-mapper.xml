@@ -37,4 +37,32 @@
 		INSERT INTO MEMBER(USER_ID,USER_NO,PASSWORD,NAME,PHONE,EMAIL,ADDRESS,PET_YN,USER_GRADE) 
 		VALUES(#{userId},#{userNo},#{password},#{name},#{phone},#{email},#{address},#{petYN},0)
 	</insert>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="isUserRestricted" parameterType="int" resultType="boolean">
+		SELECT CASE 
+    		WHEN RESTRICTED_UNTIL > CURRENT_TIMESTAMP THEN 1
+    		ELSE 0
+		END AS DAYS
+		FROM MEMBER
+		WHERE USER_NO = #{userNo}
+	</select>
+	<update id="restrictUser">
+		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL #{days} DAY
+		WHERE USER_NO = #{userNo}
+	</update>
+	
 </mapper>

@@ -138,8 +138,6 @@
 		$(".cancelBtn").click(function() {
 			if (confirm("정말 만남을 취소하시겠습니까?")) {
 				var weddingNo = $(this).siblings(':eq(2)').val();
-				console.log(weddingNo);
-				/* location.href="deleteReg.do?reservNo="+reservNo; */
 			} else {
 				return false;
 			}

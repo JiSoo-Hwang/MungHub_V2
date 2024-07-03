@@ -1,6 +1,7 @@
 package com.kh.pjtMungHub.wedding.model.dao;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
@@ -98,5 +99,10 @@ public class WeddingDao {
 	public ArrayList<Wedding>selectByBreed(SqlSessionTemplate sqlSession,String breedId){
 		return (ArrayList)sqlSession.selectList("weddingMapper.selectByBreed",breedId);
 	}
+	
+	public int cancelWedding(SqlSessionTemplate sqlSession, int weddingNo,String approval) {
+		return sqlSession.update("weddingMapper.cancelWedding",Map.of("weddingId",weddingNo,"status",approval));
+	}
+
 	
 }

@@ -64,9 +64,9 @@ public class KindergartenController {
 	@GetMapping("reg.do")
 	public String regForm(int kindNo, int ownerNo, Model model, HttpSession session) {
 
-		Pet pet = service.selectPet(ownerNo);
+		ArrayList<Pet> pet = service.selectPet(ownerNo);
 		Kindergarten kindergarten = service.selectKindergarten(kindNo);
-		model.addAttribute("pet", pet);
+		model.addAttribute("petList", pet);
 		model.addAttribute("kindergarten", kindergarten);
 		return "kindergarten/insertRegView";
 	}
@@ -92,7 +92,7 @@ public class KindergartenController {
 		}
 		int result2 = service.insertVac(vacList);
 		if (result1*result2 > 0) {
-			Pet pet = service.selectPet(reg.getUserNo());
+			ArrayList<Pet> pet = service.selectPet(reg.getUserNo());
 			Kindergarten kindergarten = service.selectKindergarten(reg.getKindNo());
 			model.addAttribute("pet", pet);
 			model.addAttribute("kindergarten", kindergarten);
@@ -110,7 +110,7 @@ public class KindergartenController {
 	public ModelAndView selectReg(int reservNo, HttpSession session, ModelAndView mv) {
 		Registration r = service.selectRegistration(reservNo);
 		if (r != null) {
-			Pet pet = service.selectPet(r.getUserNo());
+			ArrayList<Pet> pet = service.selectPet(r.getUserNo());
 			Kindergarten k = service.selectKindergarten(r.getKindNo());
 			mv.addObject("registration", r);
 			mv.addObject("pet", pet);
@@ -195,7 +195,7 @@ public class KindergartenController {
 	public String updateRegView(int reservNo, Model model, HttpSession session) {
 		Registration r = service.selectRegistration(reservNo);
 		Member member = (Member) session.getAttribute("loginUser");
-		Pet p = service.selectPet(member.getUserNo());
+		ArrayList<Pet> p = service.selectPet(member.getUserNo());
 		model.addAttribute("registration", r);
 		model.addAttribute("pet", p);
 		return "kindergarten/regUpdateView";

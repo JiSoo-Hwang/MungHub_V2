@@ -24,4 +24,5 @@ public class Member {
 	private String status;
 	private Date joinDate;
 	private String sitterStatus;
+	private int days;
 }

@@ -56,36 +56,47 @@ li {
 						<thead>
 							<tr>
 								<th>이름</th>
-								<td><input type="text" value="${pet.petName }" readonly>
-									<input type="hidden" name="petNo" value="${pet.petNo}"></td>
-
+								<c:choose>
+								<c:when test="${empty petList }">
+								<td>소유 중인 반려견이 없습니다...└(°ᴥ°)┓</td>
+								</c:when>
+								<c:otherwise>
+								<td>
+								<select name="petNo">
+								<c:forEach items="${petList }" var="p">
+								<option value="${p.petNo }">${p.petName }</option>
+								</c:forEach>
+								</select>
+									</td>
+								</c:otherwise>
+								</c:choose>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
 								<th>견종</th>
-								<td><input type="text" name="breed" value="${pet.breed }"
-									readonly></td>
+								<td></td>
 							</tr>
 							<tr>
 								<th>나이</th>
-								<td><input type="text" name="petAge" value="${pet.petAge }"
-									readonly></td>
+								<td></td>
 							</tr>
 							<tr>
 								<th>성별</th>
-								<td><c:choose>
-										<c:when test="${pet.petGender eq 'F' }">
+								<td>
+								<%-- <c:choose>
+										<c:when test="${pet.pet Gender eq 'F' }">
                                     공주님
                                 </c:when>
 										<c:otherwise>
                                     왕자님
                                 </c:otherwise>
-									</c:choose></td>
+									</c:choose> --%>
+									</td>
 							</tr>
 							<tr>
 								<th>몸무게</th>
-								<td>${pet.weight }</td>
+								<td></td>
 							</tr>
 							<tr>
 								<th>필수접종여부</th>
