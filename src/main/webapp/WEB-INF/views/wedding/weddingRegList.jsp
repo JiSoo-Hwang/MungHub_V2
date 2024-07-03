@@ -156,7 +156,7 @@
 					},
 					success:function(response){
 						alert(response.message);
-						location.href = "wedList.wd";
+						location.href = "${pageContext.request.contextPath}/";
 					},
 					error:function(xhr,status,error){
 						console.log("통신실패");

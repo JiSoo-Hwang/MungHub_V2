@@ -44,16 +44,6 @@ public class WeddingController {
 	@Autowired
 	private MemberService memberService;
 	
-
-//	@ResponseBody
-//	@RequestMapping("breedList.wd")
-//	public ArrayList<Breed> selectBreeds(){
-//		ArrayList<Breed> breedList = service.selectBreeds();
-//		
-//		return breedList;
-//		
-//	}
-
 	@GetMapping("wedList.wd")
 	public ModelAndView weddingList(ModelAndView mv, HttpSession session) {
 		Member m = (Member)session.getAttribute("loginUser");
