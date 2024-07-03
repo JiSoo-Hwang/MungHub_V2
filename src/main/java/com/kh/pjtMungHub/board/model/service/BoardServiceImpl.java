@@ -11,6 +11,7 @@ import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 
+
 @Service
 public class BoardServiceImpl implements BoardService {
 	
@@ -20,36 +21,40 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private BoardDao boardDao;
 
+	//게시물 총 개수 조회
 	@Override
 	public int listCount() {
 		// TODO Auto-generated method stub
 		return boardDao.listCount(sqlSession);
 	}
+	//해당 카테고리 게시물 조회
 	@Override
 	public int listCount(String category) {
 		// TODO Auto-generated method stub
 		return boardDao.listCount(sqlSession,category);
 	}
-
+	
+	 @Override
+	 public ArrayList<Board> selectList(PageInfo pi, String sort) {
+		 // TODO Auto-generated method stub
+	     return boardDao.selectList(sqlSession, pi, sort);
+	 }
+	
 	@Override
-	public ArrayList<Board> selectList(PageInfo pi) {
-		// TODO Auto-generated method stub
-		return boardDao.selectList(sqlSession,pi);
-	}
-	@Override
-	public ArrayList<Board> selectList(PageInfo pi, String sort) {
-		// TODO Auto-generated method stub
-		return boardDao.selectList(sqlSession,pi,sort);
-	}
-	@Override
-	public ArrayList<Board> selectList(PageInfo pi, String sort, String category) {
+	public ArrayList<Board> selectList(PageInfo pi, String category, String sort) {
 		// TODO Auto-generated method stub
 		return boardDao.selectList(sqlSession,pi,sort,category);
 	}
+	//카테고리 선택
 	@Override
 	public ArrayList<Category> selectCategory() {
 		// TODO Auto-generated method stub
 		return boardDao.selectCategory(sqlSession);
+	}
+	@Override
+	public int eventCount() {
+		// TODO Auto-generated method stub
+		return boardDao.eventCount(sqlSession);
 	}
 
 	@Override

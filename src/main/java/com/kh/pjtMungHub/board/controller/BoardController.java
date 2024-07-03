@@ -40,44 +40,70 @@ public class BoardController {
 	                        @RequestParam(value="sort", defaultValue="latest") String sort) {
 
 	    // 전체 게시글 수 조회
-	    int listCount;
+	    int listCount = boardService.listCount();
+	    
+	    int pageLimit = 10;
+	    int boardLimit = 20;
+	    
+	    // 페이지 정보 객체 생성
+	    PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+	   
+	    // 게시글 목록 조회
+	    ArrayList<Board> List = boardService.selectList(pi,sort);
+	    
 	    if (category.equals("0")) {
 	        listCount = boardService.listCount();
 	    } else {
 	        listCount = boardService.listCount(category);
 	    }
 	    
-	    int pageLimit = 5;
-	    int boardLimit = 5;
-
-	    // 페이지 정보 객체 생성
-	    PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
-
-	    // 게시글 목록 조회
-	    ArrayList<Board> pList;
-	    if (category.equals("0")) {
-	        pList = boardService.selectList(pi, sort);
-	    } else {
-	        pList = boardService.selectList(pi, category, sort);
-	    }
-
+	    
 	    // 카테고리 목록 조회
 	    ArrayList<Category> ctList = boardService.selectCategory();
-	    System.out.println(ctList);
 
+	    
+	    if (category.equals("0")) {
+	    	List = boardService.selectList(pi, sort);
+	    } else {
+	    	List = boardService.selectList(pi, category, sort);
+	    }
+	    
+	    System.out.println(sort);
+	    System.out.println(category);
+	    System.out.println(List);
+	    
 	    // 모델에 데이터 추가
 	    model.addAttribute("pi", pi);
-	    model.addAttribute("pList", pList);
-	    model.addAttribute("ctList", ctList);
-	    model.addAttribute("category", category);
 	    model.addAttribute("sort", sort);
+	    model.addAttribute("category", category);
+	    model.addAttribute("List",List);
 
+	    
 	    return "board/boardListView";
 	}
-	
+	/*
+	@GetMapping("event.bo")
+	public String eventList(Model model,@RequestParam(value="currentPage", defaultValue="1") int currentPage) {
+		
+		int eventCount =boardService.eventCount();
+		
+		int pageLimit = 5;
+	    int boardLimit = 5;
+	    
+	    // 페이지 정보 객체 생성
+	    PageInfo pi = Pagination.getPageInfo(eventCount, currentPage, pageLimit, boardLimit);
+	    
+	    ArrayList<Board> evList =boardService.selectEvent();
+	    
+	    
+	    
+		return "board/eventListView";
+	}
+	*/
 	@GetMapping("detail.bo")
 	public ModelAndView selectBoard(int boardNo,
 									ModelAndView mv) {
+		
 		//조회수 증가시키기
 		int result = boardService.increaseCount(boardNo);
 		
@@ -97,12 +123,12 @@ public class BoardController {
 	@GetMapping("insert.bo")
 	public String boardEnrollForm() {
 		
-		return "board/EnrollForm";
+		return "board/insertBoardView";
 		
 	}
 	/*
 	//게시물 등록 메소드
-	@PostMapping("")
+	@PostMapping("insert.bo")
 	public String insertBoard(Board b,
 							  MultipartFile upfile,
 							  HttpSession session) {
@@ -140,8 +166,8 @@ public class BoardController {
 		
 		return "redirect/:list.bo";
 	}
-	*/
 	
+	*/
 		
 		
 		

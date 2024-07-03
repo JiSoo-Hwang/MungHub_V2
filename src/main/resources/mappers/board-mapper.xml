@@ -4,78 +4,96 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="boardMapper">
 
-	<resultMap type="Board" id="boardResultSet">
-		<result column="BOARD_NO" property="boardNo"/>
-		<result column="BOARD_TITLE" property="boardTitle"/>
-		<result column="BOARD_WRITER" property="boardWriter"/>
-		<result column="BOARD_CONTENT" property="boardContent"/>
-		<result column="COUNT" property="count"/>
-		<result column="RECOMMEND" property="recommend"/>
-		<result column="UPLOAD_DATE" property="uploadDate"/>
-		<result column="REVISE_DATE" property="reviseDate"/>
-		<result column="STATUS" property="status"/>
-	</resultMap>
-	
-	<select id="listCount" resultType="_int" >
+ 	<resultMap type="Board" id="boardResultSet">
+		<result column="BOARD_NO" property="boardNo" />
+		<result column="CATEGORY_NO" property="categoryNo" />
+		<result column="FILE_NO" property="fileNo" />
+		<result column="BREED_ID" property="breedId" />
+		<result column="BOARD_TITLE" property="boardTitle" />
+		<result column="USER_ID" property="boardWriter" />
+		<result column="BOARD_CONTENT" property="boardContent" />
+		<result column="COUNT" property="count" />
+		<result column="RECOMMEND" property="recommend" />
+		<result column="UPLOAD_DATE" property="uploadDate" />
+		<result column="REVISE_DATE" property="reviseDate" />
+		<result column="STATUS" property="status" />
+	</resultMap> 
+
+	<select id="listCount" resultType="_int">
 		SELECT COUNT(*)
-		FROM BOARD
+		FROM
+		BOARD
 		WHERE STATUS ='Y'
 	</select>
-	
-	
-	<select id="selectList" resultMap="boardResultSet">
-		SELECT BOARD_NO
-			  ,CATEGORY_NAME category_name
-		      ,BOARD_TITLE
-		      ,BOARD_CONTENT
-		      ,USER_ID
-		      ,RECOMMEND
-		      ,COUNT
-		      ,UPLOAD_DATE
-		FROM BOARD
-		JOIN BOARD_CATEGORY USING(CATEGORY_NO)
-		JOIN MEMBER ON(BOARD_WRITER=USER_NO)
-		WHERE BOARD.STATUS= 'Y'
+	<select id="selectList" resultType="Board" parameterType="com.kh.pjtMungHub.board.model.vo.parameterVo">
+		SELECT BOARD_NO boardNo
+			,BOARD_TITLE boardTitle
+			,USER_ID boardWriter
+			,COUNT count
+			,UPLOAD_DATE uploadDate
+		FROM BOARD B
+		JOIN MEMBER M ON M.USER_NO=B.BOARD_WRITER
+		WHERE B.STATUS='Y'
+	<if test="category != 0">
+		AND CATEGORY_NO = 1
+	</if>
+ 		ORDER BY
+		<choose>
+			<when test="sort == 'latest'">
+				UPLOAD_DATE DESC
+			</when>
+			<when test="sort == 'view'">
+				COUNT DESC
+			</when>
+			<otherwise>
+				UPLOAD_DATE DESC
+			</otherwise>
+		</choose>
+
 	</select>
-	
-	<select id="selectCategory" resultType="com.kh.pjtMungHub.board.model.vo.Category">
-		SELECT CATEGORY_NO categoryNo,CATEGORY_NAME categoryName
+
+	<select id="selectCategory"
+		resultType="com.kh.pjtMungHub.board.model.vo.Category">
+		SELECT CATEGORY_NO categoryNo
+		,CATEGORY_NAME categoryName
 		FROM BOARD_CATEGORY
 	</select>
-	
 
 	<update id="increaseCount" parameterType="_int">
 		UPDATE BOARD
-		SET COUNT=COUNT+1
+		SET
+		COUNT=COUNT+1
 		WHERE BOARD_NO=#{boardNo}
-		AND STATUS ='Y'					 
+		AND STATUS ='Y'
 	</update>
-	<select id="selectBoard" parameterType="_int" resultMap="boardResultSet">
+	<select id="selectBoard" parameterType="_int"
+		resultMap="boardResultSet">
 		SELECT BOARD_NO
-			  ,BOARD_TITLE
-			  ,BOARD_WRITER
-			  ,BOARD_CONTENT
-			  ,UPLOAD_DATE
-			  ,COUNT
-		 FROM BOARD
-		 WHERE BOARD_NO = #{boardNo}
-		 AND STATUS ='Y'
+		,BOARD_TITLE
+		,BOARD_WRITER
+		,BOARD_CONTENT
+		,UPLOAD_DATE
+		,COUNT
+		FROM BOARD
+		WHERE BOARD_NO = #{boardNo}
+		AND STATUS ='Y'
 	</select>
-	
+
 	<insert id="insertBoard" parameterType="Board">
-		INSERT INTO BOARD(BOARD_NO
-		                 ,BOARD_TITLE
-		                 ,BOARD_WRITER
-		                 ,BOARD_CONTENT
-		                 ,ORIGIN_NAME
-		                 ,CHANAGE_NAME
-		                 )
-        		VALUES (SEQ_BOARD.NEXTVAL
-               			,#{boardTitle}
-               			,#{boardWriter}
-               			,#{boardContent}
-               			,#{originName}
-               			,#{changeName}
+		INSERT INTO
+		BOARD(BOARD_NO
+		,BOARD_TITLE
+		,BOARD_WRITER
+		,BOARD_CONTENT
+		,ORIGIN_NAME
+		,CHANAGE_NAME
+		)
+		VALUES (SEQ_BOARD.NEXTVAL
+		,#{boardTitle}
+		,#{boardWriter}
+		,#{boardContent}
+		,#{originName}
+		,#{changeName}
 	</insert>
-	
+
 </mapper>

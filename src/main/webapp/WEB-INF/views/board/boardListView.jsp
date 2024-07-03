@@ -12,6 +12,7 @@
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <style>
+
 .content {
 	background-color: rgb(247, 245, 245);
 	width: 80%;
@@ -82,16 +83,6 @@
 	text-decoration: none;
 }
 
-.dog-pic {
-	width: 300px;
-	height: 300px;
-	align: center;
-}
-
-.nolook {
-	align: center;
-}
-
 #category {
 	display: block;
 	color: #492F10;
@@ -109,47 +100,49 @@ button[name=category]{
 input[name=sortBy]{
 	margin:10px;
 	}
+.ctSelected{
+background-color:blue;
+color:white;
+}
+	
 </style>
 </head>
 <body>
 
-	<%@include file="../common/header.jsp"%>
 
-	<div class="content">
-		<table id="categoryList">
-			<tr>
-				<th>
-				<button name="category" value="0">전체</button>
-				</th>
-				<c:forEach items="${ctList}" var="ct">
-				<td><button name="category" value="${ct.categoryNo}">${ct.categoryName}</button></td>
-				</c:forEach>
-				<td><button name="event"><a href="board/event">이벤트</a>></button><td>
-			</tr>
-		</table>
-		<table id="sort-list">
-			<tr>
-				<td><input type="radio" name="sortBy" id="latest" value="latest" checked><label for="latest">최신순</label></td>
-				<td><input type="radio" name="sortBy" id="view" value="view"><label for="view">조회순</label></td>
-				<td><input type="radio" name="sortBy" id="recommend" value="recommend"><label for="recommend">추천순</label></td>
-			</tr>
-		</table>	
+	<%@include file="../common/header.jsp"%>
 
 		<div class="innerOuter" style="padding: 5% 10%;">
 			<!-- 로그인 후 상태일 경우만 보여지는 글쓰기 버튼 -->
+			<div class="content">
+				<table id="categoryList">
+					<tr>
+						<td>
+						<button name="category" value="0">전체</button>
+						</td>
+						<c:forEach items="${ctList}" var="ct">
+						<td><button name="category" value="${ct.categoryNo}">${ct.categoryName}</button></td>
+						</c:forEach>
+					</tr>
+				</table>
+				<table id="sort-list">
+					<tr>
+						<td><input type="radio" name="sortBy" id="latest" value="latest"><label for="latest">최신순</label></td>
+						<td><input type="radio" name="sortBy" id="view" value="view"><label for="view">조회순</label></td>
+						<td><input type="radio" name="sortBy" id="recommend" value="recommend"><label for="recommend">추천순</label></td>
+					</tr>
+				</table>	
+
 			
 			<c:if test="${not empty loginUser}">
-			<a class="btn btn-secondary" style="float: right; 
-			background-color: yellow; color: black;" href="insert.bo">글쓰기</a>
+			<a class="btn btn-secondary" style="float: right; background-color: yellow; color: black;" href="insert.bo">글쓰기</a>
              </c:if>
 
 			<table id="boardList" class="table table-hover" align="center">
 				<thead>
                     <tr>
                         <th>글번호</th>
-                        <th>카테고리</th>
                         <th>제목</th>
-                        <th>내용</th>
                         <th>작성자</th>
                         <th>추천수</th>
                         <th>조회수</th>
@@ -158,22 +151,20 @@ input[name=sortBy]{
                 </thead>
 				<tbody>
 					<c:choose>
-                   		<c:when test="${empty list}">
+                   		<c:when test="${empty List}">
                    			<tr>
-                   			    <th colspan='8'><img src="resources/uploadFiles/board/images.jpg" alt="" width="400px" height="400px"></th>
+                   			    <th colspan='6'>
                    			</tr>
                    			<tr>
-                   				<td colspan='8'>조회된 게시글이 없습니다.</td>
+                   				<td colspan='6'>조회된 게시글이 없습니다.</td>
                    			</tr>
                    		</c:when>
 						<c:otherwise>
-							 <c:forEach items="${list}" var="b">
+						 <c:forEach items="${List}" var="b">
                             <tr>
                                 <td>${b.boardNo}</td>
-                                <td>${b.category}</td>
                                 <td>${b.boardTitle}</td>
-                                <td>${b.boardContent}</td>
-                                <td>${b.userId}</td>
+                                <td>${b.boardWriter}</td>
                                 <td>${b.recommend}</td>
                                 <td>${b.count}</td>
                                 <td>${b.uploadDate}</td>
@@ -195,26 +186,24 @@ input[name=sortBy]{
      			var bno=$(this).children().first().text();
      			location.href="detail.bo?boardNo="+bno;
      		});
-     	});
      	//카테고리 버튼을 클릭했을때 해당 카테고리 글들을 클래스에 추가
-     	$(function(){
      		$("#category-area").click(function(){
      			if($(this).val()==${catrgory}){
      				$(this).addClass("ctSelected")
      			}
-     		})
-     	});
+     		});
      	//radio버튼 클릭했을때 체크되어있는 sort 정렬
-     	$("input[name=sortBy]").each(function(){
-			if($(this).val()=="${sort}"){
-				$(this).attr("checked",true);
-			}
-		});
-     	$("button[name=category]").click(function(){
-			var category=$(this).val();
-			var sortBy=$("input[name=sortBy]:checked").val();
-			location.href="board.bo?currentPage=1&category="+category+"&sort="+sortBy;
-		});
+	     	$("input[name=sortBy]").each(function(){
+				if($(this).val()=="${sort}"){
+					$(this).attr("checked",true);
+				}
+			});
+	     	$("button[name=category]").click(function(){
+				var category=$(this).val();
+				var sortBy=$("input[name=sortBy]:checked").val();
+				location.href="board.bo?currentPage=1&category="+category+"&sort="+sortBy;
+				});
+	     	});
      	
      	
          </script>
