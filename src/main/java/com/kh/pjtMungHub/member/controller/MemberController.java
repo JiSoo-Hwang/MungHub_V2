@@ -108,19 +108,11 @@ public class MemberController {
 	}
 	
 	@RequestMapping("msg.me")
-	public String enterMsg(HttpSession session) {
+	public String enterMsg(HttpSession session, PageInfo pi) {
 		Member m=(Member)session.getAttribute("loginUser");
-		PageInfo pi=new PageInfo();
 		pi.setListCount(service.msgCount(m));
-		pi.setCurrentPage(1);
 		pi.setBoardLimit(15);
-		pi.setPageLimit((int)Math.ceil((((double)pi.getListCount())/15)));
-		pi.setMaxPage((int)Math.ceil((double)pi.getListCount()/pi.getBoardLimit()));
-		pi.setStartPage(1);
-		pi.setEndPage(pi.getStartPage()+pi.getPageLimit()-1);
-		if(pi.getEndPage()>pi.getMaxPage()) {
-			pi.setEndPage(pi.getMaxPage());
-		}
+		System.out.println(pi);
 		session.setAttribute("pi", pi);
 		session.setAttribute("msgList",service.selectMessageList(m,pi.getCurrentPage()));
 		return "member/memberMessage";
@@ -378,6 +370,22 @@ public class MemberController {
 	public ArrayList<Member> searchUser(Member m){
 		ArrayList<Member> memList=service.searchUser(m);
 		return memList;
+	}
+	
+	@GetMapping("disableUser.me")
+	public String disableUser(Member m, int disable, HttpSession session) {
+		String msg;
+		System.out.println(disable);
+		session.setAttribute("disable", disable);
+		session.setAttribute("disableUser", m);
+		int result=service.disableUser(m);
+		if(result>0) {
+			msg=m.getUserId()+" 계정을 "+disable+" 일간 정지하였습니다.";
+		}else {
+			msg="정지 실패.";
+		}
+		session.setAttribute("alertMsg", msg);
+		return "redirect:/manage.me";
 	}
 	
 	@GetMapping("acceptTeacher.me")

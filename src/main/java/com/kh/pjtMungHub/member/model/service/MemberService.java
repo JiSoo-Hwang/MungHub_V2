@@ -39,5 +39,7 @@ public interface MemberService {
 	int updateMsg(Message msg);
 	int sendMsg(Message msg);
 	Member socialMember(Member m);
+	int disableUser(Member m);
+	int enableMember(Member m);
 	
 }

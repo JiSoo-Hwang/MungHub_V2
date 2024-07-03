@@ -36,7 +36,7 @@
 									<th>휴대폰 번호</th>
 									<th>이메일 주소</th>
 									<th>반려견유무</th>
-									<th>가입일</th>
+									<th>활동유무</th>
 									<th>관리</th>
 								</tr>
 							</thead>
@@ -69,7 +69,7 @@
 								+"<td>"+result[i].phone+"</td>"
 								+"<td>"+result[i].email+"</td>"
 								+"<td>"+result[i].petYN+"</td>"
-								+"<td>"+result[i].joinDate+"</td>"
+								+"<td>"+result[i].status+"</td>"
 								+"<td><button data-bs-toggle='modal' data-bs-target='#disableModal' onclick='return false;'>활동 정지</button>"
 								+"<tr>";
 						}
@@ -139,10 +139,12 @@
 	<script>
 		$(".disableTime>input[type=radio]").on("change",function(){
 			var userGrade=$("input[name=userGrade]").val();
-			if(userGrade>0){				
-				$(".gradeCheck").text("해당 회원은 선생님 등급의 회원입니다. 정지 요청 시 관리자에게 문의 바랍니다.").css("color","red");
-				$(".gradeCheck").attr("hidden",false);
-				$(".modal-footer>button[type=submit]").attr("disabled",true);
+			if(userGrade>0){
+				if(${loginuser.userGrade}<2){
+					$(".gradeCheck").text("해당 회원은 선생님 등급의 회원입니다. 정지 요청 시 관리자에게 문의 바랍니다.").css("color","red");
+					$(".gradeCheck").attr("hidden",false);
+					$(".modal-footer>button[type=submit]").attr("disabled",true);
+				}
 			}
 		})
 		

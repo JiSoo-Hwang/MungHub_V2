@@ -104,4 +104,7 @@
 	<select id="socialMember" parameterType="Member" resultMap="memberResultSet">
 		SELECT * FROM MEMBER WHERE (USER_ID=#{email} OR EMAIL=#{email}) AND NAME=#{name}
 	</select>
+	<update id="disableUser" parameterType="Member">
+		UPDATE USER SET STATUS='N' WHERE USER_ID=#{userId} AND STATUS='Y'
+	</update>
 </mapper>

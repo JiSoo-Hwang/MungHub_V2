@@ -132,5 +132,13 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.socialMember",m);
 	}
 
+	public int disableUser(SqlSessionTemplate sqlSession, Member m) {
+		return sqlSession.update("memberMapper.disableUser", m);
+	}
+
+	public int enableMember(SqlSessionTemplate sqlSession, Member m) {
+		return sqlSession.update("memberMapper.enableUser",m);
+	}
+
 
 }

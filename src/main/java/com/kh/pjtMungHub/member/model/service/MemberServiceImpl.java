@@ -162,5 +162,15 @@ public class MemberServiceImpl implements MemberService{
 		return dao.socialMember(sqlSession,m);
 	}
 
+	@Override
+	public int disableUser(Member m) {
+		return dao.disableUser(sqlSession,m);
+	}
+
+	@Override
+	public int enableMember(Member m) {
+		return dao.enableMember(sqlSession, m);
+	}
+
 
 }

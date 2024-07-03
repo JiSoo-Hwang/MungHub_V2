@@ -8,12 +8,14 @@
 </head>
 <style>
 	.petInfo{
-		height:200px;
+		height:250px;
 		position:relative;
 	}
 	div .left, .right{
 		display:inline-block;
-		height:100%;
+		margin-top:10px;
+		border:0;
+		padding:0;
 	}
 	.left{
 		width:60%;
@@ -22,23 +24,37 @@
 		
 	}
 	.left>img{
-		top:50%;
-		left:50%;
+		top:0;
+		left:0;
 		position:absolute;
-		transform: translate(-50%, -50%);
-		
+		transform: translate(0%, 0%);
+		width:100%;
 	}
 	.right{
 		position:absolute;
 		transform: translate(0%, 0%);
 	}
-
 	.mypage-left, .mypage-main{
-		margin-bottom: 100%;
+		padding:0;
+		border:0;
+		margin:0;
+		display:inline-block;
+		height:100%;
+	}
+
+	.totalArea{
+		height:600px;
+	}
+	.mypage-left{
+		width:250px;
+	}
+	.mypage-main{
+		width:600px;
 	}
 </style>
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
+	<div class="totalArea">
 	<div class="mypage-left">
 		<%@include file="/WEB-INF/views/member/memberSideBar.jsp" %>
 	</div>
@@ -83,6 +99,7 @@
 			</div>
 			</c:if>
 		</div>
+	</div>
 	</div>
 	<script>
 		function newPetInput(){
