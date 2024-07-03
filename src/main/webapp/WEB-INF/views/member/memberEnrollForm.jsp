@@ -212,7 +212,9 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 			<button type="button" onclick="teacherCheck();" data-bs-toggle="modal" data-bs-target="#joinModal" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
 		</div>
 	</div>
-	
+		<div class="snsJoin" hidden="true">
+			<input type="checkbox" id="snsJoin" checked="${not empty snsJoin ? 'true':'false' }">
+		</div>
 	<script>
 	/*  전부동의 누를 시 자동 동의 체크 
 		다시 누르면 체크해제(반대로)
@@ -271,6 +273,13 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 					})
 				}
 			})
+		})
+		$(function(){
+			if($("#snsJoin").prop("checked")){
+				$(".member-data>#name").val("${snsJoin.name}");
+				$(".member-data>#phone").val("${snsJoin.phone}");
+				$(".member-data>#email").val("${snsJoin.email}");
+			}
 		})
 		function teacherCheck(){
 		$(".teacher-only").attr("hidden",false);

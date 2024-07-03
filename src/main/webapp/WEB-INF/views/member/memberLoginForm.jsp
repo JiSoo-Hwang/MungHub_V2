@@ -9,6 +9,7 @@
 	<script src="https://accounts.google.com/gsi/client" async></script>
 	<meta name="google-signin-client_id" content="214727713756-rr8ifm1lva6musaa03n7iasqdssae36q.apps.googleusercontent.com">
 	<script src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
+	
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
@@ -29,7 +30,7 @@
 		</div>
 		<hr>
 		<div id="loginAPIArea">
-			<img src="./resources/uploadFiles/login/kakao.png" onclick="Kakao.Auth.authorize();">
+			<img src="./resources/uploadFiles/login/kakao.png" onclick="kakao();">
 			<div id="naver_id_login"></div>
 			<div id="g_id_onload"
 			     data-client_id="214727713756-rr8ifm1lva6musaa03n7iasqdssae36q.apps.googleusercontent.com"
@@ -56,8 +57,16 @@
 	  	naver_id_login.setState(state);
 	  	naver_id_login.setPopup();
 	  	naver_id_login.init_naver_id_login();
-	  	
-	  	
+		// 네이버 사용자 프로필 조회
+		naver_id_login.get_naver_userprofile("naverSignInCallback()");
+		// 네이버 사용자 프로필 조회 이후 프로필 정보를 처리할 callback function
+		function naverSignInCallback() {
+			alert(naver_id_login.getProfileData('email'));
+			alert(naver_id_login.getProfileData('nickname'));
+		}
+	  	function kakao(){
+	  		var kakapPopup=window.open('http://localhost:8887/pjtMungHub/kakao.me', 'kakaologinpop', 'titlebar=1, resizable=1, scrollbars=yes, width=600, height=550'); 
+	  	}
 		function loginUpdate(){
 			location.href="loginInfo.me";
 		}
@@ -87,7 +96,7 @@
 		
 			return JSON.parse(jsonPayload);
 		}
-
+	
 	</script>
 </body>
 </html>

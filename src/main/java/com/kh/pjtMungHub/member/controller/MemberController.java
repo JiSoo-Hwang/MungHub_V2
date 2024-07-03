@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -14,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -469,9 +471,81 @@ public class MemberController {
 		return "redirect:/msg.me";
 	}
 	@GetMapping("kakao.me")
-	public String kakaoLogin() {
+	public String kakaoLogin(HttpSession session) throws IOException {
+		String setState=generateState();
+		session.setAttribute("setState", setState);
+		String clientId="db01c7b6cca2d27d7a975ae0bd9aecdb";
 		String url="https://kauth.kakao.com/oauth/authorize";
-		return "redirect:/enter.me";
+		String uri=URLEncoder.encode("http://localhost:8887/pjtMungHub/kakaoCheck.me","UTF-8");
+		url+="?client_id="+clientId;
+		url+="&response_type=code&redirect_uri="+uri;
+		url+="&state="+setState;
+		return "redirect:"+url;
+	}
+	@RequestMapping("kakaoCheck.me")
+	public String kakaoLoginCheck(HttpSession session, HttpServletRequest request) throws IOException {
+		String state=request.getParameter("state");
+		String code=request.getParameter("code");
+	    Member m=new Member();
+		if(state.contentEquals((String)session.getAttribute("setState"))) {
+			String clientId="db01c7b6cca2d27d7a975ae0bd9aecdb";
+			String url="https://kauth.kakao.com/oauth/token";
+		    MultiValueMap<String, String> parameter = new LinkedMultiValueMap<>();
+		    parameter.add("grant_type", "authorization_code");
+		    parameter.add("client_id", clientId);
+		    parameter.add("redirect_uri", "http://localhost:8887/pjtMungHub/kakaoCheck.me");
+		    parameter.add("code", code);
+
+		    // request header 설정
+		    HttpHeaders headers = new HttpHeaders();
+		    // Content-type을 application/x-www-form-urlencoded 로 설정
+		    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		    // header 와 body로 Request 생성
+		    HttpEntity<?> entity = new HttpEntity<>(parameter, headers);
+
+		    try {
+		        RestTemplate restTemplate = new RestTemplate();
+		        // 응답 데이터(json)를 Map 으로 받을 수 있도록 관련 메시지 컨버터 추가
+		        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
+		        // Post 방식으로 Http 요청
+		        // 응답 데이터 형식은 Hashmap 으로 지정
+		        ResponseEntity<HashMap> result = restTemplate.postForEntity(url, entity, HashMap.class);
+		        Map<String, String> resMap = result.getBody();
+
+		        // 리턴받은 access_token 가져오기
+		        String access_token = resMap.get("access_token");
+		        String userInfoURL = "https://kapi.kakao.com/v2/user/me";
+		        // Header에 access_token 삽입
+		        headers.set("Authorization", "Bearer "+access_token);
+
+		        // Request entity 생성
+		        HttpEntity<?> userInfoEntity = new HttpEntity<>(headers);
+
+		        // Post 방식으로 Http 요청
+		        // 응답 데이터 형식은 Hashmap 으로 지정
+		        ResponseEntity<HashMap> userResult = restTemplate.postForEntity(userInfoURL, userInfoEntity, HashMap.class);
+		        Map<String, String> userResultMap = (Map)userResult.getBody().get("kakao_account");
+		        System.out.println(userResult);
+		        // 세션에 저장된 state 값 삭제
+		        session.removeAttribute("state");
+		        // 조회를 위한 데이터 정리
+		        m.setEmail(userResultMap.get("email"));
+		        Member loginUser=service.socialMember(m);
+		        if(loginUser==null) {
+		        	session.setAttribute("snsJoin", m);
+		        }else {
+		        	session.setAttribute("loginUser",loginUser);
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		}
+		session.removeAttribute("setState");
+
+		return "redirect:/callback";
+
 	}
 	@GetMapping("google.me")
 	public String googleLogin(Member m,HttpSession session) {
@@ -490,26 +564,29 @@ public class MemberController {
 	public String naverLogin(HttpSession session) throws IOException {
 		
 		// 상태 토큰으로 사용할 랜덤 문자열 생성
-		String state = generateState();
+		String setState = generateState();
 		// 세션 또는 별도의 저장 공간에 상태 토큰을 저장
-		session.setAttribute("state", state);
-//		return state;
+		session.setAttribute("setState", setState);
 		String clientId="fx5vZaNv0sDLANZnS_vt";
 		String url="https://nid.naver.com/oauth2.0/authorize";
 		String uri=URLEncoder.encode("http://localhost:8887/pjtMungHub/naverCheck.me","UTF-8");
 		url+="?client_id="+clientId;
 		url+="&response_type=code&redirect_uri="+uri;
-		url+="&state="+state+"&auth_type=reauthenticate";
-		
+		url+="&state="+setState+"&auth_type=reauthenticate";
 		return "redirect:"+url;
 	}
 	
+	@GetMapping("callback")
+	public String callback(HttpServletRequest request) {
+		
+		return "member/callback";
+	}
 	@RequestMapping("naverCheck.me")
 	public String naverLoginCheck(HttpSession session, HttpServletRequest request) throws IOException {
 		String state=request.getParameter("state");
 		String code=request.getParameter("code");
 	    Member m=new Member();
-		if(state.equals(session.getAttribute("state"))) {
+		if(state.contentEquals((String)session.getAttribute("setState"))) {
 			String clientId="fx5vZaNv0sDLANZnS_vt";
 			String clientSec="JEw17FydxK";
 			String url="https://nid.naver.com/oauth2.0/token";
@@ -551,37 +628,44 @@ public class MemberController {
 		        // Post 방식으로 Http 요청
 		        // 응답 데이터 형식은 Hashmap 으로 지정
 		        ResponseEntity<HashMap> userResult = restTemplate.postForEntity(userInfoURL, userInfoEntity, HashMap.class);
-		        Map<String, String> userResultMap = userResult.getBody();
-
+		        Map<String, String> userResultMap = (Map)userResult.getBody().get("response");
 		        // 세션에 저장된 state 값 삭제
 		        session.removeAttribute("state");
-		        
 		        // 조회를 위한 데이터 정리
 		        m.setEmail(userResultMap.get("email"));
-		        m.setPhone(userResultMap.get("phone"));
+		        m.setPhone(userResultMap.get("mobile"));
 		        m.setName(userResultMap.get("name"));
 		        m.setUserId(userResultMap.get("id"));
-		        
 		        Member loginUser=service.socialMember(m);
 		        if(loginUser==null) {
-		        	session.setAttribute("alertMsg", "가입된 아이디가 없습니다. 회원 가입 페이지로 이동합니다.");
-		        	session.setAttribute("snsJoin", loginUser);
-		        	return "redirect:/enroll.me";
+		        	session.setAttribute("snsJoin", m);
 		        }else {
 		        	session.setAttribute("loginUser",loginUser);
-		        	session.setAttribute("alertMsg", loginUser.getUserId()+"님 환영합니다.");
-		        	return "redirect:/";
 		        }
+		        
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		    }
-
-		    
 		}
-		session.removeAttribute("state");
-		session.setAttribute("alertMsg", "잘못된 접근");
+		session.removeAttribute("setState");
 
-		return "redirect:/enter.me";
+		return "redirect:/callback";
+
+	}
+	@GetMapping("snsCheck.me")
+	public String snsCheck(HttpSession session) {
+		String url="redirect:/";
+		Member snsJoin=(Member)session.getAttribute("snsJoin");
+		Member loginUser=(Member)session.getAttribute("loginUser");
+		if(snsJoin!=null) {
+			session.setAttribute("alertMsg", "가입된 아이디가 없습니다. 회원 가입 페이지로 이동합니다.");
+			url+="enroll.me";
+		}else if(loginUser==null){
+			session.setAttribute("alertMsg", "잘못된 접근");
+		}else {
+        	session.setAttribute("alertMsg", loginUser.getUserId()+"님 환영합니다.");
+		}
+		return url;
 	}
 	
 	public String generateState()
