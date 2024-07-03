@@ -49,6 +49,6 @@ public interface WeddingService {
 	//견종별 리스트 추출 메서드
 	ArrayList<Wedding> selectByBreed(String breedId);
 
-	
+	int cancelWedding(int weddingNo,int userNo);
 
 }

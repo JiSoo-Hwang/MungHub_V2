@@ -1,5 +1,8 @@
 package com.kh.pjtMungHub.member.model.dao;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -32,6 +35,17 @@ public class MemberDao {
 	public int newUserNo(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectOne("memberMapper.newUserNo");
 	}
+	
+	public boolean isUserRestricted(SqlSessionTemplate sqlSession,int userNo) {
+		return sqlSession.selectOne("memberMapper.isUserRestricted",userNo);
+	}
 
+	public int restrictUser(SqlSessionTemplate sqlSession, int userNo, int days) {
+		Map<String,Object>params = new HashMap<String, Object>();
+		params.put("userNo", userNo);
+		params.put("days",days);
+		return sqlSession.update("memberMapper.restrictUser",params);
+	}
 
+	
 }

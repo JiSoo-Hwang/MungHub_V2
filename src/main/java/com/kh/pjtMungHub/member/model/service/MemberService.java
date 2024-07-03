@@ -10,5 +10,6 @@ public interface MemberService {
 	int insertMember(Member m);
 	Member checkId(Member m);
 	int newUserNo();
-	
+	boolean isUserRestricted(int userNo);
+	int restrictUser(int userNo,int days);
 }
