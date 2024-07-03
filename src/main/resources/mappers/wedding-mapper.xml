@@ -205,4 +205,9 @@ AND W.PET_NO = P.PET_NO
 AND P.BREED_ID = B.BREED_ID
 AND P.BREED_ID = #{breedId}
 </select>
+<update id="cancelWedding">
+UPDATE WEDDING
+SET APPROVAL = #{approval}
+WHERE WEDDING_NO = #{weddingNo}
+</update>
 </mapper>

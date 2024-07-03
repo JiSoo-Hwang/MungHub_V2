@@ -30,8 +30,16 @@ public class LoggerTest {
 	
 	@Test
 	public void test1() {
+		int ownerNo = 6;
+		ArrayList<Pet> petList = (ArrayList)sqlSession.selectList("kindergartenMapper.selectPet",ownerNo);
+		for(Pet p:petList) {
+			log.debug("반려견 정보:{}",p);
+		}
+		
 //		int ownerNo = 1;
-//		int userNo = 1;
+		int userNo = 1;
+		boolean isRestricted = sqlSession.selectOne("memberMapper.isUserRestricted",userNo);
+		log.debug("제한되어있는가?:{}",isRestricted);
 //		Registration registration = Registration.builder()
 //												.reservNo(8)
 //												.reason("제가 감당하기엔 너무 버거운 멍멍이네요,,,")

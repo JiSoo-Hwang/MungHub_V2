@@ -39,7 +39,7 @@ position : relative;
 <div class="jumbotron">
 <h1>애견용품</h1>
 </div>
-<c:if test="${!empty loginUser }">
+<c:if test="${not empty loginUser }">
 
 
 
@@ -47,7 +47,6 @@ position : relative;
 </i> 장바구니 
 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
 id="cart-count"></span></a>
-
 
 <script>
 $(function(){

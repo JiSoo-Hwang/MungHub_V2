@@ -30,6 +30,9 @@
 	<select id="checkId" parameterType="Member" resultMap="memberResultSet">
 		SELECT USER_ID FROM MEMBER WHERE USER_ID=#{userId} AND STATUS='Y'
 	</select>
+	<select id="newUserNo" resultType="_int">
+		SELECT SEQ_MEM.NEXTVAL FROM DUAL
+	</select>
 	<insert id="insertMember" parameterType="Member">
 		INSERT INTO MEMBER(USER_ID,USER_NO,PASSWORD,NAME,PHONE,EMAIL,ADDRESS,PET_YN,USER_GRADE) 
 		VALUES(#{userId},SEQ_MEM.NEXTVAL,#{password},#{name},#{phone},#{email},#{address},#{petYN},0)
@@ -107,4 +110,18 @@
 	<update id="disableUser" parameterType="Member">
 		UPDATE USER SET STATUS='N' WHERE USER_ID=#{userId} AND STATUS='Y'
 	</update>
+
+	<select id="isUserRestricted" parameterType="int" resultType="boolean">
+		SELECT CASE 
+    		WHEN RESTRICTED_UNTIL > CURRENT_TIMESTAMP THEN 1
+    		ELSE 0
+		END AS DAYS
+		FROM MEMBER
+		WHERE USER_NO = #{userNo}
+	</select>
+	<update id="restrictUser">
+		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL #{days} DAY
+		WHERE USER_NO = #{userNo}
+	</update>
+	
 </mapper>

@@ -51,6 +51,17 @@ public class MemberServiceImpl implements MemberService{
 	public int insertTeacher(Member m) {
 		return dao.insertTeacher(sqlSession,m);
 	}
+	
+	@Override
+	public boolean isUserRestricted(int userNo) {
+		return dao.isUserRestricted(sqlSession,userNo);
+	}
+
+	@Override
+	public int restrictUser(int userNo, int days) {
+		return dao.restrictUser(sqlSession,userNo,days);
+		
+	}
 
 	@Override
 	public ArrayList<Pet> selectPetList(Member m) {

@@ -41,5 +41,6 @@ public interface MemberService {
 	Member socialMember(Member m);
 	int disableUser(Member m);
 	int enableMember(Member m);
-	
+	boolean isUserRestricted(int userNo);
+	int restrictUser(int userNo,int days);
 }

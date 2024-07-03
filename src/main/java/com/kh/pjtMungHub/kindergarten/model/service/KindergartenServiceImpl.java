@@ -31,8 +31,8 @@ public class KindergartenServiceImpl implements KindergartenService{
 
 	//해당 회원의 반려동물 정보 조회 메서드
 	@Override
-	public Pet selectPet(int ownerNo) {
-		Pet pet = dao.selectPet(sqlsession,ownerNo);
+	public ArrayList<Pet> selectPet(int ownerNo) {
+		ArrayList<Pet> pet = dao.selectPet(sqlsession,ownerNo);
 		return pet;
 	}
 

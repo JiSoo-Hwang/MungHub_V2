@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
+import com.kh.pjtMungHub.member.model.service.MemberService;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 import com.kh.pjtMungHub.wedding.model.dao.WeddingDao;
@@ -22,6 +23,8 @@ public class WeddingServiceImpl implements WeddingService{
 	@Autowired
 	private SqlSessionTemplate sqlSession;
 	
+	@Autowired
+	private MemberService memberService;
 	
 	//견종조회 메서드
 	@Override
@@ -102,6 +105,13 @@ public class WeddingServiceImpl implements WeddingService{
 	@Override
 	public ArrayList<Wedding> selectByBreed(String breedId) {
 		return dao.selectByBreed(sqlSession,breedId);
+	}
+
+	@Override
+	public int cancelWedding(int weddingNo, int userNo) {
+		//해당 신청 상태를 'R'로 변경하는 로직
+		dao.cancelWedding(sqlSession,weddingNo,"R");
+		return memberService.restrictUser(userNo, 14);
 	}
 
 }

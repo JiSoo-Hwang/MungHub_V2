@@ -17,14 +17,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
+import com.kh.pjtMungHub.member.model.service.MemberService;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
+import com.kh.pjtMungHub.wedding.aop.AccessRestrictedException;
 import com.kh.pjtMungHub.wedding.model.service.WeddingService;
 import com.kh.pjtMungHub.wedding.model.vo.Wedding;
 
@@ -38,7 +41,8 @@ public class WeddingController {
 	private WeddingService service;
 
 	@Autowired
-	private SqlSessionTemplate sqlSession;
+	private MemberService memberService;
+	
 
 //	@ResponseBody
 //	@RequestMapping("breedList.wd")
@@ -50,7 +54,12 @@ public class WeddingController {
 //	}
 
 	@GetMapping("wedList.wd")
-	public ModelAndView weddingList(ModelAndView mv) {
+	public ModelAndView weddingList(ModelAndView mv, HttpSession session) {
+		Member m = (Member)session.getAttribute("loginUser");
+		int userNo = m.getUserNo();
+		if(memberService.isUserRestricted(userNo)) {
+			throw new AccessRestrictedException("14일간 해당 서비스 접근이 제한되었습니다.");
+		}
 		ArrayList<Breed> breedList = service.selectBreeds();
 		ArrayList<Wedding> weddingList = service.selectWeddings();
 		mv.addObject("weddingList", weddingList).addObject("breedList", breedList)
@@ -236,6 +245,20 @@ public class WeddingController {
 		}
 	}
 
+	@PostMapping("cancel.wd")
+	public String cancelWedding(@RequestParam("weddingNo")int weddingNo,Model model,HttpSession session) {
+		Member m = (Member)session.getAttribute("loginUser");
+		int userNo = m.getUserNo();
+		int result = service.cancelWedding(weddingNo, userNo);
+		if(result>0) {
+			model.addAttribute("alertMsg", "만남 신청 취소 및 웨딩플래너 서비스 사용 제한이 정상적으로 처리되었습니다");
+			return "/";
+		}else {
+			model.addAttribute("alertMsg", "처리 중 오류가 발생했습니다. 다시 시도해주세요...!" );
+			return "/";
+		}
+	}
+	
 	// 파일 업로드 처리 메소드(재활용)
 	public String saveFile(MultipartFile upfile, HttpSession session) {
 
