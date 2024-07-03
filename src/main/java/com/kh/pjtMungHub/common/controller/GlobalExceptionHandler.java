@@ -11,7 +11,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(AccessRestrictedException.class)
 	public String handleAccessRestrictedException(AccessRestrictedException ex, Model model) {
-		model.addAttribute("alertMsg",ex.getMessage());
-		return "/";
+		model.addAttribute("message",ex.getMessage());
+		return "common/accessRestricted";
 	}
 }
