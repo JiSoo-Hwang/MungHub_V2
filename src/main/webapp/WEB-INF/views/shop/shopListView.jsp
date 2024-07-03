@@ -40,12 +40,53 @@ position : relative;
 <h1>애견용품</h1>
 </div>
 <c:if test="${!empty loginUser }">
-<a class="btn btn-outline-dark" href="cart.sp"><i class="bi bi-cart3"></i> 장바구니</a>
-<a class="btn btn-primary" href="insert.sp">상품등록</a>
+
+
+
+<a class="btn btn-outline-dark position-relative me-2" href="cart.sp"><i class="bi bi-cart3">
+</i> 장바구니 
+<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+id="cart-count"></span></a>
+
+
+<script>
+$(function(){
+	$.ajax({
+		url : "cartCount.sp",
+		data : {userNo : ${loginUser.userNo}},
+		success : function(result){
+				
+			$("#cart-count").text(result)
+		},
+		error : function(){
+			console.log("통신오류")
+		}
+	});
+});
+</script>
+
+
+<a href="/pjtMungHub/orderList/${loginUser.userNo }" class="btn btn-secondary">주문 내역 보기</a>
+
+
+<c:if test="${loginUser.userGrade > 0 }">
+<div id="adminMenu" align="right">
+<a class="btn btn-info" href="/pjtMungHub/">관리자 페이지</a>
+<a class="btn btn-primary" href="/pjtMungHub/insert.sp">상품등록</a>
+<c:choose>
+<c:when test="${empty notPostList}">
+<a class="btn btn-warning" href="/pjtMungHub/notPosted.sp">상품게시중단목록</a>
+</c:when>
+<c:otherwise>
+<a class="btn btn-secondary" href="/pjtMungHub/list.sp">상품게시목록</a>
+</c:otherwise>
+</c:choose>
+</div>
 </c:if>
-<div class="row row-cols-2 align-items-center">
+</c:if>
+<div class="row align-items-center">
 <c:forEach items="${pList }" var="p">
-<div class="col-sm-3 my-3 ">
+<div class="col-lg-3 my-3 ">
 	<div class="card" onclick="location.href='detail.sp/${p.productNo}'">
 	<div>
 	<img class="card-img-top img-fluid" src="${p.attachment }">
