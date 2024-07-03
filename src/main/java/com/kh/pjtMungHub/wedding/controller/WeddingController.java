@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -58,7 +59,7 @@ public class WeddingController {
 		Member m = (Member)session.getAttribute("loginUser");
 		int userNo = m.getUserNo();
 		if(memberService.isUserRestricted(userNo)) {
-			throw new AccessRestrictedException("14일간 해당 서비스 접근이 제한되었습니다.");
+			throw new AccessRestrictedException("이미 성사된 만남을 취소하셔서, 취소한 날로부터 14일간 해당 서비스 사용이 제한되어있습니다.");
 		}
 		ArrayList<Breed> breedList = service.selectBreeds();
 		ArrayList<Wedding> weddingList = service.selectWeddings();
@@ -246,17 +247,15 @@ public class WeddingController {
 	}
 
 	@PostMapping("cancel.wd")
-	public String cancelWedding(@RequestParam("weddingNo")int weddingNo,Model model,HttpSession session) {
-		Member m = (Member)session.getAttribute("loginUser");
-		int userNo = m.getUserNo();
+	public Map<String, Object> cancelWedding(@RequestParam("weddingNo")int weddingNo,@RequestParam("userNo") int userNo, Model model) {
 		int result = service.cancelWedding(weddingNo, userNo);
+		Map<String, Object> response = new HashMap<>();
 		if(result>0) {
-			model.addAttribute("alertMsg", "만남 신청 취소 및 웨딩플래너 서비스 사용 제한이 정상적으로 처리되었습니다");
-			return "/";
+			response.put("message", "만남 취소 및 14일간 웨딩플래너 서비스 사용 제한이 정상 처리되었습니다.");
 		}else {
-			model.addAttribute("alertMsg", "처리 중 오류가 발생했습니다. 다시 시도해주세요...!" );
-			return "/";
+			response.put("message", "처리 중 오류가 발생했습니다. 다시 시도해주세요.");
 		}
+		return response;
 	}
 	
 	// 파일 업로드 처리 메소드(재활용)

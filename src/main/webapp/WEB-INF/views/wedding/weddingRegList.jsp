@@ -52,7 +52,9 @@
 							<tr class="table-success">
 								<td class="text-center">${w.petName }</td>
 								<td class="text-center">${w.partnerName }</td>
-								<td class="text-center"> <b style="color: blue;">수락</b>&ensp; 
+								<td class="text-center"> 
+								<input type="hidden" value="${w.weddingNo }">
+								<b style="color: blue;">수락</b>&ensp; 
 								<a class="btn btn-primary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 								&ensp;<button class="btn btn-secondary btn-sm cancelApplied">만남취소</button>
 								&ensp;<button type="button" class="btn btn-primary btn-sm contactBtn" data-bs-toggle="modal" data-bs-target="#infoModal">
@@ -144,8 +146,22 @@
 		});
 		$(".cancelApplied").click(function () {
 			if(confirm("이미 승인된 만남을 취소하시면 웨딩플래너 서비스가 14일간 제한됩니다. 그래도 취소하실건가요8ㅅ8?")){
-				/* var weddingNo = $(this).siblings(':eq(2)').val(); */
-				console.log($(this).parent().siblings());
+				var weddingNo =$(this).siblings(':eq(0)').val();
+				$.ajax({
+					type:"POST",
+					url : "cancel.wd",
+					data:{
+						weddingNo : weddingNo,
+						userNo : ${loginUser.userNo}
+					},
+					success:function(response){
+						alert(response.message);
+						location.href = "wedList.wd";
+					},
+					error:function(xhr,status,error){
+						console.log("통신실패");
+					}
+				});
 			}
 		});
 	});

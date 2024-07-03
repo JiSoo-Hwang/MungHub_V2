@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
 import com.kh.pjtMungHub.member.model.service.MemberService;
@@ -107,6 +108,7 @@ public class WeddingServiceImpl implements WeddingService{
 		return dao.selectByBreed(sqlSession,breedId);
 	}
 
+	@Transactional
 	@Override
 	public int cancelWedding(int weddingNo, int userNo) {
 		//해당 신청 상태를 'R'로 변경하는 로직
