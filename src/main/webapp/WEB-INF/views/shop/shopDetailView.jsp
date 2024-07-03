@@ -141,6 +141,12 @@ h2 {
 	text-decoration: none;
 	color: gray;
 }
+#favor{
+ transition : transform 0.3s ease-in-out;
+}
+#favor:hover{
+	transform: scale(1.2);
+}
 </style>
 </head>
 <body>
@@ -243,15 +249,62 @@ h2 {
 							<i class="bi bi-bag-plus-fill"></i>&nbsp; 장바구니 추가
 						</button>
 						&nbsp;
-						<button class="btn btn-outline-dark flex-shrink-0" type="button">
+						<button class="btn btn-outline-dark flex-shrink-0" type="button" id="favor">
 							<i class="bi bi-heart"></i>
 						</button>
 					</div>
-
+	<c:choose>
+	<c:when test="${not empty loginUser }">
 	<script>
+		
+	function selectFavor(){
+		
+		$.ajax({
+			url : "/pjtMungHub/selectFavorite.sp",
+			data : { userNo:${loginUser.userNo},
+					 productNo : ${p.productNo}},
+			success : function (result){
+				console.log(result);
+				if(result){
+				$("#favor").html("<i class='bi bi-heart-fill' style='color:red'></i>");
+				
+				}else{
+					$("#favor").html("<i class='bi bi-heart'></i>");
+					
+				}
+			},
+			error:function(){
+				console.log("통신오류");
+			}
+			
+		});
+		}
 	
 	$(function(){
-	
+			
+		selectFavor();
+		
+		
+	 $("#favor").click(function(){
+		 
+			 $.ajax({
+				 url : "/pjtMungHub/subscribe.sp",
+				 type : "post",
+				 data : { userNo:${loginUser.userNo},
+					 	  productNo : ${p.productNo}},
+				success : function(result){
+					selectFavor();
+					console.log("통신성공 subscribe");
+				},
+				error : function(){
+					console.log("통신오류");
+				}
+			 });
+		
+		 
+		 
+	 });
+		
 		$("#addCart").click(function(){
 			
 			var productNo =  "${p.productNo}";
@@ -267,8 +320,7 @@ h2 {
 				,userNo : "${loginUser.userNo}"
 		},
 		success: function(result){
-			console.log(result);
-			console.log("통신성공");
+			alert("장바구니에 상품이 추가되었습니다.");
 		},
 		error: function(){
 			console.log("통신실패");
@@ -276,9 +328,24 @@ h2 {
 	 });
 	});
 		
+
+	});	
+
+	
+	</script>
+	</c:when>
+	<c:otherwise>
+	<script type="text/javascript">
+	$(function(){
 		
-});
-</script>
+		 $("button").click(function(){
+			 alert("로그인 이후에 이용해 주세요");
+		 });
+	});
+	</script>
+	</c:otherwise>
+	</c:choose>
+	
 
 					<div class="dl-table-group">
 						<dl class="dl-row">
@@ -630,9 +697,8 @@ h2 {
 
 		<hr>
 		<div class="d-grid gap-2 d-md-block qna">
-			<a href="" class="btn btn-outline-secondary flex-shrink-0">1:1
-				문의하기</a> <a href="" class="btn btn-outline-dark flex-shrink-0">상품
-				문의하기</a>
+			<a href="" class="btn btn-outline-secondary flex-shrink-0">1:1 문의하기</a> 
+				<a href="" class="btn btn-outline-dark flex-shrink-0">상품 문의하기</a>
 		</div>
 
 		<table class="table table-borderless">

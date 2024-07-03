@@ -18,7 +18,6 @@ public class ParameterVo {
 	private String justifying;
 	private int number;
 	
-	
 	private String[] items;
 	private int userNo;
 	private int productNo;

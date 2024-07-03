@@ -11,6 +11,7 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
@@ -167,6 +168,18 @@ public class ShopDao {
 		// TODO Auto-generated method stub
 		return sqlSession.update("shopMapper.rearrangeAttachment",parameter);
 	}
+
+	public Favorite selectFavorite(ParameterVo parameter, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectFavorite",parameter);
+	}
+
+	public int convertFavorite(Favorite favor, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.convertFavorite",favor);
+	}
+
+
 
 
 
