@@ -15,6 +15,7 @@ import com.kh.pjtMungHub.petcare.model.vo.Environment;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
+import com.kh.pjtMungHub.petcare.model.vo.LongReview;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
@@ -141,6 +142,17 @@ public class PetCareServiceImpl implements PetCareService {
 	public int enrollHouse(HouseReservation hr) {
 		return petCareDao.enrollHouse(sqlSession,hr);
 	}
+	
+	//집 후기정보
+	@Override
+	public int reviewCount(int houseNo) {
+		return petCareDao.reviewCount(sqlSession,houseNo);
+	}
+	@Override
+	public ArrayList<LongReview> selectLongReview(int houseNo,PageInfo pi) {
+		return petCareDao.selectLongReview(sqlSession,houseNo,pi);
+	}
+	
 
 	//선택한 요금정보
 	@Override
@@ -169,6 +181,10 @@ public class PetCareServiceImpl implements PetCareService {
 	public int reservationId() {
 		return petCareDao.reservationId(sqlSession);
 	}
+
+	
+
+	
 
 	
 

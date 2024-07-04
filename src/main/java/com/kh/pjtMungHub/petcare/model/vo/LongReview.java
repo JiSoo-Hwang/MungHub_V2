@@ -14,5 +14,8 @@ public class LongReview {
     private Date reviewDate; // REVIEW_DATE DATE DEFAULT SYSDATE
     private String userNo; // USER_NO NUMBER NOT NULL
     private int houseNo; // HOUSE_NO NUMBER NOT NULL
-    private int photoNo; // PHOTO_NO NUMBER NOT NULL
+    private String filePath;
+    private String originName01; // ORIGIN_NAME VARCHAR2(1000 BYTE)
+    private String originName02; // ORIGIN_NAME VARCHAR2(1000 BYTE)
+    private String originName03; // ORIGIN_NAME VARCHAR2(1000 BYTE)
 }

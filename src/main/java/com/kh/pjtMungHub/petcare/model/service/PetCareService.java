@@ -10,6 +10,7 @@ import com.kh.pjtMungHub.petcare.model.vo.Environment;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
+import com.kh.pjtMungHub.petcare.model.vo.LongReview;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
@@ -65,6 +66,10 @@ public interface PetCareService {
 	ArrayList<Environment> selectEnvironment(int houseNo);
 	//지원서비스정보
 	ArrayList<SupplyGuide> selectSupplyGuide(int houseNo);
+	//집 후기정보
+	int reviewCount(int houseNo);
+	ArrayList<LongReview> selectLongReview(int houseNo,PageInfo pi);
+	
 	
 	
 	//장기돌봄 예약저장

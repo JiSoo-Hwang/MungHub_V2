@@ -213,6 +213,7 @@ clear: both;
 				<li><a href="map.do">지도보기</a></li>
                 <li><a href="sitter.re">단기돌봄예약</a> </li>
                 <li><a href="houseList.re">장기돌봄예약</a> </li>
+                <li><a href="hospital.ho">동물병원정보</a> </li>
                 <li><a href="wedList.wd">웨딩플래너</a> </li>
                 <li><a href="">하위 메뉴1</a> </li>
             </ul>

@@ -1,7 +1,14 @@
 package com.kh.pjtMungHub.petcare.controller;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +38,7 @@ import com.kh.pjtMungHub.petcare.model.vo.Environment;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
+import com.kh.pjtMungHub.petcare.model.vo.LongReview;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
@@ -181,14 +189,10 @@ public class PetCareController {
 		
 		Payment payment = petCareService.payDetail(uid);
 		
-		String reservationNo = String.valueOf(petCareService.selectReservationId(payment));
-		String reservationHouseNo = payment.getReservationHouseNo();
-		
-		
 		//결제성공 후 각 paymentStatus '결제완료' 변경작업
 		if(Integer.parseInt(payment.getDifferentNo())==1) {
 			
-			int result = petCareService.updateReservation(reservationNo);
+			int result = petCareService.updateReservation(String.valueOf(petCareService.selectReservationId(payment)));
 			
 			if(result>0) {
 				session.setAttribute("alertMsg", "결제성공!! 내역을 확인해주세요.");
@@ -199,7 +203,7 @@ public class PetCareController {
 			
 		}else if(Integer.parseInt(payment.getDifferentNo())==2) {
 			
-			int result = petCareService.updateHouseRe(reservationHouseNo);
+			int result = petCareService.updateHouseRe(payment.getReservationHouseNo());
 			
 			if(result>0) {
 				session.setAttribute("alertMsg", "결제성공!! 내역을 확인해주세요.");
@@ -236,7 +240,6 @@ public class PetCareController {
 		HashMap<String,Object> result = new HashMap<>(); //ArrayList 와 pi를 같이 보내려면 map 을 활용
 		result.put("houseList",list);
 		result.put("pi", pi);
-		
 		return result;
 	}
 	
@@ -253,14 +256,14 @@ public class PetCareController {
 		
 		String address = houseRe.getAddress().substring(0,2); //주소 앞2글자
 		houseRe.setAddress(address);
-		
+
 		int listCount = petCareService.listCount(houseRe);
 		int pageLimit = 3;
 		int boardLimit = 3;
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
 		ArrayList<House> houseList = petCareService.selectHouseList(houseRe,pi);
-				
+		
 		HashMap<String,Object> result = new HashMap<>(); //ArrayList 와 pi를 같이 보내려면 map 을 활용
 		result.put("houseList",houseList);
 		result.put("pi", pi);
@@ -268,7 +271,7 @@ public class PetCareController {
 		return result;
 	}
 	
-	//집 상세정보 페이지 이동 및 정보전달
+	//집 상세정보 / 정보전달 
 	@RequestMapping("detailHouse.re")
 	public String detailHouse(int houseNo,Model model) {
 		
@@ -284,6 +287,24 @@ public class PetCareController {
 		model.addAttribute("env",env); //환경정보(ex: #1인가구,#단독주택..)
 		model.addAttribute("sup",sup); //지원서비스(ex: 산책,응급처치..)
 		return "petCare/detailHouse";
+	}
+	
+	//집 후기
+	@ResponseBody
+	@RequestMapping("longReview.re")
+	public HashMap<String,Object> longReview(@RequestParam(value="currentPage",defaultValue="1")int currentPage
+									,ModelAndView mv,int houseNo) {
+		//후기정보 페이징바와 같이
+		int listCount = petCareService.reviewCount(houseNo);
+		int pageLimit = 3;
+		int boardLimit = 2;
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		ArrayList<LongReview> reviewList = petCareService.selectLongReview(houseNo,pi); 
+		
+		HashMap<String,Object> result = new HashMap<>();
+		result.put("reviewList", reviewList);
+		result.put("pi", pi);
+		return result;
 	}
 	
 	//맵이동
@@ -308,7 +329,6 @@ public class PetCareController {
 		HousePrice price = petCareService.selectPriceInfo(hr.getStayNo()); //선택한 요금정보
 		
 		if(result>0) {
-			
 			int reservationHouseNo = petCareService.houserReservationNo();
 			
 			session.setAttribute("alertMsg", "예약에 성공하셨습니다! 결제를 완료하셔야 예약이 확정 됩니다.");
@@ -324,7 +344,44 @@ public class PetCareController {
 	}
 	
 	
+	//병원검색 페이지로 이동
+	@RequestMapping("hospital.ho")
+	public String hospitalPage() {
+		return "petCare/hospital";
+	}
 	
+	//API 설정
+	@ResponseBody
+	@RequestMapping(value="hospitalList.ho", produces="text/xml;charset=UTF-8")
+	public String hospitalList() throws IOException {
+		
+		String str = "";
+		
+		String serviceKey = "00d6f801245544b987ad67dfe6210312";
+		String url = "https://openapi.gg.go.kr/Animalhosptl";
+		url+="?KEY="+serviceKey;
+		url+="&pIndex=1";
+		url+="&pSize=50";
+		url+="&SIGUN_CD=41820";
+		URL requestUrl = new URL(url);
+		
+		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
+		urlCon.setRequestMethod("GET");
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+		
+		String line;
+		while((line=br.readLine()) != null) {
+			str+=line;
+		}
+		br.close();
+		urlCon.disconnect();
+		
+		
+		System.out.println(str);
+		
+		return str;
+	}
 	
 	
 	

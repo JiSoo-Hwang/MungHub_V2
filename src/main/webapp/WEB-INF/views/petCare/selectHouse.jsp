@@ -11,10 +11,18 @@
 <head>
 <meta charset="UTF-8">
 <title>MungHub 장기돌봄 페이지</title>
+
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!-- 주소 api -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script> <!-- fullcalender -->
 
+
 <style>
+	@font-face {
+        font-family: 'MangoDdobak-B';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-B.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+	}
 	body {
 	    font-family: Arial, sans-serif;
 	    margin: 0;
@@ -22,18 +30,14 @@
 	    background-color: #f5f5f5;
 	}
 	
-	header {
-	    background-color: #ffffff;
-	    padding: 10px 20px;
-	    display: flex;
-	    justify-content: space-between;
-	    align-items: center;
-	    border-bottom: 1px solid #e0e0e0;
+	h2 {
+		font-family: 'MangoDdobak-B', sans-serif;
 	}
 	
 	.search-bar {
 	    display: flex;
 	    align-items: center;
+	    margin: 1% 3% 3% 5%;
 	}
 	
 	.search-bar input {
@@ -47,66 +51,85 @@
 	    cursor: pointer;
 	}
 	
-	.settings-btn {
-	    font-size: 1.5rem;
+	/* 달력 */
+    #calendar {
+    	max-width : 600px;
+       	margin : 0 auto;
+    }
+    .fc-daygrid-day:hover {
+        cursor: pointer;
+    }
+    .fc-daygrid-day.fc-day-selected {
+        background-color: skyblue !important;
+    }
+	
+	.titlePaging {
+		display: flex;
+		margin: 2% 0% 0% 15%;
+	}
+	#pagingArea {
+		margin-left: 5%;
 	}
 	.partner {
-	    padding: 20px;
-	    background-color: #ffffff;
+		margin-bottom: 10%;
 	}
 	
-	.partner h2 {
-	    display: inline-block;
-	    margin: 0;
+	.house-container {
+		font-family: 'MangoDdobak-B', sans-serif;
+	    display: flex; /* flexbox를 사용하여 요소들을 배치 */
+	    flex-direction: column; /* 요소들을 세로로 배치 */
+	    align-items: center; /* 요소들을 중앙 정렬 */
+	    margin: 20px;
 	}
 	
-	.sort-btn {
-    background-color: #ffffff;
-    border: none;
-    cursor: pointer;
-    float: right;
-	}
-	
-	.container {
+	.house-item {
+	  	border: 3px solid #cccccc;
+	    border-radius: 20px;
+	    padding: 20px; 
+	    margin: 10px; 
+	    width: 80%; 
 	    display: flex;
-	    flex-wrap: wrap; 
-	    gap: 20px; 
+	    flex-direction: column;
+	}
+	.house-header {
+		display: flex;
+		/*justify-content: space-between; /* 요소들을 양쪽 끝에 배치 */
+		/*align-items: center;*/
 	}
 	
-	.partner-card {
-	    display: flex; 
-	    align-items: center;
-	    margin: 5% 10% 5% 10%; 
-	    border: 1px solid black;
-	    border-radius: 10px;
-	    overflow: hidden;
-	    padding: 10px;
+	.house-title {
+	    font-size: 30px; 
+	    font-weight: bold; 
+	    cursor: pointer;
+	}
+	.house-buttons {
+		margin-left: 5%;
+		display: flex;
+		gap: 10px; /*버튼 사이간격조절*/
+	}
+	.house-buttons button {
+		/*padding: 5px 10px;*/
+		border: 2px solid #ccc;
+		background-color #f8f8f8;
+		font-size: 12px;
+		font-weight: bold;
+	}		
+	.house-details {
+	    margin: 10px 0;
+	    cursor: pointer;
+	}
+	.house-imges {
+		display: flex;
+		justify-content: space-around; /* 요소들을 균등하게 배치 */
+		margin: 10px 0;
+	}
+	.house-images img {
+	    width: 30%;
+	    margin: 5px;
 	    cursor: pointer;
 	}
 	
-	.partner-card img {
-	    width: 200px;
-	    height: auto;
-	    margin-right: 20px; /* 이미지와 텍스트 사이의 간격 */
-	}
 	
-	.card-content {
-	    padding: 20px;
-	}
-	
-	.card-content .title {
-	    font-size: 1.2rem;
-	    margin: 0;
-	}
-	
-	.card-content .rating {
-	    color: #666666;
-	    margin: 10px 0;
-	}
-	
-	.card-content .houseAddress {
-	    color: #007bff;
-	}
 </style>
 </head>
 <body>
@@ -118,14 +141,12 @@
 	<input type="hidden" id="hiddenDaysNight" name="daysNight">
 	<input type="hidden" id="firstCurrentPage" value="${currentPage }">
 	
-	
     <header>
         <div class="search-bar">
-        <!-- Button trigger modal -->
+        
+        <!-- 주소 api 모달창으로 -->
 		<input type="hidden" id="addrBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
 		<input type="text" id="inputAddress" style="width:400px;" readonly placeholder="주소를 입력해주세요." required>
-        <!-- 주소 api 모달창으로 -->
-        <!-- Modal -->
 		<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
@@ -149,96 +170,103 @@
 		  </div>
 		</div>
 		
-		 <!-- Button trigger modal -->
 		<button type="button" id="addrBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop3">
-		 다양한 필터 기능으로 알맞는 집을 선택해보세요.
-		</button>
-		
-		<input type="hidden" id="" value="">
-		
-		<input type="button" class="btn btn-secondary" id="searchBtn" value="검색">
-		<!-- Modal -->
-		<div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-		  <div class="modal-dialog">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <h1 class="modal-title fs-5" id="staticBackdropLabel">날짜 및 돌봄기간</h1>
-		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		      </div>
-		      <div class="modal-body">
-			      <h5>날짜를 지정해주세요.</h5>
-			      	<div class="date-container">
-				        
-			    	</div>
-			      <h5>돌봄 기간을 선택해주세요.(5박이상은 관리자에게 문의해주세요.)</h5>
-			      	<input type="radio" class="btn-check" name="daysNight" id="day1" autocomplete="off" value="1" checked>
-					<label class="btn btn-secondary" for="day1">1박2일</label>
-					<input type="radio" class="btn-check" name="daysNight" id="day2" autocomplete="off" value="2">
-					<label class="btn btn-secondary" for="day2">2박3일</label>
-					<input type="radio" class="btn-check" name="daysNight" id="day3" autocomplete="off" value="3">
-					<label class="btn btn-secondary" for="day3">3박4일</label>
-					<input type="radio" class="btn-check" name="daysNight" id="day4" autocomplete="off" value="4">
-					<label class="btn btn-secondary" for="day4">4박5일</label>
-					
-					<div class="radio-btn-group">
-						<h5>돌보미의 반려동물 보유</h5>
-						<div class="form-check form-switch">
-						  <input class="form-check-input" type="checkbox" id="pet">
-						  <label class="form-check-label" for="flexSwitchCheckDefault">반려동물 보유</label>
-						</div>
-						<h5>돌보미의 산책가능 여부</h5>
-						<div class="form-check form-switch">
-						  <input class="form-check-input" type="checkbox" id="walk">
-						  <label class="form-check-label" for="flexSwitchCheckDefault">산책가능여부</label>
-						</div>
-						<h5>반려동물의 크기를 선택해주세요.</h5>
-						    <input type="radio" class="btn-check" name="petType" id="petType1" autocomplete="off" value="1" checked>
-							<label class="btn btn-secondary" for="petType1">소형견(7kg미만)</label>
-							<input type="radio" class="btn-check" name="petType" id="petType2" autocomplete="off" value="2">
-							<label class="btn btn-secondary" for="petType2">중형견(7~15kg)</label>
-							<input type="radio" class="btn-check" name="petType" id="petType3" autocomplete="off" value="3">
-							<label class="btn btn-secondary" for="petType3">대형견(15kg이상)</label>
-				    </div>
-			  </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-		        <button type="button" class="btn btn-primary" id="resetBtn3">초기화</button>
-		        <button type="button" class="btn btn-primary" id="inputBtn3">입력완료</button>
-		      </div>
-		    </div>
-		  </div>
-		</div>
-      </div>
-    </header>
-    
-    <section class="partner">
-        <h2>우리집 같은 보금자리</h2>
-		
-		<div id="pagingArea">
-		
-        </div>
+                다양한 필터 기능선택
+        </button>
         
-        <div id="houseList">
-        
-        
-        </div>
-        
-        <div class="partner-card" id="houseList">
-            <img src="/pjtMungHub/resources/uploadFiles/housePhoto/2.png" alt="Room Image">
-            <div class="card-content">
-                <p class="title">아이 휴가는 여기로 보내세요</p>
-                <p class="rating">⭐ 5.0 경기 김포시</p>
-                <p class="price">산책케어 55,000원/24시 ・ 45,000원/당일</p>
+		<input type="button" class="btn btn-secondary" id="searchBtn" value="검색" style="margin-left:3%;">
+            
+            <div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">날짜 및 돌봄기간</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h5>날짜를 지정해주세요.</h5>
+                            <div class="date-container">
+                                <div id="calendar">
+                                 <!-- FullCanlendar API -->
+                                </div>
+                            </div>
+                            
+                            <br><br>
+                            
+                            <h5>돌봄 기간을 선택해주세요.(5박이상은 관리자에게 문의해주세요.)</h5>
+                            <input type="radio" class="btn-check" name="daysNight" id="day1" autocomplete="off" value="1" checked>
+                            <label class="btn btn-secondary" for="day1">1박2일</label>
+                            <input type="radio" class="btn-check" name="daysNight" id="day2" autocomplete="off" value="2">
+                            <label class="btn btn-secondary" for="day2">2박3일</label>
+                            <input type="radio" class="btn-check" name="daysNight" id="day3" autocomplete="off" value="3">
+                            <label class="btn btn-secondary" for="day3">3박4일</label>
+                            <input type="radio" class="btn-check" name="daysNight" id="day4" autocomplete="off" value="4">
+                            <label class="btn btn-secondary" for="day4">4박5일</label>
+                            
+                            <br><br>
+                            
+                            <div class="radio-btn-group">
+                                <h5>돌보미의 반려동물 보유</h5>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="pet">
+                                    <label class="form-check-label" for="flexSwitchCheckDefault">반려동물 보유</label>
+                                </div>
+                                <h5>돌보미의 산책가능 여부</h5>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="walk">
+                                    <label class="form-check-label" for="flexSwitchCheckDefault">산책가능여부</label>
+                                </div>
+                                <h5>반려동물의 크기를 선택해주세요.</h5>
+                                <input type="radio" class="btn-check" name="petType" id="petType1" autocomplete="off" value="1" checked>
+                                <label class="btn btn-secondary" for="petType1">소형견(7kg미만)</label>
+                                <input type="radio" class="btn-check" name="petType" id="petType2" autocomplete="off" value="2">
+                                <label class="btn btn-secondary" for="petType2">중형견(7~15kg)</label>
+                                <input type="radio" class="btn-check" name="petType" id="petType3" autocomplete="off" value="3">
+                                <label class="btn btn-secondary" for="petType3">대형견(15kg이상)</label>
+                            </div>
+                            
+                            <br><br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                            <button type="button" class="btn btn-primary" id="resetBtn3">초기화</button>
+                            <button type="button" class="btn btn-primary" id="inputBtn3">입력완료</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </header>
+    
+    <div class="titlePaging">
+    	<h2> < 우리집 같은 보금자리 > </h2>
+		<div id="pagingArea">
+	
+       	</div>
+	</div>
+    
+   	
+    <section class="partner">
         
+		
+		
+        
+        <div class="house-container" id="house-container">
+        
+        
+        </div>
     </section>
     
     <script>
+    var inputDate = ""; //달력에 입력된 날짜
+	var daysNight = ""; //돌봄기간(ex:1박2일)
+	var endDate = ""; // inputDate + daysNight 계산된 값
+	var pet = ""; //집주인의 펫보유 여부
+	var walk = "";  //산책가능여부
+	var petType = ""; //가능한 펫 크기
 		
-//===================== 하우스 리스트 ===================
+//===================== 하우스 리스트 (페이지 첫 로드시)===================
 		
-	//페이지 처음화면 리스트
 		var firstCurrentPage = $('#firstCurrentPage').val();	
 		function firstList(){
 			$.ajax({
@@ -251,14 +279,25 @@
 					var pi = result.pi;
 					var houseList = "";
 					for (var i = 0; i < list.length; i++) {
-						houseList += "<div class='partner-card'>"
-	                               + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' alt='Room Image'>"
-	                               + "<input id='houseNo' type='hidden' value='" + list[i].houseNo + "'>"
-	                               + "<div class='card-content'>"
-	                               + "<p class='title'>" + list[i].introductionSummary + "</p>"
-	                               + "<p class='houseAddress'>" + list[i].houseAddress + "</p>"
-	                               + "</div>"
-	                               + "</div>";
+						houseList += "<div class='house-item'>" 
+	            	 			+ "<div class='house-header'>"
+								+ "<div class='house-title' data-house-no='" + list[i].houseNo + "'>" + list[i].introductionSummary + "</div>" 
+								+ "<div class='house-buttons'>"
+	                            + "<button class='btn btn-secondary'>산책: " + list[i].houseWalkNo + "</button>"
+	                            + "<button class='btn btn-secondary'>반려견: " + list[i].housePetNo + "</button>"
+	                            + "<button class='btn btn-secondary'>돌봄가능크기: " + list[i].petTypeNo + "</button>"
+	                            + "</div>"
+								+ "</div>" 
+								+ "<div class='house-details' data-house-no='" + list[i].houseNo + "'>" 
+								+ "집 주소 자세하게: " + list[i].houseAddress + "</div>" 
+								+ "<div class='house-details' data-house-no='" + list[i].houseNo + "'>" 
+								+ "인근병원주소: " + list[i].nearbyHospital + "</div>" 
+								+ "<div class='house-images'>" 
+								+ "<img src='" + list[i].filePath + list[i].originName01 + "' alt='Image 1' data-house-no='" + list[i].houseNo + "'>" 
+								+ "<img src='" + list[i].filePath + list[i].originName02 + "' alt='Image 2' data-house-no='" + list[i].houseNo + "'>" 
+								+ "<img src='" + list[i].filePath + list[i].originName03 + "' alt='Image 3' data-house-no='" + list[i].houseNo + "'>" 
+								+ "</div>" 
+								+ "</div>";
 					}
 					
 					var pagination = "<ul class='pagination'>";
@@ -280,7 +319,7 @@
 		            }
 					
 					$('#pagingArea').html(pagination);
-					$('#houseList').html(houseList);
+					$('#house-container').html(houseList);
 					console.log('하우스 리스트 불러오기 성공!!');
 				},
 				error : function(){
@@ -303,14 +342,25 @@
 
 		            var houseList = "";
 		            for (var i = 0; i < list.length; i++) {
-		            	houseList += "<div class='partner-card'>"
-		                            + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' alt='Room Image'>"
-		                            + "<input id='houseNo' type='hidden' value='" + list[i].houseNo + "'>"
-		                            + "<div class='card-content'>"
-		                            + "<p class='title'>" + list[i].introductionSummary + "</p>"
-		                            + "<p class='houseAddress'>" + list[i].houseAddress + "</p>"
-		                            + "</div>"
-		                            + "</div>";
+		            	houseList += "<div class='house-item'>" 
+            	 			+ "<div class='house-header'>"
+							+ "<div class='house-title' data-house-no='" + list[i].houseNo + "'>" + list[i].introductionSummary + "</div>" 
+							+ "<div class='house-buttons'>"
+                            + "<button class='btn btn-secondary'>산책: " + list[i].houseWalkNo + "</button>"
+                            + "<button class='btn btn-secondary'>반려견: " + list[i].housePetNo + "</button>"
+                            + "<button class='btn btn-secondary'>돌봄가능크기: " + list[i].petTypeNo + "</button>"
+                            + "</div>"
+							+ "</div>" 
+							+ "<div class='house-details' data-house-no='" + list[i].houseNo + "'>" 
+							+ "집 주소 자세하게: " + list[i].houseAddress + "</div>" 
+							+ "<div class='house-details' data-house-no='" + list[i].houseNo + "'>" 
+							+ "인근병원주소: " + list[i].nearbyHospital + "</div>" 
+							+ "<div class='house-images'>" 
+							+ "<img src='" + list[i].filePath + list[i].originName01 + "' alt='Image 1' data-house-no='" + list[i].houseNo + "'>" 
+							+ "<img src='" + list[i].filePath + list[i].originName02 + "' alt='Image 2' data-house-no='" + list[i].houseNo + "'>" 
+							+ "<img src='" + list[i].filePath + list[i].originName03 + "' alt='Image 3' data-house-no='" + list[i].houseNo + "'>" 
+							+ "</div>" 
+							+ "</div>";
 		            }
 
 		            var pagination = "<ul class='pagination'>";
@@ -334,7 +384,7 @@
 		            pagination += "</ul>";
 
 		            $('#pagingArea').html(pagination);
-		            $('#houseList').html(houseList);
+		            $('#house-container').html(houseList);
 		            console.log('하우스 리스트 불러오기 성공!!');
 		        },
 		        error: function() {
@@ -342,32 +392,104 @@
 		        }
 		    });
 		}
-			
+		
+		//============ 집 디테일로 이동 ===================
 		$(function(){
 			firstList();
 			houseList();
 			goToPage();
-			$(document).on('click','#houseList .partner-card img',function(){
-				var houseNo = $(this).next('#houseNo').val();
-				console.log(houseNo);
+			
+			$(document).on('click','.house-item .house-images img,.house-title,.house-details',function(){
+				var houseNo = $(this).data('house-no');
 				location.href="detailHouse.re?houseNo="+houseNo;
 			});
 		});
-			
+		
+		//============== FullCaleandar API ===================
+	    $(function() {
+	        var calendarEl = document.getElementById('calendar');
+	        var calendar;
+	        
+	        $('#staticBackdrop3').on('shown.bs.modal', function() {
+	            var today = new Date().toISOString().split('T')[0];
+	            
+	            calendar = new FullCalendar.Calendar(calendarEl, {
+	                initialView: 'dayGridMonth',
+	                locale: 'ko',
+	                validRange: {
+	                    start: today,
+	                    end: null
+	                },
+	                headerToolbar: {
+	                    left: '',
+	                    center: 'title',
+	                    right: 'prev,next'
+	                },
+	                dateClick: function(info) {
+	                    inputDate = info.dateStr; // 선택된 날짜
+
+	                    // 모든 날짜에 스타일 제거
+	                    document.querySelectorAll('.fc-daygrid-day').forEach(function(dayEl) {
+	                        dayEl.classList.remove('fc-day-selected');
+	                    });
+
+	                    // 선택된 날짜에 스타일 추가
+	                    var selectedDayEl = document.querySelector('[data-date="' + inputDate + '"]');
+	                    if (selectedDayEl) {
+	                        selectedDayEl.classList.add('fc-day-selected');
+	                    }
+	                }
+	            });
+	            
+	            calendar.render();
+
+	            // 페이지 로드시 오늘 날짜 선택
+	            function selectToday() {
+	                var today = new Date().toISOString().split('T')[0];
+	                var todayElement = document.querySelector('[data-date="' + today + '"]');
+	                if (todayElement) {
+	                    todayElement.classList.add('fc-day-selected');
+	                    calendar.trigger('dateClick', { date: new Date(), dateStr: today });
+	                }
+	            }
+	            setTimeout(selectToday, 500);
+	        });
+
+	        $('#staticBackdrop3').on('hidden.bs.modal', function() {
+	            if (calendar) {
+	                calendar.destroy();
+	            }
+	        });
+	    });
+	   
+	  //================== 하우스리스트 (필터링) =======================
 		function houseList(){
-			var inputDate = "";
-			var daysNight = "";
-			var endDate = "";
-			$('#inputBtn3').click(function(){//모달창
-				inputDate = $('#dateInput').val(); //입력된 날짜
+			//모당창 확인버튼
+			$('#inputBtn3').click(function(){
 				daysNight = $('input[name="daysNight"]:checked').val(); //몇박몇일
+				petType = $('input[name="petType"]:checked').val();
 				
-				if(inputDate && daysNight){
+				//DB 자료와 일치하기 위해 변환과정
+				if($('#pet').is(':checked')==true){
+					pet = '1';
+				}else{
+					pet = '2';
+				}
+				
+				if($('#walk').is(':checked')==true){
+					walk = '1';
+				}else{
+					walk = '2';
+				}
+				
+				if(inputDate && daysNight && petType ){
 	    			$("#staticBackdrop3").modal('hide'); //값을 보낸 후 모달창 닫아주기
 				}else{
-					alert('2가지 요소 모두 입력해주세요.');
+					alert('모든 요소를 입력해주세요.');
 				}
 			});
+			
+			// 최종 검색버튼 (주소 + 필터링)
 			$('#searchBtn').click(function(){
 				var address = $("#inputAddress").val(); //주소
 				var endDatePlus = parseInt(daysNight);
@@ -381,7 +503,10 @@
 						address : address,
 						startDate : inputDate,
 						endJavaDate : endDate,
-						stayNo : daysNight
+						stayNo : daysNight,
+						pet : pet,
+						walk : walk,
+						petTypeNo : petType
 					},
 					success : function(result){
 						
@@ -395,14 +520,25 @@
 			            
 						var houseList = "";
 						for (var i = 0; i < list.length; i++) {
-							houseList += "<div class='partner-card'>"
-		                               + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' alt='Room Image'>"
-		                               + "<input id='houseNo' type='hidden' value='" + list[i].houseNo + "'>"
-		                               + "<div class='card-content'>"
-		                               + "<p class='title'>" + list[i].introductionSummary + "</p>"
-		                               + "<p class='houseAddress'>" + list[i].houseAddress + "</p>"
-		                               + "</div>"
-		                               + "</div>";
+							houseList += "<div class='house-item'>" 
+	            	 			+ "<div class='house-header'>"
+								+ "<div class='house-title' data-house-no='" + list[i].houseNo + "'>" + list[i].introductionSummary + "</div>" 
+								+ "<div class='house-buttons'>"
+	                            + "<button class='btn btn-secondary'>산책: " + list[i].houseWalkNo + "</button>"
+	                            + "<button class='btn btn-secondary'>반려견: " + list[i].housePetNo + "</button>"
+	                            + "<button class='btn btn-secondary'>돌봄가능크기: " + list[i].petTypeNo + "</button>"
+	                            + "</div>"
+								+ "</div>" 
+								+ "<div class='house-details' data-house-no='" + list[i].houseNo + "'>" 
+								+ "집 주소 자세하게: " + list[i].houseAddress + "</div>" 
+								+ "<div class='house-details' data-house-no='" + list[i].houseNo + "'>" 
+								+ "인근병원주소: " + list[i].nearbyHospital + "</div>" 
+								+ "<div class='house-images'>" 
+								+ "<img src='" + list[i].filePath + list[i].originName01 + "' alt='Image 1' data-house-no='" + list[i].houseNo + "'>" 
+								+ "<img src='" + list[i].filePath + list[i].originName02 + "' alt='Image 2' data-house-no='" + list[i].houseNo + "'>" 
+								+ "<img src='" + list[i].filePath + list[i].originName03 + "' alt='Image 3' data-house-no='" + list[i].houseNo + "'>" 
+								+ "</div>" 
+								+ "</div>";
 						}
 						
 						var pagination = "<ul class='pagination'>";
@@ -424,19 +560,17 @@
 			            }
 						
 						$('#pagingArea').html(pagination);
-						$('#houseList').html(houseList);
+						$('#house-container').html(houseList);
 						console.log('하우스 리스트 불러오기 성공!!');
 					},
 					erorr : function(){
 						console.log('통신실패ㅠㅠ');
 					}
 				});
-				
 			});
-			
 		};
 		
-		//page 넘버마다 onclick 이벤트를 사용하여 비동기로 페이징이동 (조건부 리스트용)
+		//page 넘버마다 onclick 이벤트를 사용하여 비동기로 페이징이동 (필터링용)
 		function goToPage(page) {
 		    var address = $('#hiddenAddress').val();
 		    var startDate = $('#hiddenStartDate').val();
@@ -446,11 +580,13 @@
 		    $.ajax({
 		        url: "selectHouseList.re",
 		        data: {
-		            address: address,
-		            startDate: startDate,
-		            endJavaDate: endDate,
-		            stayNo: daysNight,
-		            currentPage: page
+		        	address : address,
+					startDate : inputDate,
+					endJavaDate : endDate,
+					stayNo : daysNight,
+					pet : pet,
+					walk : walk,
+					petTypeNo : petType
 		        },
 		        success: function(result) {
 		            var list = result.houseList;
@@ -458,14 +594,25 @@
 
 		            var houseList = "";
 		            for (var i = 0; i < list.length; i++) {
-		            	houseList += "<div class='partner-card'>"
-		                            + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' alt='Room Image'>"
-		                            + "<input id='houseNo' type='hidden' value='" + list[i].houseNo + "'>"
-		                            + "<div class='card-content'>"
-		                            + "<p class='title'>" + list[i].introductionSummary + "</p>"
-		                            + "<p class='houseAddress'>" + list[i].houseAddress + "</p>"
-		                            + "</div>"
-		                            + "</div>";
+		            	houseList += "<div class='house-item'>" 
+            	 			+ "<div class='house-header'>"
+							+ "<div class='house-title' data-house-no='" + list[i].houseNo + "'>" + list[i].introductionSummary + "</div>" 
+							+ "<div class='house-buttons'>"
+                            + "<button class='btn btn-secondary'>산책: " + list[i].houseWalkNo + "</button>"
+                            + "<button class='btn btn-secondary'>반려견: " + list[i].housePetNo + "</button>"
+                            + "<button class='btn btn-secondary'>돌봄가능크기: " + list[i].petTypeNo + "</button>"
+                            + "</div>"
+							+ "</div>" 
+							+ "<div class='house-details' data-house-no='" + list[i].houseNo + "'>" 
+							+ "집 주소 자세하게: " + list[i].houseAddress + "</div>" 
+							+ "<div class='house-details' data-house-no='" + list[i].houseNo + "'>" 
+							+ "인근병원주소: " + list[i].nearbyHospital + "</div>" 
+							+ "<div class='house-images'>" 
+							+ "<img src='" + list[i].filePath + list[i].originName01 + "' alt='Image 1' data-house-no='" + list[i].houseNo + "'>" 
+							+ "<img src='" + list[i].filePath + list[i].originName02 + "' alt='Image 2' data-house-no='" + list[i].houseNo + "'>" 
+							+ "<img src='" + list[i].filePath + list[i].originName03 + "' alt='Image 3' data-house-no='" + list[i].houseNo + "'>" 
+							+ "</div>" 
+							+ "</div>";
 		            }
 
 		            var pagination = "<ul class='pagination'>";
@@ -480,6 +627,9 @@
 		            for (var p = pi.startPage; p <= pi.endPage; p++) {
 		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + p + ")'>" + p + "</a></li>";
 		            }
+		            
+		            console.log('페이지번호  '+p);
+		            
 		            // 다음버튼
 		            if (pi.currentPage == pi.maxPage) {
 		                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>▶</a></li>";
@@ -489,7 +639,7 @@
 		            pagination += "</ul>";
 
 		            $('#pagingArea').html(pagination);
-		            $('#houseList').html(houseList);
+		            $('#house-container').html(houseList);
 		            console.log('하우스 리스트 불러오기 성공!!');
 		        },
 		        error: function() {
@@ -497,7 +647,6 @@
 		        }
 		    });
 		}
-		
 		
 		//==================== 주소 api ===============================
     	$(function(){
@@ -556,31 +705,6 @@
 			$("#sample6_address").val('');
 			$("#sample6_detailAddress").val('');
 			$("#sample6_extraAddress").val('');
-		});
-		
-		//정렬순 필터 입력값
-		$('#inputBtn2').click(function(){
-       	    var pet = $('#pet:checked').val(); //펫유무
-       	    var walk = $('#walk:checked').val(); //산책여부
-       	    var petType = $('input[name="petType"]:checked').val(); //펫크기
-       	    
-       	    if(pet && walk && petType){
-       	    	
-       	    	
-       	    	
-       	   		//값을 보낸 후 모달창 닫아주기
-    			$("#staticBackdrop").modal('hide'); 
-       	    }else{
-       	    	alert('4가지 요소를 모두 입력해주세요.');
-       	    }
-       	 
-         });
-		//정렬순 입력창 초기화 버튼  		
-		$("#resetBtn2").click(function(){ 
-			$("#location").val('');
-			$("#pet").val('');
-			$("#walk").val('');
-			$("#petType").val('');
 		});
     </script>
 
