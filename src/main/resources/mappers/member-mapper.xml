@@ -49,5 +49,7 @@
 		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL '${days}' DAY
 		WHERE USER_NO = #{userNo}
 	</update>
-	
+	<select id="getRestrictedUntil" parameterType="_int" resultType="java.time.LocalDateTime">
+	SELECT RESTRICTED_UNTIL FROM MEMBER WHERE USER_NO = #{userNo}
+	</select>
 </mapper>

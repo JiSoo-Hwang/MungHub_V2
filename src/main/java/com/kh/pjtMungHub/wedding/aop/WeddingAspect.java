@@ -1,5 +1,7 @@
 package com.kh.pjtMungHub.wedding.aop;
 
+import java.time.LocalDateTime;
+
 import javax.servlet.http.HttpSession;
 
 import org.aspectj.lang.annotation.Aspect;
@@ -26,11 +28,11 @@ public class WeddingAspect {
 		if(m!=null) {
 			int userNo = m.getUserNo();
 			if(memberService.isUserRestricted(userNo)) {
-				throw new AccessRestrictedException("이미 수락된 만남을 취소하여 취소한 날로부터 14일간 해당 페이지 접근이 제한되었습니다.");
+				LocalDateTime restrictedUntil = memberService.getRestrictedUntil(userNo);
+				throw new AccessRestrictedException("이미 확정된 만남을 취소하셔서, 취소한 날로부터 14일간 해당 서비스 사용이 제한되어있습니다",restrictedUntil);
 			}
-			
 		}else {
-			throw new AccessRestrictedException("로그인이 필요합니다.");
+			throw new AccessRestrictedException("로그인이 필요합니다.",null);
 		}
 	}
 	
