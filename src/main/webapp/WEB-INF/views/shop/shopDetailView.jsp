@@ -10,25 +10,9 @@
 <style>
 
 
-.review-star {
-	display: block;
-	width: 130px;
-}
 
-.review-star>i {
-	color: #F2D106;
-}
-
-.best {
-	width: 110px;
-}
-
-.detail {
-	width: 150px;
-}
-
-.detail>i {
-	font-size: 22px;
+#best {
+	cursor:pointer;
 }
 
 .dl-table-group {
@@ -91,11 +75,6 @@ tbody {
 	margin-right: 10px
 }
 
-#review-write {
-	float: right;
-	border: 0;
-}
-
 .progress {
 	width: 80%;
 	float: right;
@@ -147,6 +126,52 @@ h2 {
 #favor:hover{
 	transform: scale(1.2);
 }
+
+.star-rating {
+      display: flex;
+    }
+
+    .star {
+      appearance: none;
+      padding: 1px;
+    }
+
+    .star::after {
+      content: '☆';
+      color: #F2D106;
+      font-size: 30px;
+    }
+
+    .star:hover::after,
+    .star:has(~ .star:hover)::after,
+    .star:checked::after,
+    .star:has(~ .star:checked)::after {
+      content: '★';
+    }
+
+    .star:hover ~ .star::after {
+      content: '☆';
+    }
+    
+      
+    .media-container {
+         display: flex;
+         overflow-x: auto;
+     }
+     .media-container img,
+     .media-container .embed-responsive {
+         flex: 0 0 auto;
+         margin-right: 10px;
+     }
+    
+.review-star {width:100px; }
+.review-star,.review-star span {display:inline-block; height:24px; overflow:hidden; background:url(/pjtMungHub/resources/uploadFiles/shopFile/productFile/common/star.png)no-repeat; }
+.review-star span{background-position:left bottom; line-height:0; vertical-align:top; }
+
+.btn-div button{
+margin-right: 10px;
+}
+
 </style>
 </head>
 <body>
@@ -164,11 +189,11 @@ h2 {
     <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="${status.index }" <c:if test="${status.index eq 0 }">class="active" aria-current="true"</c:if> aria-label="Slide ${status.count }"></button>
   </c:forEach>
   </div>
-					  <div class="carousel-inner" style="height:700px;">
+					  <div class="carousel-inner" style="height:800px;">
   <c:forEach items="${atList }" var="at" varStatus="status">
 					    <div class="carousel-item <c:if test="${status.index eq 0 }">active</c:if>"  data-bs-interval="10000">
 					    	<input type="hidden" value="${status.index }">
-					      <img src="${at.filePath }${at.changeName}" class="d-block w-100" style="height: 100%;">
+					      <img src="${at.filePath }${at.changeName}" class="d-block w-100" style="height: 100%; width:100%">
 					    </div>
 				</c:forEach>
 					  </div>
@@ -234,9 +259,12 @@ h2 {
 						</h2>
 
 						<!-- 별점 -->
-						<span class="review-star"> <i class="bi bi-star-fill"></i>
-							<i class="bi bi-star-fill"></i> <i class="bi bi-star-fill"></i> <i
-							class="bi bi-star-fill"></i> <i class="bi bi-star-fill"></i></span> <span>(<fmt:formatNumber
+				<div class="wrap-star">
+			    <div class='review-star'>
+			        <span style ="width: <fmt:formatNumber type="number" maxFractionDigits="0" value="${p.reviewTScore * 20}" />%"></span>
+			    </div>
+				</div>
+				 <span>(<fmt:formatNumber
 								type="number" maxFractionDigits="0" value="${p.reviewCount }" />)
 						</span>
 						<div></div>
@@ -255,8 +283,28 @@ h2 {
 					</div>
 	<c:choose>
 	<c:when test="${not empty loginUser }">
+
+	<div class="toast-container position-fixed p-5 bottom-0 end-0">
+	  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+	    <div class="toast-header">
+	    <i class="bi bi-cart-plus-fill" style="color:blue"></i>&nbsp;
+	      <strong class="me-auto"> 장바구니 담기 성공</strong>
+	      <small>11 mins ago</small>
+	      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+	    </div>
+	    <div class="toast-body">
+	     	장바구니로 이동하시겠습니까?
+	     	 <div class="mt-2 pt-2 border-top">
+      <button type="button" class="btn btn-primary btn-sm" onclick="location.href='/pjtMungHub/cart.sp'">바로가기</button>
+      <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">닫기</button>
+    </div>
+	    </div>
+	  </div>
+	</div>
+	
 	<script>
-		
+	
+	
 	function selectFavor(){
 		
 		$.ajax({
@@ -284,7 +332,6 @@ h2 {
 			
 		selectFavor();
 		
-		
 	 $("#favor").click(function(){
 		 
 			 $.ajax({
@@ -307,6 +354,8 @@ h2 {
 		
 		$("#addCart").click(function(){
 			
+			
+			
 			var productNo =  "${p.productNo}";
 			var amount = $("#inputQuantity").val();
 			var userNo = "${loginUser.userNo}";
@@ -320,7 +369,13 @@ h2 {
 				,userNo : "${loginUser.userNo}"
 		},
 		success: function(result){
-			alert("장바구니에 상품이 추가되었습니다.");
+			
+			
+			const toast = new bootstrap.Toast($('#liveToast'));
+			toast.show();
+			  
+			
+			
 		},
 		error: function(){
 			console.log("통신실패");
@@ -431,19 +486,21 @@ h2 {
 			<a href="#detail-section02" class="btn-review-all"><span>전체리뷰보기</span><i
 				class="bi bi-caret-right-fill"></i> </a> <br>
 			<div class="row row-cols-2 align-items-center mt-3 ml-3 mr-3">
-				<c:forEach var="index" begin="1" end="4">
-					<div class="col-sm-3">
-						<img src="${p.attachment }" class="review-img-top4">
+				<c:forEach items="${best4Review}" var="r" varStatus="i">
+					<div id="best" class="col-sm mx-3" onclick="location.href='/pjtMungHub/reviewDetail.sp/${r.reviewNo}'">
 						<div class="review-content">
-							<div class="review-star best">
-								<i class="bi bi-star-fill"></i> <i class="bi bi-star-fill"></i>
-								<i class="bi bi-star-fill"></i> <i class="bi bi-star-half"></i>
-								<i class="bi bi-star"></i>
+						<c:forEach items="${rAtList[i.index] }" var="rAt">
+						<img src="${rAt.filePath }${rAt.changeName}" class="img-fluid">
+						</c:forEach>
+							<div class="wrap-star">
+						    <div class='review-star'>
+						        <span style ="width: ${r.score*20}%"></span>
+						    </div>
 							</div>
-							<br> <small class="text-muted">작성자</small> <small
-								class="text-muted">2024-06-20</small>
+							<br> <small class="text-muted">${r.userName }</small> <small
+								class="text-muted">${r.createDate }</small>
 						</div>
-						<p>맛있어서 또 시켜먹었네요 ^^</p>
+						<p>${r.reviewContent }</p>
 					</div>
 				</c:forEach>
 			</div>
@@ -612,7 +669,170 @@ h2 {
 
 	<div class="container" id="detail-section02">
 		<h2>구매후기</h2>
-		<button type="button" id="review-write">후기쓰기</button>
+		<div align="right">
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">후기쓰기</button>
+		</div>
+		
+		
+		<c:if test="${not empty loginUser }">
+		
+		<div class="modal fade" id="reviewModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h1 class="modal-title fs-5" id="staticBackdropLabel">리뷰 쓰기</h1>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		          <div class="mb-3">
+	            <label for="review_writer" class="col-form-label">작성자:</label>
+	            <p>${loginUser.name }</p>
+	          </div>
+	          <div class="mb-3">
+	          <div class="star-rating">
+			    <input type="radio" class="star" name="rate" value="1">
+			    <input type="radio" class="star" name="rate" value="2">
+			    <input type="radio" class="star" name="rate" value="3">
+			    <input type="radio" class="star" name="rate" value="4">
+			    <input type="radio" class="star" name="rate" value="5" checked>
+			  </div>
+	       
+          	</div>
+	          <div class="mb-3">
+	            <label for="content" class="col-form-label">후기내용 :</label>
+	            <textarea class="form-control" id="content"></textarea>
+	            <label for="fileFlag" class="col-form-label">파일 첨부여부</label>
+	            <input type="checkbox" id="fileFlag">
+          </div>
+				<script>
+				
+				$(function(){
+					$("#file-insert").hide();
+					
+					$("#fileFlag").click(function(){
+						
+						if($("#fileFlag").is(":checked")){
+							$("#file-insert").show();
+						}else{
+							$("#file-insert").hide();
+						}
+					});
+				});
+				
+				
+					
+				
+				</script>          
+           <div class="mb-3" id="file-insert">
+          <ul class="nav nav-tabs nav-fill">
+			  <li class="nav-item">
+			    <button class="nav-link active" aria-current="page" id="insertPhoto">사진</button>
+			  </li>
+			  <li class="nav-item">
+			    <button class="nav-link" aria-current="page" id="insertVideo">동영상</button>
+			  </li>
+			  </ul>
+		  
+		  	<div id="file">
+		  		<img onclick='photo()' src="/pjtMungHub/resources/uploadFiles/common/css/MUNGHUB_logo.png" width="100%" id='loadedFile'>
+				<input type='file' accept='image/*' id="uploadFile" onchange='loadFile(this)'>		  	
+		  		<input type='hidden' value='picture' id='type'>
+		  	</div>
+		  	</div>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+		        <button type="button" class="btn btn-primary" id="review-write">작성하기</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		
+		<script>
+		function photo(){
+			$("#uploadFile").click();
+		}
+		
+		function loadFile(inputFile){
+			if(inputFile.files.length==1){
+				var reader = new FileReader();
+				
+				reader.readAsDataURL(inputFile.files[0]);
+				
+				reader.onload =function(e){
+						$("#loadedFile").attr("src",e.target.result);
+						$("#loadedFile").removeAttr("poster");
+					}
+				}else{
+					$("#loadedFile").attr("src",null);
+			}
+		}	
+		
+		$(function(){
+			var str="";
+			$("#insertVideo").click(function(){
+				$("#insertVideo").attr("class","nav-link active");
+				$("#insertPhoto").attr("class","nav-link");
+				str+="<video src='...' poster='/pjtMungHub/resources/uploadFiles/common/css/MUNGHUB_logo.png' width='100%' id='loadedFile' controls></video>";
+				str+="<input type='file' accept='video/*' id='uploadFile' onchange='loadFile(this)'>";
+				str+="<input type='hidden' value='video' id='type'>"
+				$("#file").html(str);
+				str="";
+			});
+			
+			$("#insertPhoto").click(function(){
+				$("#insertPhoto").attr("class","nav-link active");
+				$("#insertVideo").attr("class","nav-link");
+				str+="<img onclick='photo()' src='/pjtMungHub/resources/uploadFiles/common/css/MUNGHUB_logo.png' width='100%' id='loadedFile'>";
+				str+="<input type='file' accept='image/*' id='uploadFile' onchange='loadFile(this)'>";
+				str+="<input type='hidden' value='picture' id='type'>"
+				$("#file").html(str);
+				str="";
+			});
+			
+			
+			
+			$("#review-write").click(function(){
+				
+
+				    var requestData = {userNo : ${loginUser.userNo},
+							productNo : ${p.productNo},
+							reviewContent : $("#content").val(),
+							score : $("input[name='rate']:checked").val(),
+							type : $("#type").val()}
+
+				    var formData = new FormData();
+				    formData.append("uploadFile", $("#uploadFile")[0].files[0]);
+				    formData.append("review", new Blob([JSON.stringify(requestData)], {type: "application/json"}));
+				
+				
+				$.ajax({
+					url : "/pjtMungHub/insertReview.sp",
+					type : "post",
+					contentType: false, // 필수 : x-www-form-urlencoded로 파싱되는 것을 방지
+				    processData: false,  // 필수: contentType을 false로 줬을 때 QueryString 자동 설정됨. 해제
+					data : formData,
+					success : function(result){
+						$('#reviewModal').modal('hide');
+						alertify
+						  .alert("작성이 완료되었습니다.", function(){
+						    alertify.success('마일리지가 적립되었습니다. 150P+');
+						  });
+					},error : function(){
+						console.log("통신 오류");
+					}
+					
+					
+				});
+			});
+		});
+		
+		
+		</script>
+		
+		</c:if>
+		
 
 		<div class="py-5" align="center">
 			<div class="row row-cols-2 align-items-center mt-3 ml-3 mr-3">
@@ -621,46 +841,49 @@ h2 {
 						<fmt:formatNumber type="number" maxFractionDigits="1"
 							value="${p.reviewTScore}" />
 					</h2>
-					<span class="review-star detail"> <i class="bi bi-star-fill"></i>
-						<i class="bi bi-star-fill"></i> <i class="bi bi-star-fill"></i> <i
-						class="bi bi-star-half"></i> <i class="bi bi-star"></i>
-					</span> <br> <span>총 <fmt:formatNumber type="number"
+					<div class="star-wrap">
+					<div class="review-star" align="left">
+					<span style="width: ${p.reviewTScore*20}%"></span>
+					</div>
+					</div>
+					
+					 <span>총 <fmt:formatNumber type="number"
 							maxFractionDigits="0" value="${p.reviewCount }" />건
-					</span><br> <span style="color: gray">만족도 95%</span>
+					</span><br> <span style="color: gray">만족도 ${percent[4]+percent[3]}%</span>
 				</div>
 				<div class="col-sm-5">
 					<div class="score">5점</div>
 					<div class="progress my-1">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: 95%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[4]}%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
 					</div>
 					<br>
 					<div class="score">4점</div>
 					<div class="progress my-1">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: 2%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[3]}%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
 					</div>
 					<br>
 					<div class="score">3점</div>
 					<div class="progress my-1">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: 1%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[2]}%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
 					</div>
 					<br>
 					<div class="score">2점</div>
 					<div class="progress my-1">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: 1%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[1]}%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
 					</div>
 					<br>
 					<div class="score">1점</div>
 					<div class="progress my-1">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: 1%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[0]}%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
 					</div>
 				</div>
@@ -672,8 +895,86 @@ h2 {
 		</h4>
 
 		<hr>
+		
+		<script type="text/javascript">
+		
+		$(function(){
+			selectReview();
+		});
+		
+		function selectReview(){
+			var str="";
+			$.ajax({
+				url: "/pjtMungHub/reviewList.sp",
+				data : {productNo : ${p.productNo},
+						justifying : $("input[name='orderBy']:checked").val(),
+						star : 0,
+						amount : 10
+						},
+					
+			success : function(result){
+					
+					console.log(result);
+					for (var i = 0; i < result.length; i++) {
+					var img=""
+						for (var k = 0; k < result[i].atList.length; k++) {
+						if(result[i].atList[k].type=='video'){
+						img+="<video src='"+result[i].atList[k].filePath+result[i].atList[k].changeName+"' style='max-height: 300px;' controls/>"	
+						}else{
+							
+				 		img+="<img src='"+result[i].atList[k].filePath+result[i].atList[k].changeName+"' class='img-fluid' style='max-height: 300px;'>";
+						}
+				 			
+						}
+					str+="<div class='col-8 mb-4'>"
+	                +"<div class='card'>"
+	                +"<div class='media-container p-3'>"
+	                +img
+	                +"</div>"
+	                +"<div class='card-body'>"
+	                +"<h5 class='card-title'>"+result[i].userName+"</h5>"
+	                +"<div class='wrap-star'>"
+				    +"<div class='review-star'>"
+				    +"<span style ='width: "+(result[i].score*20)+"%'></span>"
+				    +"</div>"
+					+"</div>"
+	                +"<h6 class='card-subtitle mb-2 text-muted'>"+result[i].createDate+"</h6>"
+	                +"<p class='card-text'>"+result[i].reviewContent+"</p>"
+	                +"<div class='btn-div' align='right'>"
+	                +"<button class='btn btn-primary'><i class='bi bi-hand-thumbs-up'></i>Like</button>"
+	                +"<button class='btn btn-secondary'>Comment</button>"
+	                +"</div>"
+	                +"</div>"
+	                +"</div>"
+		            +"</div>"
+					+"</div>";
+					
+					}
+					$("#review_area").html(str);
+				},
+				error: function(){
+					console.log("통신오류");
+				}
+			});
+				
+			
+		};
+			
+		
+		
+		</script>
+	<div class="container mt-5">
+	<div align="right">
+	<label for="topRate">추천순</label><input type="radio" id="topRate" name="orderBy" value="topRate" checked onclick="selectReview()">
+	<label for="latest">최신순</label><input type="radio" id="latest" name="orderBy" value="latest" onclick="selectReview()">
 	</div>
-
+	<div class='row justify-content-center mt-3' id='review_area'>
+	</div>
+	<div align="center">
+	<a class="btn btn-info">전체 리뷰보기</a>
+	</div>
+	</div>
+</div>
 	<section class="py-5">
 		<div class="container" id="detail-section03">
 
@@ -716,7 +1017,6 @@ h2 {
 			</tr>
 		</table>
 	</div>
-
 
 
 	<br>

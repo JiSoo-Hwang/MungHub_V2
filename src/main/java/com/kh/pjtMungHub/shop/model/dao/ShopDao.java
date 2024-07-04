@@ -15,6 +15,7 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 @Repository
@@ -178,6 +179,34 @@ public class ShopDao {
 		// TODO Auto-generated method stub
 		return sqlSession.insert("shopMapper.convertFavorite",favor);
 	}
+
+	public int insertReview(SqlSessionTemplate sqlSession, Review review) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.inserReview",review);
+	}
+
+	public int selectReviewCount(SqlSessionTemplate sqlSession, int productNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectReviewCount",productNo);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Integer> selectScorePercent(SqlSessionTemplate sqlSession, int productNo) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectScorePercent",productNo);
+	}
+
+	public double selectScoreAvg(SqlSessionTemplate sqlSession, int productNo) {
+		// TODO Auto-generated method stub
+		return (double)sqlSession.selectOne("shopMapper.selectScoreAvg",productNo);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Review> selectReviewList(SqlSessionTemplate sqlSession, ParameterVo parameter2) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectReviewList",parameter2);
+	}
+
 
 
 

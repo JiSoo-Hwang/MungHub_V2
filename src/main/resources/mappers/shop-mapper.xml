@@ -49,8 +49,34 @@
 		WHERE PRODUCT_NO = #{productNo}
 		AND FILE_LEVEL = 0
 	</select>
+	
+	<select id="selectReviewCount" parameterType="_int"
+	resultType="_int">
+	SELECT MAX(ROWNUM)
+	FROM PRODUCT_REVIEW
+	WHERE PRODUCT_NO=#{productNo}
+	
+	</select>
+	
+	<select id="selectScorePercent" parameterType="_int"
+	resultType="_int">
+	SELECT ROUND(RATIO_TO_REPORT(SCORE) OVER(), 2) * 100 AS PERCENT
+	FROM PRODUCT_REVIEW
+	WHERE PRODUCT_NO=#{productNo}
+	GROUP BY SCORE
+	ORDER BY SCORE
+	</select>
+	
+	<select id="selectScoreAvg" parameterType="_int"
+	resultType="_double">
+	SELECT ROUND(AVG(SCORE),1) AVERAGE
+	FROM PRODUCT_REVIEW
+	WHERE PRODUCT_NO=#{productNo}
+	
+	</select>
 
-	<select id="selectFavorite" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo" resultType="com.kh.pjtMungHub.shop.model.vo.Favorite">
+	<select id="selectFavorite" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo" 
+	resultType="com.kh.pjtMungHub.shop.model.vo.Favorite">
 		SELECT USER_NO userNo,
 		PRODUCT_NO productNo
 		FROM FAVORITE
@@ -74,6 +100,27 @@
 	VALUES
 	(#{productNo},#{userNo})
 	</insert>
+	
+	<insert id="inserReview" parameterType='com.kh.pjtMungHub.shop.model.vo.Review'>
+	INSERT INTO PRODUCT_REVIEW(
+	REVIEW_NO,
+	REVIEW_CONTENT,
+	SCORE,
+	PRODUCT_NO,
+	USER_NO
+	)VALUES(
+	SEQ_REVIEW.NEXTVAL,
+	#{reviewContent},
+	#{score},
+	#{productNo},
+	#{userNo}
+	)
+	
+	</insert>
+	
+	<update id="updateReviewCount">
+	UPDATE PRODUCT SET
+	</update>
 
 	<select id="selectCategory"
 		resultType="com.kh.pjtMungHub.shop.model.vo.Category">
@@ -88,6 +135,45 @@
 		FROM BRAND
 	</select>
 
+	<select id="selectReviewList" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Review">
+	SELECT * FROM (
+	SELECT REVIEW_NO reviewNo,
+	REVIEW_CONTENT reviewContent,
+	CREATE_DATE createDate,
+	SCORE score,
+	PRODUCT_NO productNo,
+	R.USER_NO userNo,
+	NAME userName,
+	LIKE_COUNT likeCount
+	FROM PRODUCT_REVIEW R
+	JOIN MEMBER M ON (R.USER_NO = M.USER_NO)
+	WHERE PRODUCT_NO=#{productNo}
+	<choose>
+	<when test="justifying=='latest'">
+	ORDER BY CREATE_DATE DESC
+	</when>
+	<otherwise>
+	ORDER BY LIKE_COUNT DESC
+	</otherwise>
+	</choose>
+	)
+	<choose>
+	<when test="justifying=='best'">
+	WHERE ROWNUM BETWEEN 1 AND 4
+	</when>
+	<when test="amount!=0">
+	WHERE ROWNUM <![CDATA[<=]]> #{amount}
+	</when>
+	<otherwise>
+	</otherwise>
+	</choose>
+	<if test="star!=0">
+	AND SCORE=#{star}
+	</if>
+		
+	
+	</select>
 	<insert id="insertProduct" parameterType="Product">
 		INSERT INTO PRODUCT(
 		PRODUCT_NO,
@@ -169,6 +255,7 @@
 		UPLOAD_DATE uploadDate,
 		FILE_JUSTIFY fileJustify,
 		FILE_PATH filePath,
+		TYPE type,
 		<choose>
 			<when test="justifying=='product'">
 				PRODUCT_NO productNo
