@@ -12,6 +12,7 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 public interface ShopService {
@@ -96,6 +97,22 @@ public interface ShopService {
 
 
 	int convertFavorite(Favorite favor);
+
+
+	int insertReview(Review review, ParameterVo fileParameter);
+
+
+	int selectReviewCount(int productNo);
+
+
+	ArrayList<Integer> selectScorePercent(int productNo);
+
+
+	double selectScoreAvg(int productNo);
+
+
+
+	ArrayList<Review> selectReviewList(ParameterVo parameter2);
 
 
 
