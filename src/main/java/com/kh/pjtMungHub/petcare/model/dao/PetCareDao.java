@@ -14,6 +14,7 @@ import com.kh.pjtMungHub.petcare.model.vo.Environment;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
+import com.kh.pjtMungHub.petcare.model.vo.LongReview;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
@@ -128,6 +129,18 @@ public class PetCareDao {
 	public int enrollHouse(SqlSessionTemplate sqlSession, HouseReservation hr) {
 		return sqlSession.insert("petcareMapper.enrollHouse",hr);
 	}
+	
+	//집 후기정보
+	public int reviewCount(SqlSessionTemplate sqlSession,int houseNo) {
+		return sqlSession.selectOne("petcareMapper.reviewCount",houseNo);
+	}
+	public ArrayList<LongReview> selectLongReview(SqlSessionTemplate sqlSession, int houseNo,PageInfo pi) {
+		
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() -1) + limit;
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		return (ArrayList)sqlSession.selectList("petcareMapper.selectLongReview",houseNo,rowBounds);
+	}
 
 	//선택한 요금정보
 	public HousePrice selectPriceInfo(SqlSessionTemplate sqlSession, int stayNo) {
@@ -150,6 +163,10 @@ public class PetCareDao {
 	public int reservationId(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectOne("petcareMapper.reservationId");
 	}
+
+	
+
+	
 
 
 

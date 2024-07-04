@@ -115,11 +115,27 @@
 	    <result column="ENVIRONMENT_INFO" property="environmentInfo"/>
 	    <result column="SUPPLY_GUIDE" property="supplyGuide"/>
 	    <result column="CERTIFICATION" property="certification"/>
-	    <result column="ORIGIN_NAME" property="originName"/>
+	    <result column="ORIGIN_NAME_01" property="originName01"/>
+	    <result column="ORIGIN_NAME_02" property="originName02"/>
+	    <result column="ORIGIN_NAME_03" property="originName03"/>
 	    <result column="FILE_PATH" property="filePath"/>
+	    <result column="HOUSE_PET_NO" property="housePetNo"/>
+	    <result column="HOUSE_WALK_NO" property="houseWalkNo"/>
+	    <result column="PET_TYPE_NO" property="petTypeNo"/>
 	    <result column="STATUS" property="status"/>
 	</resultMap>
 	
+	<!-- 집 리뷰 resultSet -->
+	<resultMap type="LongReview" id="longReviewResultSet">
+		<result column="REVIEW_NO" property="reviewNo"/>
+		<result column="REVIEW_CONTENT" property="reviewContent"/>
+		<result column="REVIEW_DATE" property="reviewDate"/>
+		<result column="USER_NO" property="userNo"/>
+		<result column="HOUSE_NO" property="houseNo"/>
+		<result column="originName01" property="ORIGIN_NAME_01"/>
+		<result column="originName02" property="ORIGIN_NAME_02"/>
+		<result column="originName03" property="ORIGIN_NAME_03"/>
+	</resultMap>
 	
 	
 	<!-- ============================ 단기예약 ================================ -->
@@ -285,11 +301,23 @@
 	<!-- ============================ 장기돌봄 예약 ================================ -->
 	
 	<!-- 장기돌봄 처음 페이지 화면 -->
-	
-	<select id="firstHouseList" resultMap="houseResultSet">
-		SELECT H.OWNER_NAME, H.HOUSE_ADDRESS, H.INTRODUCTION_SUMMARY,
-     		   H.ORIGIN_NAME, H.FILE_PATH, H.HOUSE_NO
-		FROM HOUSE H 
+	<select id="firstHouseList" resultType="House">
+		SELECT H.HOUSE_NO AS houseNo
+		     , H.OWNER_NAME AS ownerName
+		     , H.INTRODUCTION_SUMMARY AS introductionSummary
+		     , H.HOUSE_ADDRESS AS houseAddress
+		     , H.NEARBY_HOSPITAL AS nearbyHospital
+		     , P.HOUSE_PET_NAME AS housePetNo
+		     , W.HOUSE_WALK_NAME AS houseWalkNo
+		     , T.PET_TYPE_NAME AS petTypeNo
+		     , H.ORIGIN_NAME_01 AS originName01
+		     , H.ORIGIN_NAME_02 AS originName02
+		     , H.ORIGIN_NAME_03 AS originName03
+		     , H.FILE_PATH AS filePath
+		FROM HOUSE H
+		JOIN HOUSE_PET P USING (HOUSE_PET_NO)
+		JOIN HOUSE_WALK W USING (HOUSE_WALK_NO)
+		JOIN PET_TYPE T USING (PET_TYPE_NO)
 	</select>
 	<select id="firstListCount" resultType="_int">
 		SELECT COUNT(*)
@@ -297,38 +325,60 @@
 	</select>
 	
 	<!-- 장기돌봄 집리스트 조건부로 불러오기 -->
-	<select id="selectHouseList" parameterType="HouseReservation" resultMap="houseResultSet">
-		SELECT H.OWNER_NAME, H.HOUSE_ADDRESS, H.INTRODUCTION_SUMMARY,
-     		   H.ORIGIN_NAME, H.FILE_PATH, H.HOUSE_NO
-		FROM HOUSE H 
+	<select id="selectHouseList" parameterType="HouseReservation" resultType="House">
+		SELECT H.HOUSE_NO AS houseNo,
+		       H.OWNER_NAME AS ownerName,
+		       H.INTRODUCTION_SUMMARY AS introductionSummary,
+		       H.HOUSE_ADDRESS AS houseAddress,
+		       H.NEARBY_HOSPITAL AS nearbyHospital,
+		       P.HOUSE_PET_NAME AS housePetNo,
+		       W.HOUSE_WALK_NAME AS houseWalkNo,
+		       T.PET_TYPE_NAME AS petTypeNo,
+		       H.ORIGIN_NAME_01 AS originName01,
+		       H.ORIGIN_NAME_02 AS originName02,
+		       H.ORIGIN_NAME_03 AS originName03,
+		       H.FILE_PATH AS filePath
+		FROM HOUSE H
+		JOIN HOUSE_PET P ON H.HOUSE_PET_NO = P.HOUSE_PET_NO
+		JOIN HOUSE_WALK W ON H.HOUSE_WALK_NO = W.HOUSE_WALK_NO
+		JOIN PET_TYPE T ON H.PET_TYPE_NO = T.PET_TYPE_NO
 		WHERE H.HOUSE_ADDRESS LIKE '%'||#{address}||'%'
-		AND NOT EXISTS(
-						SELECT *
-						FROM HOUSE_RESERVATION R
-						WHERE H.HOUSE_NO = R.HOUSE_NO
-						AND R.START_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
-						AND R.END_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
-					   )
+		AND H.HOUSE_PET_NO = #{pet}
+		AND H.HOUSE_WALK_NO = #{walk}
+		AND T.PET_TYPE_NO = #{petTypeNo}
+		AND NOT EXISTS (
+		    SELECT *
+		    FROM HOUSE_RESERVATION R
+		    WHERE H.HOUSE_NO = R.HOUSE_NO
+		    AND R.START_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		    AND R.END_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		)
 	</select> 
 	
 	<!-- 페이징바 처리 -->
 	<select id="listCount" parameterType="HouseReservation" resultType="_int">
 		SELECT COUNT(*) 
 		FROM HOUSE H
+		JOIN HOUSE_PET P ON H.HOUSE_PET_NO = P.HOUSE_PET_NO
+		JOIN HOUSE_WALK W ON H.HOUSE_WALK_NO = W.HOUSE_WALK_NO
+		JOIN PET_TYPE T ON H.PET_TYPE_NO = T.PET_TYPE_NO
 		WHERE H.HOUSE_ADDRESS LIKE '%'||#{address}||'%'
-		AND NOT EXISTS(
-						SELECT *
-						FROM HOUSE_RESERVATION R
-						WHERE H.HOUSE_NO = R.HOUSE_NO
-						AND R.START_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
-						AND R.END_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
-					   )
+		AND H.HOUSE_PET_NO = #{pet}
+		AND H.HOUSE_WALK_NO = #{walk}
+		AND T.PET_TYPE_NO = #{petTypeNo}
+		AND NOT EXISTS (
+		    SELECT *
+		    FROM HOUSE_RESERVATION R
+		    WHERE H.HOUSE_NO = R.HOUSE_NO
+		    AND R.START_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		    AND R.END_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		)
 	</select>
 	
 	<!-- 집 상세정보 -->
 	<select id="detailHouse" parameterType="_int" resultMap="houseResultSet">
 		SELECT HOUSE_NO, OWNER_NAME, HOUSE_ADDRESS, INTRODUCTION_SUMMARY, INTRODUCTION_DETAILED,
-			   NEARBY_HOSPITAL, ORIGIN_NAME, FILE_PATH
+			   NEARBY_HOSPITAL, ORIGIN_NAME_01,ORIGIN_NAME_02,ORIGIN_NAME_03, FILE_PATH
 		FROM HOUSE
 		WHERE HOUSE_NO = #{houseNo}
 		AND STATUS = 'Y'
@@ -389,6 +439,27 @@
 					                  ,#{userId},#{totalAmount}
 					                  )
 	</insert>
+	
+	<!-- 집 후기정보 -->
+	<select id="reviewCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM LONG_REVIEW
+		WHERE HOUSE_NO = #{houseNo}
+	</select>
+	<select id="selectLongReview" parameterType="_int" resultType="LongReview">
+		SELECT REVIEW_NO AS reviewNo
+		     , REVIEW_CONTENT AS reviewContent
+		     , REVIEW_DATE AS reviewDate
+		     , FILE_PATH AS filePath
+		     , ORIGIN_NAME_01 AS originName01
+		     , ORIGIN_NAME_02 AS originName02
+		     , ORIGIN_NAME_03 AS originName03
+		     , M.USER_ID AS userNo
+		FROM LONG_REVIEW L, MEMBER M
+		WHERE L.USER_NO = M.USER_NO
+		AND HOUSE_NO = #{houseNo}
+	</select>
+	
 	
 	<!-- 결제 구분을 위한 reservationId 불러오기 -->
 	<select id="reservationId" resultType="_int">

@@ -17,6 +17,11 @@ public class House {
     private String environmentInfo; // ENVIRONMENT_INFO VARCHAR2(1000) NOT NULL
     private String supplyGuide; // SUPPLY_GUIDE VARCHAR2(1000) NOT NULL
     private String certification; // CERTIFICATION VARCHAR2(1000) NOT NULL
-    private String originName; // ORIGIN_NAME VARCHAR2(1000 BYTE)
+    private String originName01; // ORIGIN_NAME VARCHAR2(1000 BYTE)
+    private String originName02; // ORIGIN_NAME VARCHAR2(1000 BYTE)
+    private String originName03; // ORIGIN_NAME VARCHAR2(1000 BYTE)
+    private String housePetNo;
+    private String houseWalkNo;
+    private String petTypeNo;
     private String filePath; // CHANGE_NAME VARCHAR2(1000 BYTE)
 }
