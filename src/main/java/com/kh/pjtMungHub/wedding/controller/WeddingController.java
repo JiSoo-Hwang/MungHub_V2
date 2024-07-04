@@ -3,6 +3,7 @@ package com.kh.pjtMungHub.wedding.controller;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,7 +50,8 @@ public class WeddingController {
 		Member m = (Member)session.getAttribute("loginUser");
 		int userNo = m.getUserNo();
 		if(memberService.isUserRestricted(userNo)) {
-			throw new AccessRestrictedException("이미 성사된 만남을 취소하셔서, 취소한 날로부터 14일간 해당 서비스 사용이 제한되어있습니다.");
+			LocalDateTime restrictedUntil = memberService.getRestrictedUntil(userNo);
+			throw new AccessRestrictedException("이미 확정된 만남을 취소하셔서, 취소한 날로부터 14일간 해당 서비스 사용이 제한되어있습니다.",restrictedUntil);
 		}
 		ArrayList<Breed> breedList = service.selectBreeds();
 		ArrayList<Wedding> weddingList = service.selectWeddings();
@@ -193,7 +195,7 @@ public class WeddingController {
 	@PostMapping("apply.wd")
 	public String applyMatching(Wedding w, MultipartFile upFile, ArrayList<MultipartFile> vacCert, Model model,
 			HttpSession session) {
-
+			
 		if (!upFile.getOriginalFilename().equals("")) {
 			String changeName = saveFile(upFile, session);
 			w.setOriginName(upFile.getOriginalFilename());
@@ -237,7 +239,7 @@ public class WeddingController {
 	}
 
 	@PostMapping("cancel.wd")
-	public Map<String, Object> cancelWedding(@RequestParam("weddingNo")int weddingNo,@RequestParam("userNo") int userNo, Model model) {
+	public Map<String, Object> cancelWedding(@RequestParam("weddingNo")int weddingNo,@RequestParam("userNo") int userNo) {
 		int result = service.cancelWedding(weddingNo, userNo);
 		Map<String, Object> response = new HashMap<>();
 		if(result>0) {

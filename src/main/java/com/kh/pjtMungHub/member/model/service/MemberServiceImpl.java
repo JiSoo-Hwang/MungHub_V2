@@ -1,5 +1,7 @@
 package com.kh.pjtMungHub.member.model.service;
 
+import java.time.LocalDateTime;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +56,11 @@ public class MemberServiceImpl implements MemberService{
 	public int restrictUser(int userNo, int days) {
 		return dao.restrictUser(sqlSession,userNo,days);
 		
+	}
+
+	@Override
+	public LocalDateTime getRestrictedUntil(int userNo) {
+		return dao.getRestrictedUntil(sqlSession,userNo);
 	}
 
 

@@ -1,5 +1,7 @@
 package com.kh.pjtMungHub.member.model.service;
 
+import java.time.LocalDateTime;
+
 import com.kh.pjtMungHub.member.model.vo.Member;
 
 public interface MemberService {
@@ -12,4 +14,5 @@ public interface MemberService {
 	int newUserNo();
 	boolean isUserRestricted(int userNo);
 	int restrictUser(int userNo,int days);
+	LocalDateTime getRestrictedUntil(int userNo);
 }
