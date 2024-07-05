@@ -58,7 +58,7 @@
 								<a class="btn btn-primary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 								&ensp;<button class="btn btn-secondary btn-sm cancelApplied">만남취소</button>
 								&ensp;<button type="button" class="btn btn-primary btn-sm contactBtn" data-bs-toggle="modal" data-bs-target="#infoModal">
-								 상대방 연락처</button>
+								 상대 견주 연락처</button>
 								 <!-- The Modal -->
 								<div class="modal fade" id="infoModal">
 								  <div class="modal-dialog">
@@ -72,7 +72,17 @@
 								
 								      <!-- Modal body -->
 								      <div class="modal-body">
-								        상대방 연락처 내용
+								        <table class="table table-striped contactTable">
+									    <thead>
+									      <tr>
+									        <th>이름</th>
+									        <th>전화번호</th>
+									        <th>이메일주소</th>
+									      </tr>
+									    </thead>
+									    <tbody>
+									    </tbody>
+									  </table>
 								      </div>
 								
 								      <!-- Modal footer -->
@@ -147,9 +157,9 @@
 		$(".cancelApplied").click(function () {
 			if(confirm("이미 승인된 만남을 취소하시면 웨딩플래너 서비스가 14일간 제한됩니다. 그래도 취소하실건가요8ㅅ8?")){
 				var weddingNo =$(this).siblings(':eq(0)').val();
-				$.ajax({
-					type:"POST",
-					url : "cancel.wd",
+  				$.ajax({
+					url : "${pageContext.request.contextPath}/cancel.wd",
+					type:"post",
 					data:{
 						weddingNo : weddingNo,
 						userNo : ${loginUser.userNo}
@@ -158,7 +168,7 @@
 						alert(response.message);
 						location.href = "${pageContext.request.contextPath}/";
 					},
-					error:function(xhr,status,error){
+					error:function(){
 						console.log("통신실패");
 					}
 				});
@@ -166,8 +176,27 @@
 		});
 	});
     $(".contactBtn").click(function () {
-		
-	});
+    	var weddingNo = $(this).siblings(':eq(0)').val();
+    	  $.ajax({
+			url:"${pageContext.request.contextPath}/getContactInfo.wd",
+			type:"post",
+			data:{weddingNo:weddingNo},
+			success: function (contactList) {
+				var str = "";
+				for (var i = 0; i < contactList.length; i++) {
+					str+="<tr><td>"
+						+contactList[i].name+"</td><td>"
+						+contactList[i].phone+"</td><td>"
+						+contactList[i].email+"</td></tr>";
+				}
+				$(".contactTable>tbody").html(str);
+			},
+			error:function(){
+				console.log("통신실패");
+			}
+			
+		}); 
+    	  });
     </script>
 </body>
 </html>
