@@ -33,8 +33,12 @@ public class PetCareServiceImpl implements PetCareService {
 	
 	//날짜,시간 지정시 펫시터 리스트형태로 불러오기
 	@Override
-	public ArrayList<PetSitter> selectSitter(AvailableTimes at) {
-		return petCareDao.selectSitter(sqlSession,at);
+	public int selectSitterCount(AvailableTimes at) {
+		return petCareDao.selectSitterCount(sqlSession,at);
+	}
+	@Override
+	public ArrayList<PetSitter> selectSitter(AvailableTimes at,PageInfo pi) {
+		return petCareDao.selectSitter(sqlSession,at,pi);
 	}
 	
 	//요금테이블에서 가격정보 가져오기
@@ -60,7 +64,7 @@ public class PetCareServiceImpl implements PetCareService {
 	public ArrayList<PetSitter> firstSitterList(PageInfo pi) {
 		return petCareDao.firstSitterList(sqlSession,pi);
 	}
-	
+
 	//펫시터 선택 불가능한 날짜 가져오기
 	@Override
 	public ArrayList<Reservation> disabledDates(int petSitterNo) {
@@ -181,6 +185,8 @@ public class PetCareServiceImpl implements PetCareService {
 	public int reservationId() {
 		return petCareDao.reservationId(sqlSession);
 	}
+
+	
 
 	
 
