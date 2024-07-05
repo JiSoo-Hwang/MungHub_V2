@@ -46,7 +46,7 @@
 		WHERE USER_NO = #{userNo}
 	</select>
 	<update id="restrictUser" parameterType="hashmap">
-		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL '${days}' DAY
+		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL '${days}' MINUTE
 		WHERE USER_NO = #{userNo}
 	</update>
 	<select id="getRestrictedUntil" parameterType="_int" resultType="java.time.LocalDateTime">

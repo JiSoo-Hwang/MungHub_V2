@@ -34,6 +34,9 @@ ul {
 li {
 	float: left;
 }
+#confirmBtn{
+	display: none;
+}
 </style>
 </head>
 <body>
@@ -111,10 +114,13 @@ li {
 									<c:when test="${wedding.approval eq 'R' }">
 										<tr>
 											<th>수락여부</th>
-											<td>신청이 거절되었습니다...</td>
+											<td>신청이 거절(또는 취소)되었습니다...</td>
 										</tr>
 										<tr> 
 											<th>거절 사유</th>
+											<c:if test="${wedding.reason == null }">
+											<td>상대방 견주의 개인 사정으로 만남이 취소되었습니다...૮ ㅜﻌㅜა</td>
+											</c:if>
 											<td>${wedding.reason}</td>
 										</tr>
 									</c:when>
@@ -145,7 +151,7 @@ li {
 								<br> <br> <br> <br> <br> <br>
 																<c:choose>
 										<c:when test="${loginUser.userId ne 'admin' }">
-										<a type="button" class="btn btn-warning" href="wedList.wd">목록으로</a>
+										<a type="button" class="btn btn-warning" href="regList.wd?userNo=${loginUser.userNo }">목록으로</a>
 										</c:when>
 										<c:otherwise>
 										<a type="button" class="btn btn-warning" href="admin.wd">목록으로</a>
@@ -166,14 +172,15 @@ li {
 										</c:when>
 										<c:when test="${wedding.approval eq 'W' && loginUser.userNo ne wedding.userNo }">
 										<button type="button" class="btn btn-primary" id="acceptBtn">만남수락</button>
-										  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">
-    만남거절
-  </button>
+										  <button type="button" id="confirmBtn" data-bs-toggle="modal" data-bs-target="#confirmModal"></button>
+										  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#rejectModal">
+											만남거절
+											</button>
 										</c:when>
 										<c:when test="${loginUser.userId eq 'admin' && wedding.approval eq 'N' }">
 										<button class="btn btn-primary" id="approveBtn">신청승인</button>
   
-  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#myModal">
+  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#rejectModal">
     신청거절
   </button>
 										</c:when>
@@ -187,7 +194,7 @@ li {
 			</ul>
 	</div>
 	<!-- The Modal -->
-<div class="modal fade" id="myModal">
+<div class="modal fade" id="rejectModal">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -214,6 +221,37 @@ li {
     </div>
   </div>
 </div>
+	<!-- The Modal -->
+<div class="modal fade" id="confirmModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">회원인증</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+		
+      <!-- Modal body -->
+      <div class="modal-body">
+        <p>만남을 수락하시면 회원님의 연락처가 상대방에게 전달됩니다.</p>
+        <p>상대방에게 개인정보(회원님의 성함,전화번호,이메일) 제공을 </p>
+        <p>동의하신다면 비밀번호를 입력해주세요.</p>
+      <div class="input-group mb-3">
+      	<span class="input-group-text">비밀번호</span>
+ 		 <input type="password" class="form-control" id="checkPwd">
+      </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="certBtn">만남 수락하기</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">창 닫기</button>
+      </div>
+
+    </div>
+  </div>
+</div>
 <script>
 $("#approveBtn").click(function() {
 	var flag = confirm("정말 승인하시겠습니까?");
@@ -224,8 +262,26 @@ $("#approveBtn").click(function() {
 $("#acceptBtn").click(function () {
 	var yn = confirm("정말 수락하시겠습니까?");
 	if(yn){
-		location.href="accept.wd?weddingNo=${wedding.weddingNo}";
+		$("#confirmBtn").click();
 	}
+});
+$("#certBtn").click(function () {
+	var checkPwd = $("#checkPwd").val();
+	$.ajax({
+		url:"${pageContext.request.contextPath}/confirm.wd",
+		type:"post",
+		data:{userPwd:checkPwd},
+		success:function(checkPwd){
+			if(checkPwd){
+			location.href="accept.wd?weddingNo=${wedding.weddingNo}";
+			}else{
+				alert("비밀번호가 틀렸습니다. 다시 입력해주세요.");
+			}
+		},
+		error: function () {
+			console.log("통신실패");
+		}
+	});
 });
 </script>
 		
