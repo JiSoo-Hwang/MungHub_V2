@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.kh.pjtMungHub.board.model.vo.Board;
-import com.kh.pjtMungHub.board.model.vo.parameterVo;
+import com.kh.pjtMungHub.board.model.vo.ParameterVo;
 import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,8 @@ public class LoggerTest {
 	private SqlSessionTemplate sqlSession;
 	@Test
 	public void test1() {
-		parameterVo p = parameterVo.builder().category(1).sort("latest").build();
+		
+		ParameterVo p = ParameterVo.builder().category("0").sort("latest").build();
 		ArrayList<Board>boardList =(ArrayList)sqlSession.selectList("boardMapper.selectList",p);
 		for(Board b: boardList) {
 			

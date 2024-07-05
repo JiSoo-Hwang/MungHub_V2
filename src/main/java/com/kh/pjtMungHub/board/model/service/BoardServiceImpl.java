@@ -33,23 +33,22 @@ public class BoardServiceImpl implements BoardService {
 		// TODO Auto-generated method stub
 		return boardDao.listCount(sqlSession,category);
 	}
+	//카테고리 선택
+	@Override
+	public ArrayList<Category> selectCategory() {
+		// TODO Auto-generated method stub
+		return boardDao.selectCategory(sqlSession);
+	}
 	
 	 @Override
 	 public ArrayList<Board> selectList(PageInfo pi, String sort) {
 		 // TODO Auto-generated method stub
 	     return boardDao.selectList(sqlSession, pi, sort);
 	 }
-	
 	@Override
-	public ArrayList<Board> selectList(PageInfo pi, String category, String sort) {
+	public ArrayList<Board> selectList(PageInfo pi, String sort, String category) {
 		// TODO Auto-generated method stub
 		return boardDao.selectList(sqlSession,pi,sort,category);
-	}
-	//카테고리 선택
-	@Override
-	public ArrayList<Category> selectCategory() {
-		// TODO Auto-generated method stub
-		return boardDao.selectCategory(sqlSession);
 	}
 	@Override
 	public int eventCount() {

@@ -33,9 +33,6 @@
     <div class="content">
         <br><br>
         <div class="innerOuter">
-            <h2>게시글 상세보기</h2>
-            <br>
-
             <a class="btn btn-secondary" style="float:right;" href="list.bo">목록으로</a>
             <br><br>
 
@@ -56,20 +53,7 @@
                     <th>작성일</th>
                     <td>${b.uploadDate }</td>
                 </tr>
-                <tr>
-                    <th>첨부파일</th>
-                    <td colspan="3">
-                    	<c:choose>
-                    		<c:when test="${empty b.originName }">
-                    			첨부파일이 없습니다.
-                    		</c:when>
-                    		<c:otherwise>
-		                        <a href="${b.changeName}" download="${b.originName }">${b.originName }</a>
-                    		</c:otherwise>
-                    	</c:choose>
-                    	
-                    </td>
-                </tr>
+                
                 <tr>
                     <th>내용</th>
                 </tr>

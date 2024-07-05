@@ -115,7 +115,7 @@ color:white;
 		<div class="innerOuter" style="padding: 5% 10%;">
 			<!-- 로그인 후 상태일 경우만 보여지는 글쓰기 버튼 -->
 			<div class="content">
-				<table id="categoryList">
+				<table id="category-area">
 					<tr>
 						<td>
 						<button name="category" value="0">전체</button>
@@ -204,8 +204,6 @@ color:white;
 				location.href="board.bo?currentPage=1&category="+category+"&sort="+sortBy;
 				});
 	     	});
-     	
-     	
          </script>
 
 	<div id="pagingArea">

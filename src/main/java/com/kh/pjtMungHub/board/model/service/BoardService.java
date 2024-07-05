@@ -21,7 +21,6 @@ public interface BoardService {
 		//해당 카테고리 게시물 총 개수 조회
 		int listCount(String category);
 		
-		//게시글 목록조회(카테고리 포함)
 		ArrayList<Board> selectList(PageInfo pi, String sort, String category);
 		
 		//이벤트 게시글 총 개수 조회
@@ -34,4 +33,6 @@ public interface BoardService {
 
 		//게시물 만들기
 		int insertBoard(int BoardNo);
+
+
 }

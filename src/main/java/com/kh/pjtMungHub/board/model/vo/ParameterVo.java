@@ -1,5 +1,7 @@
 package com.kh.pjtMungHub.board.model.vo;
 
+import java.util.ArrayList;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class parameterVo {
+public class ParameterVo {
 	
-	private int category;
+	
+	private int offset;
+	private int limit;
+	private String category;
 	private String sort;
+	
+	
 
 }

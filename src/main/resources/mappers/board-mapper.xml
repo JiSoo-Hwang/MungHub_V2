@@ -25,7 +25,7 @@
 		BOARD
 		WHERE STATUS ='Y'
 	</select>
-	<select id="selectList" resultType="Board" parameterType="com.kh.pjtMungHub.board.model.vo.parameterVo">
+	<select id="selectList" resultType="Board" parameterType="com.kh.pjtMungHub.board.model.vo.ParameterVo">
 		SELECT BOARD_NO boardNo
 			,BOARD_TITLE boardTitle
 			,USER_ID boardWriter
@@ -35,7 +35,7 @@
 		JOIN MEMBER M ON M.USER_NO=B.BOARD_WRITER
 		WHERE B.STATUS='Y'
 	<if test="category != 0">
-		AND CATEGORY_NO = 1
+		AND CATEGORY_NO = #{category}
 	</if>
  		ORDER BY
 		<choose>
@@ -61,10 +61,9 @@
 
 	<update id="increaseCount" parameterType="_int">
 		UPDATE BOARD
-		SET
-		COUNT=COUNT+1
+		SET COUNT=COUNT+1
 		WHERE BOARD_NO=#{boardNo}
-		AND STATUS ='Y'
+		AND B.STATUS ='Y'
 	</update>
 	<select id="selectBoard" parameterType="_int"
 		resultMap="boardResultSet">

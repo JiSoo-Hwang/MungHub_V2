@@ -65,7 +65,7 @@ public class BoardController {
 	    if (category.equals("0")) {
 	    	List = boardService.selectList(pi, sort);
 	    } else {
-	    	List = boardService.selectList(pi, category, sort);
+	    	List = boardService.selectList(pi, sort,category);
 	    }
 	    
 	    System.out.println(sort);
@@ -76,30 +76,13 @@ public class BoardController {
 	    model.addAttribute("pi", pi);
 	    model.addAttribute("sort", sort);
 	    model.addAttribute("category", category);
+	    model.addAttribute("ctList",ctList);
 	    model.addAttribute("List",List);
 
 	    
 	    return "board/boardListView";
 	}
-	/*
-	@GetMapping("event.bo")
-	public String eventList(Model model,@RequestParam(value="currentPage", defaultValue="1") int currentPage) {
-		
-		int eventCount =boardService.eventCount();
-		
-		int pageLimit = 5;
-	    int boardLimit = 5;
-	    
-	    // 페이지 정보 객체 생성
-	    PageInfo pi = Pagination.getPageInfo(eventCount, currentPage, pageLimit, boardLimit);
-	    
-	    ArrayList<Board> evList =boardService.selectEvent();
-	    
-	    
-	    
-		return "board/eventListView";
-	}
-	*/
+	
 	@GetMapping("detail.bo")
 	public ModelAndView selectBoard(int boardNo,
 									ModelAndView mv) {
