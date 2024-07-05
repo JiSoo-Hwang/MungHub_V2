@@ -5,186 +5,217 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3dcfbff0a780d5171a2a2f039fc60ac0&libraries=services,clusterer,drawing"></script>
+	<style>
+		#result tbody td span{
+			cursor: pointer;
+		}
+	
+	</style>
+
 </head>
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
+	
+	<button onclick="test2();">테스트2</button>
+	
+ 	<form action="mapInfo.ho">
+        <button type="submit">전송</button>
+    </form>
+    
+    <div>
+        <pre>${reviewText}</pre>
+    </div>    
+    
+    <div>
+        <pre>${reviewHtml}</pre>
+    </div>
+	
 	지역 : 
 	<select id="location">
-		<option></option>
-		<option></option>
-		<option></option>
-		<option></option>
-		<option></option>
-		<option></option>
-		<option></option>
-		<option></option>
-		<option></option>
-		<option></option>
-		<option></option>
-		<option></option>
-		</select>	
-		가평군    :  41820
-경기도    :  41000
-
-고양시    :  41280
-
-과천시    :  41290
-
-광명시    :  41210
-
-광주시    :  41610
-
-구리시    :  41310
-
-군포시    :  41410
-
-김포시    :  41570
-
-남양주시  :  41360
-
-동두천시  :  41250
-
-부천시    :  41190
-
-성남시    :  41130
-
-수원시    :  41110
-
-시흥시    :  41390
-
-안산시    :  41270
-
-안성시    :  41550
-
-안양시    :  41170
-
-양주시    :  41630
-
-양평군    :  41830
-
-여주시    :  41670
-
-연천군    :  41800
-
-오산시    :  41370
-
-용인시    :  41460
-
-의왕시    :  41430
-
-의정부시  :  41150
-
-이천시    :  41500
-
-파주시    :  41480
-
-평택시    :  41220
-
-포천시    :  41650
-
-하남시    :  41450
-
-화성시    :  41590
-
+	    <option value="41820">가평군</option>
+	    <option value="41280">고양시</option>
+	    <option value="41290">과천시</option>
+	    <option value="41210">광명시</option>
+	    <option value="41610">광주시</option>
+	    <option value="41310">구리시</option>
+	    <option value="41410">군포시</option>
+	    <option value="41570">김포시</option>
+	    <option value="41360">남양주시</option>
+	    <option value="41250">동두천시</option>
+	    <option value="41190">부천시</option>
+	    <option value="41130">성남시</option>
+	    <option value="41110">수원시</option>
+	    <option value="41390">시흥시</option>
+	    <option value="41270">안산시</option>
+	    <option value="41550">안성시</option>
+	    <option value="41170">안양시</option>
+	    <option value="41630">양주시</option>
+	    <option value="41830">양평군</option>
+	    <option value="41670">여주시</option>
+	    <option value="41800">연천군</option>
+	    <option value="41370">오산시</option>
+	    <option value="41460">용인시</option>
+	    <option value="41430">의왕시</option>
+	    <option value="41150">의정부시</option>
+	    <option value="41500">이천시</option>
+	    <option value="41480">파주시</option>
+	    <option value="41220">평택시</option>
+	    <option value="41650">포천시</option>
+	    <option value="41450">하남시</option>
+	    <option value="41590">화성시</option>
+	</select>
 	
-	 <div class="container mt-4">
-        <h1 class="text-center">Hospital List</h1>
-        <button id="test" class="btn btn-primary mb-3">테스트</button>
-
-        <table class="table table-bordered" id="result">
-            <thead class="table-dark">
-                <tr>
-                    <th>번호</th>
-                    <th>시군명</th>
-                    <th>사업장명</th>
-                    <th>영업상태구분코드</th>
-                    <th>영업상태명</th>
-                    <th>폐업일자</th>
-                    <th>소재지시설전화번호</th>
-                    <th>소재지우편번호</th>
-                    <th>도로명우편번호</th>
-                    <th>소재지도로명주소</th>
-                    <th>소재지지번주소</th>
-                    <th>소재지우편번호</th>
-                    <th>WGS84위도</th>
-                    <th>WGS84경도</th>
-                    <th>X좌표값</th>
-                    <th>Y좌표값</th>
-                    <th>총종업원수</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- 병원 리스트가 여기에 삽입됩니다 -->
-            </tbody>
-        </table>
-    </div>
-
+	<div class="container mt-4">
+	      <h1 class="text-center">Hospital List</h1>
+	      <button id="test" class="btn btn-primary mb-3">테스트</button>
+	
+	      <table class="table table-bordered" id="result">
+	          <thead class="table-dark">
+	              <tr>
+	                  <th>시군명</th>
+	                  <th>사업장명</th>
+	                  <th>전화번호</th>
+	                  <th>도로명주소</th>
+	                  <th>소재지지번주소</th>
+	                  <th>카카오 제공정보</th>
+	              </tr>
+	          </thead>
+	          <tbody>
+	              <!-- 병원 리스트가 여기에 삽입됩니다 -->
+	          </tbody>
+	      </table>
+	</div>
+	
+	<br><br>
 
 	<script>
+	
 		$(function() {
-	        $('#test').on('click', function() {
-	            $.ajax({
-	                url: "hospitalList.ho",
-	                type: "GET",
-	                dataType: "xml", // 반환 타입을 xml로 지정
-	                success: function(result) {
-	                    var rows = $(result).find('row'); // XML 응답에서 row 요소를 찾음
-	                    var str = "";
+		    $('#test').on('click', function() {
+		        var location = $('#location').val();
+		        $.ajax({
+		            url: "hospitalList.ho",
+		            data: {
+		                location: location
+		            },
+		            type: "GET",
+		            dataType: "xml", // 반환 타입을 xml로 지정
+		            success: function(result) {
+		                var rows = $(result).find('row'); // XML 응답에서 row 요소를 찾음
+		                var str = "";
+		                
+		                rows.each(function(index, row) {
+		                    if ($(row).find("BSN_STATE_DIV_CD").text() == '1' && $(row).find("REFINE_ROADNM_ADDR").text() != '') { // 정상영업 코드 '1'만, 주소없는 업체 X
+		                        
+		                    	var address = $(row).find("REFINE_LOTNO_ADDR").text();
+		                    	var locPhone = $(row).find("LOCPLC_FACLT_TELNO").text();
+		                    
+		                        str += "<tr>" 
+		                            + "<td><span>" + $(row).find("SIGUN_NM").text() + "</span></td>"
+		                            + "<td><span>" + $(row).find("BIZPLC_NM").text() + "</span></td>"
+		                            + "<td><span class='phone'>" + (locPhone ? locPhone : '') + "</span></td>"
+		                            + "<td><span>" + $(row).find("REFINE_ROADNM_ADDR").text() + "</span></td>"
+		                            + "<td><span>" + $(row).find("REFINE_LOTNO_ADDR").text() + "</span></td>"
+		                            + "<td data-address='" + address + "'><span></span></td>" // 카카오 제공정보 셀, 주소를 data 속성에 저장
+		                            + "</tr>";
+		                    }
+		                });
 	
-	                    rows.each(function(index, row) {
-	                    	str += "<tr>" 
-                                + "<td>" + $(row).find("SIGUN_CD").text() + "</td>"
-                                + "<td>" + $(row).find("SIGUN_NM").text() + "</td>"
-                                + "<td>" + $(row).find("BIZPLC_NM").text() + "</td>"
-                                + "<td>" + $(row).find("BSN_STATE_DIV_CD").text() + "</td>"
-                                + "<td>" + $(row).find("BSN_STATE_NM").text() + "</td>"
-                                + "<td>" + $(row).find("CLSBIZ_DE").text() + "</td>"
-                                + "<td>" + $(row).find("LOCPLC_FACLT_TELNO").text() + "</td>"
-                                + "<td>" + $(row).find("LOCPLC_ZIP_CD").text() + "</td>"
-                                + "<td>" + $(row).find("ROADNM_ZIP_CD").text() + "</td>"
-                                + "<td>" + $(row).find("REFINE_ROADNM_ADDR").text() + "</td>"
-                                + "<td>" + $(row).find("REFINE_LOTNO_ADDR").text() + "</td>"
-                                + "<td>" + $(row).find("REFINE_ZIP_CD").text() + "</td>"
-                                + "<td>" + $(row).find("REFINE_WGS84_LAT").text() + "</td>"
-                                + "<td>" + $(row).find("REFINE_WGS84_LOGT").text() + "</td>"
-                                + "<td>" + $(row).find("X_CRDNT_VL").text() + "</td>"
-                                + "<td>" + $(row).find("Y_CRDNT_VL").text() + "</td>"
-                                + "<td>" + $(row).find("TOT_EMPLY_CNT").text() + "</td>"
-                                + "</tr>";
-	                    });
-	
-	                    $('#result tbody').html(str); // 결과를 테이블 본문에 삽입
-	                    console.log('통신 성공');
-	                },
-	                error: function() {
-	                    console.log('통신 실패 ㅠㅠ');
-	                }
-	            });
+		                $('#result tbody').html(str); // 결과를 테이블 본문에 삽입
+		                console.log('통신 성공');
+		                
+		                // 각 행에 대해 지도 API 호출
+		                $('#result tbody tr').each(function(index, element) {
+		                    var address = $(element).find('td:last').data('address'); //공공데이터에서 가져온 주소값
+		                    getCompanyInfoByAddress(address, element); //지도 api에 전달할 값들을 매개변수로
+		                });
+		                rowCilck(); //클릭 이벤트
+		            },
+		            error: function() {
+		                console.log('통신 실패 ㅠㅠ');
+		            }
+		        });
+		    });
+		});
+		function rowCilck(){ // tr 클릭 이벤트 (병원 정보와 함께 예약 페이지로 이동)
+			$('#result tbody td span').on('click', function() {
+				var row = $(this).closest('tr'); //현재 클린된 sapn의 요소의 부모 tr 요소를 찾음
+	            var hosName = row.find('td:nth-child(2) span').text();
+	            var hosPhone = row.find('td:nth-child(3) span').text();
+	            var hosAddress = row.find('td:nth-child(4) span').text();
+	            
+	            // encodeURIComponent: 전달값을 조금더 정확하게 전달해줌
+	            var url = "hospital.re?hosName=" + encodeURIComponent(hosName) + "&hosPhone=" + encodeURIComponent(hosPhone) + "&hosAddress=" + encodeURIComponent(hosAddress);
+				console.log(url);
+	            location.href = url;
 	        });
-	    });
-			/* json 형태로 받아올 경우
-			$('#test').on('click',function(){
-				$.ajax({
-					url : "hospitalList.ho",
-					success : function(result){
-						var items = result.reponse.body.items;
-						var str = "";
-						
-						for(var i=0; i<items.length; i++){
-							var item = items[i];
-							str += "<tr>"
-								+ "<td>" + item.BIZPLC_NM + "</td>"
-								+ "</tr>"
-						}
-						$('#result tobdy').html(str);
-						console.log('통신성공')
-					},
-					error : function(){
-						console.log('통신실패 ㅠㅠ')
+		}
+	
+		// 카카오 지도 API를 사용하여 특정 주소의 업체 정보를 가져오는 함수
+		function getCompanyInfoByAddress(dataAddress, rowElement) {
+		    var geocoder = new kakao.maps.services.Geocoder();
+		    // 주소로 좌표를 검색합니다
+		    geocoder.addressSearch(dataAddress, function(result, status) {
+		        if (status === kakao.maps.services.Status.OK) {
+		            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+		            var ps = new kakao.maps.services.Places();
+	
+		            // 해당 좌표의 업체 정보를 검색합니다
+		            ps.keywordSearch(dataAddress, function(data, status, pagination) {
+		                if (status === kakao.maps.services.Status.OK) {
+		                    updateKakaoInfo(data, rowElement);
+		                } else {
+		                    console.log('업체 정보를 찾을 수 없습니다.');
+		                }
+		            }, {location: coords, radius: 50});
+		        } else {
+		            console.log('주소를 찾을 수 없습니다.');
+		        }
+		    });
+		}
+		// 업체 정보를 화면에 표시하는 함수
+		function updateKakaoInfo(data, rowElement) {
+		    var kakaoInfo = rowElement.cells[rowElement.cells.length - 1]; // 마지막 셀을 가리킵니다
+	
+		    if (data.length > 0) {
+		        var kakaoData = data[0]; // 첫 번째 결과만 사용
+		        var phoneCell = $(rowElement).find('td:nth-child(3) span'); //공공데이터에서 가져온 연락처
+		        if (!phoneCell.text()) { // 가 비어있다면
+		            phoneCell.text(kakaoData.phone ? kakaoData.phone : '없음'); //지도 api에서 가져온 연락처로 채우기, 도 없으면 '없음'으로
+		        }
+		        kakaoInfo.innerHTML = '<p>업체명: ' + kakaoData.place_name 
+		                            + '<br>주소: ' + kakaoData.address_name 
+		                            + '<br>전화번호: ' + (kakaoData.phone ? kakaoData.phone : '없음') 
+		                            + '<br>카테고리: ' + kakaoData.category_name 
+		                            + '<br>URL: ' + (kakaoData.place_url ? '<a href="' + kakaoData.place_url + '" target="_blank">바로가기</a>' : '없음') + '</p>';
+		    } else {
+		        kakaoInfo.innerHTML = '<p>카카오 제공정보가 없습니다.</p>';
+		    }
+		}
+		/* json 형태로 받아올 경우
+		$('#test').on('click',function(){
+			$.ajax({
+				url : "hospitalList.ho",
+				success : function(result){
+					var items = result.reponse.body.items;
+					var str = "";
+					
+					for(var i=0; i<items.length; i++){
+						var item = items[i];
+						str += "<tr>"
+							+ "<td>" + item.BIZPLC_NM + "</td>"
+							+ "</tr>"
 					}
-				});
+					$('#result tobdy').html(str);
+					console.log('통신성공')
+				},
+				error : function(){
+					console.log('통신실패 ㅠㅠ')
+				}
 			});
-			*/
+		});
+		*/
 	</script>
 </body>
 </html>

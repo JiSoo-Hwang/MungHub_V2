@@ -139,7 +139,20 @@
 	
 	
 	<!-- ============================ 단기예약 ================================ -->
-	
+	<select id="selectSitterCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM PET_SITTER P
+		WHERE P.STATUS = 'Y'
+			AND NOT EXISTS (
+		    SELECT 1
+		    FROM RESERVATION R
+		    WHERE R.PET_SITTER_NO = P.PET_SITTER_NO
+		    AND R.VISIT_DATE = TO_DATE(#{visitDate}, 'YYYY-MM-DD')
+		    AND (
+		        (R.START_TIME &lt; #{startTime} AND R.END_TIME > #{endTime})
+		    	)
+			)
+	</select>
 	<!-- 펫시터 선택화면 -->
 	<select id="selectSitter" parameterType="AvailableTimes" resultMap="petSitterResultSet">
 		SELECT P.PET_SITTER_NO,P.PET_SITTER_NAME, P.INTRODUCE
@@ -165,6 +178,7 @@
 				  ,P.ORIGIN_NAME,P.FILE_PATH
 		FROM PET_SITTER P
 	</select>
+	
 	<!-- 펫시터 선택 불가능한 날짜,시간 가져오기 -->
 	<select id="disabledDates" resultType="_int" resultMap="reservationResultSet">
 		SELECT R.RESERVATION_ID, R.VISIT_DATE, R.START_TIME, R.END_TIME

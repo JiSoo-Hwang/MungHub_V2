@@ -25,8 +25,16 @@ import com.kh.pjtMungHub.petcare.model.vo.SupplyGuide;
 public class PetCareDao {
 
 	//날짜,시간 지정시 펫시터 리스트형태로 불러오기
-	public ArrayList<PetSitter> selectSitter(SqlSessionTemplate sqlSession, AvailableTimes at) {
-		return (ArrayList)sqlSession.selectList("petcareMapper.selectSitter");
+	public int selectSitterCount(SqlSessionTemplate sqlSession, AvailableTimes at) {
+		return sqlSession.selectOne("petcareMapper.selectSitterCount",at);
+	}
+	public ArrayList<PetSitter> selectSitter(SqlSessionTemplate sqlSession, AvailableTimes at,PageInfo pi) {
+		
+		int limit = pi.getBoardLimit();
+		int offset =(pi.getCurrentPage()-1)*limit;
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		return (ArrayList)sqlSession.selectList("petcareMapper.selectSitter",at,rowBounds);
 	}
 	
 	//요금테이블에서 가격정보 가져오기
@@ -163,6 +171,8 @@ public class PetCareDao {
 	public int reservationId(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectOne("petcareMapper.reservationId");
 	}
+
+	
 
 	
 

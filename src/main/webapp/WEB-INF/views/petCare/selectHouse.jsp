@@ -247,10 +247,6 @@
     
    	
     <section class="partner">
-        
-		
-		
-        
         <div class="house-container" id="house-container">
         
         

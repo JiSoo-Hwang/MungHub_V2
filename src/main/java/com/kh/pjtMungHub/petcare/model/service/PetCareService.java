@@ -20,7 +20,8 @@ import com.kh.pjtMungHub.petcare.model.vo.SupplyGuide;
 public interface PetCareService {
 	
 	//날짜,시간 지정시 펫시터 리스트형태로 불러오기
-	ArrayList<PetSitter> selectSitter(AvailableTimes at);
+	int selectSitterCount(AvailableTimes at);
+	ArrayList<PetSitter> selectSitter(AvailableTimes at,PageInfo pi);
 	//요금테이블에서 가격정보 가져오기
 	Price priceTable(AvailableTimes at);
 	//예약 정보 저장하기
