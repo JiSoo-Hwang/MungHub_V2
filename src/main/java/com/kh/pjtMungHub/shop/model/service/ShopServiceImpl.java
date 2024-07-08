@@ -58,6 +58,9 @@ public class ShopServiceImpl implements ShopService {
 	public int insertProduct(Product p, ParameterVo fileParameter) {
 
 		int result=shopDao.insertProduct(sqlSession, p);
+		
+		System.out.println(fileParameter);
+		
 		int result2=shopDao.insertAttachment(sqlSession, fileParameter);
 		
 		return result*result2;
@@ -202,12 +205,10 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
+	@Transactional
 	public int deleteAttachment(ParameterVo parameter) {
-		// TODO Auto-generated method stub
-		
 		int result = shopDao.deleteAttachment(sqlSession, parameter);
 		int result2= shopDao.rearrangeAttachment(sqlSession,parameter);
-		
 		return result*result2;
 	}
 
@@ -258,6 +259,12 @@ public class ShopServiceImpl implements ShopService {
 	public ArrayList<Review> selectReviewList(ParameterVo parameter2) {
 		// TODO Auto-generated method stub
 		return shopDao.selectReviewList(sqlSession,parameter2);
+	}
+
+	@Override
+	public Attachment selectAttachment(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.selectAttachment(sqlSession,parameter);
 	}
 
 }

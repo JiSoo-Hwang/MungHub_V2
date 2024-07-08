@@ -115,5 +115,8 @@ public interface ShopService {
 	ArrayList<Review> selectReviewList(ParameterVo parameter2);
 
 
+	Attachment selectAttachment(ParameterVo parameter);
+
+
 
 }
