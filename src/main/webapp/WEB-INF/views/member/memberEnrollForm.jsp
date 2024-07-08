@@ -208,14 +208,16 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 		</div>
 		<br><br>
 		<div class="joinModalBtn">
-			<button type="button" data-toggle="modal" data-target="#joinModal" disabled>반려견주(일반 회원)로 가입</button>	
-			<button type="reset" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
+			<button type="button" data-bs-toggle="modal" data-bs-target="#joinModal" disabled>반려견주(일반 회원)로 가입</button>	
+			<button type="button" onclick="teacherCheck();" data-bs-toggle="modal" data-bs-target="#joinModal" disabled>반려견돌보미(반려견유치원 선생님)로 가입</button>
 		</div>
 	</div>
-	
+		<div class="snsJoin" hidden="true">
+			<input type="checkbox" id="snsJoin" checked="${not empty snsJoin ? 'true':'false' }">
+		</div>
 	<script>
-	/*  전부동의 누를 시 자동 동의 체크 <
-		다시 누르면 체크해제(반대로)<
+	/*  전부동의 누를 시 자동 동의 체크 
+		다시 누르면 체크해제(반대로)
 	
 		동의 따로따로 체크할 시 자동으로 전부동의 체크<
 		
@@ -272,17 +274,16 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 				}
 			})
 		})
-		$(".joinModalBtn").on("click",function(){
-			$.ajax({
-				url:"userNo.me",
-				success:function(userNo){
-					$("input[type=hidden]").val(userNo);
-				},
-				error:function(){
-					console.log("통신오류");
-				}
-			})
+		$(function(){
+			if($("#snsJoin").prop("checked")){
+				$(".member-data>#name").val("${snsJoin.name}");
+				$(".member-data>#phone").val("${snsJoin.phone}");
+				$(".member-data>#email").val("${snsJoin.email}");
+			}
 		})
+		function teacherCheck(){
+		$(".teacher-only").attr("hidden",false);
+	}
 	</script>
 	
 		<!-- 회원 가입 클릭시 사용될 모달영역 -->
@@ -293,7 +294,7 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 				<!-- Modal Header -->
 				<div class="modal-header">
 					<h4 class="modal-title">회원 가입</h4>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 				</div>
 
 				<!-- 회원 가입 요청 처리할 form태그 -->
@@ -301,12 +302,11 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 					<!-- Modal body -->
 					<div class="modal-body">
 						<div class="member-data">
-							<input type="hidden" id="userNo" name="userNo">
 							<label for="userId">아이디 :</label>
 							<input type="text" class="form-control mb-2 mr-sm-2" 
 									placeholder="아이디를 입력하세요" id="userId" name="userId" required>
 							<div class="idCheck"></div>		
-							<label for="userPwd">비밀번호 :</label>
+							<label for="password">비밀번호 :</label>
 							<input type="password" class="form-control mb-2 mr-sm-2" 
 									placeholder="등록할 비밀번호를 입력하세요" id="password" name="password" required>
 							<span>비밀번호는 6글자 이상 20자 미만으로, 영어, 숫자 및 특수문자를 반드시 포함하여 구성하셔야 합니다.</span>
@@ -318,59 +318,41 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 							</div>
 							<label for="name">이름 :</label>
 							<input type="text" class="form-control mb-2 mr-sm-2" 
-									placeholder="이름를 입력하세요" id="name" name="name" required>
+									placeholder="이름을 입력하세요" id="name" name="name" required>
 							<label for="phone">전화번호 :</label>
 							<input type="text" class="form-control mb-2 mr-sm-2" 
 									placeholder="하이픈(-) 포함 공백없이 입력해 주시기 바랍니다." id="phone" name="phone" required>
 							<label for="phone">이메일 :</label>
 							<input type="email" class="form-control mb-2 mr-sm-2" 
 									placeholder="" id="email" name="email" >
+							<div class="teacher-only" hidden="true">
+			                    <label for="kindName">소속 유치원 이름 : </label>
+			                    <input type="text" id="kind" name="kind" placeholder="유치원 이름 검색"><button onclick="searchKind(); return false;">검색</button>
+			                    <span class="kindList"></span>
+							</div>
 							<label for="address">주소 :</label>
 							<input type="text" class="form-control mb-2 mr-sm-2" 
 									placeholder="" id="address" name="address" >
-						</div>
 							<label for="">반려견 유무 :</label>
 							<div class="petStatus">
 								<input type="radio" id="yesPet" value="Y" name="petYN">
 								<label for="yesPet">있습니다.</label> &nbsp;&nbsp;
 								<input type="radio" id="noPet" value="N" name="petYN">
 								<label for="noPet">없습니다.</label> &nbsp;&nbsp;
-								<div class="pet-area" style="display:none">
-								<button onclick="addPetData();">추가하기</button>
-									<div class="pet-data">
-										<label for="breed">품종</label>
-										
-										<input type="hidden" id="ownerNo" name="ownerNo">
-										<label for="petName">이름</label>
-										<input type="text" id="petName" name="petName">
-										<label for="">나이</label>
-										<input type="range" id="petAge" name="petAge" min="0" step="1" max="18">
-										<label for="">성별</label>
-										<label for="M">왕자님</label>
-										<input type="radio" name="petGender" value="M">
-										<label for="F">공주님</label>
-										<input type="radio" name="petGender" value="F">
-										<label for="weight">몸무게</label>
-										<input type="number" id="weight" name="weight">
-										<label for="photo">반려견 사진 자랑(1장만!)</label>
-										<input type="file" required>
-									</div>
-									
-								</div>
 							</div>
-								
+						</div>
 					</div>
 					<!-- Modal footer -->
 					<div class="modal-footer">
 						<button type="submit" class="btn btn-danger" disabled>회원가입</button>
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
 					</div>
 				</form>
-
 			</div>
 		</div>
 	</div>
 	<script>
+		var count=0;
 		$(function(){
 			var checkId = $("#userId");
 			checkId.keyup(function(){
@@ -380,10 +362,11 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 						userId: checkId.val()
 					},
 					success:function(result){
+						console.log(result);
 
-						if(result=='NNNNN'){//중복
-							$("#idCheck").show();
-							$("#idCheck").css("color","red").text("사용불가능한 아이디입니다.");
+						if(result=="NNNNN"){//중복
+							$(".idCheck").show();
+							$(".idCheck").css("color","red").text("사용불가능한 아이디입니다.");
 							
 							//중복시 회원가입 버튼 비활성화
 							$("button[type=submit]").attr("disabled",true);
@@ -427,22 +410,40 @@ MUNGHUB는 (이하 '협회'는) 고객님의 개인정보를 중요시하며, "�
 			    }
 			})
 		})
-		$(function(){
-			$(".petStatus>input[type=radio]").on("click",function(){
-				var pet=$(".petStatus>input[value='Y']").prop("checked");
- 				if(pet){
- 					
-					$(".pet-area").show(0);
-				}else{
-					$(".pet-data").empty();
-					$(".pet-area").hide(0);					
-				}
-			})
-		})
-		function addPetData(){
-			var str="";
-			
-		}
+		
+		function searchKind(){
+	        var kind="%";
+	        	kind+=$("#kind").val();
+	        	kind+="%";
+	        console.log(kind);
+	        var tr="<select name='kindName'>";       
+	        $.ajax({
+	            url : "selectKind.me",
+	            data : {
+	                kindName : kind
+	            },
+	            success : function(kList){
+	                if(kList.length==0){
+	                    $("#kind").val("");
+	                }else{
+	                    for(var i in kList){
+	                        tr+="<option value='"
+	                            +kList[i].kindNo+"'>"
+	                            +kList[i].kindName
+	                            +"</option>"
+	                    }
+	                    tr+="</select>";
+	                
+	                $(".kindList").html(tr);
+	                }
+	            },
+	            error : function(){
+	                console.log("오류난듯");     
+	            }
+	        })
+	        return false;
+	    }
+
 	</script>
 </body>
 </html>
