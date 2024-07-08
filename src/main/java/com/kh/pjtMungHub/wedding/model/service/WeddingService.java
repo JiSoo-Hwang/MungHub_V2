@@ -17,10 +17,12 @@ public interface WeddingService {
 
 	Wedding selectWedding(int weddingNo);
 
-	ArrayList<Pet> selectPet(int userNo);
+	ArrayList<Pet> selectPets(int userNo);
 
 	int insertWedding(Wedding w, ArrayList<Vaccine> vacList);
 
+	int updateWedding(Wedding w);
+	
 	ArrayList<Wedding> selectRegList();
 	
 	int rejectReg(Wedding w);
@@ -42,4 +44,6 @@ public interface WeddingService {
 	Pet selectPetByNo(int petNo);
 
 	ArrayList<Member>getContactInfo(int weddingNo);
+
+
 }

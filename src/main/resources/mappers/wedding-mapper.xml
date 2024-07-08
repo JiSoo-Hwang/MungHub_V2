@@ -90,6 +90,18 @@ VALUES(SEQ_WED.NEXTVAL
 			,#{changeName}
 			)
 </insert>
+
+<update id="updateWedding" parameterType="Wedding">
+UPDATE WEDDING SET PET_NO = #{petNo}
+,PEDIGREE = #{pedigree}
+,MEETING_METHOD = #{meetingMethod}
+,PET_INTRO = #{petIntro}
+,PET_NOTE = #{petNote}
+,ORIGIN_NAME = #{originName}
+,CHANGE_NAME = #{changeName}
+WHERE WEDDING_NO = #{weddingNo}
+</update>
+
 <select id="selectRegList" resultType="Wedding">
 SELECT WEDDING_NO weddingNo
 ,P.PET_NAME petName

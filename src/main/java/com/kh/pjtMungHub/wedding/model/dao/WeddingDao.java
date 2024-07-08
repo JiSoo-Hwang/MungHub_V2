@@ -31,7 +31,7 @@ public class WeddingDao {
 		return sqlSession.selectOne("weddingMapper.selectWedding",weddingNo);
 	}
 
-	public ArrayList<Pet> selectPet(SqlSessionTemplate sqlSession,int userNo) {
+	public ArrayList<Pet> selectPets(SqlSessionTemplate sqlSession,int userNo) {
 		return (ArrayList)sqlSession.selectList("weddingMapper.selectPet",userNo);
 	}
 
@@ -111,5 +111,9 @@ public class WeddingDao {
 	
 	public ArrayList<Member> getContactInfo(SqlSessionTemplate sqlSession,int weddingNo){
 		return (ArrayList)sqlSession.selectList("weddingMapper.getContactInfo", weddingNo);
+	}
+
+	public int updateWedding(SqlSessionTemplate sqlSession, Wedding w) {
+		return sqlSession.update("weddingMapper.updateWedding",w);
 	}
 }

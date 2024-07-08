@@ -105,7 +105,7 @@
 									<a class="btn btn-primary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 									<c:choose>
 									<c:when test="${w.userNo eq loginUser.userNo }">
-								&ensp;<a href="updateReg.do?reservNo=${w.weddingNo}" class="btn btn-primary btn-sm">신청수정</a>&ensp;
+								&ensp;<a href="update.wd?weddingNo=${w.weddingNo}" class="btn btn-primary btn-sm">신청수정</a>&ensp;
 								&ensp;<button class="btn btn-secondary btn-sm cancelBtn">만남취소</button>
 									<input type="hidden" value="${w.weddingNo}">
 									</c:when>

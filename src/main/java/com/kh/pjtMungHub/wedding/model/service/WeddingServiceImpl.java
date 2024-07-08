@@ -49,8 +49,8 @@ public class WeddingServiceImpl implements WeddingService{
 	
 	//회원 보유 반려견 조회해서 웨딩 신청
 	@Override
-	public ArrayList<Pet> selectPet(int userNo) {
-		return dao.selectPet(sqlSession,userNo);
+	public ArrayList<Pet> selectPets(int userNo) {
+		return dao.selectPets(sqlSession,userNo);
 	}
 	
 	//신규 웨딩플랜 신청 추가 메서드
@@ -126,5 +126,11 @@ public class WeddingServiceImpl implements WeddingService{
 	public ArrayList<Member> getContactInfo(int weddingNo) {
 		return dao.getContactInfo(sqlSession, weddingNo);
 	}
+
+	@Override
+	public int updateWedding(Wedding w) {
+		return dao.updateWedding(sqlSession,w);
+	}
+
 
 }
