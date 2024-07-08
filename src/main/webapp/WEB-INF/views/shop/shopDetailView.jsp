@@ -158,12 +158,14 @@ h2 {
          display: flex;
          overflow-x: auto;
      }
+     .media-container video,
      .media-container img,
      .media-container .embed-responsive {
          flex: 0 0 auto;
          margin-right: 10px;
      }
     
+  
 .review-star {width:100px; }
 .review-star,.review-star span {display:inline-block; height:24px; overflow:hidden; background:url(/pjtMungHub/resources/uploadFiles/shopFile/productFile/common/star.png)no-repeat; }
 .review-star span{background-position:left bottom; line-height:0; vertical-align:top; }
@@ -190,10 +192,17 @@ margin-right: 10px;
   </c:forEach>
   </div>
 					  <div class="carousel-inner" style="height:800px;">
-  <c:forEach items="${atList }" var="at" varStatus="status">
+  					<c:forEach items="${atList }" var="at" varStatus="status">
 					    <div class="carousel-item <c:if test="${status.index eq 0 }">active</c:if>"  data-bs-interval="10000">
 					    	<input type="hidden" value="${status.index }">
+					    	<c:choose>
+					    		<c:when test="${at.type eq 'video' }">
+					    	<video src="${at.filePath }${at.changeName}" class="d-block w-100"style="height: 100%; width:100%" autoplay loop></video>
+					    		</c:when>
+					    		<c:otherwise>
 					      <img src="${at.filePath }${at.changeName}" class="d-block w-100" style="height: 100%; width:100%">
+					    		</c:otherwise>
+					    	</c:choose>
 					    </div>
 				</c:forEach>
 					  </div>
@@ -483,8 +492,10 @@ margin-right: 10px;
 
 		<div class="container">
 			<h4>베스트 리뷰 (${p.reviewCount })</h4>
-			<a href="#detail-section02" class="btn-review-all"><span>전체리뷰보기</span><i
+			<c:if test="${p.reviewCount ne 0 }">
+			<a href="/pjtMungHub/reviewListAll.sp/${p.productNo}" class="btn-review-all"><span>전체리뷰보기</span><i
 				class="bi bi-caret-right-fill"></i> </a> <br>
+			</c:if>
 			<div class="row row-cols-2 align-items-center mt-3 ml-3 mr-3">
 				<c:forEach items="${best4Review}" var="r" varStatus="i">
 					<div id="best" class="col-sm mx-3" onclick="location.href='/pjtMungHub/reviewDetail.sp/${r.reviewNo}'">
@@ -521,13 +532,11 @@ margin-right: 10px;
 							</div>
 							<div class="card-body" style="width: 250px;">
 								<h5 class="card-title">${plist.productName }</h5>
-								<span class="review-star"> <i class="bi bi-star-fill"></i>
-									<i class="bi bi-star-fill"></i> <i class="bi bi-star-fill"></i>
-									<i class="bi bi-star-half"></i> <i class="bi bi-star"></i> <span>(<fmt:formatNumber
-											type="number" maxFractionDigits="0"
-											value="${plist.reviewCount }" />)
-								</span>
-								</span> <br>
+									<div class="wrap-star">
+								    <div class='review-star'>
+								        <span style ="width: <fmt:formatNumber type="number" maxFractionDigits="0" value="${plist.reviewTScore * 20}" />%"></span>
+								    </div>
+									</div>
 								<del>
 									<fmt:formatNumber type="number" maxFractionDigits="0"
 										value="${plist.price}" />
@@ -849,20 +858,20 @@ margin-right: 10px;
 					
 					 <span>총 <fmt:formatNumber type="number"
 							maxFractionDigits="0" value="${p.reviewCount }" />건
-					</span><br> <span style="color: gray">만족도 ${percent[4]+percent[3]}%</span>
+					</span><br> <span style="color: gray">만족도 ${percent[0]+percent[1]}%</span>
 				</div>
 				<div class="col-sm-5">
 					<div class="score">5점</div>
 					<div class="progress my-1">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[4]}%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[0]}%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
 					</div>
 					<br>
 					<div class="score">4점</div>
 					<div class="progress my-1">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[3]}%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[1]}%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
 					</div>
 					<br>
@@ -876,14 +885,14 @@ margin-right: 10px;
 					<div class="score">2점</div>
 					<div class="progress my-1">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[1]}%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[3]}%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
 					</div>
 					<br>
 					<div class="score">1점</div>
 					<div class="progress my-1">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[0]}%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[4]}%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
 					</div>
 				</div>
@@ -914,7 +923,6 @@ margin-right: 10px;
 					
 			success : function(result){
 					
-					console.log(result);
 					for (var i = 0; i < result.length; i++) {
 					var img=""
 						for (var k = 0; k < result[i].atList.length; k++) {
@@ -926,7 +934,7 @@ margin-right: 10px;
 						}
 				 			
 						}
-					str+="<div class='col-8 mb-4'>"
+					str+="<div class='col-10 mb-4'>"
 	                +"<div class='card'>"
 	                +"<div class='media-container p-3'>"
 	                +img
@@ -949,6 +957,13 @@ margin-right: 10px;
 		            +"</div>"
 					+"</div>";
 					
+					
+					}
+					if(str!=""){
+						
+					str+="<a class='btn btn-info' href='/pjtMungHub/reviewListAll.sp/${p.productNo}'>전체 리뷰보기</a>";
+					}else{
+						str+="<h1 align='center' class='py-5'>리뷰가 없습니다.</h1>"
 					}
 					$("#review_area").html(str);
 				},
@@ -969,9 +984,6 @@ margin-right: 10px;
 	<label for="latest">최신순</label><input type="radio" id="latest" name="orderBy" value="latest" onclick="selectReview()">
 	</div>
 	<div class='row justify-content-center mt-3' id='review_area'>
-	</div>
-	<div align="center">
-	<a class="btn btn-info">전체 리뷰보기</a>
 	</div>
 	</div>
 </div>
