@@ -1,12 +1,16 @@
 package com.kh.pjtMungHub.petcare.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
 import com.kh.pjtMungHub.petcare.model.vo.Certification;
+import com.kh.pjtMungHub.petcare.model.vo.Disease;
 import com.kh.pjtMungHub.petcare.model.vo.Environment;
+import com.kh.pjtMungHub.petcare.model.vo.HospitalRe;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
@@ -79,6 +83,26 @@ public interface PetCareService {
 	HousePrice selectPriceInfo(int stayNo);
 	//결제 구분을 위한 houserReservationNo 가져오기
 	int houserReservationNo();
+	
+	
+	//병원정보
+	//병명 가져오기
+	List <String> diseaseName(HashMap<String,Object> symMap);
+	//예약정보 저장하기
+	int insertHosRe(HospitalRe hosRe);
+	//펫타입 이름 가져오기
+	String selectPetType(HospitalRe hosRe);
+	//예약번호 가져오기
+	int selectHosReNo();
+	//업데이트 정보와 함께 페이지 이동
+	HospitalRe selectHospitalRe(int hosReNo);
+	
+	
+	
+	
+	
+	
+	
 	
 
 }
