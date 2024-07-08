@@ -149,7 +149,7 @@ li {
 								<td> </td>
 								<td class="text-end"> 
 								<br> <br> <br> <br> <br> <br>
-																<c:choose>
+										<c:choose>
 										<c:when test="${loginUser.userId ne 'admin' }">
 										<a type="button" class="btn btn-warning" href="regList.wd?userNo=${loginUser.userNo }">목록으로</a>
 										</c:when>
@@ -157,14 +157,6 @@ li {
 										<a type="button" class="btn btn-warning" href="admin.wd">목록으로</a>
 										</c:otherwise>
 										</c:choose>
-								</td>
-								</tr>
-								<tr>
-									<td></td>
-									<td><br> <br> <br>
-										<br> <br> <br>
-										<!-- 지금은 상세 신청 내역. 관리자가 보고 부적합한 신청자면 1차적으로 거절할 수 있음
-											 나중에는 신청된 리스트에 강아지를 선택해서 만남을 신청하는 기능을 별도로 구현해야 함 -->
 										<c:choose>
 										<c:when test="${wedding.approval eq 'N' && loginUser.userNo eq wedding.userNo }">
 										<a type="button" class="btn btn-outline-info" href="update.wd?weddingNo=${wedding.weddingNo }">신청수정</a>
@@ -172,20 +164,20 @@ li {
 										</c:when>
 										<c:when test="${wedding.approval eq 'W' && loginUser.userNo ne wedding.userNo }">
 										<button type="button" class="btn btn-primary" id="acceptBtn">만남수락</button>
-										  <button type="button" id="confirmBtn" data-bs-toggle="modal" data-bs-target="#confirmModal"></button>
-										  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#rejectModal">
-											만남거절
-											</button>
+										<button type="button" id="confirmBtn" data-bs-toggle="modal" data-bs-target="#confirmModal"></button>
+										<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#rejectModal">
+										만남거절
+										</button>
 										</c:when>
 										<c:when test="${loginUser.userId eq 'admin' && wedding.approval eq 'N' }">
 										<button class="btn btn-primary" id="approveBtn">신청승인</button>
-  
-  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#rejectModal">
-    신청거절
-  </button>
+										<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#rejectModal">
+										신청거절
+										</button>
 										</c:when>
 										</c:choose>
-									</td>
+								
+								</td>
 								</tr>
 							</tbody>
 						</table>

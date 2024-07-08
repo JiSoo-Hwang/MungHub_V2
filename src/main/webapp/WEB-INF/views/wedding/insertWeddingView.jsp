@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>${pet.petName } 댕댕이의 웨딩플래너 신청 페이지입니다.</title>
+<title>${loginUser.name }님의 댕댕이 웨딩플래너 신청 페이지입니다.</title>
 <style>
 #wed_form {
 	margin: 50px;

@@ -26,10 +26,14 @@ public class KindergartenDao {
 	}
 
 	//해당 회원의 반려동물 정보 조회 메서드
-	public ArrayList<Pet> selectPet(SqlSessionTemplate sqlSession,int ownerNo) {
-
+	public ArrayList<Pet> selectPets(SqlSessionTemplate sqlSession,int ownerNo) {
 		
-		return (ArrayList)sqlSession.selectList("kindergartenMapper.selectPet",ownerNo);
+		return (ArrayList)sqlSession.selectList("kindergartenMapper.selectPets",ownerNo);
+	}
+	
+	public Pet selectPet(SqlSessionTemplate sqlsession, int petNo) {
+
+		return sqlsession.selectOne("kindergartenMapper.selectPetByNo",petNo);
 	}
 	
 	//상담신청등록 메소드
@@ -83,6 +87,8 @@ public class KindergartenDao {
 		}
 		return result;
 	}
+
+
 
 
 	

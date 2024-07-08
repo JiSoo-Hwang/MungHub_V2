@@ -203,7 +203,6 @@ clear: both;
                 <li class="menu"><a href="#contact">Wedding</a></li>
                 <li class="menu"><a href="/pjtMungHub/list.bo">Board</a></li>
                 <li class="menu"><a href="/pjtMungHub/list.sp">Shop</a></li>
-                <li class="menu"><a href="#contact">Realestate</a></li>
 				<li style="float: right">
 					<c:choose>
 						<c:when test="${empty loginUser}">
@@ -329,10 +328,10 @@ clear: both;
 		$(".chatCont").on("click",function(){
 			var userNo= $(this).children().eq(0).val();
 			var code='';
-			if(${loginUser.userNo}>userNo){
-				code=userNo+'n'+${loginUser.userNo};
+			if("${loginUser.userNo}" > userNo){
+				code=userNo+'n'+"${loginUser.userNo}";
 			}else{
-				code=${loginUser.userNo}+'n'+userNo;
+				code="${loginUser.userNo}"+'n'+userNo;
 			}
 			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/'+code,'chatpop','titlebar=1,location=no,status=no, resizable=1, scrollbars=yes, width=600, height=550');
 		})

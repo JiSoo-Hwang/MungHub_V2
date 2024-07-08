@@ -31,11 +31,16 @@ public class KindergartenServiceImpl implements KindergartenService{
 
 	//해당 회원의 반려동물 정보 조회 메서드
 	@Override
-	public ArrayList<Pet> selectPet(int ownerNo) {
-		ArrayList<Pet> pet = dao.selectPet(sqlsession,ownerNo);
+	public ArrayList<Pet> selectPets(int ownerNo) {
+		ArrayList<Pet> pet = dao.selectPets(sqlsession,ownerNo);
 		return pet;
 	}
 
+	@Override
+	public Pet selectPetByNo(int petNo) {
+		return dao.selectPet(sqlsession,petNo);
+	}
+	
 	@Override
 	public Kindergarten selectKindergarten(int kindNo) {
 		Kindergarten kindergarten = dao.selectKindergarten(sqlsession, kindNo);
@@ -100,6 +105,8 @@ public class KindergartenServiceImpl implements KindergartenService{
 	public int insertVac(ArrayList<Vaccine> vacList) {
 		return dao.insertVac(sqlsession,vacList);
 	}
+
+
 	
 
 

@@ -105,7 +105,7 @@
 									<a class="btn btn-primary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 									<c:choose>
 									<c:when test="${w.userNo eq loginUser.userNo }">
-								&ensp;<a href="updateReg.do?reservNo=${w.weddingNo}" class="btn btn-primary btn-sm">신청수정</a>&ensp;
+								&ensp;<a href="update.wd?weddingNo=${w.weddingNo}" class="btn btn-primary btn-sm">신청수정</a>&ensp;
 								&ensp;<button class="btn btn-secondary btn-sm cancelBtn">만남취소</button>
 									<input type="hidden" value="${w.weddingNo}">
 									</c:when>
@@ -150,6 +150,20 @@
 		$(".cancelBtn").click(function() {
 			if (confirm("정말 만남을 취소하시겠습니까?")) {
 				var weddingNo = $(this).siblings(':eq(2)').val();
+				$.ajax({
+					url:"${pageContext.request.contextPath}/delete.wd",
+					data: {weddingNo:weddingNo},
+					success:function(result){
+						if(result>0){
+							alert("만남이 성공적으로 취소되었습니다(´ᴥ`)");
+							location.href = "${pageContext.request.contextPath}/regList.wd?userNo=${loginUser.userNo}";
+						}else{
+							alert("만남 취소 실패ㅠㅅㅠ... 다시 시도해주세요!");
+						}
+					},error:function(){
+						console.log("통신 실패");
+					}
+				});
 			} else {
 				return false;
 			}
