@@ -18,6 +18,7 @@ import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.Review;
+import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 @Repository
@@ -193,7 +194,7 @@ public class ShopDao {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ArrayList<Integer> selectScorePercent(SqlSessionTemplate sqlSession, int productNo) {
+	public ArrayList<ScorePercent> selectScorePercent(SqlSessionTemplate sqlSession, int productNo) {
 		// TODO Auto-generated method stub
 		return (ArrayList)sqlSession.selectList("shopMapper.selectScorePercent",productNo);
 	}
@@ -224,6 +225,12 @@ public class ShopDao {
 	public Attachment selectAttachment(SqlSessionTemplate sqlSession, ParameterVo parameter) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("shopMapper.selectAttachment",parameter);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Favorite> selectFavoriteList(ParameterVo parameter, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectFavoriteList",parameter);
 	}
 
 

@@ -33,12 +33,14 @@ import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.Review;
+import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 
 @Controller
 public class ShopController {
 
+	
 	@Autowired
 	private ShopService shopService;
 	
@@ -126,8 +128,8 @@ public class ShopController {
 		ArrayList<Product> pList = shopService.selectProductList("Y"); 
 		ParameterVo parameter = ParameterVo.builder().justifying("product").number(productNo).build();
 		ArrayList<Attachment> atList= shopService.selectAttachmentList(parameter);
-		ArrayList<Integer> percent=shopService.selectScorePercent(productNo);
-		
+		ArrayList<ScorePercent> percent=shopService.selectScorePercent(productNo);
+
 		ParameterVo parameter2=ParameterVo.builder().justifying("best").productNo(productNo).build();
 		ArrayList<Review> bestReviewTop4=shopService.selectReviewList(parameter2);
 		
@@ -195,6 +197,35 @@ public class ShopController {
 		}
 		
 	}
+	
+	@GetMapping("selectFavoriteList.sp")
+	@ResponseBody
+	public ArrayList<Favorite> selectFavoriteList(int userNo) {
+		
+		ParameterVo parameter = ParameterVo.builder()
+				.userNo(userNo)
+				.justifying("N")
+				.build();
+		
+		ArrayList<Favorite> deleteFav=shopService.selectFavoriteList(parameter);
+		
+		if(deleteFav!=null) {
+			
+			for (int i = 0; i < deleteFav.size(); i++) {
+				shopService.convertFavorite(deleteFav.get(i));
+			}
+		}
+		parameter.setJustifying("Y");
+		ArrayList<Favorite> fav=shopService.selectFavoriteList(parameter);
+		
+		System.out.println(fav.get(0).getProductNo());
+		
+		return fav;
+		
+		}
+		
+	
+	
 	@PostMapping("subscribe.sp")
 	@ResponseBody
 	public int subscribe(Favorite favor) {
@@ -738,7 +769,7 @@ public class ShopController {
 		Product p=shopService.selectProductDetail(productNo);
 		p.setReviewCount(shopService.selectReviewCount(productNo));
 		p.setReviewTScore((double)shopService.selectScoreAvg(productNo));
-		ArrayList<Integer> percent=shopService.selectScorePercent(productNo);
+		ArrayList<ScorePercent> percent=shopService.selectScorePercent(productNo);
 		mv.addObject("pi",pi);
 		mv.addObject("currentPage",currentPage);
 		mv.addObject("percent",percent);
@@ -791,6 +822,17 @@ public class ShopController {
 		}
 	
 		return reviewJArr;
+	}
+	
+	
+	
+	
+	@GetMapping("adminPage.sp")
+	public ModelAndView adminPage(ModelAndView mv) {
+		
+		
+		mv.setViewName("shop/adminPage");
+		return mv;
 	}
 	
 	

@@ -59,12 +59,14 @@
 	</select>
 	
 	<select id="selectScorePercent" parameterType="_int"
-	resultType="_int">
-	SELECT ROUND(RATIO_TO_REPORT(SCORE) OVER(), 2) * 100 AS PERCENT
+	resultType="com.kh.pjtMungHub.shop.model.vo.ScorePercent">
+	SELECT 
+	SCORE score,
+	ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percent
 	FROM PRODUCT_REVIEW
-	WHERE PRODUCT_NO=#{productNo}
+	WHERE PRODUCT_NO = #{productNo}
 	GROUP BY SCORE
-	ORDER BY SCORE
+	ORDER BY SCORE DESC
 	</select>
 	
 	<select id="selectScoreAvg" parameterType="_int"
@@ -82,6 +84,15 @@
 		FROM FAVORITE
 		WHERE PRODUCT_NO=#{productNo}
 		AND USER_NO=#{userNo}
+		AND DELETE_STATUS=#{justifying}
+	</select>
+	
+	<select id="selectFavoriteList" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo" 
+	resultType="com.kh.pjtMungHub.shop.model.vo.Favorite">
+		SELECT USER_NO userNo,
+		PRODUCT_NO productNo
+		FROM FAVORITE
+		WHERE USER_NO=#{userNo}
 		AND DELETE_STATUS=#{justifying}
 	</select>
 	

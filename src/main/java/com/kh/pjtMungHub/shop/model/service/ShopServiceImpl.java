@@ -17,6 +17,7 @@ import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.Review;
+import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 @Service
@@ -244,7 +245,7 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public ArrayList<Integer> selectScorePercent(int productNo) {
+	public ArrayList<ScorePercent> selectScorePercent(int productNo) {
 		// TODO Auto-generated method stub
 		return shopDao.selectScorePercent(sqlSession,productNo);
 	}
@@ -265,6 +266,12 @@ public class ShopServiceImpl implements ShopService {
 	public Attachment selectAttachment(ParameterVo parameter) {
 		// TODO Auto-generated method stub
 		return shopDao.selectAttachment(sqlSession,parameter);
+	}
+
+	@Override
+	public ArrayList<Favorite> selectFavoriteList(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.selectFavoriteList(parameter, sqlSession);
 	}
 
 }

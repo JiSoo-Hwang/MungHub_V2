@@ -298,7 +298,6 @@ margin-right: 10px;
 	    <div class="toast-header">
 	    <i class="bi bi-cart-plus-fill" style="color:blue"></i>&nbsp;
 	      <strong class="me-auto"> 장바구니 담기 성공</strong>
-	      <small>11 mins ago</small>
 	      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
 	    </div>
 	    <div class="toast-body">
@@ -321,7 +320,6 @@ margin-right: 10px;
 			data : { userNo:${loginUser.userNo},
 					 productNo : ${p.productNo}},
 			success : function (result){
-				console.log(result);
 				if(result){
 				$("#favor").html("<i class='bi bi-heart-fill' style='color:red'></i>");
 				
@@ -350,7 +348,6 @@ margin-right: 10px;
 					 	  productNo : ${p.productNo}},
 				success : function(result){
 					selectFavor();
-					console.log("통신성공 subscribe");
 				},
 				error : function(){
 					console.log("통신오류");
@@ -858,43 +855,23 @@ margin-right: 10px;
 					
 					 <span>총 <fmt:formatNumber type="number"
 							maxFractionDigits="0" value="${p.reviewCount }" />건
-					</span><br> <span style="color: gray">만족도 ${percent[0]+percent[1]}%</span>
+					</span><br> <span style="color: gray">만족도 ${percent[0].percent}%</span>
 				</div>
 				<div class="col-sm-5">
-					<div class="score">5점</div>
+				<c:forEach begin="0" end="4" varStatus="index">
+				
+					<div class="score">${5-index.index }점</div>
 					<div class="progress my-1">
+					<c:forEach begin="0" end="4" varStatus="i">
+					<c:if test="${5-index.index eq percent[i.index].score }">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[0]}%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[i.index].percent }%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
+					</c:if>
+					</c:forEach>
 					</div>
 					<br>
-					<div class="score">4점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[1]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
-					<br>
-					<div class="score">3점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[2]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
-					<br>
-					<div class="score">2점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[3]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
-					<br>
-					<div class="score">1점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[4]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
+				</c:forEach>
 				</div>
 			</div>
 		</div>
