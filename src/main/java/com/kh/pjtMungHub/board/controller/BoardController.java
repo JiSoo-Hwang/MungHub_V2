@@ -36,7 +36,7 @@ public class BoardController {
 	@GetMapping("list.bo")
 	public String boardList(Model model,
 	                        @RequestParam(value="currentPage", defaultValue="1") int currentPage,
-	                        @RequestParam(value="category", defaultValue="0") String category,
+	                        @RequestParam(value="category", defaultValue="0") int category,
 	                        @RequestParam(value="sort", defaultValue="latest") String sort) {
 
 	    // 전체 게시글 수 조회
@@ -51,7 +51,7 @@ public class BoardController {
 	    // 게시글 목록 조회
 	    ArrayList<Board> List = boardService.selectList(pi,sort);
 	    
-	    if (category.equals("0")) {
+	    if (category==0) {
 	        listCount = boardService.listCount();
 	    } else {
 	        listCount = boardService.listCount(category);
@@ -62,14 +62,14 @@ public class BoardController {
 	    ArrayList<Category> ctList = boardService.selectCategory();
 
 	    
-	    if (category.equals("0")) {
+	    if (category==0) {
 	    	List = boardService.selectList(pi, sort);
 	    } else {
 	    	List = boardService.selectList(pi, sort,category);
 	    }
 	    
 	    System.out.println(sort);
-	    System.out.println(category);
+	    System.out.println(ctList);
 	    System.out.println(List);
 	    
 	    // 모델에 데이터 추가

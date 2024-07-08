@@ -101,8 +101,8 @@ input[name=sortBy]{
 	margin:10px;
 	}
 .ctSelected{
-background-color:blue;
-color:white;
+	background-color:blue;
+	color:white;
 }
 	
 </style>
@@ -187,9 +187,10 @@ color:white;
      			location.href="detail.bo?boardNo="+bno;
      		});
      	//카테고리 버튼을 클릭했을때 해당 카테고리 글들을 클래스에 추가
-     		$("#category-area").click(function(){
-     			if($(this).val()==${catrgory}){
-     				$(this).addClass("ctSelected")
+     		$("button[name=category]").each(function(){
+     			if($(this).val()==${category}){
+     				$(this).addClass("ctSelected");
+     				
      			}
      		});
      	//radio버튼 클릭했을때 체크되어있는 sort 정렬
@@ -201,7 +202,7 @@ color:white;
 	     	$("button[name=category]").click(function(){
 				var category=$(this).val();
 				var sortBy=$("input[name=sortBy]:checked").val();
-				location.href="board.bo?currentPage=1&category="+category+"&sort="+sortBy;
+				location.href="list.bo?currentPage=1&category="+category+"&sort="+sortBy;
 				});
 	     	});
          </script>

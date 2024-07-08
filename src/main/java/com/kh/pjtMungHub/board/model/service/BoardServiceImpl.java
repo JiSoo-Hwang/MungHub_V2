@@ -29,7 +29,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 	//해당 카테고리 게시물 조회
 	@Override
-	public int listCount(String category) {
+	public int listCount(int category) {
 		// TODO Auto-generated method stub
 		return boardDao.listCount(sqlSession,category);
 	}
@@ -46,7 +46,7 @@ public class BoardServiceImpl implements BoardService {
 	     return boardDao.selectList(sqlSession, pi, sort);
 	 }
 	@Override
-	public ArrayList<Board> selectList(PageInfo pi, String sort, String category) {
+	public ArrayList<Board> selectList(PageInfo pi, String sort, int category) {
 		// TODO Auto-generated method stub
 		return boardDao.selectList(sqlSession,pi,sort,category);
 	}

@@ -23,12 +23,11 @@ public class BoardDao {
 		return sqlSession.selectOne("boardMapper.listCount");
 	}
 
-	public int listCount(SqlSessionTemplate sqlSession, String category) {
+	public int listCount(SqlSessionTemplate sqlSession, int category) {
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne("boardMapper.listCountByCategory", category);
+		return sqlSession.selectOne("boardMapper.listCount", category);
 	}
 
-	@ResponseBody
 	public ArrayList<Board> selectList(SqlSessionTemplate sqlSession, PageInfo pi, String sort) {
 		// TODO Auto-generated method stub
 
@@ -44,13 +43,12 @@ public class BoardDao {
 		params.setOffset(offset);
 		params.setSort(sort);
 
-		return (ArrayList) sqlSession.selectList("boardMapper.selectList", params, rowBounds);
+		return (ArrayList)sqlSession.selectList("boardMapper.selectList", params, rowBounds);
 		
 		
 	}
 
-	@ResponseBody
-	public ArrayList<Board> selectList(SqlSessionTemplate sqlSession, PageInfo pi, String sort, String category) {
+	public ArrayList<Board> selectList(SqlSessionTemplate sqlSession, PageInfo pi, String sort, int category) {
 		// TODO Auto-generated method stub
 
 		// 페이징 처리를 위한 RowBounds 객체 생성

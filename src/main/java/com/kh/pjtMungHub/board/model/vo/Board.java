@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class Board {
 	
 	private int boardNo;//	BOARD_NO	NUMBER
-	private String categoryNo;//	CATEGORY_NO	NUMBER
+	private int category;//	CATEGORY_NO	NUMBER
 	private String fileNo;//	FILE_NO	NUMBER
 	private String breedId;//	BREED_ID	VARCHAR2(4 BYTE)
 	private String boardTitle;//	BOARD_TITLE	VARCHAR2(100 BYTE)

@@ -27,8 +27,8 @@ public class LoggerTest {
 	@Test
 	public void test1() {
 		
-		ParameterVo p = ParameterVo.builder().category("0").sort("latest").build();
-		ArrayList<Board>boardList =(ArrayList)sqlSession.selectList("boardMapper.selectList",p);
+		ParameterVo p = ParameterVo.builder().category(0).sort("latest").build();
+		ArrayList<Board> boardList = (ArrayList)sqlSession.selectList("boardMapper.selectList",p);
 		for(Board b: boardList) {
 			
 			log.debug("게시글:{}",b);

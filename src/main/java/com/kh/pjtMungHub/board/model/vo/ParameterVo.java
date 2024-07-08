@@ -16,7 +16,7 @@ public class ParameterVo {
 	
 	private int offset;
 	private int limit;
-	private String category;
+	private int category;
 	private String sort;
 	
 	

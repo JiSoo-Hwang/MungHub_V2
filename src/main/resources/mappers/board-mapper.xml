@@ -19,22 +19,26 @@
 		<result column="STATUS" property="status" />
 	</resultMap> 
 
-	<select id="listCount" resultType="_int">
+	<select id="listCount" resultType="_int" parameterType="com.kh.pjtMungHub.board.model.vo.ParameterVo">
 		SELECT COUNT(*)
-		FROM
-		BOARD
+		FROM BOARD
 		WHERE STATUS ='Y'
+		<if test="category != 0">
+		AND CATEGORY_NO =#{categoryNo}
+		</if>
 	</select>
 	<select id="selectList" resultType="Board" parameterType="com.kh.pjtMungHub.board.model.vo.ParameterVo">
 		SELECT BOARD_NO boardNo
 			,BOARD_TITLE boardTitle
 			,USER_ID boardWriter
+			,CATEGORY_NO category
 			,COUNT count
 			,UPLOAD_DATE uploadDate
+			,B.STATUS
 		FROM BOARD B
 		JOIN MEMBER M ON M.USER_NO=B.BOARD_WRITER
 		WHERE B.STATUS='Y'
-	<if test="category != 0">
+	<if test="category!=0">
 		AND CATEGORY_NO = #{category}
 	</if>
  		ORDER BY
@@ -55,24 +59,24 @@
 	<select id="selectCategory"
 		resultType="com.kh.pjtMungHub.board.model.vo.Category">
 		SELECT CATEGORY_NO categoryNo
-		,CATEGORY_NAME categoryName
+			  ,CATEGORY_NAME categoryName
 		FROM BOARD_CATEGORY
 	</select>
 
 	<update id="increaseCount" parameterType="_int">
-		UPDATE BOARD
+		UPDATE B.BOARD
 		SET COUNT=COUNT+1
-		WHERE BOARD_NO=#{boardNo}
+		WHERE B.BOARD_NO=#{boardNo}
 		AND B.STATUS ='Y'
 	</update>
 	<select id="selectBoard" parameterType="_int"
 		resultMap="boardResultSet">
 		SELECT BOARD_NO
-		,BOARD_TITLE
-		,BOARD_WRITER
-		,BOARD_CONTENT
-		,UPLOAD_DATE
-		,COUNT
+				,BOARD_TITLE
+				,BOARD_WRITER
+				,BOARD_CONTENT
+				,UPLOAD_DATE
+				,COUNT
 		FROM BOARD
 		WHERE BOARD_NO = #{boardNo}
 		AND STATUS ='Y'
@@ -84,15 +88,11 @@
 		,BOARD_TITLE
 		,BOARD_WRITER
 		,BOARD_CONTENT
-		,ORIGIN_NAME
-		,CHANAGE_NAME
 		)
 		VALUES (SEQ_BOARD.NEXTVAL
 		,#{boardTitle}
 		,#{boardWriter}
 		,#{boardContent}
-		,#{originName}
-		,#{changeName}
 	</insert>
 
 </mapper>
