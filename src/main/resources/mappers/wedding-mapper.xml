@@ -92,8 +92,7 @@ VALUES(SEQ_WED.NEXTVAL
 </insert>
 
 <update id="updateWedding" parameterType="Wedding">
-UPDATE WEDDING SET PET_NO = #{petNo}
-,PEDIGREE = #{pedigree}
+UPDATE WEDDING SET PEDIGREE = #{pedigree}
 ,MEETING_METHOD = #{meetingMethod}
 ,PET_INTRO = #{petIntro}
 ,PET_NOTE = #{petNote}
@@ -241,4 +240,7 @@ FROM MEMBER WHERE USER_NO IN
 (SELECT OWNER_NO FROM PET WHERE PET_NO = (SELECT PARTNER_NO FROM WEDDING WHERE WEDDING_NO =#{weddingNo}))
 )
 </select>
+<delete id="deleteWedding" parameterType="_int">
+DELETE FROM WEDDING WHERE WEDDING_NO = #{weddingNo}
+</delete>
 </mapper>

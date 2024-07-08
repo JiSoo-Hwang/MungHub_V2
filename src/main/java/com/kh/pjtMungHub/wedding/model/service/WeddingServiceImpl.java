@@ -132,5 +132,10 @@ public class WeddingServiceImpl implements WeddingService{
 		return dao.updateWedding(sqlSession,w);
 	}
 
+	@Override
+	public int deleteWedding(int weddingNo) {
+		return dao.deleteWedding(sqlSession,weddingNo);
+	}
+
 
 }

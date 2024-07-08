@@ -179,6 +179,13 @@ public class WeddingController {
 		return "redirect:/regList.wd?userNo="+m.getUserNo();
 	}
 	
+	@ResponseBody
+	@GetMapping("delete.wd")
+	public int deleteWedding(int weddingNo) {
+		int result = service.deleteWedding(weddingNo);
+		return result;
+	}
+	
 	@PostMapping("reject.wd")
 	public String rejectReg(Wedding w, HttpSession session) {
 		int result = service.rejectReg(w);

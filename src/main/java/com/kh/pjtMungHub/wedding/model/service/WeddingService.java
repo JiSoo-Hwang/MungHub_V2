@@ -23,6 +23,8 @@ public interface WeddingService {
 
 	int updateWedding(Wedding w);
 	
+	int deleteWedding(int weddingNo);
+
 	ArrayList<Wedding> selectRegList();
 	
 	int rejectReg(Wedding w);
@@ -44,6 +46,7 @@ public interface WeddingService {
 	Pet selectPetByNo(int petNo);
 
 	ArrayList<Member>getContactInfo(int weddingNo);
+
 
 
 }

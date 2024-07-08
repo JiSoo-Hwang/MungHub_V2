@@ -116,4 +116,8 @@ public class WeddingDao {
 	public int updateWedding(SqlSessionTemplate sqlSession, Wedding w) {
 		return sqlSession.update("weddingMapper.updateWedding",w);
 	}
+	
+	public int deleteWedding(SqlSessionTemplate sqlSession, int weddingNo) {
+		return sqlSession.delete("weddingMapper.deleteWedding",weddingNo);
+	}
 }
