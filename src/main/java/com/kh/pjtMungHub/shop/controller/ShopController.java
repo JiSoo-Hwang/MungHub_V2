@@ -95,9 +95,23 @@ public class ShopController {
 	
 	@PostMapping("delete.sp")
 	@ResponseBody
-	public int deleteProductData(int productNo) {
+	public int deleteProductData(int productNo,HttpSession session) {
+		
+		ParameterVo parameter=ParameterVo.builder()
+				.justifying("product")
+				.number(productNo)
+				.build();
+		
+		ArrayList<Attachment> atList=shopService.selectAttachmentList(parameter);
+		
+		for(int i=0;i<atList.size();i++) {
+			String deleteFile= "resources/uploadFiles/shopFile/productFile/"+atList.get(i).getType()+"/"+atList.get(i).getChangeName();
+			File f= new File(session.getServletContext().getRealPath(deleteFile));
+			f.delete();
+		}
 		
 		int result=shopService.deleteProductData(productNo);
+		
 		
 		
 		return result;
@@ -217,6 +231,7 @@ public class ShopController {
 		
 		boolean flag= false;
 		String deleteFile= "";
+		String changeName="";
 		
 		ParameterVo parameter=ParameterVo.builder()
 				.justifying("product")
@@ -224,7 +239,7 @@ public class ShopController {
 				.build();
 		
 		ArrayList<Attachment> atList=shopService.selectAttachmentList(parameter);
-		
+		ArrayList<Attachment> uploadList=new ArrayList<>();
 		
 		for(int i=0; i<upfile.length; i++) {
 		if(!upfile[i].getOriginalFilename().equals("")) {
@@ -256,16 +271,20 @@ public class ShopController {
 					type="file";
 				}
 			
-				if(atList.get(i).getChangeName()!=null) {
+				
+				changeName = saveFile(upfile[i],session,"productFile",type);
+				
+				if(atList.size()>i) {
 					flag = true;
 					deleteFile= "resources/uploadFiles/shopFile/productFile/"+atList.get(i).getType()+"/"+atList.get(i).getChangeName();
 					if(flag) {
 						File f= new File(session.getServletContext().getRealPath(deleteFile));
 						f.delete();
+						
+						flag= false;
 					}
+					
 				}
-				
-				String changeName = saveFile(upfile[i],session,"productFile",type);
 				
 				Attachment at=Attachment.builder().
 						fileLev(i).
@@ -276,21 +295,18 @@ public class ShopController {
 						productNo(p.getProductNo()).
 						type(type).
 						build();
+				changeName="";
 				
-				atList.add(at);
+				uploadList.add(at);
 			}
 		}
-	    parameter.setAtList(atList);
+	    parameter.setAtList(uploadList);
 		int result = shopService.updateAttachment(parameter);
 		int result2 = shopService.updateProduct(p);
 		
 		
-		if(result*result2>0) {
-			
-			return "redirect:/detail.sp/"+p.getProductNo();
-		}else {
-			return "redirect:/detail.sp/"+p.getProductNo();
-		}
+		
+		return "redirect:/detail.sp/"+p.getProductNo();
 			
 	}
 	
