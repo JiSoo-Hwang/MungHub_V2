@@ -62,7 +62,7 @@ li {
 								</c:when>
 								<c:otherwise>
 								<td>
-								<select name="petNo">
+								<select name="petNo" id="petNo" onchange="petInfo();">
 								<c:forEach items="${petList }" var="p">
 								<option value="${p.petNo }">${p.petName }</option>
 								</c:forEach>
@@ -75,28 +75,19 @@ li {
 						<tbody>
 							<tr>
 								<th>견종</th>
-								<td></td>
+								<td><input type="text" name="breed" id="breed" readonly> </td>
 							</tr>
 							<tr>
 								<th>나이</th>
-								<td></td>
+								<td><input type="text" name="petAge" id="petAge" readonly></td>
 							</tr>
 							<tr>
 								<th>성별</th>
-								<td>
-								<%-- <c:choose>
-										<c:when test="${pet.pet Gender eq 'F' }">
-                                    공주님
-                                </c:when>
-										<c:otherwise>
-                                    왕자님
-                                </c:otherwise>
-									</c:choose> --%>
-									</td>
+								<td><input type="text" name="gender" id="gender" readonly></td>
 							</tr>
 							<tr>
 								<th>몸무게</th>
-								<td></td>
+								<td><input type="text" name="weight" id="weight" readonly></td>
 							</tr>
 							<tr>
 								<th>필수접종여부</th>
@@ -174,6 +165,34 @@ function loadImg(inputFile,num) {
 		}
 	}
 }
+	function petInfo() {
+	var petNo = $("#petNo").val();
+	$.ajax({
+		url:"${pageContext.request.contextPath}/getPetInfo.wd",
+		type:"get",
+		data:{petNo:petNo},
+		success : function (pet) {
+			$("#breed").val(pet.breed);
+			$("#petAge").val(pet.petAge);
+			$("#weight").val(pet.weight);
+			var gender = pet.petGender;
+			switch (gender) {
+			case 'M':
+				$("#gender").val('왕자님');
+				break;
+			case 'F':
+				$("#gender").val('공주님');
+				break;
+			}
+		},
+		error: function () {
+			console.log("반려견 정보 불러오기 실패");
+		}
+	});
+	}
+$(function () {
+	petInfo();
+});
 $(function () {
 	$("input[class='form-check-input']").on('change', function() {
 	var checkNum = $("input[class='form-check-input']:checked").length;
