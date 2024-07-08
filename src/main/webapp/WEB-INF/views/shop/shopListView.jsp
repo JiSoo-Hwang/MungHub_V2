@@ -49,8 +49,10 @@ position : relative;
 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
 id="cart-count"></span></a>
 
+<c:if test="${not empty loginUser }">
 <script>
 $(function(){
+	
 	$.ajax({
 		url : "cartCount.sp",
 		data : {userNo : ${loginUser.userNo}},
@@ -64,6 +66,7 @@ $(function(){
 	});
 });
 </script>
+</c:if>
 
 
 <a href="/pjtMungHub/orderList/${loginUser.userNo }" class="btn btn-secondary">주문 내역 보기</a>
@@ -89,7 +92,14 @@ $(function(){
 <div class="col-lg-3 my-3 ">
 	<div class="card" onclick="location.href='detail.sp/${p.productNo}'">
 	<div>
-	<img class="card-img-top img-fluid" src="${p.attachment }">
+	<c:choose>
+	<c:when test="${atList[status.index].type eq 'video' }">
+		<video class="card-img-top img-fluid" src="${atList[status.index].filePath }${atList[status.index].changeName}" autoplay loop></video>
+	</c:when>
+	<c:otherwise>
+	<img class="card-img-top img-fluid" src="${atList[status.index].filePath }${atList[status.index].changeName}">
+	</c:otherwise>
+	</c:choose>
 	</div>
 	<div class="card-body" style="width:250px;">
 		<h5 class="card-title">${p.productName }</h5>
