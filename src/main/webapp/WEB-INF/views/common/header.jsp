@@ -182,6 +182,17 @@
 clear: both;
 }
 </style>
+<style>
+	.chatTotal{
+		z-index: auto;
+		position:fixed;
+		bottom:10px;
+		right:10px;
+	}
+	.chatList{
+		display:none;
+	}
+</style>
 </head>
 <body>
     <nav id="header">
@@ -200,7 +211,8 @@ clear: both;
 							style="color: white;">Login</a>
 						</c:when>
 						<c:otherwise>
-						<span>${loginUser.userId} 님 환영합니다.</span>
+							<span>${loginUser.userId} 님 환영합니다.</span>
+							<a href="myPage.me">마이페이지</a>
 							<a class="active" href="/pjtMungHub/logout.me"
 							style="color: white;">Logout</a>
 						</c:otherwise>
@@ -253,6 +265,77 @@ clear: both;
 	    </script>
     	<c:remove var="alertMsg"/>
 	</c:if>
-    
+	<c:if test="${not empty loginUser}">
+	    <div class="chatTotal">
+			<div class="chatArea">
+				<button type="button">채팅</button>
+			</div>
+			<div class="chatList">
+				<div class="chatTitle">
+					<span>채팅 목록</span>
+				</div>
+				<div class="chatCont">
+					<input type="hidden" value="2">
+					<span style="font-weight:bold;">userId</span><br>
+					<span>마지막 채팅 내용</span>
+				</div>
+			</div>
+		</div>
+	</c:if>
+	<script>
+	// 웹소켓 접속 함수
+	var socket; // 웹소켓을 담아 놓을 변수
+	$(function(){
+		
+		// 접속 경로를 담아 socket 생성
+		var url = "ws://localhost:8887/pjtMungHub/chat";
+		socket = new WebSocket(url);
+		// 연결이 되었을 때 동작
+		socket.onopen = function(){
+			console.log("연결 성공");
+		}
+		// 연결이 끊겼을 때 동작
+		socket.onclose = function(){
+			console.log("연결 종료");
+		}
+		// 에러가 발생했을 때 동작
+		socket.onerror = function(e){
+			console.log("에러 발생");
+			console.log(e);
+		}
+		// 메시지를 수신했을 때
+		socket.onmessage = function(message){
+			console.log("메시지를 받았습니다.")
+			console.log(JSON.parse(message.data))
+			var data = JSON.parse(message.data);
+			var div = document.getElementById("chatArea");
+			var newDiv = document.createElement("div");
+			newDiv.textContent = "["+data.id+"]"+data.message;
+			div.appendChild(newDiv);
+			var newMsg=window.opener.document.getElementsById("chatCont");
+//				newMsg.each(function(){
+//					if(${code})
+//				})
+		}
+	})
+	
+		$(".chatArea").on("click",function(){
+			if($(".chatList").css("display")=="none"){
+				$(".chatList").slideDown(250);
+			}else{
+				$(".chatList").slideUp();
+			}
+		})
+		$(".chatCont").on("click",function(){
+			var userNo= $(this).children().eq(0).val();
+			var code='';
+			if(${loginUser.userNo}>userNo){
+				code=userNo+'n'+${loginUser.userNo};
+			}else{
+				code=${loginUser.userNo}+'n'+userNo;
+			}
+			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/'+code,'chatpop','titlebar=1,location=no,status=no, resizable=1, scrollbars=yes, width=600, height=550');
+		})
+	</script>
 </body>
 </html>
