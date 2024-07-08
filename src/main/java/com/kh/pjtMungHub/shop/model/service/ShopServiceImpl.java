@@ -16,6 +16,7 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 @Service
@@ -222,8 +223,41 @@ public class ShopServiceImpl implements ShopService {
 		return shopDao.convertFavorite(favor,sqlSession);
 	}
 
+	@Override
+	@Transactional
+	public int insertReview(Review review, ParameterVo fileParameter) {
+		// TODO Auto-generated method stub
+		int result2=1;
+		int result=shopDao.insertReview(sqlSession, review);
+		if(fileParameter.getAtList().get(0).getOriginName()!=null) {
+			
+			result2=shopDao.insertAttachment(sqlSession, fileParameter);
+		}
+		return result*result2;
+	}
 
+	@Override
+	public int selectReviewCount(int productNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectReviewCount(sqlSession,productNo);
+	}
 
+	@Override
+	public ArrayList<Integer> selectScorePercent(int productNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectScorePercent(sqlSession,productNo);
+	}
 
+	@Override
+	public double selectScoreAvg(int productNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectScoreAvg(sqlSession,productNo);
+	}
+
+	@Override
+	public ArrayList<Review> selectReviewList(ParameterVo parameter2) {
+		// TODO Auto-generated method stub
+		return shopDao.selectReviewList(sqlSession,parameter2);
+	}
 
 }

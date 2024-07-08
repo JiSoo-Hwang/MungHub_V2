@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
+import java.time.LocalDateTime;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.member.model.vo.Message;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
@@ -43,4 +44,5 @@ public interface MemberService {
 	int enableMember(Member m);
 	boolean isUserRestricted(int userNo);
 	int restrictUser(int userNo,int days);
+	LocalDateTime getRestrictedUntil(int userNo);
 }

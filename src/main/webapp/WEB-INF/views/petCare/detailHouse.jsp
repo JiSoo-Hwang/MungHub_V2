@@ -6,6 +6,7 @@
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	String formattedDate = sdf.format(today);
 %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,15 +23,15 @@
         font-weight: 700;
         font-style: normal;
 	}
-	
-	
 	body{
         font-family: arial,sans-serif;
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
-    .container{
+    .all-container{
+    	margin-left: 10%;
+    	margin-right: 10%;
         padding: 20px;
     }
     h2{
@@ -39,9 +40,110 @@
         border-bottom: 2px solid #000;
         padding-bottom: 10px;
     }
+    section{
+    	margin-bottom : 5%;
+    }
+    /* 이미지 슬라이더 */
+    .slider {
+    	width : 600px;
+    	height : 400px;
+    	position : relative; /* 위치의 기준을 잡아줌*/
+    	overflow: hidden; /* 초과한 요소는 잘라내서 보여주지 않음*/
+    	margin : 0 auto;
+    	margin-bottom : 5%;
+    }
+    .slide {
+    	position : absolute;
+    	top : 0;
+    	left : 0;
+    	width : 100%;
+    	height : 100%;
+    	/* 투명도와 전환효과를 제어하는 속성*/
+    	opacity : 0; /* 0투명, 1불투명*/
+    	transition : opacity 1s ease-in-out; /* opacity 의 효과를 부드럽게 전환해줌*/
+    }
+    .slide.active{
+    	opacity : 1;
+    }
+    .prev, .next {
+    	position : absolute;
+    	top : 50%;
+    	transform : translateY(-50%); /* 2D 또는 3D 변환효과 적용, 수직으로 50%*/
+    	font-size : 40px;
+    	font-weight : bold;
+    	color : white;
+    	padding : 10px;
+    	cursor : pointer;
+    	
+    	z-index : 1; /* 버튼이 이미지 위에 위치하도록*/
+    	opacity : 1;
+    	overflow : visible; /* 초과하는 내용을 잘라내지 않고 유지*/
+    	border : none;
+    	background : transparent; /* 배경을 투명하게 */
+    }
+    .prev {
+    	left : 20px;
+    }
+    .next {
+    	right : 20px;
+    }
+    
     .introduction p{
         font-size: 16px;
     }
+    
+    .review{
+    	border: 2px solid pink;
+    	border-radius: 5px;
+    	max-width: 1000px;
+    	margin : 0 auto;
+    	padding: 20px;
+    	margin-bottom: 10%;
+    }
+    .review-header {
+            display: flex; /* Flexbox로 설정하여 같은 줄에 배치 */
+            justify-content: space-between; /* 요소들을 양쪽 끝에 배치 */
+            align-items: center; /* 요소들을 수직 중앙에 정렬 */
+            margin-bottom: 20px;
+     }
+    .review-list{
+    	padding: 10px;
+    	diplay:flex;
+    	flex-direction: column; /* 아이템을 세로로 배치*/
+    }
+    .review-item{
+    	diplay: flex;
+    	/*align-items: center; /* 수직 중앙정렬 */
+    	justify-content: space-between;
+    	margin-bottom: 20px;
+    	padding: 20px;
+    	border: 1px solid black;
+    	border-radius: 5px;
+    	box-shadow: 0 0 10px rgba(0,0,0,0.1); /* 아이템 그림자효과*/
+    }
+    .review-item img{
+    	width: 200px;
+    	height: auto;
+    	margin-right: 20px;
+    	border-radius: 5px;
+    	
+    }
+    .review-content{
+    	flex: 1; /* 남은 공간을 모두 차지하도록*/
+    }
+    .review-content .userName{
+    	font-weight: bold;
+    	margin-bottom: 10px;
+    }
+    .review-content .date{
+    	color: #888; /* 연회색 */
+    	margin-bottom: 10px;
+    }
+    .review-content .reviewText{
+    	font-size: 16px;
+    }
+    
+    
     .certificate{
     	display: flex;
         flex-wrap: wrap; /*한줄에 다 안들어 갈때 다음줄로 이동*/
@@ -146,61 +248,123 @@
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
 	<input type="hidden" id="formattedDate" value="<%=formattedDate %>">
 	
-	
 	<form action="enrollHouse.re" method="post">
 		<input type="hidden" id="houseNo" name="houseNo" value="${house.houseNo }"> <!-- houseNo -->
 		<input type="hidden" id="endDate" name="javaDate" value=""> <!-- "endDate" -->
 		<input type="hidden" id="stayNo" name="stayNo" value=""> <!-- stayNo -->
 		<input type="hidden" id="userId" name="userId" value="${loginUser.userId }"> <!-- userId -->
 	
-		<div class="container">
+		<div class="all-container">
+			<section class="slider">
+	            <button class="prev">◁</button>
+	            
+	            <div class="slide">
+	            	<img src="${house.filePath }${house.originName01 }" style="width: 100%; heigth: auto;">
+	            </div>
+	            <div class="slide">
+	            	<img src="${house.filePath }${house.originName02 }" style="width: 100%; heigth: auto;">
+	            </div>
+	            <div class="slide">
+	            	<img src="${house.filePath }${house.originName03 }" style="width: 100%; heigth: auto;">
+	            </div>
+	            
+	            <button class="next">▷</button>
+	        </section>
+	        
+	<script>
+		//============== 이미지 슬라이더 ================
+		$(function(){
+			var slides = $('.slide');
+			var currentSlide = 0; //현재 활성화된 슬라이드의 인덱스
+			
+			slides.eq(currentSlide).addClass('active'); //페이지 로드시 첫이미지 바로 보여주기
+			setTimeout(function(){ //6초마다 다음 이미지 슬라이드
+				var slideInterval = setInterval(nextSlide,6000);
+			},0);
+			function nextSlide(){
+				slides.eq(currentSlide).removeClass('active');
+				currentSlide = (currentSlide + 1) % slides.length;
+				slides.eq(currentSlide).addClass('active');
+			}
+			function prevSlide(){
+				slides.eq(currentSlide).removeClass('active');
+				currentSlide = (currentSlide -1 + slides.length) % slides.length; 
+				slides.eq(currentSlide).addClass('active');
+			}
+			$('.next').click(function(e){
+				e.preventDefault(); //기본동작 방지 (내장객체, click,subnit 등의 기본동작을 취소시킴)
+				nextSlide();
+			});
+			$('.prev').click(function(e){
+				e.preventDefault();
+				prevSlide();
+			});
+			/*
+			//이미지 클릭시 해당 href 이동함수
+			$('.slide img').click(function(e){
+				e.preventDefault();
+				window.open($(this).parent('a').attr('href')); //URL 새탭에서 열기
+			});
+			*/
+		});
+	</script>
+		
 	        <section class="introduction">
 	            <h2>보금자리 소개</h2>
 	            <p>${house.introductionDetailed }</p>
 	        </section>
+	        
+	        <section class="review">
+	             <div class="review-header">
+	             	<h2>고객들의 후기</h2> <span class="pagingArea"></span>
+	             </div>
+	             <div class="review-list">
+	             
+	             </div>
+	        </section>
 	
-		<h2>인증정보</h2>
-		<section class="certificate">
-			<c:forEach var="c" items="${cer }">
-					<div class="certificate-item">
-						<img src="${c.filePath }${c.originName}" alt="인증사진">
-		            	<p>${c.certificationName }</p>
-					</div>
-			</c:forEach>
-	    </section>
-	
-	    <section class="environment">
-	        <h2>환경정보</h2>
-	        <div class="tags">
-	        	<c:forEach var="e" items="${env }">
-	        		<span>${e.environmentName}</span>
-	        	</c:forEach>
-	        </div>
-	    </section>
-	
-	    <section class="location">
-	        <h2>위치</h2>
-	        <p>주소 : ${house.houseAddress }</p>
-	        <div id="houseLocation" style="width:100%;height:200px;"></div>
-	    </section>
-	
-	    <section class="location">
-	        <h2>인근 병원정보</h2>
-	        <p>${house.nearbyHospital }</p>
-	        <div id="hospitalLocation" style="width:100%;height:200px;"></div>
-	    </section>
-	
-	    <section class="services">
-	    	<h2>지원가능 서비스</h2>
-	        <div class="service-list">
-	        	<c:forEach var="s" items="${sup }">
-	        		<div class="service-item">
-		                <img src="${s.filePath }${s.originName}" alt="${s.supplyGuideName }">
-		                <p>${s.supplyGuideName }</p>
-	            	</div>
-	        	</c:forEach>
-	        </div>
-	    </section>
+			<h2>인증정보</h2>
+			<section class="certificate">
+				<c:forEach var="c" items="${cer }">
+						<div class="certificate-item">
+							<img src="${c.filePath }${c.originName}" alt="인증사진">
+			            	<p>${c.certificationName }</p>
+						</div>
+				</c:forEach>
+		    </section>
+		    
+		    <section class="environment">
+		        <h2>환경정보</h2>
+		        <div class="tags">
+		        	<c:forEach var="e" items="${env }">
+		        		<span>${e.environmentName}</span>
+		        	</c:forEach>
+		        </div>
+		    </section>
+		
+		    <section class="location">
+		        <h2>위치</h2>
+		        <p>주소 : ${house.houseAddress }</p>
+		        <div id="houseLocation" style="width:100%;height:200px;"></div>
+		    </section>
+		
+		    <section class="location">
+		        <h2>인근 병원정보</h2>
+		        <p>${house.nearbyHospital }</p>
+		        <div id="hospitalLocation" style="width:100%;height:200px;"></div>
+		    </section>
+		
+		    <section class="services">
+		    	<h2>지원가능 서비스</h2>
+		        <div class="service-list">
+		        	<c:forEach var="s" items="${sup }">
+		        		<div class="service-item">
+			                <img src="${s.filePath }${s.originName}" alt="${s.supplyGuideName }">
+			                <p>${s.supplyGuideName }</p>
+		            	</div>
+		        	</c:forEach>
+		        </div>
+		    </section>
 	        
 	        <h2>인증정보</h2>
 			<section class="certificate">
@@ -254,12 +418,17 @@
 		</div>
 	</form>
       
+      <br><br>
     
     
     <script>
-    
     //=============== 지도 api ========================
 	    $(function(){
+	    	setTimeout(function(){
+	    		
+	    	longReview();
+	    	},2500);
+	    	
 			implementMap('houseLocation','${house.houseAddress}');
 			setTimeout(function(){ 
 				implementMap('hospitalLocation','${house.nearbyHospital}');
@@ -327,6 +496,11 @@
 		    var calendar = new FullCalendar.Calendar(calendarEl, {
 		        initialView: 'dayGridMonth',
 		        locale: 'ko', // 한글 로케일 설정
+		        headerToolbar: {
+                    left: '',
+                    center: 'title',
+                    right: 'prev,next'
+                },
 		        validRange:{ //오늘날짜 이전 막아주기
 		        	start : formattedDate
 		        },
@@ -347,6 +521,114 @@
 		        calendar.render();
 		    }, 3000);
 		});
+		
+		//============= 고객 후기 비동기통신 ===============
+		 var houseNo = $('#houseNo').val();
+			 function longReview(){
+				 $.ajax({
+			 		url : "longReview.re",
+			 		data : {houseNo : houseNo},
+			 		success : function(result){
+			 			var reviewList = result.reviewList;
+			 			var pi = result.pi;
+			 			var reviewStr = "";
+			 			for(var i=0; i<reviewList.length; i++){
+			 				reviewStr += "<div class='review-item'>"
+				 	                + "<img src='" + reviewList[i].filePath + reviewList[i].originName01 + "' alt='강쥐이미지'>"
+				 	                + "<img src='" + reviewList[i].filePath + reviewList[i].originName02 + "' alt='강쥐이미지'>"
+				 	                + "<img src='" + reviewList[i].filePath + reviewList[i].originName03 + "' alt='강쥐이미지'>"
+				 	                + "<img src='" + reviewList[i].filePath + reviewList[i].originName01 + "' alt='강쥐이미지'>"
+				 	                + "<div class='review-content'>"
+				 	                + "<div class='userName'>" + reviewList[i].userNo + "</div>"
+				 	                + "<div class='date'>" + reviewList[i].reviewDate + "</div>"
+				 	                + "<div class='reviewText'>" + reviewList[i].reviewContent + "</div>"
+				 	                + "</div>"
+				 	                + "</div><br><br>";
+			 			}
+			 			
+			 			var pagination = "<ul class='pagination'>"
+			 			
+			 			// 이전버튼
+			            if (pi.currentPage == 1) {
+			                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>◀</a></li>";
+			            } else {
+			                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + (pi.currentPage - 1) + ")'>◀</a></li>";
+			            }
+			            // 페이징번호 반복문
+			            for (var p = pi.startPage; p <= pi.endPage; p++) {
+			                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + p + ")'>" + p + "</a></li>";
+			            }
+			            // 다음버튼
+			            if (pi.currentPage == pi.maxPage) {
+			                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>▶</a></li>";
+			            } else {
+			                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + (pi.currentPage + 1) + ")'>▶</a></li>";
+			            }
+			 			$('.review-list').html(reviewStr);
+			 			$('.pagingArea').html(pagination);
+			 			console.log('통신성공');
+			 		},
+			 		error : function(){
+			 			console.log('통신실패');
+			 		}
+				 });
+			 };
+	 	//page 넘버마다 onclick 이벤트를 사용하여 비동기로 페이징이동
+		function goToPage(page) {
+		    $.ajax({
+		    	url : "longReview.re",
+		 		data : {
+		 			houseNo : houseNo,
+		 			currentPage : page
+		 		},
+		 		success : function(result){
+		 			var reviewList = result.reviewList;
+		 			var pi = result.pi;
+		 			var reviewStr = "";
+		 			for(var i=0; i<reviewList.length; i++){
+		 				reviewStr += "<div class='review-item'>"
+			 	                + "<img src='" + reviewList[i].filePath + reviewList[i].originName01 + "' alt='강쥐이미지'>"
+			 	                + "<img src='" + reviewList[i].filePath + reviewList[i].originName02 + "' alt='강쥐이미지'>"
+			 	                + "<img src='" + reviewList[i].filePath + reviewList[i].originName03 + "' alt='강쥐이미지'>"
+			 	                + "<img src='" + reviewList[i].filePath + reviewList[i].originName01 + "' alt='강쥐이미지'>"
+			 	                + "<div class='review-content'>"
+			 	                + "<div class='userName'>" + reviewList[i].userNo + "</div>"
+			 	                + "<div class='date'>" + reviewList[i].reviewDate + "</div>"
+			 	                + "<div class='reviewText'>" + reviewList[i].reviewContent + "</div>"
+			 	                + "</div>"
+			 	                + "</div><br><br>";
+		 			}
+
+		            var pagination = "<ul class='pagination'>";
+
+		            // 이전버튼
+		            if (pi.currentPage == 1) {
+		                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>◀</a></li>";
+		            } else {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + (pi.currentPage - 1) + ")'>◀</a></li>";
+		            }
+		            // 페이징번호 반복문
+		            for (var p = pi.startPage; p <= pi.endPage; p++) {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + p + ")'>" + p + "</a></li>";
+		            }
+		            
+		            // 다음버튼
+		            if (pi.currentPage == pi.maxPage) {
+		                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>▶</a></li>";
+		            } else {
+		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + (pi.currentPage + 1) + ")'>▶</a></li>";
+		            }
+		            pagination += "</ul>";
+
+		            $('.review-list').html(reviewStr);
+		 			$('.pagingArea').html(pagination);
+		            console.log('통신성공!!');
+		        },
+		        error: function() {
+		            console.log('통신실패ㅠㅠ');
+		        }
+		    });
+		}
     </script>
 	
 </body>

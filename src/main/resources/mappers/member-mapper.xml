@@ -37,6 +37,7 @@
 		INSERT INTO MEMBER(USER_ID,USER_NO,PASSWORD,NAME,PHONE,EMAIL,ADDRESS,PET_YN,USER_GRADE) 
 		VALUES(#{userId},SEQ_MEM.NEXTVAL,#{password},#{name},#{phone},#{email},#{address},#{petYN},0)
 	</insert>
+
 	<insert id="insertTeacher" parameterType="Member">
 		INSERT INTO MEMBER(USER_ID,USER_NO,PASSWORD,NAME,PHONE,EMAIL,ADDRESS,PET_YN,USER_GRADE,KIND_NO,STATUS) 
 		VALUES(#{userId},SEQ_MEM.NEXTVAL,#{password},#{name},#{phone},#{email},#{address},#{petYN},1,#{kindName},'N')	
@@ -119,9 +120,11 @@
 		FROM MEMBER
 		WHERE USER_NO = #{userNo}
 	</select>
-	<update id="restrictUser">
-		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL #{days} DAY
+	<update id="restrictUser" parameterType="hashmap">
+		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL '${days}' MINUTE
 		WHERE USER_NO = #{userNo}
 	</update>
-	
+	<select id="getRestrictedUntil" parameterType="_int" resultType="java.time.LocalDateTime">
+	SELECT RESTRICTED_UNTIL FROM MEMBER WHERE USER_NO = #{userNo}
+	</select>
 </mapper>

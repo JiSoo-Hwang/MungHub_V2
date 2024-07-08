@@ -6,9 +6,11 @@ import java.util.HashMap;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
 import com.kh.pjtMungHub.member.model.service.MemberService;
+import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 import com.kh.pjtMungHub.wedding.model.dao.WeddingDao;
@@ -47,7 +49,7 @@ public class WeddingServiceImpl implements WeddingService{
 	
 	//회원 보유 반려견 조회해서 웨딩 신청
 	@Override
-	public Pet selectPet(int userNo) {
+	public ArrayList<Pet> selectPet(int userNo) {
 		return dao.selectPet(sqlSession,userNo);
 	}
 	
@@ -107,11 +109,22 @@ public class WeddingServiceImpl implements WeddingService{
 		return dao.selectByBreed(sqlSession,breedId);
 	}
 
+	@Transactional
 	@Override
 	public int cancelWedding(int weddingNo, int userNo) {
 		//해당 신청 상태를 'R'로 변경하는 로직
-		dao.cancelWedding(sqlSession,weddingNo,"R");
-		return memberService.restrictUser(userNo, 14);
+		dao.cancelWedding(sqlSession,weddingNo);
+		return memberService.restrictUser(userNo, 3);
+	}
+
+	@Override
+	public Pet selectPetByNo(int petNo) {
+		return dao.selectPetByNo(sqlSession,petNo);
+	}
+
+	@Override
+	public ArrayList<Member> getContactInfo(int weddingNo) {
+		return dao.getContactInfo(sqlSession, weddingNo);
 	}
 
 }

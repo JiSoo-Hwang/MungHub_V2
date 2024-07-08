@@ -14,132 +14,166 @@
 <head>
 <meta charset="UTF-8">
 <title>MungHub 펫시터 선택페이지</title>
-<style>
-
-	/* 시간선택 css */
-    .str-btn {
-        width: 100px;
-        height: 50px;
-        border: 2px solid #ccc;
-        margin: 5px;
-        transition: background-color 0.1s, color 0.1s;
-    }
-    .str-btn.selected {
-        background-color: #28a745;
-        color: white;
-    }
-    /* 펫크기 버튼 그림조절  */
-    .petType-btn img {
-	    width: 100%; 
-	    height: 100%; 
-	}
+	<style>
+		@font-face {
+	        font-family: 'MangoDdobak-B';
+	        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-3@1.1/MangoDdobak-B.woff2') format('woff2');
+	        font-weight: 700;
+	        font-style: normal;
+		}
 	
-	/* 소요시간 / 펫크기  */
-    .duration-btn-group ,.petType-btn-group {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 20px;
-    }
-    .duration-btn{
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        border: 2px solid #ccc;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-        background-color: white;
-        transition: background-color 0.3s, color 0.3s;
-    }
-    .petType-btn {
-        width: 130px;
-        height: 130px;
-        border: 2px solid #ccc;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        background-color: #f9f9f9;
-        transition: background-color 0.3s, color 0.3s;
-    }
-    .petType-btn:hover , .duration-btn:hover , .str-btn:hover {
-    background-color: #e0e0e0; /* 호버 시 배경색 변경 */
-	}
-	
-	.petType-btn.active {
-	    background-color: #c0c0c0; /* 클릭 시 배경색 변경 */
-	    border-color: #808080; /* 클릭 시 테두리 색 변경 */
-	}
-    .duration-btn.selected , .petType-btn.selected {
-        background-color: #007bff;
-        color: white;
-    }
-    .duration-btn span ,.petType-btn span {
-        display: block;
-        font-size: 14px;
-    }
-    .duration-btn.best::after {
-        content: 'BEST';
-        display: block;
-        font-size: 10px;
-        color: #007bff;
-        margin-top: 5px;
-    }
-    .petType-btn.best::after {
-        content: 'BEST';
-        display: block;
-        font-size: 10px;
-        color: #007bff;
-        margin-top: 5px;
-    }
-    
-    /* 펫시터 리스트 css */
-    .sitter-card {
-        border: 1px solid #ddd;
-        padding: 20px;
-        margin: 10px 0;
-        display: flex;
-        align-items: center;
-    }
-    .sitter-info {
-        flex: 1;
-    }
-    .sitter-photo {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-left: 20px;
-    }
-    .popular-style {
-        color: #ff4081;
-        font-weight: bold;
-    }
-    .btn-reserve {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .btn-reserve:hover {
-        background-color: #0056b3;
-    }
-    
-</style>
+		.sitter-header {
+			font-family: 'MangoDdobak-B';
+			display: flex;
+			margin: 3% 0% -2% 15%;
+		}
+		#filterBtn {
+			font-size: 24px;
+			margin-left: 3%;
+		}
+		/* 시간선택 css */
+	    .str-btn {
+	        width: 100px;
+	        height: 50px;
+	        border: 2px solid #ccc;
+	        margin: 5px;
+	        transition: background-color 0.1s, color 0.1s;
+	    }
+	    .str-btn.selected {
+	        background-color: #28a745;
+	        color: white;
+	    }
+	    /* 펫크기 버튼 그림조절  */
+	    .petType-btn img {
+		    width: 100%; 
+		    height: 100%; 
+		}
+		
+		/* 소요시간 / 펫크기  */
+	    .duration-btn-group ,.petType-btn-group {
+	        display: flex;
+	        justify-content: space-around;
+	        margin-top: 20px;
+	    }
+	    .duration-btn{
+	        width: 80px;
+	        height: 80px;
+	        border-radius: 50%;
+	        border: 2px solid #ccc;
+	        display: flex;
+	        align-items: center;
+	        justify-content: center;
+	        font-size: 16px;
+	        background-color: white;
+	        transition: background-color 0.3s, color 0.3s;
+	    }
+	    .petType-btn {
+	        width: 130px;
+	        height: 130px;
+	        border: 2px solid #ccc;
+	        border-radius: 5px;
+	        display: flex;
+	        align-items: center;
+	        justify-content: center;
+	        cursor: pointer;
+	        background-color: #f9f9f9;
+	        transition: background-color 0.3s, color 0.3s;
+	    }
+	    .petType-btn:hover , .duration-btn:hover , .str-btn:hover {
+	    background-color: #e0e0e0; /* 호버 시 배경색 변경 */
+		}
+		
+		.petType-btn.active {
+		    background-color: #c0c0c0; /* 클릭 시 배경색 변경 */
+		    border-color: #808080; /* 클릭 시 테두리 색 변경 */
+		}
+	    .duration-btn.selected , .petType-btn.selected {
+	        background-color: #007bff;
+	        color: white;
+	    }
+	    .duration-btn span ,.petType-btn span {
+	        display: block;
+	        font-size: 14px;
+	    }
+	    .duration-btn.best::after {
+	        content: 'BEST';
+	        display: block;
+	        font-size: 10px;
+	        color: #007bff;
+	        margin-top: 5px;
+	    }
+	    .petType-btn.best::after {
+	        content: 'BEST';
+	        display: block;
+	        font-size: 10px;
+	        color: #007bff;
+	        margin-top: 5px;
+	    }
+	    
+	    /* 펫시터 리스트 css */
+	    .sitter-card {
+	    	font-family: 'MangoDdobak-B';
+	        border: 3px solid #cccccc;
+		    border-radius: 20px;
+	        padding: 20px;
+	        margin: 10px 0;
+	        display: flex;
+	        align-items: center;
+	    }
+	    .sitter-info {
+	        flex: 1;
+	        margin: 2% 0% 1% 3%;
+	    }
+	    p{
+	    	font-size : 20px;
+	    }
+	    .sitter-photo {
+	        width: 250px;
+	        height: 250px;
+	        border-radius: 10%;
+	        object-fit: cover;
+	        margin-left: 1%;
+	    }
+	    .popular-style {
+	        color: #ff4081;
+	        font-weight: bold;
+	    }
+	    .btn-reserve {
+	        background-color: #007bff;
+	        font-size: 28px;
+	        color: white;
+	        border: 3px solid #cccccc;
+	        padding: 10px 20px;
+	        border-radius: 5px;
+	        cursor: pointer;
+	    }
+	    .btn-reserve:hover {
+	        background-color: #0056b3;
+	    }
+	    
+	    
+	</style>
 
 </head>
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
+	<input type="hidden" id="isFiltering" value="false">
 	<input type="hidden" id="firstCurrentPage" value="${currentPage }">
 	
-    <!-- 모달창 버튼 -->
-	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-	  여러가지 맞춤 정보를 통해 돌보미를 추천 받아보세요. 
-	</button>
+	<div class="sitter-header">
+		<h3> < 펫시터 리스트 ></h3>
+		<!-- 모달창 버튼 -->
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" id="filterBtn" data-bs-target="#staticBackdrop">
+		  여러가지 맞춤 정보를 통해 돌보미를 추천 받아보세요. 
+		</button>
+	</div>
+	
+	
+    <div class="container mt-5"  id="sitterListContainer">
+        
+    </div>
+    
+	
 	
 	<div class="container mt-5">
        <!-- 날짜와 시간 클릭 시 모달영역 -->
@@ -198,11 +232,7 @@
       </div>
     
     <br>
-    <h4>펫시터 리스트</h4>
-    <div class="container mt-5"  id="sitterListContainer">
-        
-    </div>
-	
+    
 	<script>
 	
 		$(document).ready(function(){
@@ -212,20 +242,30 @@
 		var isLoading = false; //중복요청방지
 		
 		$(window).scroll(function() {
-			
 			if(!isLoading){
-				isLoading = true;
+				
 				var documentHeight = $(document).height(); //문서 전체높이
 				var scrollPosition = $(window).height() + $(window).scrollTop(); //현재 스크롤 위치
-				
 				//스크롤이 맨 밑 100px 지점에서 로드
-				if(scrollPosition >= documentHeight - 100){
+				if(scrollPosition >= documentHeight - 10){
+					isLoading = true;
 					var nextPage = parseInt($('#firstCurrentPage').val())+1;
 					$('#firstCurrentPage').val(nextPage);
 					
-					firstSitterList();
+					if($('#isFiltering').val()==='true'){
+						filterSitterList();
+					}else{
+						firstSitterList();
+					}
 				}
 			}
+		});
+		
+		$('#sitterSearch').click(function(){
+			$('#isFiltering').val('true');
+			$('#firstCurrentPage').val('1'); 
+			$('#sitterListContainer').html('');
+			filterSitterList();
 		});
 		
 		function firstSitterList(){
@@ -262,21 +302,26 @@
 					 }
 					 $('#sitterListContainer').append(sitterList); //html 대신 append 로 기존 데이터 유지
 					 console.log('데이터 불러오기 성공!!');
+					 isLoading = false; // 요청완료후 false 로 설정
+					 
+					 if(pi.currentPage >= pi.maxPage){
+						 $(window).off('scroll');
+					 }
 				},
 				error : function(){
 					console.log('통신실패 ㅠㅠ');
+					isLoading = false; // 요청완료후 false 로 설정
 				}
 			});
 		};
 	
-		$(function(){ 
 			//버튼 클릭시 활성화/비활성화
 			$(".duration-btn, .str-btn, .petType-btn").on("click", function() {
                 $(this).siblings().removeClass("selected");
                 $(this).addClass("selected");
             });
 			
-			$("#sitterSearch").click(function(){
+			function filterSitterList(){
 				//방문날짜
 				var visitDate = $("#visitDate").val();
 				//방문시간==시작시간 구하기
@@ -292,12 +337,17 @@
 						url : "selectSitter.re",
 						type : "post",
 						data : {
+							currentPage : $('#firstCurrentPage').val(),
 							visitDate : visitDate,
 							startTime : startTime,
 							endTime : endTime,
 							petTypeNo : petTypeNo
 						},
-						success: function (list) {
+						success: function (result) {
+							
+							var list = result.list;
+							var pi = result.pi;
+							
 							 var sitterList = "";
 							 for (var i = 0; i < list.length; i++) {
 								 sitterList += "<form class='sitter-card' action='short.re' method='get'>" 
@@ -312,16 +362,22 @@
 				                        + "<input type='hidden' name='endTime' value='" + endTime + "'>"
 				                        + "<input type='hidden' name='duration' value='" + duration + "'>"
 				                        + "<input type='hidden' name='petTypeNo' value='" + petTypeNo + "'>"
-				                        + "<button type='submit' class='btn-reserve' id='resBtn'>예약</button>"
+				                        + "<button type='submit' class='btn-reserve' id='resBtn'>예약으로 바로가기</button>"
 				                        + "</div>"
 				                        + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' class='sitter-photo'>"
 				                        + "</form>";
 							 }
-							 $('#sitterListContainer').html(sitterList);
+							 $('#sitterListContainer').append(sitterList);
 							 console.log('데이터 불러오기 성공!!');
+							 isLoading = false;
+							 $('#isFiltering').val("true");
+							 if(pi.currentPage >= pi.maxPage){
+								 $(window).off('scroll');
+							 }
 						},
 						error : function(){
 							console.log('통신오류');
+							isLoading = false;
 						}
 					});
 					//값을 보낸 후 모달창 닫아주기
@@ -330,7 +386,7 @@
 					//둘중에 하나라도 비입력시 알림창
 					alert('정보를 모두 입력해주세요.')
 				}
-			});
+			};
 			//리셋버튼을 누르면 날짜와 시간 비워주기
 			$("#resetBtn").click(function(){ 
 				$("#visitDate").val('');
@@ -338,7 +394,6 @@
 				$(".str-btn").removeClass("selected");
 				$(".petType-btn").removeClass("selected");
 			});
-		});
 	</script>
 </body>
 </html>

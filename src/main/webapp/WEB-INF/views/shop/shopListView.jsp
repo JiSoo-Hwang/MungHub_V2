@@ -9,9 +9,6 @@
 <style>
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
-.review-star>i{
-color: #F2D106;
-}
 .card{
 cursor: pointer;
 }
@@ -28,6 +25,10 @@ position : relative;
  filter: brightness(0.7);
 }
 
+
+.star-rating {width:100px; }
+.star-rating,.star-rating span {display:inline-block; height:24px; overflow:hidden; background:url(resources/uploadFiles/shopFile/productFile/common/star.png)no-repeat; }
+.star-rating span{background-position:left bottom; line-height:0; vertical-align:top; }
 
 </style>
 </head>
@@ -84,7 +85,7 @@ $(function(){
 </c:if>
 </c:if>
 <div class="row align-items-center">
-<c:forEach items="${pList }" var="p">
+<c:forEach items="${pList }" var="p" varStatus="status">
 <div class="col-lg-3 my-3 ">
 	<div class="card" onclick="location.href='detail.sp/${p.productNo}'">
 	<div>
@@ -92,14 +93,12 @@ $(function(){
 	</div>
 	<div class="card-body" style="width:250px;">
 		<h5 class="card-title">${p.productName }</h5>
-			<span class="review-star">
-			<i class="bi bi-star-fill"></i>
-			<i class="bi bi-star-fill"></i>
-			<i class="bi bi-star-fill"></i>
-			<i class="bi bi-star-half"></i>
-			<i class="bi bi-star"></i>
+				<div class="wrap-star">
+			    <div class='star-rating'>
+			        <span style ="width: <fmt:formatNumber type="number" maxFractionDigits="0" value="${p.reviewTScore * 20}" />%"></span>
+			    </div>
+				</div>
 			<span>(<fmt:formatNumber type="number" maxFractionDigits="0" value="${p.reviewCount }" />)</span>
-			</span>
 		<br> 
 		<del><fmt:formatNumber type="number" maxFractionDigits="0" value="${p.price}" /></del>
 		<fmt:formatNumber type="number" maxFractionDigits="0" value="${p.price -(p.price/p.discount)}" />

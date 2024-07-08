@@ -1,8 +1,9 @@
 package com.kh.pjtMungHub.member.model.dao;
 
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 import org.apache.ibatis.session.RowBounds;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -151,6 +152,10 @@ public class MemberDao {
 		params.put("userNo", userNo);
 		params.put("days",days);
 		return sqlSession.update("memberMapper.restrictUser",params);
+	}
+
+	public LocalDateTime getRestrictedUntil(SqlSessionTemplate sqlSession, int userNo) {
+		return sqlSession.selectOne("memberMapper.getRestrictedUntil",userNo);
 	}
 
 }

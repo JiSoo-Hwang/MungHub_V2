@@ -25,4 +25,7 @@ public class HouseReservation {
     private int paymentStatus; // PAYMENT_STATUS NUMBER DEFAULT 1 NOT NULL
     private String userId; // USER_ID VARCHAR2(100) NOT NULL
     private int totalAmount; // TOTAL_AMOUNT NUMBER NOT NULL
+    private String pet; // 
+    private String walk; // 
+    private String petTypeNo; // 
 }
