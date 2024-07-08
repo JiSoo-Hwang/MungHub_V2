@@ -7,49 +7,27 @@
 <title>Insert title here</title>
 </head>
 <style>
-	.petInfo{
-		height:250px;
-		position:relative;
-	}
-	div .left, .right{
-		display:inline-block;
-		margin-top:10px;
-		border:0;
-		padding:0;
-	}
-	.left{
-		width:60%;
-		position:relative;
-		overflow:hidden;
-		
-	}
-	.left>img{
-		top:0;
-		left:0;
-		position:absolute;
-		transform: translate(0%, 0%);
+	.member-info{
+		height:400px;
 		width:100%;
 	}
+	.pet-info{
+		width:800px;
+	}
+	.info-area>input{
+		width:450px;
+	}
+	.petInfo{
+		position:relative;
+		height:300px;
+		margin-bottom:20px;
+	}
+	.petPhoto{
+		width:300px;
+	}
 	.right{
-		position:absolute;
-		transform: translate(0%, 0%);
-	}
-	.mypage-left, .mypage-main{
-		padding:0;
-		border:0;
-		margin:0;
-		display:inline-block;
-		height:100%;
-	}
-
-	.totalArea{
-		height:600px;
-	}
-	.mypage-left{
-		width:250px;
-	}
-	.mypage-main{
-		width:600px;
+		font-size: 120%;
+		line-height: 250%;
 	}
 </style>
 <body>
@@ -110,6 +88,7 @@
 			</c:choose>
 		</div>
 	</div>
+	</div>
 	<div class="modal fade" id="memModal">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -157,7 +136,6 @@
 				</form>
 			</div>
 		</div>
-	</div>
 	</div>
 	<script>
 		function searchKind(){

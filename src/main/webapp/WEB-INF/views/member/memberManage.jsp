@@ -6,13 +6,34 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-	.mypage-left,.mypage.main{
-		margin-bottom: 100%;
+	thead th{
+		width:100px;
+		border:2px solid black;
+		text-align:center;
+	}
+	.userPhone{
+		width:150px;		
+	}.userEmail{
+		width:200px;
+	}
+	.statusYN{
+		width:60px;
+	}
+	tbody td{
+		text-align:center;
+	}
+	.not-center{
+		padding-left:8px;
+		text-align:left;
+	}
+	tbody tr{
+		border-bottom:1px solid lightGray;
 	}
 </style>
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/common/header.jsp" %>
+	<div class="totalArea">
 	<div class="mypage-left">
 	<%@ include file="/WEB-INF/views/member/memberSideBar.jsp" %>
 	</div>
@@ -28,15 +49,15 @@
 					<h5>회원 검색</h5>
 					<input type="text" id="searchUserId" placeholder="찾고 싶은 회원의 아이디를 입력하세요"><button onclick="searchUserId();">검색</button>
 					<div class="member-list" hidden="true">
-						<table class="search-result" border="1">
-							<thead style="border:1;">
+						<table class="search-result" >
+							<thead>
 								<tr>
 									<th>아이디</th>
 									<th>이름</th>
-									<th>휴대폰 번호</th>
-									<th>이메일 주소</th>
-									<th>반려견유무</th>
-									<th>활동유무</th>
+									<th class="userPhone">휴대폰 번호</th>
+									<th class="userEmail">이메일 주소</th>
+									<th class="statusYN">반려견 유무</th>
+									<th class="statusYN">활성화 유무</th>
 									<th>관리</th>
 								</tr>
 							</thead>
@@ -47,6 +68,7 @@
 				</div>
 			</div>
 		</div>
+	</div>
 	</div>
 	<script>
 		function searchUserId(){
@@ -64,10 +86,10 @@
 							text+="<tr>"
 								+"<td hidden='true'>"+result[i].userNo+"</td>"
 								+"<td hidden='true'>"+result[i].userGrade+"</td>"
-								+"<td>"+result[i].userId+"</td>"
+								+"<td class='not-center'>"+result[i].userId+"</td>"
 								+"<td>"+result[i].name+"</td>"
 								+"<td>"+result[i].phone+"</td>"
-								+"<td>"+result[i].email+"</td>"
+								+"<td class='not-center'>"+result[i].email+"</td>"
 								+"<td>"+result[i].petYN+"</td>"
 								+"<td>"+result[i].status+"</td>"
 								+"<td><button data-bs-toggle='modal' data-bs-target='#disableModal' onclick='return false;'>활동 정지</button>"

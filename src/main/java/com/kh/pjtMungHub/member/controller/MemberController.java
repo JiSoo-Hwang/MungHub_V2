@@ -42,6 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
+import com.kh.pjtMungHub.common.template.Pagination;
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.member.model.service.MemberService;
 import com.kh.pjtMungHub.member.model.vo.Member;
@@ -108,11 +109,13 @@ public class MemberController {
 	}
 	
 	@RequestMapping("msg.me")
-	public String enterMsg(HttpSession session, PageInfo pi) {
+	public String enterMsg(HttpSession session, PageInfo page) {
 		Member m=(Member)session.getAttribute("loginUser");
-		pi.setListCount(service.msgCount(m));
-		pi.setBoardLimit(15);
-		System.out.println(pi);
+		page.setListCount(service.msgCount(m));
+		page.setBoardLimit(15);
+		page.setPageLimit(5);
+		new Pagination();
+		PageInfo pi=Pagination.getPageInfo(page.getListCount(), page.getCurrentPage(), page.getPageLimit(), page.getBoardLimit());
 		session.setAttribute("pi", pi);
 		session.setAttribute("msgList",service.selectMessageList(m,pi.getCurrentPage()));
 		return "member/memberMessage";
@@ -127,6 +130,7 @@ public class MemberController {
 	public String enterManageTeacher(HttpSession session) {
 		Member m=(Member)session.getAttribute("loginUser");
 		ArrayList<Member> tList=new ArrayList<Member>();
+		int count=0;
 		//원장님 당 하나의 유치원을 운영할 경우
 //		tList=service.searchTeacher(m);
 		// 원장님 한 명이 여러 유치원을 담당할 경우
@@ -136,11 +140,15 @@ public class MemberController {
 			if(teacher!=null) {				
 				for(Member me:teacher) {
 					tList.add(me);
+					if(me.getStatus()=="N") {						
+						count++;
+					}
 				}
 			}
 		}
 		session.setAttribute("kindList",kindList);
 		session.setAttribute("tList", tList);
+		session.setAttribute("newCount", count);
 		return "member/memberManageTeacher";
 	}
 	
@@ -276,7 +284,6 @@ public class MemberController {
 	
 	@PostMapping("updatePetStat.me")
 	public String updatePetStat(Pet p, MultipartFile reUpFile, HttpSession session) {
-		System.out.println(p);
 		boolean flag = false; //파일 삭제 필요시 사용할 논리값
 		String deleteFile = "";//파일 저장경로 및 변경파일명 담아놓을 변수
 		int del;
@@ -298,7 +305,7 @@ public class MemberController {
 			photo.setPhotoNo(pNum);
 			photo.setOriginName(reUpFile.getOriginalFilename());
 			photo.setChangeName(changeName);
-			photo.setFilePath("resources/uploadFiles/"+changeName);
+			photo.setFilePath("/resources/uploadFiles/petPhoto/"+changeName);
 			p.setPhotoNo(photo.getPhotoNo());
 			insertPhoto=service.insertPetPhoto(photo);
 		}else {
@@ -343,7 +350,6 @@ public class MemberController {
 		String changeName = currentTime+ranNum+ext;
 		
 		String savePath=session.getServletContext().getRealPath("/resources/uploadFiles/petPhoto/");
-		System.out.println(savePath);
 		try {
 		upfile.transferTo(new File(savePath+changeName));
 		} catch (IllegalStateException | IOException e) {
@@ -476,7 +482,7 @@ public class MemberController {
 			alert="메시지 전송 실패. 아이디를 다시 확인해 주세요.";
 		}
 		session.setAttribute("alertMsg", alert);
-		return "redirect:/msg.me";
+		return "redirect:/msg.me?currentPage=1";
 	}
 	@GetMapping("kakao.me")
 	public String kakaoLogin(HttpSession session) throws IOException {

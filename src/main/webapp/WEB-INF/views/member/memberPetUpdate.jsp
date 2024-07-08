@@ -8,48 +8,18 @@
 </head>
 <style>
 	.petInfo{
-		height:250px;
 		position:relative;
+		height:300px;
 	}
-	div .left, .right{
-		display:inline-block;
-		margin-top:10px;
-		border:0;
-		padding:0;
+	.pet-info{
+		height:800px;
 	}
-	.left{
-		width:60%;
-		position:relative;
-		overflow:hidden;
-		
-	}
-	.left>img{
-		top:0;
-		left:0;
-		position:absolute;
-		transform: translate(0%, 0%);
-		width:100%;
+	.petPhoto{
+		width:300px;
 	}
 	.right{
-		position:absolute;
-		transform: translate(0%, 0%);
-	}
-	.mypage-left, .mypage-main{
-		padding:0;
-		border:0;
-		margin:0;
-		display:inline-block;
-		height:100%;
-	}
-
-	.totalArea{
-		height:600px;
-	}
-	.mypage-left{
-		width:250px;
-	}
-	.mypage-main{
-		width:600px;
+		font-size: 120%;
+		line-height: 250%;
 	}
 </style>
 <body>
@@ -74,7 +44,7 @@
 								<c:forEach items="${petPhotoList}" var="photo">
 									<c:if test="${photo.photoNo eq pet.photoNo}">
 										<div class="petPhoto left">
-											<img src=".${photo.filePath}" height="100%">
+											<img src=".${photo.filePath}" width="auto" height="300px" >
 										</div>
 									</c:if>
 								</c:forEach>
@@ -118,12 +88,20 @@
 					$(".selected-pet-info>#petNo").val(p.petNo);
 					$(".selected-pet-info>#petName").val(p.petName);
 					$(".selected-pet-info>#petAge").val(p.petAge);
+					$(".selected-pet-info option").each(function(){
+						if($(this).val()==p.breed){
+							$(this).prop("selected",true);
+						}
+					});
+					$(".selected-pet-info>#breed").val(p.breed);
 					$(".selected-pet-info>#pet-age").text(p.petAge+" 살");
 					$(".selected-pet-info>#weight").val(p.weight);
 					$(".selected-pet-info>#photoNo").val(p.photoNo);
 					$(".selected-pet-info>input[type=radio]").each(function(){
 						if(p.petGender=$(this).val()){
 							$(this).prop("checked",true);
+						}else{
+							$(this).prop("checked",false);							
 						}
 					})
 					$.ajax({
@@ -132,7 +110,7 @@
 							photoNo:p.photoNo
 						},
 						success:function(photo){
-							$(".selected-pet-photo>img").prop("src",photo.filePath);
+							$(".selected-pet-info>input[type=file]").prop("src",'.'+photo.filePath);
 						},
 						error:function(){
 							console.log("사진미스");
@@ -182,7 +160,7 @@
 							<label for="weight">몸무게 : </label>
 							<input type="number" id="weight" name="weight" step="0.1"> kg<br>
 							<label for="photo">반려견 사진 자랑(1장만!)</label>
-							<input type="file" name="reUpFile" onchange="loadImg(this);" required>	
+							<input type="file" name="reUpFile" onchange="loadImg(this);">	
 						</div>
 					</div>	
 					<!-- Modal footer -->

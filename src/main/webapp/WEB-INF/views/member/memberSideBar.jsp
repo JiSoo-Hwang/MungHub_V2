@@ -7,15 +7,8 @@
 <title>Insert title here</title>
 </head>
 <style>
-	.mypage-left{
-		display: inline-block;
-		width:300px;
-		height:100%;
-		position:relative;
-		align:bottom;
-	}
 	.left-sidebar{
-		position:absolute;
+		margin-left: 10px;
 	}
 	.left-sidebar>ul{
 		list-style-type:none;
@@ -23,6 +16,8 @@
 		margin:0;
 		padding:0;
 		text-align:center;
+		height:auto;
+		position:fixed;
 	}
 	.sidebar-link{
 		background-color:gray;
@@ -32,8 +27,52 @@
 		text-decoration:none;
 		color: white;
 	}
-	.mypage-main{
+		div .left, .right{
 		display:inline-block;
+		margin-top:10px;
+		border:0;
+		padding:0;
+	}
+	.left{
+		width:300px;
+		position:relative;
+		overflow:hidden;
+		height:100%;
+		margin-right:100px;
+	}
+	.left>img{
+		position:absolute;
+		transform: translate(0%, 0%);
+		width:auto;
+		height:300px;
+	}
+	.right{
+		position:absolute;
+		transform: translate(0%, 0%);
+		height:100%;
+	}
+	.totalArea>div{
+		display:inline-block;
+		height:100%;
+		position:relative;
+		float:left;
+	}
+
+	.totalArea{
+		width:100%;
+		height:100%;
+		position:absolute;
+	}
+	.mypage-left{
+		width:20%;
+		margin-right:15px;
+	}
+	.mypage-main{
+		width:70%;
+	}
+	.mypage-main>div{
+		width:100%;
+		margin-bottom:5px;
 	}
 </style>
 <body>
@@ -50,7 +89,7 @@
 			<a href="">연계 쇼핑몰 주문 이력</a>
 		</li>
 		<li class="sidebar-link">
-			<a href="msg.me?currentPage=0">쪽지 / 쿠폰함 보기</a>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+			<a href="msg.me?currentPage=1">쪽지 / 쿠폰함 보기</a>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 		</li>
 		<c:if test="${loginUser.userGrade ge 1}">
 			<li class="sidebar-link">		
@@ -61,7 +100,7 @@
 					<a href="manageTeacher.me">선생님 관리</a>
 				</li>
 			<li class="sidebar-link">
-					<a href="">상담 요청 리스트</a>
+					<a href='regList2.do?userNo=${loginUser.userNo}'>상담 요청 리스트</a>
 				</li>
 			</c:if>
 		</c:if>

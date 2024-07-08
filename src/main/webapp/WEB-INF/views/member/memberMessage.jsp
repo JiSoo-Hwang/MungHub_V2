@@ -7,13 +7,21 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-	.mypage-left{
-		margin-bottom: 100%;
+	thead th{
+		width:100px;
+		height:60px;
+	}
+	thead .list-cont{
+		width:300px;
+	}
+	.msg-list tbody>tr:hover{
+		background-color:lightgray;
 	}
 </style>
 </head>
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
+	<div class="totalArea">
 	<div class="mypage-left">
 		<%@include file="/WEB-INF/views/member/memberSideBar.jsp" %>
 	</div>
@@ -33,14 +41,15 @@
 			<div class="list-area">
 				<h4>받은 메시지 목록</h4>
 				<span class="">${pi.currentPage} 페이지</span>
+				<br><br>
 				<c:if test="${not empty msgList}">
 					<table class="msg-list">
 						<thead>
 							<tr>
-								<th>작성자</th>
-								<th>작성일</th>
-								<th>내용</th>
-								<th>관리</th>
+								<th class="list-writer">작성자</th>
+								<th class="list-date">작성일</th>
+								<th class="list-cont">내용</th>
+								<th class="list-del">관리</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -71,12 +80,12 @@
 					                </button>
 					            </li>
 				        	</c:if>
-				            <c:forEach var="i" begin="${pi.startPage}" end="${pi.endPage}">
-				           		<li class="page-item">
-				           			<button class="page-link">${i}</button>
-				           		</li>
-				            </c:forEach>
-								<c:if test="${pi.currentPage lt pi.maxPage}">
+				        <c:forEach var="i" begin="${pi.startPage}" end="${pi.endPage}">
+				           	<li class="page-item">
+				           		<button class="page-link">${i}</button>
+				         	</li>
+				        </c:forEach>
+							<c:if test="${pi.currentPage lt pi.maxPage}">
 				           		<li class="page-item">
 					                <button aria-label="Next" onclick="next();">
 					                    <span aria-hidden="true">&raquo;</span>
@@ -92,6 +101,7 @@
 				</c:if>
 			</div>
 		</div>
+	</div>
 	</div>
 	<script>
 		$(".msg-list tbody").on("click",".msgCont",function(){
@@ -119,6 +129,8 @@
 			$("#readMessageContent").text(msgCont);
 			if($(".msg-content").attr("hidden")){
 				$(".msg-content").attr("hidden",false);
+			}else{
+				$(".msg-content").attr("hidden",true);				
 			}
 		})			
 
@@ -131,35 +143,25 @@
 			var pageNo=$(this).text();
 			
 		})
-		function prev(){
-			$.ajax({
-				
-			})
-		}
-		function next(){
-			
-			$.ajax({
-				
-			})
-		}
+
 	</script>
 	<div class="modal fade" id="msgModal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<!-- Modal Header -->
 				<div class="modal-header" align="right">
-					<h4 class="modal-title" align="center">메시지 전송</h4>
+					<h4 class="modal-title" align="center">메시지 전송</h4><br>
 					<button type="button"  class="close" data-bs-dismiss="modal">&times;</button>
 				</div>		
 				<form action="sendMsg.me" method="post">
 				<!-- Modal body -->
 					<div class="modal-body">
 						<div class="msg-main">
-							<label for="receiver" >수신인 : </label><br>
-							<input type="text" name="receiver" required> <button onclick="searchUser(); return false;"></button>
-							<input type="hidden" name="sender" value="${loginUser.userNo}">
-							<label for="messageContent">내용 : </label>
-							<textarea id="messageContent" name="messageContent" cols="30" rows="20" style="resize:none;" placeholder="내용을 작성해 주세요" required></textarea>
+							<label for="receiver" >수신인 : </label>
+							<input type="text" name="receiver" required> <button onclick="searchUser(); return false;">검색</button>
+							<input type="hidden" name="sender" value="${loginUser.userNo}"><br>
+							<label for="messageContent">내용 : </label><br>
+							<textarea id="messageContent" name="messageContent" cols="40" rows="15" style="resize:none;" placeholder="내용을 작성해 주세요" required></textarea>
 						</div>	
 					</div>
 					<!-- Modal footer -->
@@ -171,6 +173,22 @@
 			</div>
 		</div>
 	</div>
-
+	<script>
+		function searchUser(){
+			var receiver=$("input[name=receiver]").val();
+			$.ajax({
+				url:"",
+				data:{
+					userId:receiver
+				},
+				success:function(){
+					alert("메시지 전송 가능한 아이디입니다.");
+				},
+				error:function(){
+					console.log("통신오류");
+				}
+			})
+		}
+	</script>
 </body>
 </html>

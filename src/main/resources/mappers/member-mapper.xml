@@ -45,7 +45,7 @@
 		SELECT PET_NO petNo, BREED_ID breed, PET_NAME petName, PET_AGE petAge, PET_GENDER petGender, WEIGHT weight, PHOTO_NO photoNo FROM PET WHERE OWNER_NO=#{userNo}
 	</select>
 	<select id="selectPetPhoto" parameterType="Pet" resultType="PetPhoto">
-		SELECT PHOTO_NO photoNo, ORIGIN_NAME originName,CHANGE_NAME changeName,FILE_PATH filePath,UPLOAD_DATE uploadDate, STATUS status FROM PET_PHOTO WHERE PHOTO_NO=#{photoNo} AND STATUS='Y'
+		SELECT PHOTO_NO photoNo, ORIGIN_NAME originName,CHANGE_NAME changeName,FILE_PATH filePath,UPLOAD_DATE uploadDate, STATUS status FROM PET_PHOTO WHERE PHOTO_NO=#{photoNo}
 	</select>
 	<select id="selectKindList" resultType="Kindergarten">
 		SELECT KIND_NO kindNo, KIND_NAME kindName FROM KINDERGARTEN WHERE STATUS='Y' AND KIND_NAME LIKE #{kindName}
@@ -54,7 +54,7 @@
 		SELECT BREED_ID breedId, BREED_NAME breedName FROM BREED
 	</select>
 	<select id="msgCount" parameterType="Member" resultType="_int">
-		SELECT COUNT(*) messageNo FROM MESSAGE WHERE RECEIVER_NO=#{userNo}
+		SELECT COUNT(*) FROM MESSAGE WHERE RECEIVER_NO=#{userNo}
 	</select>
 	<select id="selectMessageList" parameterType="Member" resultType="Message">
 		SELECT MESSAGE_NO messageNo, USER_ID sender, MESSAGE_CONTENT messageContent, MESSAGE_DATE messageDate FROM MESSAGE MSG JOIN MEMBER M ON(MSG.SENDER_NO=M.USER_NO) WHERE MSG.RECEIVER_NO=#{userNo} AND MSG.STATUS LIKE '_Y%'
@@ -69,7 +69,7 @@
 		INSERT INTO PET VALUES(SEQ_PET.NEXTVAL,#{breed},#{ownerNo},#{petName},#{petAge},#{petGender},#{weight},#{photoNo})
 	</insert>
 	<select id="selectPetByNo" parameterType="Pet" resultType="Pet">
-		SELECT PET_NO petNo, BREED_NAME breed, PET_NAME petName, PET_AGE petAge, PET_GENDER petGender, WEIGHT weight, PHOTO_NO photoNo FROM PET JOIN BREED USING(BREED_ID) WHERE PET_NO=#{petNo}
+		SELECT PET_NO petNo, BREED_ID breed, PET_NAME petName, PET_AGE petAge, PET_GENDER petGender, WEIGHT weight, PHOTO_NO photoNo FROM PET WHERE PET_NO=#{petNo}
 	</select>
 	<update id="updatePet" parameterType="Pet">
 		UPDATE PET SET BREED_ID=#{breed},PET_NAME=#{petName},PET_AGE=#{petAge},PET_GENDER=#{petGender},WEIGHT=#{weight},PHOTO_NO=#{photoNo} WHERE PET_NO=#{petNo}
@@ -84,7 +84,7 @@
 		SELECT KIND_NO kindNO, DIRECTOR_ID directorId, KIND_NAME kindName FROM KINDERGARTEN WHERE DIRECTOR_ID=#{userNo} AND STATUS='Y'
 	</select>
 	<select id="searchTeacherByKind" parameterType="Kindergarten" resultType="Member">
-		SELECT USER_ID userId,USER_NO userNo,NAME name,PHONE phone,EMAIL email,ADDRESS address,PET_YN petYN,KIND_NAME kindName FROM MEMBER JOIN KINDERGARTEN USING(KIND_NO) WHERE KIND_NO=#{kindNo}
+		SELECT USER_ID userId,USER_NO userNo,NAME name,PHONE phone,EMAIL email,ADDRESS address,PET_YN petYN,KIND_NAME kindName,JOIN_DATE joinDate FROM MEMBER JOIN KINDERGARTEN USING(KIND_NO) WHERE KIND_NO=#{kindNo}
 	</select>
 	<update id="acceptTeacher" parameterType="Member">
 		UPDATE MEMBER SET USER_GRADE=#{userGrade}, STATUS='Y' WHERE USER_NO=#{userNo}

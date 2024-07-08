@@ -67,8 +67,7 @@ public class MemberDao {
 	}
 
 	public int msgCount(SqlSessionTemplate sqlSession, Member m) {
-		int result=sqlSession.selectOne("memberMapper.msgCount");
-		return result;
+		return sqlSession.selectOne("memberMapper.msgCount",m);
 	}
 
 	public int getPhotoNo(SqlSessionTemplate sqlSession) {
