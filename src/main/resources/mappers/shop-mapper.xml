@@ -179,10 +179,43 @@
 	<otherwise>
 	</otherwise>
 	</choose>
-	
-		
-	
+
 	</select>
+	
+	<select id="selectReviewReplyList" 
+	resultType="com.kh.pjtMungHub.shop.model.vo.ReviewReply"
+	parameterType="_int">
+	SELECT REPLY_NO replyNo,
+	REPLY_CONTENT replyContent,
+	REVIEW_NO reviewNo,
+    M.USER_NO userNo,
+	NAME userName,
+	CREATE_DATE createDate
+	FROM PRODUCT_REVIEW_REPLY R
+	JOIN MEMBER M ON R.USER_NO= M.USER_NO
+	WHERE REVIEW_NO=${reviewNo}
+	</select>
+	
+	<insert id="insertReviewReply"
+	parameterType="com.kh.pjtMungHub.shop.model.vo.ReviewReply">
+	INSERT INTO PRODUCT_REVIEW_REPLY (
+	REPLY_NO,
+	REPLY_CONTENT,
+	REVIEW_NO,
+	USER_NO
+	)VALUES(
+	SEQ_RRPLY.NEXTVAL,
+	#{replyContent},
+	#{reviewNo},
+	#{userNo}
+	)
+	</insert>
+	
+	<delete id="deleteReply" parameterType="_int">
+	DELETE FROM PRODUCT_REVIEW_REPLY
+     WHERE REPLY_NO = #{replyNo}
+	</delete>
+	
 	<insert id="insertProduct" parameterType="Product">
 		INSERT INTO PRODUCT(
 		PRODUCT_NO,
@@ -518,8 +551,18 @@
 	#{recipient},
 	#{phone}
 	)
-	
 	</insert>
+	
+	<update id="updateSalesCount"
+	parameterType="Product">
+	<foreach collection="list" item="arr">
+	UPDATE PRODUCT SET
+	SALES_COUNT = SALES_COUNT+#{arr.quantity}
+	WHERE PRODUCT_NO = #{arr.productNo}
+	</foreach>
+	</update>
+	
+	
 	<select id="selectShipInfoList"
 	 resultType="com.kh.pjtMungHub.shop.model.vo.ShipInfo" 
 	 parameterType="_int">

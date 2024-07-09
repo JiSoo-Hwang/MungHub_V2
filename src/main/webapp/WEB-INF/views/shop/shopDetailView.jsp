@@ -173,6 +173,9 @@ h2 {
 .btn-div button{
 margin-right: 10px;
 }
+.reviewReply{
+border-bottom : 1px solid gray;
+}
 
 </style>
 </head>
@@ -396,12 +399,18 @@ margin-right: 10px;
 	</script>
 	</c:when>
 	<c:otherwise>
-	<script type="text/javascript">
+	<script>
 	$(function(){
 		
-		 $("button").click(function(){
-			 alert("로그인 이후에 이용해 주세요");
-		 });
+	$("#addCart").click(function(){
+		alert("로그인 이후에 이용해주세요.");
+	});
+	
+	 $("#favor").click(function(){
+		 alert("로그인 이후에 이용해주세요.");
+	 });
+	
+	
 	});
 	</script>
 	</c:otherwise>
@@ -495,11 +504,14 @@ margin-right: 10px;
 			</c:if>
 			<div class="row row-cols-2 align-items-center mt-3 ml-3 mr-3">
 				<c:forEach items="${best4Review}" var="r" varStatus="i">
-					<div id="best" class="col-sm mx-3" onclick="location.href='/pjtMungHub/reviewDetail.sp/${r.reviewNo}'">
+					<div id="best" class="col-sm mx-3" data-bs-toggle="modal" data-bs-target="#reviewDetailModal${r.reviewNo }">
 						<div class="review-content">
+						<div class="media-container">
 						<c:forEach items="${rAtList[i.index] }" var="rAt">
 						<img src="${rAt.filePath }${rAt.changeName}" class="img-fluid">
 						</c:forEach>
+						</div>
+	          
 							<div class="wrap-star">
 						    <div class='review-star'>
 						        <span style ="width: ${r.score*20}%"></span>
@@ -510,7 +522,232 @@ margin-right: 10px;
 						</div>
 						<p>${r.reviewContent }</p>
 					</div>
+					
+		<div class="modal fade" id="reviewDetailModal${r.reviewNo }" 
+			data-bs-backdrop="static" data-bs-keyboard="false" 
+			tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h1 class="modal-title fs-5" id="staticBackdropLabel">리뷰 보기</h1>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+			      <div class="modal-body">
+			      	<div class="media-container">
+			      <c:forEach items="${rAtList[i.index] }" var="rAt">
+			      		<c:choose>
+					    		<c:when test="${rAt.type eq 'video' }">
+					    	<video src="${rAt.filePath }${rAt.changeName}" class="d-block img-fluid"style="max-height:300px;"  autoplay loop></video>
+					    		</c:when>
+					    		<c:otherwise>
+					      <img src="${rAt.filePath }${rAt.changeName}" class="d-block img-fluid" style="max-height:300px;" >
+					    		</c:otherwise>
+					    	</c:choose>
+					</c:forEach>
+			      	</div>
+							
+					<div class="wrap-star">
+						    <div class='review-star'>
+						        <span style ="width: ${r.score*20}%"></span>
+						    </div>
+							</div>
+					<div class="row align-items-center justify-content-center">
+					<div class="col-sm-10">
+					<small class="text-muted">${r.userName }</small>
+					 <small class="text-muted">${r.createDate }</small>
+				  <p>${r.reviewContent }</p>
+					</div>
+					<div class="col-sm-1" align="center">
+					${r.likeCount }
+					</div>
+				  <button class='btn btn-primary col-sm-1' style="max-height:40px"><i class='bi bi-hand-thumbs-up'></i></button>
+					</div>
+					<div class="row align-items-center justify-content-center py-2">
+					<hr>
+					<textarea class="col-sm-9 mx-2" id="replyContent${r.reviewNo }" rows="5" cols="5" style="resize:none"></textarea>
+	              <button class='btn btn-secondary col-sm-2' style="max-height:40px;" onclick="insertReply(${r.reviewNo })"><p style="font-size:0.8em; margin-bottom:0;">댓글작성</p></button>
+					</div>
+					<hr>
+					
+					<div id="reviewReply${r.reviewNo }">
+					</div>
+					<c:choose>
+					<c:when test="${not empty loginUser }">
+					
+					<script>
+					
+					$(function(){
+						
+						$.ajax({
+							url : "/pjtMungHub/reviewReplyList.sp",
+							data : { reviewNo : ${r.reviewNo}},
+							success : function(result){
+								var str="";
+								if(result!=null){
+									for (var i=0; i<result.length; i++) {
+									str+="<div class='reviewReply row'>"
+										+"<div class='col-10'>"
+										+"<div><small style='color:gray'>"+result[i].userName+" "+result[i].createDate+"</small></div>"
+										+"<div>"+result[i].replyContent+"</div>"
+										+"</div>";
+										if(result[i].userNo==${loginUser.userNo}){
+											
+										str+="<div class='col-1'>"
+										+"<button style='background-color:transparent;border:0px;'"
+										+"onclick='deleteReply("+result[i].replyNo+","+result[i].reviewNo+")'>"
+										+"<i class='bi bi-x-lg'></i></button>";
+										}
+										str+="</div>"
+										+"</div>";
+									}
+									$("#reviewReply${r.reviewNo }").html(str);
+									
+								}
+							},
+							error : function(){
+								console.log("통신오류");	
+							}
+							
+						});
+						});
+			
+					</script>
+					</c:when>
+					<c:otherwise>
+					<script>
+					
+					$(function(){
+						
+						$.ajax({
+							url : "/pjtMungHub/reviewReplyList.sp",
+							data : { reviewNo : ${r.reviewNo}},
+							success : function(result){
+								var str="";
+								if(result!=null){
+									for (var i=0; i<result.length; i++) {
+									str+="<div class='reviewReply row'>"
+										+"<div class='col-10'>"
+										+"<div><small style='color:gray'>"+result[i].userName+" "+result[i].createDate+"</small></div>"
+										+"<div>"+result[i].replyContent+"</div>"
+										+"</div>"
+										+"</div>"
+										+"</div>";
+									}
+									$("#reviewReply${r.reviewNo }").html(str);
+									
+								}
+							},
+							error : function(){
+								console.log("통신오류");	
+							}
+							
+						});
+						});
+					
+					</script>
+					</c:otherwise>
+					</c:choose>
+					
+						</div>
+						
+		       </div>
+		       
+	          	</div>
+	          </div>
 				</c:forEach>
+				
+				
+				<c:if test="${not empty loginUser }">
+				<script>
+				function selectReplyList(num){
+					$.ajax({
+						url : "/pjtMungHub/reviewReplyList.sp",
+						data : { reviewNo : num},
+						success : function(result){
+							var str="";
+							if(result!=null){
+								for (var i=0; i<result.length; i++) {
+									str+="<div class='reviewReply row'>"
+										+"<div class='col-10'>"
+										+"<div><small style='color:gray'>"+result[i].userName+" "+result[i].createDate+"</small></div>"
+										+"<div>"+result[i].replyContent+"</div>"
+										+"</div>";
+										if(result[i].userNo==${loginUser.userNo}){
+											
+										str+="<div class='col-1'>"
+										+"<button style='background-color:transparent;border:0px;'"
+										+"onclick='deleteReply("+result[i].replyNo+")'>"
+										+"<i class='bi bi-x-lg'></i></button>";
+										}
+										str+="</div>"
+										+"</div>";
+									}
+								$("#reviewReply"+num).html(str);
+								
+							}
+						},
+						error : function(){
+							console.log("통신오류");	
+						}
+						
+					});
+				}
+				
+				
+				</script>
+				
+				
+				</c:if>
+				
+				
+				
+				
+				
+				<script>
+				
+				
+				function deleteReply(replyNo,reviewNo){
+					$.ajax({
+						url : "/pjtMungHub/deleteReply.sp",
+						type : "post",
+						data : {replyNo : replyNo},
+						success : function(result){
+							selectReplyList(reviewNo);
+						},error : function(){
+							console.log("통신오류");
+						}
+						
+					});
+				}
+				
+				
+				function insertReply(num){
+					
+					var replyContent = $("#replyContent"+num).val();
+					console.log(replyContent);
+					$.ajax({
+						url : "/pjtMungHub/insertReviewReply.sp",
+						type : "post",
+						data : { reviewNo : num,
+								 userNo : ${loginUser.userNo},
+								 replyContent : replyContent },
+						success : function(result){
+							$("#replyContent"+num).val("");
+							selectReplyList(num);
+							
+						},error : function(){
+							console.log("통신오류");
+						}
+					
+						
+					});
+					
+				}
+				
+				
+				
+				</script>
 			</div>
 		</div>
 	</section>
@@ -676,8 +913,22 @@ margin-right: 10px;
 	<div class="container" id="detail-section02">
 		<h2>구매후기</h2>
 		<div align="right">
-		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">후기쓰기</button>
+		<button type="button" class="btn btn-primary" 
+		<c:if test="${not empty loginUser }"> data-bs-toggle="modal" data-bs-target="#reviewModal"</c:if>
+		id="reviewButton">리뷰작성</button>
 		</div>
+		
+		<c:if test="${empty loginUser }">
+			<script>
+			$(function(){
+				$("#reviewButton").click(function(){
+					alert("로그인 이후에 이용해 주세요.");
+				});
+			});
+			
+			</script>
+		
+		</c:if>
 		
 		
 		<c:if test="${not empty loginUser }">
