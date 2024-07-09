@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +36,6 @@ import com.kh.pjtMungHub.wedding.model.vo.Wedding;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Controller
 public class WeddingController {
 
@@ -44,6 +44,9 @@ public class WeddingController {
 
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
 	@GetMapping("wedList.wd")
 	public ModelAndView weddingList(ModelAndView mv, HttpSession session) {
@@ -94,11 +97,17 @@ public class WeddingController {
 	public String insertWeddingForm(HttpSession session, Model model) {
 		Member m = (Member) session.getAttribute("loginUser");
 		int userNo = m.getUserNo();
-		Pet pet = service.selectPet(userNo);
-		model.addAttribute("pet", pet);
+		ArrayList<Pet> pet = service.selectPets(userNo);
+		model.addAttribute("petList", pet);
 		return "wedding/insertWeddingView";
 	}
 
+	@ResponseBody
+	@GetMapping("getPetInfo.wd")
+	public Pet getPetInfo(@RequestParam("petNo") int petNo) {
+		return service.selectPetByNo(petNo);
+	}
+	
 	// 최초 웨딩플래너 등록 신청
 	@PostMapping("insert.wd")
 	public String insertWedding(Wedding w, MultipartFile upFile, ArrayList<MultipartFile> vacCert, Model model,
@@ -134,15 +143,49 @@ public class WeddingController {
 	}
 
 	@GetMapping("update.wd")
-	public ModelAndView updateWedding(int weddingNo, ModelAndView mv, HttpSession session) {
-		Member m = (Member) session.getAttribute("loginUser");
+	public ModelAndView updateWeddingView(int weddingNo, ModelAndView mv) {
 		Wedding w = service.selectWedding(weddingNo);
-		Pet p = service.selectPet(m.getUserNo());
+		Pet p = service.selectPetByNo(Integer.parseInt(w.getPetNo()));
 		mv.addObject("wedding", w).addObject("pet", p).setViewName("wedding/updateWeddingView");
-		;
 		return mv;
 	}
 
+	@PostMapping("update.wd")
+	public String updateWedding(Wedding w,MultipartFile reupFile,HttpSession session) {
+		boolean isThereFile = false;
+		String deleteFile = "";
+		if(!reupFile.getOriginalFilename().equals("")) {
+			if(w.getOriginName()!=null) {
+				isThereFile = true;
+				deleteFile = w.getChangeName();
+			}
+			String changeName = saveFile(reupFile, session);
+			w.setOriginName(reupFile.getOriginalFilename());
+			w.setChangeName("resources/uploadFiles/wedding/"+changeName);
+		}
+		int result = service.updateWedding(w);
+		String message = "";
+		if(result>0) {
+			message = "신청서가 수정되었습니다!상대방의 수락을 기다려보아요~♥੯•́໒";
+			if(isThereFile) {
+				File file = new File(session.getServletContext().getRealPath(deleteFile));
+				file.delete();
+			}
+		}else {
+			message = "신청서가 제대로 수정이 안됐어요...8ㅅ8... 다시 시도해보세요!";
+		}
+		session.setAttribute("alertMsg", message);
+		Member m = (Member)session.getAttribute("loginUser");
+		return "redirect:/regList.wd?userNo="+m.getUserNo();
+	}
+	
+	@ResponseBody
+	@GetMapping("delete.wd")
+	public int deleteWedding(int weddingNo) {
+		int result = service.deleteWedding(weddingNo);
+		return result;
+	}
+	
 	@PostMapping("reject.wd")
 	public String rejectReg(Wedding w, HttpSession session) {
 		int result = service.rejectReg(w);
@@ -180,13 +223,13 @@ public class WeddingController {
 	public String applyMatchingForm(int petNo, HttpSession session, Model model) {
 		Member m = (Member) session.getAttribute("loginUser");
 		int count = service.countAppliedList(m.getUserNo());
-		Pet pet = service.selectPet(m.getUserNo());
+		ArrayList<Pet> pet = service.selectPets(m.getUserNo());
 		if (count >= 3) {
 			session.setAttribute("alertMsg", "계정당 만남 신청은 3회로 제한되어있습니다 ꌩ-ꌩ");
 			return "redirect:/wedList.wd";
 		} else {
 			model.addAttribute("matchingPet", petNo);
-			model.addAttribute("pet", pet);
+			model.addAttribute("petList", pet);
 			return "wedding/apply4MatchingView";
 		}
 	}
@@ -225,6 +268,14 @@ public class WeddingController {
 		return mv;
 	}
 
+	@ResponseBody
+	@PostMapping("confirm.wd")
+	public boolean confirmAccept(String userPwd,HttpSession session) {
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		boolean checkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getPassword());
+		return checkPwd;
+	}
+	
 	@GetMapping("accept.wd")
 	public String acceptWedding(int weddingNo, HttpSession session) {
 		int result = service.acceptWedding(weddingNo);
@@ -238,6 +289,7 @@ public class WeddingController {
 		}
 	}
 
+	@ResponseBody
 	@PostMapping("cancel.wd")
 	public Map<String, Object> cancelWedding(@RequestParam("weddingNo")int weddingNo,@RequestParam("userNo") int userNo) {
 		int result = service.cancelWedding(weddingNo, userNo);
@@ -248,6 +300,13 @@ public class WeddingController {
 			response.put("message", "처리 중 오류가 발생했습니다. 다시 시도해주세요.");
 		}
 		return response;
+	}
+	
+	@ResponseBody
+	@PostMapping("getContactInfo.wd")
+	public ArrayList<Member> getContactInfo(@RequestParam("weddingNo")int weddingNo){
+		ArrayList<Member>contactList = service.getContactInfo(weddingNo);
+		return contactList;
 	}
 	
 	// 파일 업로드 처리 메소드(재활용)

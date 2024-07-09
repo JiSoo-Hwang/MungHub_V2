@@ -90,6 +90,17 @@ VALUES(SEQ_WED.NEXTVAL
 			,#{changeName}
 			)
 </insert>
+
+<update id="updateWedding" parameterType="Wedding">
+UPDATE WEDDING SET PEDIGREE = #{pedigree}
+,MEETING_METHOD = #{meetingMethod}
+,PET_INTRO = #{petIntro}
+,PET_NOTE = #{petNote}
+,ORIGIN_NAME = #{originName}
+,CHANGE_NAME = #{changeName}
+WHERE WEDDING_NO = #{weddingNo}
+</update>
+
 <select id="selectRegList" resultType="Wedding">
 SELECT WEDDING_NO weddingNo
 ,P.PET_NAME petName
@@ -205,9 +216,31 @@ AND W.PET_NO = P.PET_NO
 AND P.BREED_ID = B.BREED_ID
 AND P.BREED_ID = #{breedId}
 </select>
-<update id="cancelWedding">
+<update id="cancelWedding" parameterType="_int">
 UPDATE WEDDING
-SET APPROVAL = #{approval}
+SET APPROVAL = 'R'
 WHERE WEDDING_NO = #{weddingNo}
 </update>
+<select id="selectPetByNo" parameterType="_int" resultType="Pet">
+SELECT B.BREED_NAME breed
+	,P.PET_NAME petName
+	,P.PET_AGE petAge
+	,P.PET_GENDER petGender
+	,P.WEIGHT weight
+FROM PET P,BREED B
+WHERE P.BREED_ID = B.BREED_ID
+AND P.PET_NO = #{petNo}
+</select>
+<select id="getContactInfo" parameterType="_int" resultType="Member">
+SELECT NAME name
+	, PHONE phone
+	, EMAIL email
+FROM MEMBER WHERE USER_NO IN 
+((SELECT USER_NO FROM WEDDING WHERE WEDDING_NO = #{weddingNo}),
+(SELECT OWNER_NO FROM PET WHERE PET_NO = (SELECT PARTNER_NO FROM WEDDING WHERE WEDDING_NO =#{weddingNo}))
+)
+</select>
+<delete id="deleteWedding" parameterType="_int">
+DELETE FROM WEDDING WHERE WEDDING_NO = #{weddingNo}
+</delete>
 </mapper>

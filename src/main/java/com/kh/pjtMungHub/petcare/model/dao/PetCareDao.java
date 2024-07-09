@@ -1,6 +1,8 @@
 package com.kh.pjtMungHub.petcare.model.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -10,7 +12,9 @@ import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
 import com.kh.pjtMungHub.petcare.model.vo.Certification;
+import com.kh.pjtMungHub.petcare.model.vo.Disease;
 import com.kh.pjtMungHub.petcare.model.vo.Environment;
+import com.kh.pjtMungHub.petcare.model.vo.HospitalRe;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
@@ -25,8 +29,16 @@ import com.kh.pjtMungHub.petcare.model.vo.SupplyGuide;
 public class PetCareDao {
 
 	//날짜,시간 지정시 펫시터 리스트형태로 불러오기
-	public ArrayList<PetSitter> selectSitter(SqlSessionTemplate sqlSession, AvailableTimes at) {
-		return (ArrayList)sqlSession.selectList("petcareMapper.selectSitter");
+	public int selectSitterCount(SqlSessionTemplate sqlSession, AvailableTimes at) {
+		return sqlSession.selectOne("petcareMapper.selectSitterCount",at);
+	}
+	public ArrayList<PetSitter> selectSitter(SqlSessionTemplate sqlSession, AvailableTimes at,PageInfo pi) {
+		
+		int limit = pi.getBoardLimit();
+		int offset =(pi.getCurrentPage()-1)*limit;
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		return (ArrayList)sqlSession.selectList("petcareMapper.selectSitter",at,rowBounds);
 	}
 	
 	//요금테이블에서 가격정보 가져오기
@@ -163,6 +175,33 @@ public class PetCareDao {
 	public int reservationId(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectOne("petcareMapper.reservationId");
 	}
+	
+	//병명 가져오기
+	public List <String> diseaseName(SqlSessionTemplate sqlSession, HashMap<String,Object> symMap) {
+		return (ArrayList)sqlSession.selectList("petcareMapper.diseaseName",symMap);
+	}
+	
+	//예약정보 저장하기
+	public int insertHosRe(SqlSessionTemplate sqlSession, HospitalRe hosRe) {
+		return sqlSession.insert("petcareMapper.insertHosRe",hosRe);
+	}
+	
+	//펫타입 이름 가져오기
+	public String selectPetType(SqlSessionTemplate sqlSession, HospitalRe hosRe) {
+		return sqlSession.selectOne("petcareMapper.selectPetType",hosRe);
+	}
+	
+	//예약번호 가져오기
+	public int selectHosReNo(SqlSessionTemplate sqlSession) {
+		return sqlSession.selectOne("petcareMapper.selectHosReNo");
+	}
+	
+	//업데이트 정보와 함께 페이지 이동
+	public HospitalRe selectHospitalRe(SqlSessionTemplate sqlSession, int hosReNo) {
+		return sqlSession.selectOne("petcareMapper.selectHosReNo",hosReNo);
+	}
+
+	
 
 	
 

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>${pet.petName } 댕댕이의 웨딩플래너 신청 페이지입니다.</title>
+<title>${loginUser.name }님의 댕댕이 웨딩플래너 신청 페이지입니다.</title>
 <style>
 #wed_form {
 	margin: 50px;
@@ -55,36 +55,39 @@ li {
 						<thead>
 							<tr>
 								<th>이름</th>
-								<td><input type="text" value="${pet.petName }" readonly>
-									<input type="hidden" name="petNo" value="${pet.petNo}"></td>
-
+								<c:choose>
+								<c:when test="${empty petList }">
+								<td>등록된 반려견이 없습니다...! 반려견 등록부터 해볼까요૮ ˆﻌˆ ა?</td>
+								</c:when>
+								<c:otherwise>
+								<td>
+								<select name="petNo" id="petNo">
+								<option>반려견을 선택해주세요</option>
+								<c:forEach items="${petList }" var="p">
+								<option value="${p.petNo }">${p.petName }</option>
+								</c:forEach>
+								</select>
+									</td>
+								</c:otherwise>
+								</c:choose>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
 								<th>견종</th>
-								<td><input type="text" name="breed" value="${pet.breed }"
-									readonly></td>
+								<td><input name="breed" id="breed" readonly></td>
 							</tr>
 							<tr>
 								<th>나이</th>
-								<td><input type="text" name="petAge" value="${pet.petAge }"
-									readonly></td>
+								<td><input name="petAge" id="petAge" readonly></td>
 							</tr>
 							<tr>
 								<th>성별</th>
-								<td><c:choose>
-										<c:when test="${pet.petGender eq 'F' }">
-                                    공주님
-                                </c:when>
-										<c:otherwise>
-                                    왕자님
-                                </c:otherwise>
-									</c:choose></td>
+								<td><input name="gender" id="gender" readonly></td>
 							</tr>
 							<tr>
 								<th>몸무게</th>
-								<td>${pet.weight }</td>
+								<td><input name="weight" id="weight" readonly></td>
 							</tr>
 							<tr> 
 							<th>혈통 </th>
@@ -174,6 +177,35 @@ $(function () {
 		}
 	});
 });
+
+$("#petNo").change(function () {
+	var petNo = $(this).val();
+	$.ajax({
+		url:"${pageContext.request.contextPath}/getPetInfo.wd",
+		type: "get",
+		data:{petNo:petNo},
+		success: function (pet) {
+			$("#breed").val(pet.breed);
+			$("#petAge").val(pet.petAge);
+			$("#weight").val(pet.weight);
+			var gender = pet.petGender;
+			switch (gender) {
+			case 'M':
+				$("#gender").val('왕자님');
+				break;
+			case 'F':
+				$("#gender").val('공주님');
+				break;
+			}
+		},
+		error: function () {
+			console.log("반려견 정보 불러오기 실패");
+		}
+	});
+	
+});
+
+
 /* 혈통 관련 안내 팝업 */
 var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {

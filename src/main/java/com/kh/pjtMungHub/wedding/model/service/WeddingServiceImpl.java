@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
 import com.kh.pjtMungHub.member.model.service.MemberService;
+import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 import com.kh.pjtMungHub.wedding.model.dao.WeddingDao;
@@ -48,8 +49,8 @@ public class WeddingServiceImpl implements WeddingService{
 	
 	//회원 보유 반려견 조회해서 웨딩 신청
 	@Override
-	public Pet selectPet(int userNo) {
-		return dao.selectPet(sqlSession,userNo);
+	public ArrayList<Pet> selectPets(int userNo) {
+		return dao.selectPets(sqlSession,userNo);
 	}
 	
 	//신규 웨딩플랜 신청 추가 메서드
@@ -112,8 +113,29 @@ public class WeddingServiceImpl implements WeddingService{
 	@Override
 	public int cancelWedding(int weddingNo, int userNo) {
 		//해당 신청 상태를 'R'로 변경하는 로직
-		dao.cancelWedding(sqlSession,weddingNo,"R");
-		return memberService.restrictUser(userNo, 14);
+		dao.cancelWedding(sqlSession,weddingNo);
+		return memberService.restrictUser(userNo, 3);
 	}
+
+	@Override
+	public Pet selectPetByNo(int petNo) {
+		return dao.selectPetByNo(sqlSession,petNo);
+	}
+
+	@Override
+	public ArrayList<Member> getContactInfo(int weddingNo) {
+		return dao.getContactInfo(sqlSession, weddingNo);
+	}
+
+	@Override
+	public int updateWedding(Wedding w) {
+		return dao.updateWedding(sqlSession,w);
+	}
+
+	@Override
+	public int deleteWedding(int weddingNo) {
+		return dao.deleteWedding(sqlSession,weddingNo);
+	}
+
 
 }

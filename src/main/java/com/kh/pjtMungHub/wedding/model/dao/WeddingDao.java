@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
+import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 import com.kh.pjtMungHub.wedding.model.vo.Wedding;
@@ -30,8 +31,8 @@ public class WeddingDao {
 		return sqlSession.selectOne("weddingMapper.selectWedding",weddingNo);
 	}
 
-	public Pet selectPet(SqlSessionTemplate sqlSession,int userNo) {
-		return sqlSession.selectOne("weddingMapper.selectPet",userNo);
+	public ArrayList<Pet> selectPets(SqlSessionTemplate sqlSession,int userNo) {
+		return (ArrayList)sqlSession.selectList("weddingMapper.selectPet",userNo);
 	}
 
 	//해당 메소드를 하나의 트랜잭션으로 관리할 것
@@ -100,9 +101,23 @@ public class WeddingDao {
 		return (ArrayList)sqlSession.selectList("weddingMapper.selectByBreed",breedId);
 	}
 	
-	public int cancelWedding(SqlSessionTemplate sqlSession, int weddingNo,String approval) {
-		return sqlSession.update("weddingMapper.cancelWedding",Map.of("weddingId",weddingNo,"status",approval));
+	public int cancelWedding(SqlSessionTemplate sqlSession, int weddingNo) {
+		return sqlSession.update("weddingMapper.cancelWedding",weddingNo);
 	}
 
+	public Pet selectPetByNo(SqlSessionTemplate sqlSession,int petNo) {
+		return sqlSession.selectOne("weddingMapper.selectPetByNo",petNo);
+	}
 	
+	public ArrayList<Member> getContactInfo(SqlSessionTemplate sqlSession,int weddingNo){
+		return (ArrayList)sqlSession.selectList("weddingMapper.getContactInfo", weddingNo);
+	}
+
+	public int updateWedding(SqlSessionTemplate sqlSession, Wedding w) {
+		return sqlSession.update("weddingMapper.updateWedding",w);
+	}
+	
+	public int deleteWedding(SqlSessionTemplate sqlSession, int weddingNo) {
+		return sqlSession.delete("weddingMapper.deleteWedding",weddingNo);
+	}
 }

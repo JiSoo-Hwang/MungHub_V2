@@ -12,7 +12,8 @@ import com.kh.pjtMungHub.pet.model.vo.Pet;
 public interface KindergartenService {
 
 	public ArrayList<Kindergarten> selectMap();
-	public ArrayList<Pet> selectPet(int ownerNo);
+	public ArrayList<Pet> selectPets(int ownerNo);
+	public Pet selectPetByNo(int petNo);
 	public Kindergarten selectKindergarten(int kindNo);
 	public int insertReg(Registration reg);
 	//유치원등록상담목록 조회 메서드

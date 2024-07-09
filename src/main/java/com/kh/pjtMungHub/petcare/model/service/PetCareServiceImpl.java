@@ -1,6 +1,8 @@
 package com.kh.pjtMungHub.petcare.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,9 @@ import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.dao.PetCareDao;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
 import com.kh.pjtMungHub.petcare.model.vo.Certification;
+import com.kh.pjtMungHub.petcare.model.vo.Disease;
 import com.kh.pjtMungHub.petcare.model.vo.Environment;
+import com.kh.pjtMungHub.petcare.model.vo.HospitalRe;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
@@ -33,8 +37,12 @@ public class PetCareServiceImpl implements PetCareService {
 	
 	//날짜,시간 지정시 펫시터 리스트형태로 불러오기
 	@Override
-	public ArrayList<PetSitter> selectSitter(AvailableTimes at) {
-		return petCareDao.selectSitter(sqlSession,at);
+	public int selectSitterCount(AvailableTimes at) {
+		return petCareDao.selectSitterCount(sqlSession,at);
+	}
+	@Override
+	public ArrayList<PetSitter> selectSitter(AvailableTimes at,PageInfo pi) {
+		return petCareDao.selectSitter(sqlSession,at,pi);
 	}
 	
 	//요금테이블에서 가격정보 가져오기
@@ -60,7 +68,7 @@ public class PetCareServiceImpl implements PetCareService {
 	public ArrayList<PetSitter> firstSitterList(PageInfo pi) {
 		return petCareDao.firstSitterList(sqlSession,pi);
 	}
-	
+
 	//펫시터 선택 불가능한 날짜 가져오기
 	@Override
 	public ArrayList<Reservation> disabledDates(int petSitterNo) {
@@ -181,6 +189,39 @@ public class PetCareServiceImpl implements PetCareService {
 	public int reservationId() {
 		return petCareDao.reservationId(sqlSession);
 	}
+	
+	//병명 가져오기
+	@Override
+	public List <String> diseaseName(HashMap<String,Object> symMap) {
+		return petCareDao.diseaseName(sqlSession,symMap);
+	}
+	
+	//예약정보 저장하기
+	@Override
+	public int insertHosRe(HospitalRe hosRe) {
+		return petCareDao.insertHosRe(sqlSession,hosRe);
+	}
+	
+	//펫타입 이름 가져오기
+	@Override
+	public String selectPetType(HospitalRe hosRe) {
+		return petCareDao.selectPetType(sqlSession,hosRe);
+	}
+	
+	//예약번호 가져오기
+	@Override
+	public int selectHosReNo() {
+		return petCareDao.selectHosReNo(sqlSession);
+	}
+	
+	//업데이트 정보와 함께 페이지 이동
+	@Override
+	public HospitalRe selectHospitalRe(int hosReNo) {
+		return petCareDao.selectHospitalRe(sqlSession,hosReNo);
+	}
+	
+
+	
 
 	
 

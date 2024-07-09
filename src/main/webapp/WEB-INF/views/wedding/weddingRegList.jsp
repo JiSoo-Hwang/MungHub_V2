@@ -58,7 +58,7 @@
 								<a class="btn btn-primary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 								&ensp;<button class="btn btn-secondary btn-sm cancelApplied">만남취소</button>
 								&ensp;<button type="button" class="btn btn-primary btn-sm contactBtn" data-bs-toggle="modal" data-bs-target="#infoModal">
-								 상대방 연락처</button>
+								 상대 견주 연락처</button>
 								 <!-- The Modal -->
 								<div class="modal fade" id="infoModal">
 								  <div class="modal-dialog">
@@ -72,7 +72,17 @@
 								
 								      <!-- Modal body -->
 								      <div class="modal-body">
-								        상대방 연락처 내용
+								        <table class="table table-striped contactTable">
+									    <thead>
+									      <tr>
+									        <th>이름</th>
+									        <th>전화번호</th>
+									        <th>이메일주소</th>
+									      </tr>
+									    </thead>
+									    <tbody>
+									    </tbody>
+									  </table>
 								      </div>
 								
 								      <!-- Modal footer -->
@@ -95,7 +105,7 @@
 									<a class="btn btn-primary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 									<c:choose>
 									<c:when test="${w.userNo eq loginUser.userNo }">
-								&ensp;<a href="updateReg.do?reservNo=${w.weddingNo}" class="btn btn-primary btn-sm">신청수정</a>&ensp;
+								&ensp;<a href="update.wd?weddingNo=${w.weddingNo}" class="btn btn-primary btn-sm">신청수정</a>&ensp;
 								&ensp;<button class="btn btn-secondary btn-sm cancelBtn">만남취소</button>
 									<input type="hidden" value="${w.weddingNo}">
 									</c:when>
@@ -140,6 +150,20 @@
 		$(".cancelBtn").click(function() {
 			if (confirm("정말 만남을 취소하시겠습니까?")) {
 				var weddingNo = $(this).siblings(':eq(2)').val();
+				$.ajax({
+					url:"${pageContext.request.contextPath}/delete.wd",
+					data: {weddingNo:weddingNo},
+					success:function(result){
+						if(result>0){
+							alert("만남이 성공적으로 취소되었습니다(´ᴥ`)");
+							location.href = "${pageContext.request.contextPath}/regList.wd?userNo=${loginUser.userNo}";
+						}else{
+							alert("만남 취소 실패ㅠㅅㅠ... 다시 시도해주세요!");
+						}
+					},error:function(){
+						console.log("통신 실패");
+					}
+				});
 			} else {
 				return false;
 			}
@@ -147,9 +171,9 @@
 		$(".cancelApplied").click(function () {
 			if(confirm("이미 승인된 만남을 취소하시면 웨딩플래너 서비스가 14일간 제한됩니다. 그래도 취소하실건가요8ㅅ8?")){
 				var weddingNo =$(this).siblings(':eq(0)').val();
-				$.ajax({
-					type:"POST",
-					url : "cancel.wd",
+  				$.ajax({
+					url : "${pageContext.request.contextPath}/cancel.wd",
+					type:"post",
 					data:{
 						weddingNo : weddingNo,
 						userNo : ${loginUser.userNo}
@@ -158,7 +182,7 @@
 						alert(response.message);
 						location.href = "${pageContext.request.contextPath}/";
 					},
-					error:function(xhr,status,error){
+					error:function(){
 						console.log("통신실패");
 					}
 				});
@@ -166,8 +190,27 @@
 		});
 	});
     $(".contactBtn").click(function () {
-		
-	});
+    	var weddingNo = $(this).siblings(':eq(0)').val();
+    	  $.ajax({
+			url:"${pageContext.request.contextPath}/getContactInfo.wd",
+			type:"post",
+			data:{weddingNo:weddingNo},
+			success: function (contactList) {
+				var str = "";
+				for (var i = 0; i < contactList.length; i++) {
+					str+="<tr><td>"
+						+contactList[i].name+"</td><td>"
+						+contactList[i].phone+"</td><td>"
+						+contactList[i].email+"</td></tr>";
+				}
+				$(".contactTable>tbody").html(str);
+			},
+			error:function(){
+				console.log("통신실패");
+			}
+			
+		}); 
+    	  });
     </script>
 </body>
 </html>

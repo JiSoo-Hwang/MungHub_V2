@@ -18,7 +18,7 @@
 		WHERE STATUS = 'Y'
 	</select>
 
-	<select id="selectPet" parameterType="_int" resultType="Pet">
+	<select id="selectPets" parameterType="_int" resultType="Pet">
 		SELECT
 		PET_NO petNo
 		,BREED_NAME breed
@@ -31,6 +31,19 @@
 		WHERE OWNER_NO = #{ownerNo}
 	</select>
 
+	<select id="selectPetByNo" parameterType="_int" resultType="Pet">
+		SELECT
+		P.PET_NO petNo
+		,B.BREED_NAME breed
+		,P.PET_NAME petName
+		,P.PET_AGE petAge
+		,P.PET_GENDER petGender
+		,P.WEIGHT weight
+		FROM PET P 
+		JOIN BREED B USING (BREED_ID)
+		WHERE P.PET_NO = #{petNo}
+	</select>
+ 
 	<select id="selectKindergarten" parameterType="_int"
 		resultType="Kindergarten">
 		SELECT KIND_NO kindNo
