@@ -12,7 +12,6 @@
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <style>
-
 .content {
 	background-color: rgb(247, 245, 245);
 	width: 80%;
@@ -41,7 +40,7 @@
 }
 
 #searchForm {
-	width: 80%;
+	width: 40%;
 	margin: auto;
 }
 
@@ -87,24 +86,25 @@
 	display: block;
 	color: #492F10;
 	margin: auto;
-	
 }
-button[name=category]:hover{
-	background-color:lightblue;
-	click-color:pink;
-	}
 
-button[name=category]{
+button[name=category]:hover {
+	background-color: lightblue;
+	click-color: pink;
+}
+
+button[name=category] {
 	margin: 10px;
 }
-input[name=sortBy]{
-	margin:10px;
-	}
-.ctSelected{
-	background-color:blue;
-	color:white;
+
+input[name=sortBy] {
+	margin: 10px;
 }
-	
+
+.ctSelected {
+	background-color: blue;
+	color: white;
+}
 </style>
 </head>
 <body>
@@ -112,64 +112,67 @@ input[name=sortBy]{
 
 	<%@include file="../common/header.jsp"%>
 
-		<div class="innerOuter" style="padding: 5% 10%;">
-			<!-- 로그인 후 상태일 경우만 보여지는 글쓰기 버튼 -->
-			<div class="content">
-				<table id="category-area">
-					<tr>
-						<td>
+	<div class="innerOuter" style="padding: 5% 10%;">
+		<!-- 로그인 후 상태일 경우만 보여지는 글쓰기 버튼 -->
+		<div class="content">
+			<table id="category-area">
+				<tr>
+					<td>
 						<button name="category" value="0">전체</button>
-						</td>
-						<c:forEach items="${ctList}" var="ct">
+					</td>
+					<c:forEach items="${ctList}" var="ct">
 						<td><button name="category" value="${ct.categoryNo}">${ct.categoryName}</button></td>
-						</c:forEach>
-					</tr>
-				</table>
-				<table id="sort-list">
-					<tr>
-						<td><input type="radio" name="sortBy" id="latest" value="latest"><label for="latest">최신순</label></td>
-						<td><input type="radio" name="sortBy" id="view" value="view"><label for="view">조회순</label></td>
-						<td><input type="radio" name="sortBy" id="recommend" value="recommend"><label for="recommend">추천순</label></td>
-					</tr>
-				</table>	
-
+					</c:forEach>
+				</tr>
+			</table>
 			
+			<table id="sort-list">
+				<tr>
+					<td><input type="radio" name="sortBy" id="latest" value="latest"><label for="latest">최신순</label></td>
+					<td><input type="radio" name="sortBy" id="view" value="view"><label for="view">조회순</label></td>
+					<td><input type="radio" name="sortBy" id="recommend" value="recommend"><label for="recommend">추천순</label></td>
+				</tr>
+			</table>
+
+
 			<c:if test="${not empty loginUser}">
-			<a class="btn btn-secondary" style="float: right; background-color: yellow; color: black;" href="insert.bo">글쓰기</a>
-             </c:if>
+				<a class="btn btn-secondary"
+					style="float: right; background-color: yellow; color: black;"
+					href="insert.bo">글쓰기</a>
+			</c:if>
 
 			<table id="boardList" class="table table-hover" align="center">
 				<thead>
-                    <tr>
-                        <th>글번호</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>추천수</th>
-                        <th>조회수</th>
-                        <th>업로드날짜</th>
-                    </tr>
-                </thead>
+					<tr>
+						<th>글번호</th>
+						<th>제목</th>
+						<th>작성자</th>
+						<th>추천수</th>
+						<th>조회수</th>
+						<th>업로드날짜</th>
+					</tr>
+				</thead>
 				<tbody>
 					<c:choose>
-                   		<c:when test="${empty List}">
-                   			<tr>
-                   			    <th colspan='6'>
-                   			</tr>
-                   			<tr>
-                   				<td colspan='6'>조회된 게시글이 없습니다.</td>
-                   			</tr>
-                   		</c:when>
+						<c:when test="${empty List}">
+							<tr>
+								<th colspan='6'>
+							</tr>
+							<tr>
+								<td colspan='6'>조회된 게시글이 없습니다.</td>
+							</tr>
+						</c:when>
 						<c:otherwise>
-						 <c:forEach items="${List}" var="b">
-                            <tr>
-                                <td>${b.boardNo}</td>
-                                <td>${b.boardTitle}</td>
-                                <td>${b.boardWriter}</td>
-                                <td>${b.recommend}</td>
-                                <td>${b.count}</td>
-                                <td>${b.uploadDate}</td>
-                            </tr>
-                        </c:forEach>
+							<c:forEach items="${List}" var="b">
+								<tr>
+									<td>${b.boardNo}</td>
+									<td>${b.boardTitle}</td>
+									<td>${b.boardWriter}</td>
+									<td>${b.recommend}</td>
+									<td>${b.count}</td>
+									<td>${b.uploadDate}</td>
+								</tr>
+							</c:forEach>
 						</c:otherwise>
 					</c:choose>
 				</tbody>
@@ -229,7 +232,8 @@ input[name=sortBy]{
 					<li class="page-item disabled"><a class="page-link" href="#">다음</a></li>
 				</c:when>
 				<c:otherwise>
-					<li class="page-item"><a class="page-link" href="list.bo?currentPage=${pi.currentPage+1}">다음</a></li>
+					<li class="page-item"><a class="page-link"
+						href="list.bo?currentPage=${pi.currentPage+1}">다음</a></li>
 				</c:otherwise>
 			</c:choose>
 
@@ -237,8 +241,8 @@ input[name=sortBy]{
 	</div>
 
 	<br clear="both">
-	<br>
-
+	
+	<br> <br>
 	<form id="searchForm" action="" method="get" align="center">
 		<div class="select">
 			<select class="custom-select" name="condition">
@@ -252,10 +256,7 @@ input[name=sortBy]{
 		</div>
 		<button type="submit" class="searchBtn btn btn-secondary">검색</button>
 	</form>
-	<br>
-	<br>
-
-
+	<br> <br>
 
 </body>
 </html>

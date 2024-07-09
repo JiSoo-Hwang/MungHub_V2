@@ -23,8 +23,6 @@ public interface BoardService {
 		
 		ArrayList<Board> selectList(PageInfo pi, String sort, int category);
 		
-		//이벤트 게시글 총 개수 조회
-		int eventCount();
 		//조회수 증가
 		int increaseCount(int boardNo);
 

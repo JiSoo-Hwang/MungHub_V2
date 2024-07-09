@@ -39,13 +39,13 @@
             <table id="contentArea" algin="center" class="table">
                 <tr>
                     <th width="100">제목</th>
-                    <td colspan="3">${b.boardTitle}</td>
+                    <td colspan="6">${b.boardTitle}</td>
                 </tr>
                 <tr>
+                    <th>글번호</th>
+                    <td>${b.boardNo }</td>
                     <th>작성자</th>
-                    <td>${b.boardWriter }</td>
-                    <th>카테고리</th>
-                    <td>${b.categoryName }</td>
+                    <td>${b.boardWriter}</td>
                     <th>조회수</th>
                     <td>${b.count }</td>
                     <th>추천수</th>
@@ -54,9 +54,6 @@
                     <td>${b.uploadDate }</td>
                 </tr>
                 
-                <tr>
-                    <th>내용</th>
-                </tr>
                 <tr>
                     <td colspan="4">
                     <p style="height:150px;">${b.boardContent}</p>
@@ -76,59 +73,8 @@
             
             
             
-            <!-- 만약 form태그로 작성한다면 아래와같은 모습이 될것 
-            	 하지만 form태그를 여러번 사용하는것은 가독성이 좋지 않고 중복코드가 발생하게 된다.
-            	 해당 작업을 함수로 처리하기
-             -->
-<!--             <form action="delete.bo" method="post"> -->
-<%--             	<input type="hidden" value="${b.boardNo }" name="boardNo"> --%>
-<!--             	<input type="submit"> -->
-<!--             </form> -->
-            <!-- 
             <script>
-            	//삭제하기 버튼을 눌렀을때 삭제 처리를 post 방식으로 진행하기
-            	//mapping 주소만으로 쿼리스트링을 전달해버리면 삭제가 되어버리는 문제 발생 
-            	//때문에 중요 작업들은 post방식으로 처리하여 url 노출을 피한다.
             	$(function(){
-            		
-            		$("#deleteBtn").click(function(){
-            			//form태그 생성하고 각 속성 채워준 뒤 
-            			//원하는 데이터가 있다면 해당 데이터도 태그로 생성한뒤 채워주고 
-            			//마지막으로 완성된 form태그 구문에 submit 작업을 하면 된다.
-            			
-            			//form,input 태그 생성
-            			var formObj = $("<form>");
-            			var inputObj = $("<input>"); 
-            			var filePath = $("<input>");
-            			//생성된 form 태그와 input태그에 필요한 속성과 값을 채워 준뒤 form안에 input 넣기 
-            			formObj.prop("action","delete.bo").prop("method","post");
-            			
-            			//input 태그에 type과 name과 value 설정하기 (전달할 데이터)
-            			inputObj.prop("type","hidden").prop("name","boardNo").prop("value","${b.boardNo}");
-            			//서버에서 업로드되어있는 파일도 삭제해야 하기 때문에 파일 경로 전달해주기 
-            			filePath.prop("type","hidden").prop("name","filePath").prop("value","${b.changeName}");
-            			
-            			//form안에 input 넣기
-            			var obj = formObj.append(inputObj).append(filePath);
-            			
-            			//생성된 최종 form 태그를 이 문서에 포함시키기 
-            			$("body").append(obj);
-            			
-            			//완성된 form태그를 이용하여 submit() 메소드 수행 
-            			obj.submit();
-            		});
-            		
-            		
-            	});
-            </script>
-             -->
-            <!--
-            	댓글 기능 구현하기 ajax이용하여 
-            	replyList 메소드명 사용하기 	
-            
-            -->
-            <script>
-            	/*$(function(){
             		replyList();
             		
             		//댓글작성 
@@ -162,7 +108,7 @@
                 	});
             	
             	});
-            	*/
+            	
             	/*
             	
             	//댓글 목록 비동기로 조회해오기

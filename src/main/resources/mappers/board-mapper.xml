@@ -49,6 +49,9 @@
 			<when test="sort == 'view'">
 				COUNT DESC
 			</when>
+			<when test="sort == 'recommned'">
+				RECOMMEND DESC
+			</when>
 			<otherwise>
 				UPLOAD_DATE DESC
 			</otherwise>
@@ -64,35 +67,38 @@
 	</select>
 
 	<update id="increaseCount" parameterType="_int">
-		UPDATE B.BOARD
-		SET COUNT=COUNT+1
-		WHERE B.BOARD_NO=#{boardNo}
-		AND B.STATUS ='Y'
-	</update>
-	<select id="selectBoard" parameterType="_int"
-		resultMap="boardResultSet">
-		SELECT BOARD_NO
-				,BOARD_TITLE
-				,BOARD_WRITER
-				,BOARD_CONTENT
-				,UPLOAD_DATE
-				,COUNT
-		FROM BOARD
+		UPDATE BOARD
+		SET COUNT = (COUNT+1)
 		WHERE BOARD_NO = #{boardNo}
 		AND STATUS ='Y'
+	</update>
+	
+	<select id="selectBoard" parameterType="_int" resultType="Board" >
+		SELECT BOARD_TITLE boardTitle
+		 	  ,BOARD_NO boardNo
+			  ,USER_ID boardWriter
+			  ,COUNT count
+			  ,RECOMMEND recommend
+			  ,UPLOAD_DATE uploadDate
+			  ,BOARD_CONTENT boardContent
+		FROM BOARD B
+		JOIN MEMBER M ON M.USER_NO=B.BOARD_WRITER
+		WHERE B.BOARD_NO = #{boardNo}
+		AND B.STATUS = 'Y'
 	</select>
 
 	<insert id="insertBoard" parameterType="Board">
-		INSERT INTO
-		BOARD(BOARD_NO
-		,BOARD_TITLE
-		,BOARD_WRITER
-		,BOARD_CONTENT
+		INSERT INTO BOARD(BOARD_NO
+						 ,FILE_NO
+						 ,BOARD_TITLE
+						 ,BOARD_WRITER
+						 ,BOARD_CONTENT
 		)
 		VALUES (SEQ_BOARD.NEXTVAL
 		,#{boardTitle}
 		,#{boardWriter}
 		,#{boardContent}
+		)
 	</insert>
 
 </mapper>

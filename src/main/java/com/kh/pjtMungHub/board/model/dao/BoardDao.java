@@ -73,11 +73,6 @@ public class BoardDao {
 		return (ArrayList) sqlSession.selectList("boardMapper.selectCategory");
 	}
 
-	public int eventCount(SqlSessionTemplate sqlSession) {
-		// TODO Auto-generated method stub
-		return sqlSession.selectOne("boardMapper.eventCount");
-	}
-
 	public int increaseCount(SqlSessionTemplate sqlSession, int boardNo) {
 		// TODO Auto-generated method stub
 		return sqlSession.update("boardMapper.increaseCount", boardNo);

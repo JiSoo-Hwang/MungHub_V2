@@ -50,11 +50,6 @@ public class BoardServiceImpl implements BoardService {
 		// TODO Auto-generated method stub
 		return boardDao.selectList(sqlSession,pi,sort,category);
 	}
-	@Override
-	public int eventCount() {
-		// TODO Auto-generated method stub
-		return boardDao.eventCount(sqlSession);
-	}
 
 	@Override
 	public int increaseCount(int boardNo) {
