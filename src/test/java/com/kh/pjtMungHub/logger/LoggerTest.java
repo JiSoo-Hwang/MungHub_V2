@@ -9,12 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.kh.pjtMungHub.kindergarten.model.vo.Registration;
-import com.kh.pjtMungHub.kindergarten.model.vo.Vaccine;
-import com.kh.pjtMungHub.pet.model.vo.Breed;
+import com.kh.pjtMungHub.board.model.vo.Board;
+import com.kh.pjtMungHub.board.model.vo.ParameterVo;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
 import com.kh.pjtMungHub.petcare.model.vo.Reservation;
-import com.kh.pjtMungHub.wedding.model.vo.Wedding;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +25,6 @@ public class LoggerTest {
 
 	@Autowired
 	private SqlSessionTemplate sqlSession;
-	
 	@Test
 	public void test1() {
 		int ownerNo = 6;
@@ -40,99 +37,6 @@ public class LoggerTest {
 		int userNo = 1;
 		boolean isRestricted = sqlSession.selectOne("memberMapper.isUserRestricted",userNo);
 		log.debug("제한되어있는가?:{}",isRestricted);
-//		Registration registration = Registration.builder()
-//												.reservNo(8)
-//												.reason("제가 감당하기엔 너무 버거운 멍멍이네요,,,")
-//												.build();
-//		
-//		int result = sqlSession.update("kindergartenMapper.rejectReg",registration);
-//		log.debug("수정 되었는가? : {}",result);
-//		ArrayList<Vaccine>vacList = new ArrayList<Vaccine>();
-//		Vaccine v = Vaccine.builder()
-//							.petNo("8")
-//							.originName("D_1.jpg")
-//							.changeName("2024062116375136931.jpg")
-//							.build();
-//		vacList.add(v);
-//		int result = 1;
-//		for(Vaccine vac:vacList) {
-//			result *= sqlSession.insert("kindergartenMapper.insertVac",vac);
-//		}
-//		
-//		log.debug("입력되었는가? : {}",result);
-		
-//		ArrayList<Breed> breedList = (ArrayList)sqlSession.selectList("weddingMapper.selectBreeds");
-//		for(Breed b : breedList) {
-//			log.debug("견종 : {}",b);
-//		}
-		
-//		ArrayList<Wedding>weddings = (ArrayList)sqlSession.selectList("weddingMapper.selectWeddings");
-//		for(Wedding w:weddings) {
-//			log.debug("결혼 : {}",w);
-//		}
-//		int weddingNo = 13;
-//		Wedding wedding = sqlSession.selectOne("weddingMapper.selectWedding",weddingNo);
-//		log.debug("결혼 정보 : {}",wedding);
-		
-//		int userNo = 1;
-//		int countAppliedList = sqlSession.selectOne("weddingMapper.countAppliedList",userNo);
-//		log.debug("신청 건 수 몇 개? : {}",countAppliedList);
-				Wedding appliedWedding = Wedding.builder()
-										.userNo(6)
-//										.partnerNo(3)
-										.build();
-		ArrayList<Wedding>appliedList = (ArrayList)sqlSession.selectList("weddingMapper.selectAppliedList",appliedWedding);
-		ArrayList<Wedding>receivedList = (ArrayList)sqlSession.selectList("weddingMapper.selectReceivedList",appliedWedding);
-		appliedList.addAll(receivedList);
-//		ArrayList<Wedding>appliedList2 = new ArrayList<Wedding>();
-		for(Wedding w:appliedList) {
-//			Wedding wd = sqlSession.selectOne("weddingMapper.selectAppliedList",w);
-			log.debug("신청목록 : {}",w);
-		}
-//		for(Wedding wd: appliedList2) {
-//			log.debug("신청목록 : {}",wd);
-//		}
-//		ArrayList<Wedding> appliedList2 = new ArrayList<Wedding>();
-//		for(Wedding wd:appliedList) {
-//			appliedList2.add(sqlSession.selectOne("weddingMapper.selectAppliedList",wd));
-//			log.debug("신청 내역 : {}", wd);
-//		}
-		/*
-		 * for(Wedding wg:appliedList2) { log.debug("신청 내역 : {}",wg); }
-		 */
-//		Wedding appliedWedding = Wedding.builder()
-//								.petNo("7")
-//								.userNo(1)
-//								.pedigree("믹스")
-//								.meetingMethod("강아지방문")
-//								.petIntro("강아지소개")
-//								.petNote("강아지특이사항")
-//								.originName("원래경로테스트")
-//								.changeName("변경경로테스트")
-//								.partnerNo(6)
-//								.build();
-//		int result = sqlSession.insert("weddingMapper.applyMatching",appliedWedding);
-//		log.debug("처리되었는가? : {}",result);
-//		int userNo = 6;
-//		Pet pet = sqlSession.selectOne("weddingMapper.selectPet",userNo);
-//		log.debug("반려견 정보 : {}",pet);
-		
-//		int userNo = 1;
-//		Pet p = sqlSession.selectOne("weddingMapper.selectPet",userNo);
-//		log.debug("강쥐 정보 : {}",p);
-		//		Registration registration = Registration.builder()
-//												.petIntro("귀여운 댕댕이")
-//												.petNote("귀여워쥬금")
-//												.originName("D_6.jpg")
-//												.changeName("2024062116375136931.jpg")
-//												.reservNo(2)
-//												.build();
-//		int updateResult = sqlSession.update("kindergartenMapper.updateRegistration",registration);
-//		log.debug("수정 되었는가? :{}",updateResult);
-		
-//		int reservNo = 9;						
-//		int result = sqlSession.delete("kindergartenMapper.deleteRegistration",reservNo);
-//		log.debug("삭제 되었는가? :{}",result);
 		
 //		ArrayList<Registration> regList = (ArrayList)sqlSession.selectList("kindergartenMapper.selectRegList2",userNo);
 //		for (Registration reg : regList) {
