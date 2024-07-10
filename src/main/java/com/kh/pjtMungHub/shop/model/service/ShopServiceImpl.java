@@ -17,6 +17,8 @@ import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.Review;
+import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
+import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 @Service
@@ -230,7 +232,7 @@ public class ShopServiceImpl implements ShopService {
 		// TODO Auto-generated method stub
 		int result2=1;
 		int result=shopDao.insertReview(sqlSession, review);
-		if(fileParameter.getAtList().get(0).getOriginName()!=null) {
+		if(!fileParameter.getAtList().isEmpty()) {
 			
 			result2=shopDao.insertAttachment(sqlSession, fileParameter);
 		}
@@ -244,7 +246,7 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public ArrayList<Integer> selectScorePercent(int productNo) {
+	public ArrayList<ScorePercent> selectScorePercent(int productNo) {
 		// TODO Auto-generated method stub
 		return shopDao.selectScorePercent(sqlSession,productNo);
 	}
@@ -265,6 +267,36 @@ public class ShopServiceImpl implements ShopService {
 	public Attachment selectAttachment(ParameterVo parameter) {
 		// TODO Auto-generated method stub
 		return shopDao.selectAttachment(sqlSession,parameter);
+	}
+
+	@Override
+	public ArrayList<Favorite> selectFavoriteList(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.selectFavoriteList(parameter, sqlSession);
+	}
+
+	@Override
+	public int updateSalesCount(ArrayList<Product> pList) {
+		// TODO Auto-generated method stub
+		return shopDao.updateSalesCount(pList,sqlSession);
+	}
+
+	@Override
+	public ArrayList<ReviewReply> selectReviewReplyList(int reviewNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectReviewReplyList(reviewNo,sqlSession);
+	}
+
+	@Override
+	public int insertReviewReply(ReviewReply reply) {
+		// TODO Auto-generated method stub
+		return shopDao.insertReviewReply(sqlSession,reply);
+	}
+
+	@Override
+	public int deleteReply(int replyNo) {
+		// TODO Auto-generated method stub
+		return shopDao.deleteReply(sqlSession,replyNo);
 	}
 
 }

@@ -59,12 +59,14 @@
 	</select>
 	
 	<select id="selectScorePercent" parameterType="_int"
-	resultType="_int">
-	SELECT ROUND(RATIO_TO_REPORT(SCORE) OVER(), 2) * 100 AS PERCENT
+	resultType="com.kh.pjtMungHub.shop.model.vo.ScorePercent">
+	SELECT 
+	SCORE score,
+	ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percent
 	FROM PRODUCT_REVIEW
-	WHERE PRODUCT_NO=#{productNo}
+	WHERE PRODUCT_NO = #{productNo}
 	GROUP BY SCORE
-	ORDER BY SCORE
+	ORDER BY SCORE DESC
 	</select>
 	
 	<select id="selectScoreAvg" parameterType="_int"
@@ -82,6 +84,15 @@
 		FROM FAVORITE
 		WHERE PRODUCT_NO=#{productNo}
 		AND USER_NO=#{userNo}
+		AND DELETE_STATUS=#{justifying}
+	</select>
+	
+	<select id="selectFavoriteList" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo" 
+	resultType="com.kh.pjtMungHub.shop.model.vo.Favorite">
+		SELECT USER_NO userNo,
+		PRODUCT_NO productNo
+		FROM FAVORITE
+		WHERE USER_NO=#{userNo}
 		AND DELETE_STATUS=#{justifying}
 	</select>
 	
@@ -168,10 +179,43 @@
 	<otherwise>
 	</otherwise>
 	</choose>
-	
-		
-	
+
 	</select>
+	
+	<select id="selectReviewReplyList" 
+	resultType="com.kh.pjtMungHub.shop.model.vo.ReviewReply"
+	parameterType="_int">
+	SELECT REPLY_NO replyNo,
+	REPLY_CONTENT replyContent,
+	REVIEW_NO reviewNo,
+    M.USER_NO userNo,
+	NAME userName,
+	CREATE_DATE createDate
+	FROM PRODUCT_REVIEW_REPLY R
+	JOIN MEMBER M ON R.USER_NO= M.USER_NO
+	WHERE REVIEW_NO=${reviewNo}
+	</select>
+	
+	<insert id="insertReviewReply"
+	parameterType="com.kh.pjtMungHub.shop.model.vo.ReviewReply">
+	INSERT INTO PRODUCT_REVIEW_REPLY (
+	REPLY_NO,
+	REPLY_CONTENT,
+	REVIEW_NO,
+	USER_NO
+	)VALUES(
+	SEQ_RRPLY.NEXTVAL,
+	#{replyContent},
+	#{reviewNo},
+	#{userNo}
+	)
+	</insert>
+	
+	<delete id="deleteReply" parameterType="_int">
+	DELETE FROM PRODUCT_REVIEW_REPLY
+     WHERE REPLY_NO = #{replyNo}
+	</delete>
+	
 	<insert id="insertProduct" parameterType="Product">
 		INSERT INTO PRODUCT(
 		PRODUCT_NO,
@@ -507,8 +551,18 @@
 	#{recipient},
 	#{phone}
 	)
-	
 	</insert>
+	
+	<update id="updateSalesCount"
+	parameterType="Product">
+	<foreach collection="list" item="arr">
+	UPDATE PRODUCT SET
+	SALES_COUNT = SALES_COUNT+#{arr.quantity}
+	WHERE PRODUCT_NO = #{arr.productNo}
+	</foreach>
+	</update>
+	
+	
 	<select id="selectShipInfoList"
 	 resultType="com.kh.pjtMungHub.shop.model.vo.ShipInfo" 
 	 parameterType="_int">

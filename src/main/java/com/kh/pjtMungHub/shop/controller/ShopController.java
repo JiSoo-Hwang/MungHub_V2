@@ -33,12 +33,16 @@ import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.Review;
+import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
+import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
+
 
 
 @Controller
 public class ShopController {
 
+	
 	@Autowired
 	private ShopService shopService;
 	
@@ -95,9 +99,23 @@ public class ShopController {
 	
 	@PostMapping("delete.sp")
 	@ResponseBody
-	public int deleteProductData(int productNo) {
+	public int deleteProductData(int productNo,HttpSession session) {
+		
+		ParameterVo parameter=ParameterVo.builder()
+				.justifying("product")
+				.number(productNo)
+				.build();
+		
+		ArrayList<Attachment> atList=shopService.selectAttachmentList(parameter);
+		
+		for(int i=0;i<atList.size();i++) {
+			String deleteFile= "resources/uploadFiles/shopFile/productFile/"+atList.get(i).getType()+"/"+atList.get(i).getChangeName();
+			File f= new File(session.getServletContext().getRealPath(deleteFile));
+			f.delete();
+		}
 		
 		int result=shopService.deleteProductData(productNo);
+		
 		
 		
 		return result;
@@ -112,8 +130,8 @@ public class ShopController {
 		ArrayList<Product> pList = shopService.selectProductList("Y"); 
 		ParameterVo parameter = ParameterVo.builder().justifying("product").number(productNo).build();
 		ArrayList<Attachment> atList= shopService.selectAttachmentList(parameter);
-		ArrayList<Integer> percent=shopService.selectScorePercent(productNo);
-		
+		ArrayList<ScorePercent> percent=shopService.selectScorePercent(productNo);
+
 		ParameterVo parameter2=ParameterVo.builder().justifying("best").productNo(productNo).build();
 		ArrayList<Review> bestReviewTop4=shopService.selectReviewList(parameter2);
 		
@@ -181,6 +199,33 @@ public class ShopController {
 		}
 		
 	}
+	
+	@GetMapping("selectFavoriteList.sp")
+	@ResponseBody
+	public ArrayList<Favorite> selectFavoriteList(int userNo) {
+		
+		ParameterVo parameter = ParameterVo.builder()
+				.userNo(userNo)
+				.justifying("N")
+				.build();
+		
+		ArrayList<Favorite> deleteFav=shopService.selectFavoriteList(parameter);
+		
+		if(deleteFav!=null) {
+			
+			for (int i = 0; i < deleteFav.size(); i++) {
+				shopService.convertFavorite(deleteFav.get(i));
+			}
+		}
+		parameter.setJustifying("Y");
+		ArrayList<Favorite> fav=shopService.selectFavoriteList(parameter);
+		
+		return fav;
+		
+		}
+		
+	
+	
 	@PostMapping("subscribe.sp")
 	@ResponseBody
 	public int subscribe(Favorite favor) {
@@ -217,6 +262,7 @@ public class ShopController {
 		
 		boolean flag= false;
 		String deleteFile= "";
+		String changeName="";
 		
 		ParameterVo parameter=ParameterVo.builder()
 				.justifying("product")
@@ -224,7 +270,7 @@ public class ShopController {
 				.build();
 		
 		ArrayList<Attachment> atList=shopService.selectAttachmentList(parameter);
-		
+		ArrayList<Attachment> uploadList=new ArrayList<>();
 		
 		for(int i=0; i<upfile.length; i++) {
 		if(!upfile[i].getOriginalFilename().equals("")) {
@@ -256,16 +302,20 @@ public class ShopController {
 					type="file";
 				}
 			
-				if(atList.get(i).getChangeName()!=null) {
+				
+				changeName = saveFile(upfile[i],session,"productFile",type);
+				
+				if(atList.size()>i) {
 					flag = true;
 					deleteFile= "resources/uploadFiles/shopFile/productFile/"+atList.get(i).getType()+"/"+atList.get(i).getChangeName();
 					if(flag) {
 						File f= new File(session.getServletContext().getRealPath(deleteFile));
 						f.delete();
+						
+						flag= false;
 					}
+					
 				}
-				
-				String changeName = saveFile(upfile[i],session,"productFile",type);
 				
 				Attachment at=Attachment.builder().
 						fileLev(i).
@@ -276,21 +326,18 @@ public class ShopController {
 						productNo(p.getProductNo()).
 						type(type).
 						build();
+				changeName="";
 				
-				atList.add(at);
+				uploadList.add(at);
 			}
 		}
-	    parameter.setAtList(atList);
+	    parameter.setAtList(uploadList);
 		int result = shopService.updateAttachment(parameter);
 		int result2 = shopService.updateProduct(p);
 		
 		
-		if(result*result2>0) {
-			
-			return "redirect:/detail.sp/"+p.getProductNo();
-		}else {
-			return "redirect:/detail.sp/"+p.getProductNo();
-		}
+		
+		return "redirect:/detail.sp/"+p.getProductNo();
 			
 	}
 	
@@ -529,7 +576,7 @@ public class ShopController {
 				itemsQuantity+=orderList.get(i).getAmount();
 			}
 			
-			totalPrice=(price-(price/discount)*amount);
+			totalPrice+=(price-(price/discount)*amount);
 		}
 		
 		mv.addObject("itemsNo",itemsNo);
@@ -546,7 +593,17 @@ public class ShopController {
 	@ResponseBody
 	public int insertOrderInfo(POrderInfo orderInfo) {
 		
+		ArrayList<Product> pList=new ArrayList<>();
 		int result=shopService.insertOrderInfo(orderInfo);
+		String[] itemArr= orderInfo.getItems().split(",");
+		String[] itemQuantityArr=orderInfo.getItemsQuantity().split(",");
+		for (int i = 0; i < itemArr.length; i++) {
+			Product p =shopService.selectProductDetail(Integer.parseInt(itemArr[i]));
+			p.setQuantity(Integer.parseInt(itemQuantityArr[i]));
+			pList.add(p);
+		}
+		int result2=shopService.updateSalesCount(pList);
+		
 		
 		return result;
 	}
@@ -561,9 +618,15 @@ public class ShopController {
 		
 		String[] itemListArr = itemList.split(",");
 		String[] itemQuantityArr = itemQuantity.split(",");
+		ArrayList<Product> pList=new ArrayList<>();
+		for (int i = 0; i < itemListArr.length; i++) {
+			int productNo=Integer.parseInt(itemListArr[i]);
+			Product p = shopService.selectProductDetail(productNo);
+			p.setQuantity(Integer.parseInt(itemQuantityArr[i]));
+			pList.add(p);
+		}
 		
-		mv.addObject("itemList",itemListArr);
-		mv.addObject("itemQuantity",itemQuantityArr);
+		mv.addObject("pList",pList);
 		mv.addObject("orderInfo",orderInfo);
 		mv.setViewName("shop/orderConfirm");
 		
@@ -648,11 +711,11 @@ public class ShopController {
 							HttpSession session) {
 		ArrayList<Attachment> atList=new ArrayList<>();
 		Attachment at=new Attachment();
-				
+		
+		if(upfile!=null) {
 		for (int i=0;i< upfile.length;i++) {
 			
 		
-			if(!upfile[i].getOriginalFilename().equals("")) {
 				
 				String fileType=upfile[i].getOriginalFilename();
 				int index = fileType.lastIndexOf(".");
@@ -688,11 +751,12 @@ public class ShopController {
 						filePath("/pjtMungHub/resources/uploadFiles/shopFile/reviewFile/"+type+"/").
 						type(review.getType()).
 						build();
+				
+				atList.add(at);
 			}
 			
 			
 			
-			atList.add(at);
 		}
 		ParameterVo fileParameter=ParameterVo.builder()
 				.atList(atList)
@@ -722,7 +786,7 @@ public class ShopController {
 		Product p=shopService.selectProductDetail(productNo);
 		p.setReviewCount(shopService.selectReviewCount(productNo));
 		p.setReviewTScore((double)shopService.selectScoreAvg(productNo));
-		ArrayList<Integer> percent=shopService.selectScorePercent(productNo);
+		ArrayList<ScorePercent> percent=shopService.selectScorePercent(productNo);
 		mv.addObject("pi",pi);
 		mv.addObject("currentPage",currentPage);
 		mv.addObject("percent",percent);
@@ -775,6 +839,49 @@ public class ShopController {
 		}
 	
 		return reviewJArr;
+	}
+	
+	
+	@GetMapping("reviewReplyList.sp")
+	@ResponseBody
+	public ArrayList<ReviewReply> selectReviewReplyList(int reviewNo) {
+		
+		ArrayList<ReviewReply> rList = shopService.selectReviewReplyList(reviewNo);
+		
+		if(!rList.isEmpty()) {
+			
+			return rList;
+		}else {
+			return null;
+		}
+	}
+	
+	@PostMapping("insertReviewReply.sp")
+	@ResponseBody
+	public int insertReviewReply(ReviewReply reply) {
+		
+		
+		int result=shopService.insertReviewReply(reply);
+		
+		return result;
+	}
+	
+	@PostMapping("deleteReply.sp")
+	@ResponseBody
+	public int deleteReply(int replyNo) {
+		
+		int result=shopService.deleteReply(replyNo);
+		
+		return result;
+	}
+	
+	
+	@GetMapping("adminPage.sp")
+	public ModelAndView adminPage(ModelAndView mv) {
+		
+		
+		mv.setViewName("shop/adminPage");
+		return mv;
 	}
 	
 	

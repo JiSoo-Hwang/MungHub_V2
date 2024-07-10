@@ -6,6 +6,42 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style type="text/css">
+
+.progress {
+	width: 80%;
+	float: right;
+}
+
+.score {
+	width: 20%;
+	display: block;
+	float: left;
+}
+.star-rating {
+      display: flex;
+    }
+
+    .star {
+      appearance: none;
+      padding: 1px;
+    }
+
+    .star::after {
+      content: '☆';
+      color: #F2D106;
+      font-size: 30px;
+    }
+
+    .star:hover::after,
+    .star:has(~ .star:hover)::after,
+    .star:checked::after,
+    .star:has(~ .star:checked)::after {
+      content: '★';
+    }
+
+    .star:hover ~ .star::after {
+      content: '☆';
+    }
 .review-star {width:100px; }
 .review-star,.review-star span {display:inline-block; height:24px; overflow:hidden; background:url(/pjtMungHub/resources/uploadFiles/shopFile/productFile/common/star.png)no-repeat; }
 .review-star span{background-position:left bottom; line-height:0; vertical-align:top; }
@@ -197,43 +233,23 @@
 					
 					 <span>총 <fmt:formatNumber type="number"
 							maxFractionDigits="0" value="${p.reviewCount }" />건
-					</span><br> <span style="color: gray">만족도 ${percent[4]+percent[3]}%</span>
+						</span><br> <span style="color: gray">만족도 ${percent[0].percent}%</span>
 				</div>
 				<div class="col-sm-5">
-					<div class="score">5점</div>
+				<c:forEach begin="0" end="4" varStatus="index">
+				
+					<div class="score">${5-index.index }점</div>
 					<div class="progress my-1">
+					<c:forEach begin="0" end="4" varStatus="i">
+					<c:if test="${5-index.index eq percent[i.index].score }">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[4]}%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[i.index].percent }%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
+					</c:if>
+					</c:forEach>
 					</div>
 					<br>
-					<div class="score">4점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[3]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
-					<br>
-					<div class="score">3점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[2]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
-					<br>
-					<div class="score">2점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[1]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
-					<br>
-					<div class="score">1점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[0]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
+				</c:forEach>
 				</div>
 			</div>
 		</div>

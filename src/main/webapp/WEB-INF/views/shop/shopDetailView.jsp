@@ -173,6 +173,9 @@ h2 {
 .btn-div button{
 margin-right: 10px;
 }
+.reviewReply{
+border-bottom : 1px solid gray;
+}
 
 </style>
 </head>
@@ -298,7 +301,6 @@ margin-right: 10px;
 	    <div class="toast-header">
 	    <i class="bi bi-cart-plus-fill" style="color:blue"></i>&nbsp;
 	      <strong class="me-auto"> 장바구니 담기 성공</strong>
-	      <small>11 mins ago</small>
 	      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
 	    </div>
 	    <div class="toast-body">
@@ -321,7 +323,6 @@ margin-right: 10px;
 			data : { userNo:${loginUser.userNo},
 					 productNo : ${p.productNo}},
 			success : function (result){
-				console.log(result);
 				if(result){
 				$("#favor").html("<i class='bi bi-heart-fill' style='color:red'></i>");
 				
@@ -350,7 +351,6 @@ margin-right: 10px;
 					 	  productNo : ${p.productNo}},
 				success : function(result){
 					selectFavor();
-					console.log("통신성공 subscribe");
 				},
 				error : function(){
 					console.log("통신오류");
@@ -399,12 +399,18 @@ margin-right: 10px;
 	</script>
 	</c:when>
 	<c:otherwise>
-	<script type="text/javascript">
+	<script>
 	$(function(){
 		
-		 $("button").click(function(){
-			 alert("로그인 이후에 이용해 주세요");
-		 });
+	$("#addCart").click(function(){
+		alert("로그인 이후에 이용해주세요.");
+	});
+	
+	 $("#favor").click(function(){
+		 alert("로그인 이후에 이용해주세요.");
+	 });
+	
+	
 	});
 	</script>
 	</c:otherwise>
@@ -498,11 +504,14 @@ margin-right: 10px;
 			</c:if>
 			<div class="row row-cols-2 align-items-center mt-3 ml-3 mr-3">
 				<c:forEach items="${best4Review}" var="r" varStatus="i">
-					<div id="best" class="col-sm mx-3" onclick="location.href='/pjtMungHub/reviewDetail.sp/${r.reviewNo}'">
+					<div id="best" class="col-sm mx-3" data-bs-toggle="modal" data-bs-target="#reviewDetailModal${r.reviewNo }">
 						<div class="review-content">
+						<div class="media-container">
 						<c:forEach items="${rAtList[i.index] }" var="rAt">
 						<img src="${rAt.filePath }${rAt.changeName}" class="img-fluid">
 						</c:forEach>
+						</div>
+	          
 							<div class="wrap-star">
 						    <div class='review-star'>
 						        <span style ="width: ${r.score*20}%"></span>
@@ -513,7 +522,232 @@ margin-right: 10px;
 						</div>
 						<p>${r.reviewContent }</p>
 					</div>
+					
+		<div class="modal fade" id="reviewDetailModal${r.reviewNo }" 
+			data-bs-backdrop="static" data-bs-keyboard="false" 
+			tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h1 class="modal-title fs-5" id="staticBackdropLabel">리뷰 보기</h1>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+			      <div class="modal-body">
+			      	<div class="media-container">
+			      <c:forEach items="${rAtList[i.index] }" var="rAt">
+			      		<c:choose>
+					    		<c:when test="${rAt.type eq 'video' }">
+					    	<video src="${rAt.filePath }${rAt.changeName}" class="d-block img-fluid"style="max-height:300px;"  autoplay loop></video>
+					    		</c:when>
+					    		<c:otherwise>
+					      <img src="${rAt.filePath }${rAt.changeName}" class="d-block img-fluid" style="max-height:300px;" >
+					    		</c:otherwise>
+					    	</c:choose>
+					</c:forEach>
+			      	</div>
+							
+					<div class="wrap-star">
+						    <div class='review-star'>
+						        <span style ="width: ${r.score*20}%"></span>
+						    </div>
+							</div>
+					<div class="row align-items-center justify-content-center">
+					<div class="col-sm-10">
+					<small class="text-muted">${r.userName }</small>
+					 <small class="text-muted">${r.createDate }</small>
+				  <p>${r.reviewContent }</p>
+					</div>
+					<div class="col-sm-1" align="center">
+					${r.likeCount }
+					</div>
+				  <button class='btn btn-primary col-sm-1' style="max-height:40px"><i class='bi bi-hand-thumbs-up'></i></button>
+					</div>
+					<div class="row align-items-center justify-content-center py-2">
+					<hr>
+					<textarea class="col-sm-9 mx-2" id="replyContent${r.reviewNo }" rows="5" cols="5" style="resize:none"></textarea>
+	              <button class='btn btn-secondary col-sm-2' style="max-height:40px;" onclick="insertReply(${r.reviewNo })"><p style="font-size:0.8em; margin-bottom:0;">댓글작성</p></button>
+					</div>
+					<hr>
+					
+					<div id="reviewReply${r.reviewNo }">
+					</div>
+					<c:choose>
+					<c:when test="${not empty loginUser }">
+					
+					<script>
+					
+					$(function(){
+						
+						$.ajax({
+							url : "/pjtMungHub/reviewReplyList.sp",
+							data : { reviewNo : ${r.reviewNo}},
+							success : function(result){
+								var str="";
+								if(result!=null){
+									for (var i=0; i<result.length; i++) {
+									str+="<div class='reviewReply row'>"
+										+"<div class='col-10'>"
+										+"<div><small style='color:gray'>"+result[i].userName+" "+result[i].createDate+"</small></div>"
+										+"<div>"+result[i].replyContent+"</div>"
+										+"</div>";
+										if(result[i].userNo==${loginUser.userNo}){
+											
+										str+="<div class='col-1'>"
+										+"<button style='background-color:transparent;border:0px;'"
+										+"onclick='deleteReply("+result[i].replyNo+","+result[i].reviewNo+")'>"
+										+"<i class='bi bi-x-lg'></i></button>";
+										}
+										str+="</div>"
+										+"</div>";
+									}
+									$("#reviewReply${r.reviewNo }").html(str);
+									
+								}
+							},
+							error : function(){
+								console.log("통신오류");	
+							}
+							
+						});
+						});
+			
+					</script>
+					</c:when>
+					<c:otherwise>
+					<script>
+					
+					$(function(){
+						
+						$.ajax({
+							url : "/pjtMungHub/reviewReplyList.sp",
+							data : { reviewNo : ${r.reviewNo}},
+							success : function(result){
+								var str="";
+								if(result!=null){
+									for (var i=0; i<result.length; i++) {
+									str+="<div class='reviewReply row'>"
+										+"<div class='col-10'>"
+										+"<div><small style='color:gray'>"+result[i].userName+" "+result[i].createDate+"</small></div>"
+										+"<div>"+result[i].replyContent+"</div>"
+										+"</div>"
+										+"</div>"
+										+"</div>";
+									}
+									$("#reviewReply${r.reviewNo }").html(str);
+									
+								}
+							},
+							error : function(){
+								console.log("통신오류");	
+							}
+							
+						});
+						});
+					
+					</script>
+					</c:otherwise>
+					</c:choose>
+					
+						</div>
+						
+		       </div>
+		       
+	          	</div>
+	          </div>
 				</c:forEach>
+				
+				
+				<c:if test="${not empty loginUser }">
+				<script>
+				function selectReplyList(num){
+					$.ajax({
+						url : "/pjtMungHub/reviewReplyList.sp",
+						data : { reviewNo : num},
+						success : function(result){
+							var str="";
+							if(result!=null){
+								for (var i=0; i<result.length; i++) {
+									str+="<div class='reviewReply row'>"
+										+"<div class='col-10'>"
+										+"<div><small style='color:gray'>"+result[i].userName+" "+result[i].createDate+"</small></div>"
+										+"<div>"+result[i].replyContent+"</div>"
+										+"</div>";
+										if(result[i].userNo==${loginUser.userNo}){
+											
+										str+="<div class='col-1'>"
+										+"<button style='background-color:transparent;border:0px;'"
+										+"onclick='deleteReply("+result[i].replyNo+")'>"
+										+"<i class='bi bi-x-lg'></i></button>";
+										}
+										str+="</div>"
+										+"</div>";
+									}
+								$("#reviewReply"+num).html(str);
+								
+							}
+						},
+						error : function(){
+							console.log("통신오류");	
+						}
+						
+					});
+				}
+				
+				
+				</script>
+				
+				
+				</c:if>
+				
+				
+				
+				
+				
+				<script>
+				
+				
+				function deleteReply(replyNo,reviewNo){
+					$.ajax({
+						url : "/pjtMungHub/deleteReply.sp",
+						type : "post",
+						data : {replyNo : replyNo},
+						success : function(result){
+							selectReplyList(reviewNo);
+						},error : function(){
+							console.log("통신오류");
+						}
+						
+					});
+				}
+				
+				
+				function insertReply(num){
+					
+					var replyContent = $("#replyContent"+num).val();
+					console.log(replyContent);
+					$.ajax({
+						url : "/pjtMungHub/insertReviewReply.sp",
+						type : "post",
+						data : { reviewNo : num,
+								 userNo : ${loginUser.userNo},
+								 replyContent : replyContent },
+						success : function(result){
+							$("#replyContent"+num).val("");
+							selectReplyList(num);
+							
+						},error : function(){
+							console.log("통신오류");
+						}
+					
+						
+					});
+					
+				}
+				
+				
+				
+				</script>
 			</div>
 		</div>
 	</section>
@@ -679,8 +913,22 @@ margin-right: 10px;
 	<div class="container" id="detail-section02">
 		<h2>구매후기</h2>
 		<div align="right">
-		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">후기쓰기</button>
+		<button type="button" class="btn btn-primary" 
+		<c:if test="${not empty loginUser }"> data-bs-toggle="modal" data-bs-target="#reviewModal"</c:if>
+		id="reviewButton">리뷰작성</button>
 		</div>
+		
+		<c:if test="${empty loginUser }">
+			<script>
+			$(function(){
+				$("#reviewButton").click(function(){
+					alert("로그인 이후에 이용해 주세요.");
+				});
+			});
+			
+			</script>
+		
+		</c:if>
 		
 		
 		<c:if test="${not empty loginUser }">
@@ -858,43 +1106,23 @@ margin-right: 10px;
 					
 					 <span>총 <fmt:formatNumber type="number"
 							maxFractionDigits="0" value="${p.reviewCount }" />건
-					</span><br> <span style="color: gray">만족도 ${percent[0]+percent[1]}%</span>
+					</span><br> <span style="color: gray">만족도 ${percent[0].percent}%</span>
 				</div>
 				<div class="col-sm-5">
-					<div class="score">5점</div>
+				<c:forEach begin="0" end="4" varStatus="index">
+				
+					<div class="score">${5-index.index }점</div>
 					<div class="progress my-1">
+					<c:forEach begin="0" end="4" varStatus="i">
+					<c:if test="${5-index.index eq percent[i.index].score }">
 						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[0]}%" aria-valuenow="75" aria-valuemin="0"
+							style="width: ${percent[i.index].percent }%" aria-valuenow="75" aria-valuemin="0"
 							aria-valuemax="100"></div>
+					</c:if>
+					</c:forEach>
 					</div>
 					<br>
-					<div class="score">4점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[1]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
-					<br>
-					<div class="score">3점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[2]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
-					<br>
-					<div class="score">2점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[3]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
-					<br>
-					<div class="score">1점</div>
-					<div class="progress my-1">
-						<div class="progress-bar bg-warning" role="progressbar"
-							style="width: ${percent[4]}%" aria-valuenow="75" aria-valuemin="0"
-							aria-valuemax="100"></div>
-					</div>
+				</c:forEach>
 				</div>
 			</div>
 		</div>
