@@ -110,8 +110,7 @@
     <title>Document</title>
     <style>
     @import
-	url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css")
-	;
+	url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
         #header {
             padding: 10px;
             position: sticky;
@@ -195,12 +194,16 @@ clear: both;
 </style>
 </head>
 <body>
+<c:if test="${!empty loginUser }">
+<span style="float: right; margin: 10px; ">${loginUser.userId} 님 환영합니다&ensp;|&ensp;<a href="myPage.me" style="text-decoration: none; color: black;">마이페이지</a></span>
+</c:if>
+<br clear="all">
     <nav id="header">
         <nav id="header_1">
             <ul>
-                <li class="menu"><a href="#home">Kindergarten</a></li>
+                <li class="menu"><a href="map.do">Kindergarten</a></li>
                 <li class="menu"><a href="#news">Petcare</a></li>
-                <li class="menu"><a href="#contact">Wedding</a></li>
+                <li class="menu"><a href="wedList.wd">Wedding</a></li>
                 <li class="menu"><a href="/pjtMungHub/list.bo">Board</a></li>
                 <li class="menu"><a href="/pjtMungHub/list.sp">Shop</a></li>
 				<li style="float: right">
@@ -210,8 +213,6 @@ clear: both;
 							style="color: white;">Login</a>
 						</c:when>
 						<c:otherwise>
-							<span>${loginUser.userId} 님 환영합니다.</span>
-							<a href="myPage.me">마이페이지</a>
 							<a class="active" href="/pjtMungHub/logout.me"
 							style="color: white;">Logout</a>
 						</c:otherwise>
@@ -221,28 +222,19 @@ clear: both;
         </nav>
         <nav id="header_2">
             <ul>
-				<li><a href="map.do">지도보기</a></li>
-                <li><a href="sitter.re">단기돌봄예약</a> </li>
-                <li><a href="houseList.re">장기돌봄예약</a> </li>
-                <li><a href="hospital.ho">동물병원정보</a> </li>
-                <li><a href="wedList.wd">웨딩플래너</a> </li>
-                <li><a href="">하위 메뉴1</a> </li>
-            </ul>
-            <ul>
-                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
-                <c:choose>
+				<!-- <li><a href="map.do">지도보기</a></li> -->
+				<c:choose>
                 <c:when test="${loginUser.userGrade == 2 }">
-				<li><a href="regList2.do?userNo=${loginUser.userNo}">예약내역보기(원장님)</a></li>
+				<li><a href="regList2.do?userNo=${loginUser.userNo}">상담예약내역</a></li>
                 </c:when>
                 <c:otherwise>
-				<li><a href="regList.do?userNo=${loginUser.userNo}">예약내역보기(견주)</a></li>
+				<li><a href="regList.do?userNo=${loginUser.userNo}">상담예약내역</a></li>
                 </c:otherwise>
                 </c:choose>
-                <!-- 향후 로그인 아이디에 따라 해당 a 태그 다르게 보이게 설정할 예정 -->
-                <li><a href="">하위 메뉴2</a> </li>
-                <li><a href="">하위 메뉴2</a> </li>
-                <li><a href="">하위 메뉴2</a> </li>
-                <li><a href="">하위 메뉴2</a> </li>
+                <li><a href="sitter.re">단기돌봄예약</a> </li>
+                <li><a href="hospital.ho">동물병원정보</a> </li>
+                <!-- <li><a href="wedList.wd">웨딩플래너</a> </li> -->
+                <li><a href="houseList.re">장기돌봄예약</a> </li>
             </ul>
         </nav>
     </nav>
