@@ -3,10 +3,10 @@ package com.kh.pjtMungHub.chatting.vo;
 import java.sql.Date;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MessageVO {
@@ -16,5 +16,6 @@ public class MessageVO {
 	private int masterNo;
 	private String chatContent;
 	private Date chatDate;
+	private String chatWriter;
 
 }

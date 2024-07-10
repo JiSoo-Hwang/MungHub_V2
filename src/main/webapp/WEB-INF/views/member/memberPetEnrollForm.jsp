@@ -5,16 +5,28 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+	#pet-photo-area,.pet-info{
+		float:left;
+		border-right:5px;
+	}
+	.pet-info>label{
+		margin-top:10px;
+	}
+	#pet-photo-area{
+		margin-left:10px;
+		margin-top:20px;
+	}
+</style>
 </head>
 <body>
 	<form action="enrollPet.me" method="post" enctype="multipart/form-data">
 		<div id="pet-photo-area" hidden="true">
-			<img id="pet-photo" width="150" height="120">
+			<img id="pet-photo" width="200" height="auto">
 		</div>
 		<div class="pet-info">
 				<label for="breed">품종</label>
 				<select name="breed">
-					<option value="">비밀(해당하는 품종이 없거나 믹스견인 경우 선택해 주세요)</option>
 					<c:forEach items="${breed}" var="b">
 						<option value="${b.breedId}">${b.breedName}</option>
 					</c:forEach>

@@ -9,12 +9,14 @@ import java.util.Map;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.kh.pjtMungHub.chatting.vo.MessageVO;
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.member.model.vo.Message;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
+import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 
 @Repository
 public class MemberDao {
@@ -152,5 +154,40 @@ public class MemberDao {
 		params.put("days",days);
 		return sqlSession.update("memberMapper.restrictUser",params);
 	}
+
+	public PetSitter searchSitterStatus(SqlSessionTemplate sqlSession, PetSitter pst) {
+		PetSitter result=sqlSession.selectOne("memberMapper.searchSitterStatus", pst);
+		System.out.println(result);
+		return result;
+	}
+
+	public ArrayList<MessageVO> getChatList(SqlSessionTemplate sqlSession, Member loginUser) {
+		return (ArrayList)sqlSession.selectList("memberMapper.getChatList", loginUser);
+	}
+
+	public MessageVO getNewChat(SqlSessionTemplate sqlSession, MessageVO c) {
+		return sqlSession.selectOne("memberMapper.getNewChat",c);
+	}
+
+	public ArrayList<PetSitter> getSitterList(SqlSessionTemplate sqlSession) {
+		return (ArrayList)sqlSession.selectList("memberMapper.getSitterList");
+	}
+
+	public ArrayList<MessageVO> selectChatList(SqlSessionTemplate sqlSession, MessageVO p) {
+		return (ArrayList)sqlSession.selectList("memberMapper.selectChatList",p);
+	}
+
+	public PetSitter selectSitterbySocial(SqlSessionTemplate sqlSession, Member m) {
+		return sqlSession.selectOne("memberMapper.selectSittebySocial",m);
+	}
+
+	public ArrayList<MessageVO> getSitterChatList(SqlSessionTemplate sqlSession, PetSitter sitterUser) {
+		return (ArrayList)sqlSession.selectList("memberMapper.getSitterChatList",sitterUser);
+	}
+
+	public Member selectMaster(SqlSessionTemplate sqlSession, Member m) {
+		return sqlSession.selectOne("memberMapper.selectMaster",m);
+	}
+
 
 }

@@ -7,9 +7,15 @@
 <title>Insert title here</title>
 </head>
 <style>
-	.petInfo{
+	.petInfo-main, .pet-info{
+		margin-left:15px;
+		overflow:auto;
+	}
+	.petInfo, .newPet-member, .newPet-new{
 		position:relative;
 		height:300px;
+		background-color:#FFEAE3;
+		border-radius:5px;
 	}
 	.pet-info{
 		height:800px;
@@ -19,7 +25,13 @@
 	}
 	.right{
 		font-size: 120%;
-		line-height: 250%;
+		line-height: 230%;
+	}
+	.right>*{
+		margin-left:10px;
+	}
+	.newPetBanner{
+		cursor:pointer;
 	}
 </style>
 <body>
@@ -52,7 +64,7 @@
 									<input type="hidden" name="petNo" value="${pet.petNo}">
 									<label for="">이름 : ${pet.petName}</label><br>
 									<label for="">품종 : <c:forEach items="${breed}" var="b">${b.breedId eq pet.breed ? b.breedName:''}</c:forEach>${empty pet.breed ? '비밀':''}</label><br>
-									<label for="">나이 : ${pet.petAge}</label><br>
+									<label for="">나이 : ${pet.petAge} 살</label><br>
 									<label for="">성별 : ${pet.petGender eq 'M' ? '왕자님':'공주님'}</label><br>
 									<label for="weight">몸무게 : ${pet.weight} kg</label><br>
 									<button type="button" data-bs-toggle="modal" data-bs-target="#petModal">수정하기</button><br><br>
@@ -63,7 +75,7 @@
 				</div>
 			</c:if>
 			<c:if test="${not empty petList||loginUser.petYN eq 'N'}">
-				<h3 onclick="newPetInput();">지금 새 가족을 등록해 보세요!</h3>
+				<h3 class="newPetBanner" onclick="newPetInput();">지금 새 가족을 등록해 보세요!</h3>
 			<div class="newPet-member" hidden="true">
 				<%@ include file="/WEB-INF/views/member/memberPetEnrollForm.jsp"%>
 			</div>

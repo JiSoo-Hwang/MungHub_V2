@@ -7,15 +7,26 @@
 <title>Insert title here</title>
 </head>
 <style>
-	.member-info{
-		height:400px;
+	.member-info, .pet-info{
 		width:100%;
+		margin-left:15px;
+		overflow: auto;
 	}
 	.pet-info{
 		width:800px;
 	}
 	.info-area>input{
 		width:450px;
+	}
+	.info-area{
+		border-radius:5px;
+		background-color:#FFEAE3;
+	}
+	.info-area>*{
+		margin-left:10px;
+	}
+	.info-area>label{
+		margin-top:10px;
 	}
 	.petInfo{
 		position:relative;
@@ -28,6 +39,9 @@
 	.right{
 		font-size: 120%;
 		line-height: 250%;
+	}
+	h3{
+		color:#492F10;
 	}
 </style>
 <body>
@@ -75,7 +89,7 @@
 									</c:forEach>
 									<div class="petInfo right">
 										<label for="">이름 : ${pet.petName}</label><br>
-										<label for="">품종 : <c:forEach items="${breed}" var="b">${b.breedId eq pet.breed ? b.breedName:''}</c:forEach>${empty pet.breed ? '비밀':''}</label><br>
+										<label for="">품종 : <c:forEach items="${breed}" var="b">${b.breedId eq pet.breed ? b.breedName:''}</c:forEach></label><br>
 										<label for="">나이 : ${pet.petAge}</label><br>
 										<label for="">성별 : ${pet.petGender eq 'M' ? '왕자님':'공주님' }</label><br>
 										<label for="weight">몸무게 : ${pet.weight} kg</label>

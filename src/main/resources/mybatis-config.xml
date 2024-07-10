@@ -33,6 +33,7 @@
 	<typeAlias type="com.kh.pjtMungHub.member.model.vo.Message" alias="Message"/>
 	<typeAlias type="com.kh.pjtMungHub.pet.model.vo.Breed" alias="Breed"/>
 	<typeAlias type="com.kh.pjtMungHub.wedding.model.vo.Wedding" alias="Wedding"/>
+	<typeAlias type="com.kh.pjtMungHub.chatting.vo.MessageVO" alias="Chat"/>
 	</typeAliases>
 	
 </configuration>

@@ -123,5 +123,28 @@
 		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL #{days} DAY
 		WHERE USER_NO = #{userNo}
 	</update>
-	
+	<select id="searchSitterStatus" parameterType="PetSitter" resultType="PetSitter">
+		SELECT PET_SITTER_NO petSitterNo, PET_SITTER_NAME petSitterName, INTRODUCE introduce, DOG_KEYWORD dogKeyword, TYPE_KEYWORD typeKeyword, PHONE phone, EMAIL email, ORIGIN_NAME originName, FILE_PATH filePath, STATUS status FROM PET_SITTER WHERE PET_SITTER_NO=#{petSitterNo}
+	</select>
+	<select id="getChatList" parameterType="Member" resultType="Chat">
+		SELECT SITTER_NO  sitterNo FROM CHAT WHERE MASTER_NO=#{userNo} GROUP BY SITTER_NO
+	</select>
+	<select id="getNewChat" parameterType="Chat" resultType="Chat">
+		SELECT SITTER_NO sitterNo, MASTER_NO masterNo, CHAT_CONTENT chatContent, CHAT_DATE chatDate, CHAT_WRITER chatWriter FROM (SELECT * FROM CHAT WHERE SITTER_NO=#{sitterNo} ORDER BY CHAT_NO DESC) WHERE ROWNUM=1 
+	</select>
+	<select id="getSitterList" resultType="PetSitter">
+		SELECT PET_SITTER_NO petSitterNo, PET_SITTER_NAME petSitterName, INTRODUCE introduce, DOG_KEYWORD dogKeyword, TYPE_KEYWORD typeKeyword, PHONE phone, EMAIL email, ORIGIN_NAME originName, FILE_PATH filePath, STATUS status FROM PET_SITTER
+	</select>
+	<select id="selectChatList" parameterType="Chat" resultType="Chat">
+		SELECT CHAT_NO chatNo, SITTER_NO sitterNo, MASTER_NO masterNo, CHAT_CONTENT chatContent, CHAT_DATE chatDate, CHAT_WRITER chatWriter FROM CHAT WHERE SITTER_NO=#{sitterNo} AND MASTER_NO=#{masterNo}
+	</select>
+	<select id="selectSitterbySocial" parameterType="Member" resultType="PetSitter">
+		SELECT PET_SITTER_NO petSitterNo, PET_SITTER_NAME petSitterName, INTRODUCE introduce, DOG_KEYWORD dogKeyword, TYPE_KEYWORD typeKeyword, PHONE phone, EMAIL email, ORIGIN_NAME originName, FILE_PATH filePath, STATUS status FROM PET_SITTER WHERE EMAIL=#{email}
+	</select>
+	<select id="getSitterChatList" parameterType="PetSitter" resultType="Chat">
+		SELECT MASTER_NO  masterNo FROM CHAT WHERE SITTER_NO=#{sitterNo} GROUP BY MASTER_NO
+	</select>
+	<select id="selectMaster">
+		SELECT USER_NO, USER_ID, NAME, PHONE, EMAIL, STATUS FROM MEMBER WHERE USER_NO=#{userNo}
+	</select>
 </mapper>

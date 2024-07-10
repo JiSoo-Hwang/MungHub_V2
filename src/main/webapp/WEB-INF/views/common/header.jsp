@@ -23,6 +23,10 @@
      <!-- alertify css 커스터마이징 시작 -->
     <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
 	<link href="https://cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/css/alertify.min.css" rel="stylesheet">
+	
+	<!-- include summernote css/js-->
+	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
 
 <script>
@@ -184,7 +188,7 @@ clear: both;
 </style>
 <style>
 	.chatTotal{
-		z-index: auto;
+		z-index: 50;
 		position:fixed;
 		bottom:10px;
 		right:10px;
@@ -264,6 +268,8 @@ clear: both;
 	    </script>
     	<c:remove var="alertMsg"/>
 	</c:if>
+	
+	<!-- 실시간 채팅창 -->
 	<c:if test="${not empty loginUser}">
 	    <div class="chatTotal">
 			<div class="chatArea">
@@ -273,51 +279,50 @@ clear: both;
 				<div class="chatTitle">
 					<span>채팅 목록</span>
 				</div>
-				<div class="chatCont">
-					<input type="hidden" value="2">
-					<span style="font-weight:bold;">userId</span><br>
-					<span>마지막 채팅 내용</span>
+				<c:choose>
+				<c:when test="${not empty chatList}">
+					<c:forEach items="${chatList}" var="cList">
+						<div class="chatCont">
+							<input type="hidden" value="${cList.sitterNo}">
+							<span style="font-weight:bold;">
+								<c:forEach items="${sitterList}" var="sitter">${cList.sitterNo eq sitter.petSitterNo ? sitter.petSitterName:""}</c:forEach> 펫시터님
+							</span>
+							<br>
+							<span>${cList.chatContent}</span>
+						</div>
+					</c:forEach>
+				</c:when>
+				</c:choose>
+			</div>
+		</div>
+	</c:if>
+	<c:if test="${not empty sitterUser}">
+	    <div class="chatTotal">
+			<div class="chatArea">
+				<button type="button">채팅</button>
+			</div>
+			<div class="chatList">
+				<div class="chatTitle">
+					<span>채팅 목록</span>
 				</div>
+				<c:choose>
+				<c:when test="${not empty chatList}">
+					<c:forEach items="${chatList}" var="cList">
+						<div class="chatCont">
+							<input type="hidden" value="${cList.masterNo}">
+							<span style="font-weight:bold;">
+								<c:forEach items="${masterList}" var="sitter">${cList.sitterNo eq sitter.petSitterNo ? sitter.petSitterName:""}</c:forEach> 펫시터님
+							</span>
+							<br>
+							<span>${cList.chatContent}</span>
+						</div>
+					</c:forEach>
+				</c:when>
+				</c:choose>
 			</div>
 		</div>
 	</c:if>
 	<script>
-	// 웹소켓 접속 함수
-	var socket; // 웹소켓을 담아 놓을 변수
-	$(function(){
-		
-		// 접속 경로를 담아 socket 생성
-		var url = "ws://localhost:8887/pjtMungHub/chat";
-		socket = new WebSocket(url);
-		// 연결이 되었을 때 동작
-		socket.onopen = function(){
-			console.log("연결 성공");
-		}
-		// 연결이 끊겼을 때 동작
-		socket.onclose = function(){
-			console.log("연결 종료");
-		}
-		// 에러가 발생했을 때 동작
-		socket.onerror = function(e){
-			console.log("에러 발생");
-			console.log(e);
-		}
-		// 메시지를 수신했을 때
-		socket.onmessage = function(message){
-			console.log("메시지를 받았습니다.")
-			console.log(JSON.parse(message.data))
-			var data = JSON.parse(message.data);
-			var div = document.getElementById("chatArea");
-			var newDiv = document.createElement("div");
-			newDiv.textContent = "["+data.id+"]"+data.message;
-			div.appendChild(newDiv);
-			var newMsg=window.opener.document.getElementsById("chatCont");
-//				newMsg.each(function(){
-//					if(${code})
-//				})
-		}
-	})
-	
 		$(".chatArea").on("click",function(){
 			if($(".chatList").css("display")=="none"){
 				$(".chatList").slideDown(250);
@@ -326,14 +331,24 @@ clear: both;
 			}
 		})
 		$(".chatCont").on("click",function(){
-			var userNo= $(this).children().eq(0).val();
+			var sitterNo= $(this).children().eq(0).val();
+			var sitterUser;
+			$.ajax({
+				url:"searchSitter.me",
+				data:{
+					petSitterNo:sitterNo
+				},
+				success:function(result){
+					sitterUser=result;
+				},
+				error:function(){
+					console.log("검색못함");
+				}
+			});
 			var code='';
-			if(${loginUser.userNo}>userNo){
-				code=userNo+'n'+${loginUser.userNo};
-			}else{
-				code=${loginUser.userNo}+'n'+userNo;
-			}
-			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/'+code,'chatpop','titlebar=1,location=no,status=no, resizable=1, scrollbars=yes, width=600, height=550');
+				code=sitterNo+'n'+${loginUser.userNo};
+
+			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=550');
 		})
 	</script>
 </body>

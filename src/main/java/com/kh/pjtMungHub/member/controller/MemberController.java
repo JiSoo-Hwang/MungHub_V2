@@ -40,6 +40,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.pjtMungHub.chatting.vo.MessageVO;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.common.template.Pagination;
@@ -49,6 +50,7 @@ import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.member.model.vo.Message;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
+import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 
 @Controller
 public class MemberController {
@@ -163,6 +165,13 @@ public class MemberController {
 		}else {
 			mv.addObject("alertMsg",loginUser.getUserId()+"님 환영합니다.");
 			session.setAttribute("loginUser", loginUser);
+			ArrayList<MessageVO> cList=service.getChatList(loginUser);
+			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+			for(MessageVO c:cList) {
+				chatList.add(service.getNewChat(c));
+			}
+			session.setAttribute("chatList", chatList);
+			session.setAttribute("sitterList", service.getSitterList());
 		}
 		mv.setViewName("redirect:/");
 		return mv;
@@ -564,12 +573,34 @@ public class MemberController {
 	@GetMapping("google.me")
 	public String googleLogin(Member m,HttpSession session) {
 		Member loginUser=service.socialMember(m);
+		PetSitter sitterUser=service.selectSitterbySocial(m);
 		String msg="";
-		if(loginUser==null) {
-			msg="해당하는 회원을 찾을 수 없습니다. 회원 가입 후 이용해 주세요.";
-		}else {
+		if(loginUser!=null) {
 			msg=loginUser.getUserId()+"님 환영합니다.";
 			session.setAttribute("loginUser", loginUser);
+			ArrayList<MessageVO> cList=service.getChatList(loginUser);
+			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+			for(MessageVO c:cList) {
+				chatList.add(service.getNewChat(c));
+			}
+			session.setAttribute("chatList", chatList);
+			session.setAttribute("sitterList", service.getSitterList());
+		}else if(sitterUser!=null) {
+			session.setAttribute("sitterUser", sitterUser);
+			msg=sitterUser.getPetSitterName()+" 펫시터님 환영합니다.";
+			ArrayList<MessageVO> cList=service.getSitterChatList(sitterUser);
+			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+			ArrayList<Member> masterList=new ArrayList<>();
+			for(MessageVO c:cList) {
+				chatList.add(service.getNewChat(c));
+				Member mem=new Member();
+				mem.setUserNo(c.getMasterNo());
+				masterList.add(service.selectMaster(mem));
+			}
+			session.setAttribute("masterList", masterList);
+			session.setAttribute("chatList", chatList);
+		}else {			
+			msg="해당하는 회원을 찾을 수 없습니다. 회원 가입 후 이용해 주세요.";
 		}
 		session.setAttribute("alertMsg", msg);
 		return "redirect:/";
@@ -671,17 +702,43 @@ public class MemberController {
 		String url="redirect:/";
 		Member snsJoin=(Member)session.getAttribute("snsJoin");
 		Member loginUser=(Member)session.getAttribute("loginUser");
-		if(snsJoin!=null) {
+		PetSitter sitterUser=service.selectSitterbySocial(snsJoin);
+		if(sitterUser!=null) {
+			session.setAttribute("alertMsg",sitterUser.getPetSitterName()+" 펫시터님 환영합니다.");
+			ArrayList<MessageVO> cList=service.getSitterChatList(sitterUser);
+			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+			for(MessageVO c:cList) {
+				chatList.add(service.getNewChat(c));
+			}
+			session.setAttribute("chatList", chatList);
+		}else if(snsJoin!=null) {
 			session.setAttribute("alertMsg", "가입된 아이디가 없습니다. 회원 가입 페이지로 이동합니다.");
 			url+="enroll.me";
 		}else if(loginUser==null){
 			session.setAttribute("alertMsg", "잘못된 접근");
 		}else {
         	session.setAttribute("alertMsg", loginUser.getUserId()+"님 환영합니다.");
+			ArrayList<MessageVO> cList=service.getChatList(loginUser);
+			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+			for(MessageVO c:cList) {
+				chatList.add(service.getNewChat(c));
+			}
+			session.setAttribute("chatList", chatList);
+			session.setAttribute("sitterList", service.getSitterList());
 		}
 		return url;
 	}
 	
+	@ResponseBody
+	@GetMapping("searchSitter.me")
+	public PetSitter searchSitterStatus(PetSitter pst,HttpSession session) {
+		PetSitter sitter=service.searchSitterStatus(pst);
+		if(sitter!=null) {
+			session.setAttribute("sitterUser", sitter);
+		}
+		return sitter;
+	}
+
 	public String generateState()
 	{
 	    SecureRandom random = new SecureRandom();

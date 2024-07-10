@@ -14,6 +14,21 @@
 	.teacherPhone,.teacherKind{
 		width:150px;
 	}
+	.teacher-new-area,.teacher-area{
+		border-radius:5px;
+		background-color:#FFEAE3;
+		margin-top:15px;
+		margin-bottom:20px;
+		overflow: auto;
+	}
+	table{
+		margin-left:10px;
+		margin-top:10px;
+	}
+	h3{
+		color:#492F10;
+		
+	}
 </style>
 </head>
 <body>
