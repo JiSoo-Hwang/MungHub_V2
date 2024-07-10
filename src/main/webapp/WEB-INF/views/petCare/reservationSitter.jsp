@@ -171,19 +171,14 @@
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
 
-
-<button onclick="test();">테스트</button>
-
-
 	<div class="form-group">
-	
 		<form action="shortSencond.re" method="get">
-		<input type="hidden" id="visitDate" name="visitDate" value=""> <!-- visitDate  -->	
-		<input type="hidden" id="startTime" name="startTime" value=""> <!-- startTime  -->	
-		<input type="hidden" id="duration" name="duration" value=""> <!-- duration  -->	
-		<input type="hidden" id="endTime" name="endTime" value=""> <!-- endTime  -->	
-	    <input type="hidden" id="petTypeNo" name ="petTypeNo" value="${at.petTypeNo }">
-		<input type="hidden" name="petSitterNo" value="${petSitter.petSitterNo }">
+			<input type="hidden" id="visitDate" name="visitDate" value=""> <!-- visitDate  -->	
+			<input type="hidden" id="startTime" name="startTime" value=""> <!-- startTime  -->	
+			<input type="hidden" id="duration" name="duration" value=""> <!-- duration  -->	
+			<input type="hidden" id="endTime" name="endTime" value=""> <!-- endTime  -->	
+		    <input type="hidden" id="petTypeNo" name ="petTypeNo" value="${at.petTypeNo }">
+			<input type="hidden" name="petSitterNo" value="${petSitter.petSitterNo }">
 		
 		<h4>원하시는 날짜를 골라주세요.</h4>
 		<div class="container">
@@ -261,9 +256,6 @@
 	</c:forEach>
 	
 	<script>
-		//hidden으로 보낼 endTiem 구하기
-		
-		
 		$('.reservation-btn').on('click',function(){
 			var inputStartTime = parseInt($(".str-btn.selected").val(),10);
 			var inputDuration = parseInt($(".duration-btn.selected").val(),10);
@@ -280,15 +272,6 @@
 				alert('세부사항을 전부 입력해주세요.');
 			}
 		});
-		
-		function test(){
-			
-			
-
-		}
-	
-	
-	
 		//============== 달력 ===================
 		 $(document).ready(function() {
 			    var disabledDates = [];

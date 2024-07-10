@@ -1,7 +1,14 @@
 package com.kh.pjtMungHub.petcare.controller;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,7 +16,20 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +38,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,9 +49,11 @@ import com.kh.pjtMungHub.petcare.model.service.PetCareServiceImpl;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
 import com.kh.pjtMungHub.petcare.model.vo.Certification;
 import com.kh.pjtMungHub.petcare.model.vo.Environment;
+import com.kh.pjtMungHub.petcare.model.vo.HospitalRe;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
+import com.kh.pjtMungHub.petcare.model.vo.LongReview;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
@@ -45,7 +68,6 @@ public class PetCareController {
 	
 	@Autowired
 	private PetCareServiceImpl petCareService;
-	
 	
 	//펫시터 선택 페이지 이동
 	@RequestMapping("sitter.re")
@@ -78,10 +100,26 @@ public class PetCareController {
 	//날짜,시간 지정시 스케줄 가능한 펫시터 리스트형태로 불러오기
 	@ResponseBody
 	@PostMapping(value="selectSitter.re",produces="application/json;charset=UTF-8")
-	public ArrayList<PetSitter> selectSitter(@ModelAttribute AvailableTimes at) {
+	public HashMap<String,Object> selectSitter(@RequestParam(value="currentPage",defaultValue="1")int currentPage
+											,@ModelAttribute AvailableTimes at) {
 		
-		ArrayList<PetSitter> sList = petCareService.selectSitter(at);
-		return sList;
+		int listCount = petCareService.selectSitterCount(at);
+		int pageLimit = 3;
+		int boardLimit = 3;
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		ArrayList<PetSitter> sList = petCareService.selectSitter(at,pi);
+		
+		for(PetSitter p : sList) {
+			System.out.println(p);
+		}
+		System.out.println(pi);
+		
+		HashMap<String,Object> result = new HashMap<>();
+		result.put("list", sList);
+		result.put("pi", pi);
+		
+		return result;
 	}
 	
 	//단기돌봄 예약 페이지 이동하면서 요금표 테이블에서 결제가격 가져오기
@@ -181,14 +219,10 @@ public class PetCareController {
 		
 		Payment payment = petCareService.payDetail(uid);
 		
-		String reservationNo = String.valueOf(petCareService.selectReservationId(payment));
-		String reservationHouseNo = payment.getReservationHouseNo();
-		
-		
 		//결제성공 후 각 paymentStatus '결제완료' 변경작업
 		if(Integer.parseInt(payment.getDifferentNo())==1) {
 			
-			int result = petCareService.updateReservation(reservationNo);
+			int result = petCareService.updateReservation(String.valueOf(petCareService.selectReservationId(payment)));
 			
 			if(result>0) {
 				session.setAttribute("alertMsg", "결제성공!! 내역을 확인해주세요.");
@@ -199,7 +233,7 @@ public class PetCareController {
 			
 		}else if(Integer.parseInt(payment.getDifferentNo())==2) {
 			
-			int result = petCareService.updateHouseRe(reservationHouseNo);
+			int result = petCareService.updateHouseRe(payment.getReservationHouseNo());
 			
 			if(result>0) {
 				session.setAttribute("alertMsg", "결제성공!! 내역을 확인해주세요.");
@@ -236,7 +270,6 @@ public class PetCareController {
 		HashMap<String,Object> result = new HashMap<>(); //ArrayList 와 pi를 같이 보내려면 map 을 활용
 		result.put("houseList",list);
 		result.put("pi", pi);
-		
 		return result;
 	}
 	
@@ -253,14 +286,14 @@ public class PetCareController {
 		
 		String address = houseRe.getAddress().substring(0,2); //주소 앞2글자
 		houseRe.setAddress(address);
-		
+
 		int listCount = petCareService.listCount(houseRe);
 		int pageLimit = 3;
 		int boardLimit = 3;
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 		
 		ArrayList<House> houseList = petCareService.selectHouseList(houseRe,pi);
-				
+		
 		HashMap<String,Object> result = new HashMap<>(); //ArrayList 와 pi를 같이 보내려면 map 을 활용
 		result.put("houseList",houseList);
 		result.put("pi", pi);
@@ -268,7 +301,7 @@ public class PetCareController {
 		return result;
 	}
 	
-	//집 상세정보 페이지 이동 및 정보전달
+	//집 상세정보 / 정보전달 
 	@RequestMapping("detailHouse.re")
 	public String detailHouse(int houseNo,Model model) {
 		
@@ -284,6 +317,24 @@ public class PetCareController {
 		model.addAttribute("env",env); //환경정보(ex: #1인가구,#단독주택..)
 		model.addAttribute("sup",sup); //지원서비스(ex: 산책,응급처치..)
 		return "petCare/detailHouse";
+	}
+	
+	//집 후기
+	@ResponseBody
+	@RequestMapping("longReview.re")
+	public HashMap<String,Object> longReview(@RequestParam(value="currentPage",defaultValue="1")int currentPage
+									,ModelAndView mv,int houseNo) {
+		//후기정보 페이징바와 같이
+		int listCount = petCareService.reviewCount(houseNo);
+		int pageLimit = 3;
+		int boardLimit = 2;
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		ArrayList<LongReview> reviewList = petCareService.selectLongReview(houseNo,pi); 
+		
+		HashMap<String,Object> result = new HashMap<>();
+		result.put("reviewList", reviewList);
+		result.put("pi", pi);
+		return result;
 	}
 	
 	//맵이동
@@ -308,7 +359,6 @@ public class PetCareController {
 		HousePrice price = petCareService.selectPriceInfo(hr.getStayNo()); //선택한 요금정보
 		
 		if(result>0) {
-			
 			int reservationHouseNo = petCareService.houserReservationNo();
 			
 			session.setAttribute("alertMsg", "예약에 성공하셨습니다! 결제를 완료하셔야 예약이 확정 됩니다.");
@@ -324,8 +374,106 @@ public class PetCareController {
 	}
 	
 	
+	//병원검색 페이지로 이동
+	@RequestMapping("hospital.ho")
+	public String hospitalPage() {
+		return "petCare/hospital";
+	}
 	
+	//공공데이터 API 설정
+	@ResponseBody
+	@RequestMapping(value="hospitalList.ho", produces="text/xml;charset=UTF-8")
+	public String hospitalList(String location) throws IOException {
+		
+		System.out.println(location);
+		
+		String serviceKey = "00d6f801245544b987ad67dfe6210312";
+		String url = "https://openapi.gg.go.kr/Animalhosptl";
+		url+="?KEY="+serviceKey;
+		url+="&pIndex=1";
+		url+="&pSize=50";
+		url+="&SIGUN_CD="+URLEncoder.encode(location,"UTF-8");
+		
+		URL requestUrl = new URL(url);
+		
+		HttpURLConnection urlCon = (HttpURLConnection)requestUrl.openConnection();
+		urlCon.setRequestMethod("GET");
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(urlCon.getInputStream()));
+		
+		String str = "";
+		
+		String line;
+		while((line=br.readLine()) != null) {
+			str+=line;
+		}
+		br.close();
+		urlCon.disconnect();
+		return str;
+	}
 	
+	//지도 api 를 통해서 가져온 url 주소로 필요한 특정 데이터 가져오기
+	@RequestMapping("mapInfo.ho")
+	public String getMapInfo(Model model,String url) {
+		
+		
+		//처음엔 RestTemplate 를 활용하여 정보를 추출하려 했으나 실패
+		//Selenium(브라우저 제어, UI테스트, 크롤링, 스크립트작성)
+		//Jsoup(HTML파싱, 데이터 추출 및 조작, HTML 필터링)
+		//Selenium(동적)으로 가져온 자료를 Jsoup(정적)으로 변환해서 데이터 처리.
+		
+		
+		//익셉션 발생 대비 tryCatch
+	    try {
+	        // Selenium WebDriver 설정
+	        System.setProperty("webdriver.chrome.driver", "C:\\devtool\\chromedriver-win64\\chromedriver.exe"); // chromedriver 경로 지정
+	        ChromeOptions options = new ChromeOptions();
+	        options.addArguments("--headless"); // 브라우저 창을 열지 않음
+	        WebDriver driver = new ChromeDriver(options);
+	        // 해당 url 경로 페이지 로드
+	        driver.get("https://place.map.kakao.com/12401961");
+	        // 페이지가 완전히 로드될 때까지 기다림 
+	        //(이게 결정적인 해결방안 이었음. setTimeout 과 비슷한역할)
+	        WebDriverWait wait = new WebDriverWait(driver, 10); // timeoutInSeconds 값을 사용
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("h3.tit_subject")));
+	        // 페이지 소스 가져오기
+	        String pageSource = driver.getPageSource();
+	        driver.quit();
+	        System.out.println("Page Source: " + pageSource.substring(0, 500)); // 페이지 소스의 일부 500자 출력 (디버깅용)
+	        
+	        
+	        // Jsoup 를 이용한 HTML 파싱
+	        Document doc = Jsoup.parse(pageSource);
+	        // 원하는 CSS 셀렉터 지정
+	        Elements reviewTitleElements = doc.select("h3.tit_subject");
+
+	        // text 나 html 을 추출하는 과정
+	        StringBuilder reviewText = new StringBuilder();
+	        StringBuilder reviewHtml = new StringBuilder();
+	        for (Element reviewTitle : reviewTitleElements) {
+	            reviewText.append(reviewTitle.text()).append("\n");
+	            reviewHtml.append(reviewTitle.html()).append("\n");
+	        }
+
+	        model.addAttribute("reviewText", reviewText.toString());
+	        model.addAttribute("reviewHtml", reviewHtml.toString());
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        System.out.println("예외 발생: " + e.getMessage());
+	    }
+
+	    return "petCare/hospital";
+	}
+	
+	@GetMapping("hospital.re")
+	public ModelAndView hospitalReservation(ModelAndView mv,HospitalRe hosRe) {
+		
+		System.out.println(hosRe);
+		
+		mv.addObject("hosRe",hosRe).setViewName("petCare/hospitalReservation");
+		return mv;
+	}
 	
 	
 	

@@ -23,5 +23,6 @@ public class Attachment {
 	private int productNo;
 	private int reviewNo;
 	private int brandNo;
+	private String type;
 
 }

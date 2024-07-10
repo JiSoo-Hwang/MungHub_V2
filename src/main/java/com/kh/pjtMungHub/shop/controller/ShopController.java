@@ -8,16 +8,20 @@ import java.util.Date;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.JsonArray;
 import com.kh.pjtMungHub.shop.model.service.ShopService;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
@@ -27,6 +31,7 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 
@@ -40,6 +45,10 @@ public class ShopController {
 	public ModelAndView ShopList(ModelAndView mv) {
 		
 		ArrayList<Product> pList = shopService.selectProductList("Y"); 
+		for(int i=0; i<pList.size();i++) {
+			pList.get(i).setReviewCount(shopService.selectReviewCount(pList.get(i).getProductNo()));
+			pList.get(i).setReviewTScore((double)shopService.selectScoreAvg(pList.get(i).getProductNo()));
+		}
 		
 		mv.addObject("pList", pList);
 		mv.setViewName("shop/shopListView");
@@ -77,7 +86,28 @@ public class ShopController {
 		ArrayList<Product> pList = shopService.selectProductList("Y"); 
 		ParameterVo parameter = ParameterVo.builder().justifying("product").number(productNo).build();
 		ArrayList<Attachment> atList= shopService.selectAttachmentList(parameter);
+		ArrayList<Integer> percent=shopService.selectScorePercent(productNo);
 		
+		ParameterVo parameter2=ParameterVo.builder().justifying("best").productNo(productNo).build();
+		ArrayList<Review> bestReviewTop4=shopService.selectReviewList(parameter2);
+		
+		ArrayList<ArrayList<Attachment>> reviewAt=new ArrayList<>();
+		ArrayList<Attachment> rAtList=new ArrayList<>();
+		ParameterVo parameter3;
+		for (int i = 0; i < bestReviewTop4.size(); i++) {
+			
+			parameter3=ParameterVo.builder().justifying("review").number(bestReviewTop4.get(i).getReviewNo()).build();
+			
+			rAtList=shopService.selectAttachmentList(parameter3);
+			reviewAt.add(rAtList);
+		}
+		
+		p.setReviewCount(shopService.selectReviewCount(productNo));
+		p.setReviewTScore((double)shopService.selectScoreAvg(productNo));
+		
+		mv.addObject("rAtList",reviewAt);
+		mv.addObject("best4Review",bestReviewTop4);
+		mv.addObject("percent",percent);
 		mv.addObject("atList",atList);
 		mv.addObject("pList", pList);
 		mv.addObject("p",p);
@@ -503,6 +533,84 @@ public class ShopController {
 		
 		return result;
 	}
+	
+	@PostMapping("insertReview.sp")
+	@ResponseBody
+	public int insertReview(@RequestPart(value="review")Review review,
+							@RequestPart(value="uploadFile",required=false) MultipartFile upfile,
+							HttpSession session) {
+		
+		Attachment at=new Attachment();
+			if(upfile!=null) {
+				
+			
+			if(!upfile.getOriginalFilename().equals("")) {
+				
+				String changeName = saveFile(upfile,session,"reviewFile/"+review.getType());
+				
+				at=Attachment.builder().
+						fileLev(0).
+						originName(upfile.getOriginalFilename()).
+						changeName(changeName).
+						fileJustify("review").
+						filePath("/pjtMungHub/resources/uploadFiles/shopFile/reviewFile/"+review.getType()+"/").
+						build();
+			}
+			}
+			ArrayList<Attachment> atList=new ArrayList<>();
+			
+			atList.add(at);
+		
+		ParameterVo fileParameter=ParameterVo.builder()
+				.atList(atList)
+				.justifying("review")
+				.build();
+		
+		int result=shopService.insertReview(review,fileParameter);
+		
+		
+		return result;
+	}
+	
+	@GetMapping("reviewList.sp")
+	@ResponseBody
+	public JSONArray selectReviewList(ParameterVo param) {
+		
+		ParameterVo parameter=ParameterVo.builder()
+				.justifying(param.getJustifying())
+				.productNo(param.getProductNo())
+				.amount(param.getAmount())
+				.star(param.getStar())
+				.build();
+		ArrayList<Review> rList=shopService.selectReviewList(parameter);
+		
+		JSONArray reviewJArr=new JSONArray();
+		
+		for (int i = 0; i < rList.size(); i++) {
+			ParameterVo parameter2=ParameterVo.builder()
+					.justifying("review")
+					.number(rList.get(i).getReviewNo())
+					.build();
+			ArrayList<Attachment> atList= shopService.selectAttachmentList(parameter2);
+			
+			JSONObject jobj=new JSONObject();
+			jobj.put("atList", atList);
+			jobj.put("reviewNo", rList.get(i).getReviewNo());
+			jobj.put("reviewContent", rList.get(i).getReviewContent());
+			jobj.put("userNo", rList.get(i).getUserNo());
+			jobj.put("userName", rList.get(i).getUserName());
+			jobj.put("productNo", rList.get(i).getProductNo());
+			jobj.put("createDate", rList.get(i).getCreateDate());
+			jobj.put("likeCount", rList.get(i).getLikeCount());
+			jobj.put("score", rList.get(i).getScore());
+			
+			reviewJArr.add(jobj);
+			
+		}
+	
+		return reviewJArr;
+	}
+	
 	
 	public String saveFile(MultipartFile upfile
 						  ,HttpSession session

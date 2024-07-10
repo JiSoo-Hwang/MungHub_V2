@@ -1,6 +1,7 @@
 package com.kh.pjtMungHub.member.model.service;
 
 import java.util.ArrayList;
+import java.time.LocalDateTime;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -224,5 +225,7 @@ public class MemberServiceImpl implements MemberService{
 	public Member selectMaster(Member m) {
 		return dao.selectMaster(sqlSession,m);
 	}
-
+	public LocalDateTime getRestrictedUntil(int userNo) {
+		return dao.getRestrictedUntil(sqlSession,userNo);
+	}
 }

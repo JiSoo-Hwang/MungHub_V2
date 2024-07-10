@@ -3,15 +3,18 @@ package com.kh.pjtMungHub.wedding.controller;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +36,6 @@ import com.kh.pjtMungHub.wedding.model.vo.Wedding;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Controller
 public class WeddingController {
 
@@ -43,22 +45,16 @@ public class WeddingController {
 	@Autowired
 	private MemberService memberService;
 	
-
-//	@ResponseBody
-//	@RequestMapping("breedList.wd")
-//	public ArrayList<Breed> selectBreeds(){
-//		ArrayList<Breed> breedList = service.selectBreeds();
-//		
-//		return breedList;
-//		
-//	}
-
+	@Autowired
+	private BCryptPasswordEncoder bcryptPasswordEncoder;
+	
 	@GetMapping("wedList.wd")
 	public ModelAndView weddingList(ModelAndView mv, HttpSession session) {
 		Member m = (Member)session.getAttribute("loginUser");
 		int userNo = m.getUserNo();
 		if(memberService.isUserRestricted(userNo)) {
-			throw new AccessRestrictedException("14일간 해당 서비스 접근이 제한되었습니다.");
+			LocalDateTime restrictedUntil = memberService.getRestrictedUntil(userNo);
+			throw new AccessRestrictedException("이미 확정된 만남을 취소하셔서, 취소한 날로부터 14일간 해당 서비스 사용이 제한되어있습니다.",restrictedUntil);
 		}
 		ArrayList<Breed> breedList = service.selectBreeds();
 		ArrayList<Wedding> weddingList = service.selectWeddings();
@@ -101,11 +97,17 @@ public class WeddingController {
 	public String insertWeddingForm(HttpSession session, Model model) {
 		Member m = (Member) session.getAttribute("loginUser");
 		int userNo = m.getUserNo();
-		Pet pet = service.selectPet(userNo);
-		model.addAttribute("pet", pet);
+		ArrayList<Pet> pet = service.selectPet(userNo);
+		model.addAttribute("petList", pet);
 		return "wedding/insertWeddingView";
 	}
 
+	@ResponseBody
+	@GetMapping("getPetInfo.wd")
+	public Pet getPetInfo(@RequestParam("petNo") int petNo) {
+		return service.selectPetByNo(petNo);
+	}
+	
 	// 최초 웨딩플래너 등록 신청
 	@PostMapping("insert.wd")
 	public String insertWedding(Wedding w, MultipartFile upFile, ArrayList<MultipartFile> vacCert, Model model,
@@ -144,8 +146,8 @@ public class WeddingController {
 	public ModelAndView updateWedding(int weddingNo, ModelAndView mv, HttpSession session) {
 		Member m = (Member) session.getAttribute("loginUser");
 		Wedding w = service.selectWedding(weddingNo);
-		Pet p = service.selectPet(m.getUserNo());
-		mv.addObject("wedding", w).addObject("pet", p).setViewName("wedding/updateWeddingView");
+		ArrayList<Pet> p = service.selectPet(m.getUserNo());
+		mv.addObject("wedding", w).addObject("petList", p).setViewName("wedding/updateWeddingView");
 		;
 		return mv;
 	}
@@ -187,13 +189,13 @@ public class WeddingController {
 	public String applyMatchingForm(int petNo, HttpSession session, Model model) {
 		Member m = (Member) session.getAttribute("loginUser");
 		int count = service.countAppliedList(m.getUserNo());
-		Pet pet = service.selectPet(m.getUserNo());
+		ArrayList<Pet> pet = service.selectPet(m.getUserNo());
 		if (count >= 3) {
 			session.setAttribute("alertMsg", "계정당 만남 신청은 3회로 제한되어있습니다 ꌩ-ꌩ");
 			return "redirect:/wedList.wd";
 		} else {
 			model.addAttribute("matchingPet", petNo);
-			model.addAttribute("pet", pet);
+			model.addAttribute("petList", pet);
 			return "wedding/apply4MatchingView";
 		}
 	}
@@ -202,7 +204,7 @@ public class WeddingController {
 	@PostMapping("apply.wd")
 	public String applyMatching(Wedding w, MultipartFile upFile, ArrayList<MultipartFile> vacCert, Model model,
 			HttpSession session) {
-
+			
 		if (!upFile.getOriginalFilename().equals("")) {
 			String changeName = saveFile(upFile, session);
 			w.setOriginName(upFile.getOriginalFilename());
@@ -232,6 +234,14 @@ public class WeddingController {
 		return mv;
 	}
 
+	@ResponseBody
+	@PostMapping("confirm.wd")
+	public boolean confirmAccept(String userPwd,HttpSession session) {
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		boolean checkPwd = bcryptPasswordEncoder.matches(userPwd, loginUser.getPassword());
+		return checkPwd;
+	}
+	
 	@GetMapping("accept.wd")
 	public String acceptWedding(int weddingNo, HttpSession session) {
 		int result = service.acceptWedding(weddingNo);
@@ -245,18 +255,24 @@ public class WeddingController {
 		}
 	}
 
+	@ResponseBody
 	@PostMapping("cancel.wd")
-	public String cancelWedding(@RequestParam("weddingNo")int weddingNo,Model model,HttpSession session) {
-		Member m = (Member)session.getAttribute("loginUser");
-		int userNo = m.getUserNo();
+	public Map<String, Object> cancelWedding(@RequestParam("weddingNo")int weddingNo,@RequestParam("userNo") int userNo) {
 		int result = service.cancelWedding(weddingNo, userNo);
+		Map<String, Object> response = new HashMap<>();
 		if(result>0) {
-			model.addAttribute("alertMsg", "만남 신청 취소 및 웨딩플래너 서비스 사용 제한이 정상적으로 처리되었습니다");
-			return "/";
+			response.put("message", "만남 취소 및 14일간 웨딩플래너 서비스 사용 제한이 정상 처리되었습니다.");
 		}else {
-			model.addAttribute("alertMsg", "처리 중 오류가 발생했습니다. 다시 시도해주세요...!" );
-			return "/";
+			response.put("message", "처리 중 오류가 발생했습니다. 다시 시도해주세요.");
 		}
+		return response;
+	}
+	
+	@ResponseBody
+	@PostMapping("getContactInfo.wd")
+	public ArrayList<Member> getContactInfo(@RequestParam("weddingNo")int weddingNo){
+		ArrayList<Member>contactList = service.getContactInfo(weddingNo);
+		return contactList;
 	}
 	
 	// 파일 업로드 처리 메소드(재활용)

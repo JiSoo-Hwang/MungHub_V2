@@ -10,6 +10,7 @@ import com.kh.pjtMungHub.petcare.model.vo.Environment;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
+import com.kh.pjtMungHub.petcare.model.vo.LongReview;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
@@ -19,7 +20,8 @@ import com.kh.pjtMungHub.petcare.model.vo.SupplyGuide;
 public interface PetCareService {
 	
 	//날짜,시간 지정시 펫시터 리스트형태로 불러오기
-	ArrayList<PetSitter> selectSitter(AvailableTimes at);
+	int selectSitterCount(AvailableTimes at);
+	ArrayList<PetSitter> selectSitter(AvailableTimes at,PageInfo pi);
 	//요금테이블에서 가격정보 가져오기
 	Price priceTable(AvailableTimes at);
 	//예약 정보 저장하기
@@ -65,6 +67,10 @@ public interface PetCareService {
 	ArrayList<Environment> selectEnvironment(int houseNo);
 	//지원서비스정보
 	ArrayList<SupplyGuide> selectSupplyGuide(int houseNo);
+	//집 후기정보
+	int reviewCount(int houseNo);
+	ArrayList<LongReview> selectLongReview(int houseNo,PageInfo pi);
+	
 	
 	
 	//장기돌봄 예약저장

@@ -14,6 +14,7 @@ import com.kh.pjtMungHub.petcare.model.vo.Environment;
 import com.kh.pjtMungHub.petcare.model.vo.House;
 import com.kh.pjtMungHub.petcare.model.vo.HousePrice;
 import com.kh.pjtMungHub.petcare.model.vo.HouseReservation;
+import com.kh.pjtMungHub.petcare.model.vo.LongReview;
 import com.kh.pjtMungHub.petcare.model.vo.Payment;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 import com.kh.pjtMungHub.petcare.model.vo.Price;
@@ -24,8 +25,16 @@ import com.kh.pjtMungHub.petcare.model.vo.SupplyGuide;
 public class PetCareDao {
 
 	//날짜,시간 지정시 펫시터 리스트형태로 불러오기
-	public ArrayList<PetSitter> selectSitter(SqlSessionTemplate sqlSession, AvailableTimes at) {
-		return (ArrayList)sqlSession.selectList("petcareMapper.selectSitter");
+	public int selectSitterCount(SqlSessionTemplate sqlSession, AvailableTimes at) {
+		return sqlSession.selectOne("petcareMapper.selectSitterCount",at);
+	}
+	public ArrayList<PetSitter> selectSitter(SqlSessionTemplate sqlSession, AvailableTimes at,PageInfo pi) {
+		
+		int limit = pi.getBoardLimit();
+		int offset =(pi.getCurrentPage()-1)*limit;
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		return (ArrayList)sqlSession.selectList("petcareMapper.selectSitter",at,rowBounds);
 	}
 	
 	//요금테이블에서 가격정보 가져오기
@@ -128,6 +137,18 @@ public class PetCareDao {
 	public int enrollHouse(SqlSessionTemplate sqlSession, HouseReservation hr) {
 		return sqlSession.insert("petcareMapper.enrollHouse",hr);
 	}
+	
+	//집 후기정보
+	public int reviewCount(SqlSessionTemplate sqlSession,int houseNo) {
+		return sqlSession.selectOne("petcareMapper.reviewCount",houseNo);
+	}
+	public ArrayList<LongReview> selectLongReview(SqlSessionTemplate sqlSession, int houseNo,PageInfo pi) {
+		
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() -1) + limit;
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		return (ArrayList)sqlSession.selectList("petcareMapper.selectLongReview",houseNo,rowBounds);
+	}
 
 	//선택한 요금정보
 	public HousePrice selectPriceInfo(SqlSessionTemplate sqlSession, int stayNo) {
@@ -150,6 +171,12 @@ public class PetCareDao {
 	public int reservationId(SqlSessionTemplate sqlSession) {
 		return sqlSession.selectOne("petcareMapper.reservationId");
 	}
+
+	
+
+	
+
+	
 
 
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.kh.pjtMungHub.chatting.vo.MessageVO;
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
+import java.time.LocalDateTime;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.member.model.vo.Message;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
@@ -53,4 +54,5 @@ public interface MemberService {
 	PetSitter selectSitterbySocial(Member m);
 	ArrayList<MessageVO> getSitterChatList(PetSitter sitterUser);
 	Member selectMaster(Member m);
+	LocalDateTime getRestrictedUntil(int userNo);
 }

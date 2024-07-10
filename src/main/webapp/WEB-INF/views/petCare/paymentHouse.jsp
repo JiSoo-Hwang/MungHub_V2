@@ -56,9 +56,9 @@
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
 	<input type="hidden" id="differentNo" value="2"> <!-- 예약구분 -->
-	<input type="text" id="userNo" value="${loginUser.userNo }"> 
-	<input type="text" id="userId" value="${loginUser.userId }"> 
-	<input type="text" id="reservationHouseNo" value="${reservationHouseNo }"> 
+	<input type="hidden" id="userNo" value="${loginUser.userNo }"> 
+	<input type="hidden" id="userId" value="${loginUser.userId }"> 
+	<input type="hidden" id="reservationHouseNo" value="${reservationHouseNo }"> 
 	
 	 <div class="container mt-5">
 	 <h3>결제페이지</h3>
@@ -85,7 +85,7 @@
 	        	<div class='sitter-info'>
 	        		<h4>집주인 성함 : ${house.ownerName }</h4>
 	        		<div id="address">${house.houseAddress }</div>
-				 	<img src='/pjtMungHub/${house.filePath }${house.originName}' class='sitter-photo'>
+				 	<img src='/pjtMungHub/${house.filePath }${house.originName01}' class='sitter-photo'>
 	        	</div>
 	        </div>
 	    </div>

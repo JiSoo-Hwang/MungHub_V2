@@ -119,8 +119,8 @@
 		FROM MEMBER
 		WHERE USER_NO = #{userNo}
 	</select>
-	<update id="restrictUser">
-		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL #{days} DAY
+	<update id="restrictUser" parameterType="hashmap">
+		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL '${days}' MINUTE
 		WHERE USER_NO = #{userNo}
 	</update>
 	<select id="searchSitterStatus" parameterType="PetSitter" resultType="PetSitter">
@@ -146,5 +146,8 @@
 	</select>
 	<select id="selectMaster">
 		SELECT USER_NO, USER_ID, NAME, PHONE, EMAIL, STATUS FROM MEMBER WHERE USER_NO=#{userNo}
+	</select>
+	<select id="getRestrictedUntil" parameterType="_int" resultType="java.time.LocalDateTime">
+	SELECT RESTRICTED_UNTIL FROM MEMBER WHERE USER_NO = #{userNo}
 	</select>
 </mapper>
