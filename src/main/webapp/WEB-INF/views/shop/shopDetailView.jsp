@@ -100,19 +100,20 @@ h2 {
 	width: 50%;
 }
 
-.first {
+.answerd {
+	text-align: center !important;
+}
+
+.answerd> p {
+	color: orange !important;
+	margin-bottom:0 !important;
+}
+
+.wating-answer {
 	text-align: center;
 }
 
-.first p {
-	color: orange;
-}
-
-.second {
-	text-align: center;
-}
-
-.second p {
+.wating-answer p {
 	color: gray;
 }
 
@@ -1323,27 +1324,68 @@ color: purple;
 
 		<table class="table table-borderless" id="question-area">
 			<tr class="question-list">
-				<td class="first"><p>답변완료</p></td>
+				<td class="answerd"><p>답변완료</p></td>
 				<td><a href="#">[상품문의]입니다. <i class="bi bi-lock-fill"></i></a></td>
 				<td>작성자</td>
 				<td>2024.06.20</td>
 			</tr>
 			<tr class="question-list">
-				<td class="second"><p>답변대기</p></td>
+				<td class="wating-answer"><p>답변대기</p></td>
 				<td><a href="#">[배송문의]입니다. <i class="bi bi-unlock"></i></a></td>
 				<td>작성자</td>
 				<td>2024.06.20</td>
 			</tr>
 		</table>
+		
+		<div align="center" id="pagination-container"></div>
 	</div>
 	
 	<script>
-		function selectQuestionList(){
+		function selectQuestionList(num){
 			$.ajax({
 				url: "/pjtMungHub/questionList.sp",
-				data : {productNo : ${p.productNo}},
+				data : {productNo : ${p.productNo},
+						currentPage : num},
 				success : function(result){
-					console.log(result);
+					var str="";
+					var pagination="";
+					
+					for (var i = 0; i < result.qList.length; i++) {
+						str+="<tr class='question-list'>"
+						+"<td class='answerd'><p>답변완료</p></td>"
+						+"<td><a href='#'>["+result.qList[i].categoryName+"]입니다.";
+						if(result.qList[i].openStatus=='N'){
+							
+						str+="<i class='bi bi-lock-fill'></i>";
+						}else{
+							str+="<i class='bi bi-unlock'></i>";
+						}
+						str+="</a></td>"
+						+"<td>"+result.qList[i].userName+"</td>"
+						+"<td>"+formatDate(result.qList[i].createDate)+"</td>"
+						+"</tr>";
+					}
+					
+					pagination+="<nav>"
+					+"<ul class='pagination justify-content-center'>";
+					if(result.pi.currentPage!=1){
+						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(i-1)+")'>이전</button></li>";
+					}
+					for (var i = 1; i <= result.pi.endPage; i++) {
+						if(result.pi.currentPage==i){
+							pagination+="<li class='page-item disabled'><button class='page-link'>"+i+"</button></li>"
+						}else{
+							pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+i+")'>"+i+"</button></li>"
+						}
+					}
+					
+					if(result.pi.currentPage!=result.pi.maxPage){
+						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(i+1)+")'>다음</button></li>"
+					}
+					pagination+=" </ul></nav>";
+					
+					$("#question-area").html(str);
+					$("#pagination-container").html(pagination);
 				},error : function(){
 					console.log("통신오류");
 				}
@@ -1351,7 +1393,7 @@ color: purple;
 		}
 		
 		$(function(){
-			selectQuestionList();
+			selectQuestionList(1);
 		})
 	
 	</script>

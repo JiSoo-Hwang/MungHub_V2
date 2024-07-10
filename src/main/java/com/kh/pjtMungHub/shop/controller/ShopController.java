@@ -894,11 +894,22 @@ public class ShopController {
 	
 	@GetMapping("questionList.sp")
 	@ResponseBody
-	public ArrayList<Question> selectQuestionList(int productNo){
+	public JSONObject selectQuestionList(int productNo,int currentPage){
 		
-		ArrayList<Question> qList=shopService.selectQuestionList(productNo);
+		int listCount=shopService.selectQuestionCount(productNo);
+		int pageLimit=10;
+		int boardLimit= 10;
 		
-		return qList;
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		ArrayList<Question> qList=shopService.selectQuestionList(productNo,pi);
+		
+		JSONObject jobj=new JSONObject();
+		
+		jobj.put("qList", qList);
+		jobj.put("pi", pi);
+		
+		return jobj;
 	}
 	
 	

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.shop.model.dao.ShopDao;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
@@ -333,9 +334,22 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public ArrayList<Question> selectQuestionList(int productNo) {
+	public ArrayList<Question> selectQuestionList(int productNo,PageInfo pi) {
 		// TODO Auto-generated method stub
-		return shopDao.selectQuestionList(sqlSession,productNo);
+		return shopDao.selectQuestionList(sqlSession,productNo,pi);
+	}
+
+	@Override
+	public int selectQuestionCount(int productNo) {
+		// TODO Auto-generated method stub
+		Integer count=shopDao.selectQuestionCount(sqlSession,productNo);
+		if(count!=null) {
+			return count;
+		}else {
+			
+			return 0;
+		}
+		
 	}
 
 }

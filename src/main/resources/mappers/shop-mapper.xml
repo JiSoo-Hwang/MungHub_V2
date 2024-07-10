@@ -257,6 +257,7 @@
 	 SELECT QUESTION_NO questionNo,
 		PRODUCT_NO productNo,
 		USER_NO userNo,
+		NAME userName,
 		QUESTION_CONTENT content,
 		Q.CATEGORY_NO categoryNo,
 		Q.CATEGORY_NAME categoryName,
@@ -264,6 +265,7 @@
 		CREATE_DATE createDate
 	FROM PRODUCT_QUESTION P
 	JOIN QUESTION_CATEGORY Q ON P.CATEGORY_NO=Q.CATEGORY_NO
+	JOIN MEMBER USING (USER_NO)
 	WHERE PRODUCT_NO=#{productNo}
 	 
 	 </select>
@@ -276,7 +278,13 @@
 	WHERE REVIEW_NO=#{reviewNo}
  </select>
 	 
-	
+	<select id="selectQuestionCount" 
+	parameterType="_int"
+	resultType="_int">
+	SELECT MAX(ROWNUM)
+	FROM PRODUCT_QUESTION
+	WHERE PRODUCT_NO=#{productNo}
+	</select>
 	<insert id="insertProduct" parameterType="Product">
 		INSERT INTO PRODUCT(
 		PRODUCT_NO,

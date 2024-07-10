@@ -283,9 +283,18 @@ public class ShopDao {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ArrayList<Question> selectQuestionList(SqlSessionTemplate sqlSession, int productNo) {
+	public ArrayList<Question> selectQuestionList(SqlSessionTemplate sqlSession, int productNo, PageInfo pi) {
 		// TODO Auto-generated method stub
-		return (ArrayList)sqlSession.selectList("shopMapper.selectQuestionList",productNo);
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage()-1)*limit;
+		
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		return (ArrayList)sqlSession.selectList("shopMapper.selectQuestionList",productNo,rowBounds);
+	}
+
+	public Integer selectQuestionCount(SqlSessionTemplate sqlSession, int productNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectQuestionCount",productNo);
 	}
 
 

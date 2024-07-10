@@ -14,6 +14,7 @@ public class Question {
 	private int questionNo;
 	private int productNo;
 	private int userNo;
+	private String userName;
 	private String content;
 	private int categoryNo;
 	private String categoryName;

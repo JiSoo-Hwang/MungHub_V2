@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
@@ -145,7 +146,10 @@ public interface ShopService {
 	ArrayList<Category> selectQuestionCategory();
 
 
-	ArrayList<Question> selectQuestionList(int productNo);
+	ArrayList<Question> selectQuestionList(int productNo, PageInfo pi);
+
+
+	int selectQuestionCount(int productNo);
 
 
 
