@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.kh.pjtMungHub.board.model.dao.BoardDao;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
+import com.kh.pjtMungHub.board.model.vo.Reply;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 
 
@@ -64,11 +65,24 @@ public class BoardServiceImpl implements BoardService {
 		
 		return boardDao.selectBoard(sqlSession,boardNo);
 	}
-
+	
 	@Override
-	public int insertBoard(int boardNo) {
+	public int insertBoard(Board b) {
 		// TODO Auto-generated method stub
-		return boardDao.insertBoard(sqlSession,boardNo);
+		return boardDao.insertBoard(sqlSession,b);
+	}
+
+	
+	@Override
+	public ArrayList<Reply> replyList(int boardNo) {
+		// TODO Auto-generated method stub
+		return boardDao.replyList(sqlSession,boardNo);
+	}
+	
+	@Override
+	public int insertReply(Reply r) {
+		// TODO Auto-generated method stub
+		return boardDao.insertReply(sqlSession,r);
 	}
 
 	

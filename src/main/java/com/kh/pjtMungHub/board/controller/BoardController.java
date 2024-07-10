@@ -1,9 +1,10 @@
 package com.kh.pjtMungHub.board.controller;
 
 import java.io.File;
-import java.sql.Date;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.servlet.http.HttpSession;
 
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -112,29 +115,12 @@ public class BoardController {
 	/*
 	//게시물 등록 메소드
 	@PostMapping("insert.bo")
-	public String insertBoard(Board b,
-							  MultipartFile upfile,
-							  HttpSession session) {
+	public String insertBoard(ModelAndView mv) {
 		
-		if(!upfile.getOriginalFilename().equals("")) {
-			//1.원본파일명 추출
-			String originName = upfile.getOriginalFilename();
-			//2.시간형식 문자열로 만들기
-			String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-			//3.확장자 추출하기 파일명 뒤에서부터 . 찾아서 뒤로 잘라내기
-			String ext = originName.substring(originName.lastIndexOf(","));
-			//4.랜덤값 5자리 뽑기
-			int ranNum=(int)(Math.random()*90000+10000);
-			//5.하나로 합쳐주기
-			String changeName = currentTime+ranNum+ext;
-			//6. 업로드하고자 하는 물리적인 경로 알아내기
-			String savePath = session.getServletContext().getRealPath("/resources/uploardFiles/");
-			
-			//7. 경로와 수정파일명을 합쳐서 파일 업로드하기
-			upfile.transferTo(new File(savePath+changeName));
-			//만들어 놓은 파일 업로드 메소드 사용하기
-			String chanageName = saveFile(upfile,session);
-		}
+		ArrayList<Category> ctList = boardService.selectCategory();	
+		
+		mv.addObject("ctList",ctList);
+		
 		
 		
 		int result = boardService.insertBoard(b);
@@ -149,8 +135,60 @@ public class BoardController {
 		
 		return "redirect/:list.bo";
 	}
-	
 	*/
+	
+	// 파일 업로드 처리 메소드(재활용)
+	public String saveFile(MultipartFile upfile, HttpSession session) {
+
+	// 파일명 수정작업하기
+	// 1.원본파일명 추출
+	String originName = upfile.getOriginalFilename();
+	// 2.시간형식 문자열로 만들기
+	// 20240527162730
+	String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+	// 3.확장자 추출하기 파일명 뒤에서부터 . 찾아서 뒤로 잘라내기
+	String ext = originName.substring(originName.lastIndexOf("."));
+	// 4.랜덤값 5자리 뽑기
+	int ranNum = (int) (Math.random() * 90000 + 10000);
+	// 5.하나로 합쳐주기
+	String changeName = currentTime + ranNum + ext;
+	// 6.업로드하고자하는 물리적인 경로 알아내기 (프로젝트 내에 저장될 실제 경로 찾기)
+	String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+	// 7.경로와 수정 파일명을 합쳐서 파일 업로드 처리하기
+	try {
+		upfile.transferTo(new File(savePath + changeName));
+	} catch (IllegalStateException | IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+
+	return changeName;
+
+	}
+
+	// 댓글 목록 조회
+	@ResponseBody
+	@RequestMapping(value = "replyList.bo", produces = "application/json;charset=UTF-8")
+	public ArrayList<Reply> replyList(int boardNo) {
+
+		ArrayList<Reply> rList = boardService.replyList(boardNo);
+
+		return rList;
+	}
+	
+	//댓글 입력
+	@ResponseBody
+	@RequestMapping("insertReply.bo")
+	public int insertReply(Reply r) {
+		
+		System.out.println(r);
+		
+		int result = boardService.insertReply(r);
+		
+		return result;
+	}	
+	
 		
 		
 		

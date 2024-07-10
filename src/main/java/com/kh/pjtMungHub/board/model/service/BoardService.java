@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
+import com.kh.pjtMungHub.board.model.vo.Reply;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 
 public interface BoardService {
@@ -30,7 +31,12 @@ public interface BoardService {
 		Board selectBoard(int boardNo);
 
 		//게시물 만들기
-		int insertBoard(int BoardNo);
+		int insertBoard(Board b);
+		
+		//댓글 목록 조회
+		ArrayList<Reply> replyList(int boardNo);
+		//댓글 입력 
+		int insertReply(Reply r);
 
 
 }

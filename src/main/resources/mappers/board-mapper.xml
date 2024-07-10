@@ -90,15 +90,45 @@
 	<insert id="insertBoard" parameterType="Board">
 		INSERT INTO BOARD(BOARD_NO
 						 ,FILE_NO
+						 ,CATEGORY_NO
 						 ,BOARD_TITLE
 						 ,BOARD_WRITER
 						 ,BOARD_CONTENT
 		)
 		VALUES (SEQ_BOARD.NEXTVAL
+		,#{fileNo}
+		,#{category}
 		,#{boardTitle}
 		,#{boardWriter}
 		,#{boardContent}
 		)
 	</insert>
+	
+	
+	<!-- 여기는 댓글 추가기능입니다. -->
+	<select id="replyList" parameterType="_int" 
+	resultType="Reply" >
+		SELECT REPLY_NO replyNo
+			  ,REPLY_CONTENT replyContent
+			  ,USER_ID replyWriter
+			  ,CREATE_DATE createDate
+		FROM BOARD_REPLY R
+		JOIN BOARD B ON B.BOARD_NO = R.REF_BNO
+		JOIN MEMBER M ON M.USER_NO = R.REPLY_WRITER
+		WHERE REF_BNO = #{boardNo}
+		AND REPLY_STATUS ='Y'
+		ORDER BY CREATE_DATE DESC
+	</select>
+	<insert id="insertReply" parameterType="Reply">
+	INSERT INTO BOARD_REPLY(REPLY_NO
+						   ,REPLY_CONTENT
+				           ,REPLY_WRITER
+				           ,REF_BNO)
+					VALUES(SEQ_BRE.NEXTVAL
+						   ,#{replyContent}
+						   ,#{replyWriter}
+						   ,#{refBno})
+	</insert>
+	
 
 </mapper>

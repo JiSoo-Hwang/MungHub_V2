@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
 import com.kh.pjtMungHub.board.model.vo.ParameterVo;
+import com.kh.pjtMungHub.board.model.vo.Reply;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 
 @Repository
@@ -83,9 +84,20 @@ public class BoardDao {
 		return sqlSession.selectOne("boardMapper.selectBoard", boardNo);
 	}
 
-	public int insertBoard(SqlSessionTemplate sqlSession, int boardNo) {
+	public int insertBoard(SqlSessionTemplate sqlSession, Board b) {
 		// TODO Auto-generated method stub
-		return sqlSession.insert("boardMapper.insertBoard", boardNo);
+		return sqlSession.insert("boardMapper.insertBoard", b);
 	}
+
+	public ArrayList<Reply> replyList(SqlSessionTemplate sqlSession, int boardNo) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("boardMapper.replyList",boardNo);
+	}
+
+	public int insertReply(SqlSessionTemplate sqlSession, Reply r) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("boardMapper.insertReply",r);
+	}
+
 
 }

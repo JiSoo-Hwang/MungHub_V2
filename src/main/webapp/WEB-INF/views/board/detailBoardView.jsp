@@ -53,7 +53,6 @@
                     <th>작성일</th>
                     <td>${b.uploadDate }</td>
                 </tr>
-                
                 <tr>
                     <td colspan="4">
                     <p style="height:150px;">${b.boardContent}</p>
@@ -85,7 +84,7 @@
                 			type : "post",
                 			data : {
                 				refBno : ${b.boardNo},
-                				replyWriter : "${loginUser.userId}",
+                				replyWriter : "${loginUser.userNo}",
                 				replyContent : $("#content").val()
                 			},
                 			success : function(result){
@@ -109,7 +108,7 @@
             	
             	});
             	
-            	/*
+            	
             	
             	//댓글 목록 비동기로 조회해오기
             	
@@ -142,10 +141,9 @@
             			}
             			
             		});
-            	}*/
+            	}
             </script>
             
-            <!-- 
             <table id="replyArea" class="table" align="center">
                 <thead>
                 	<c:choose>
@@ -173,7 +171,6 @@
                    
                 </tbody>
             </table>
-             -->
     
         </div>
         <br><br>

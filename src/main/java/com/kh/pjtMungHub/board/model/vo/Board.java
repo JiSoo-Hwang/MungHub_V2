@@ -24,5 +24,10 @@ public class Board {
 	private Date uploadDate;//	UPLOAD_DATE	DATE
 	private Date reviseDate;//	REVISE_DATE	DATE
 	private String status;
+	
+	
+	//댓글 목록 조회용
+	private ArrayList<Reply> rList;
+
 
 }
