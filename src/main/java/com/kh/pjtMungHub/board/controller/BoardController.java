@@ -189,6 +189,8 @@ public class BoardController {
 		return result;
 	}	
 	
+	//댓글 삭제 기능 추가예정
+	
 		
 		
 		
