@@ -32,6 +32,7 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
 import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
@@ -165,6 +166,9 @@ public class ShopController {
 			
 		}
 		
+		ArrayList<Category> questionCategoryList=shopService.selectQuestionCategory();
+		
+		mv.addObject("cList",questionCategoryList);
 		mv.addObject("rAtList",reviewAt);
 		mv.addObject("best4Review",bestReviewTop4);
 		mv.addObject("percent",percent);
@@ -874,6 +878,29 @@ public class ShopController {
 		
 		return result;
 	}
+	
+	@PostMapping("reviewLike.sp")
+	@ResponseBody
+	public int reviewLike(Review r) {
+		
+		int result=shopService.reviewLike(r);
+		
+		
+		int likeCount=shopService.selectLikeCount(r);
+		
+		return likeCount;
+	}
+	
+	
+	@GetMapping("questionList.sp")
+	@ResponseBody
+	public ArrayList<Question> selectQuestionList(int productNo){
+		
+		ArrayList<Question> qList=shopService.selectQuestionList(productNo);
+		
+		return qList;
+	}
+	
 	
 	
 	@GetMapping("adminPage.sp")

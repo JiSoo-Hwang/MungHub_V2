@@ -16,6 +16,7 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
 import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
@@ -297,6 +298,44 @@ public class ShopServiceImpl implements ShopService {
 	public int deleteReply(int replyNo) {
 		// TODO Auto-generated method stub
 		return shopDao.deleteReply(sqlSession,replyNo);
+	}
+
+	@Override
+	@Transactional
+	public int reviewLike(Review r) {
+		// TODO Auto-generated method stub
+		int result=shopDao.reviewLike(sqlSession,r);
+		int deleteN=shopDao.deleteLike(sqlSession);
+		Integer count=shopDao.selectLikeCount(sqlSession, r);
+		if(count!=null) {
+			r.setLikeCount(count);
+		}else {
+			r.setLikeCount(0);
+		}
+		int updateLikeCount=shopDao.updateLikeCount(sqlSession,r);
+		return result*deleteN*updateLikeCount;
+	}
+
+	@Override
+	public int selectLikeCount(Review r) {
+		// TODO Auto-generated method stub
+		Integer count=shopDao.selectLikeCount(sqlSession,r);
+		if(count==null) {
+			count=0;
+		}
+		return count;
+	}
+
+	@Override
+	public ArrayList<Category> selectQuestionCategory() {
+		// TODO Auto-generated method stub
+		return shopDao.selectQuestionCategory(sqlSession);
+	}
+
+	@Override
+	public ArrayList<Question> selectQuestionList(int productNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectQuestionList(sqlSession,productNo);
 	}
 
 }

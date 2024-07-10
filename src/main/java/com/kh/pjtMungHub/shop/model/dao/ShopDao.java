@@ -17,6 +17,7 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
 import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
@@ -253,6 +254,38 @@ public class ShopDao {
 	public int deleteReply(SqlSessionTemplate sqlSession, int replyNo) {
 		// TODO Auto-generated method stub
 		return sqlSession.delete("shopMapper.deleteReply",replyNo);
+	}
+
+	public int reviewLike(SqlSessionTemplate sqlSession, Review r) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.reviewLike",r);
+	}
+
+	public int updateLikeCount(SqlSessionTemplate sqlSession, Review r) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateLikeCount",r);
+	}
+
+	public Integer selectLikeCount(SqlSessionTemplate sqlSession, Review r) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectLikeCount",r);
+	}
+
+	public int deleteLike(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("shopMapper.deleteLike");
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Category> selectQuestionCategory(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectQuestionCategory");
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Question> selectQuestionList(SqlSessionTemplate sqlSession, int productNo) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectQuestionList",productNo);
 	}
 
 
