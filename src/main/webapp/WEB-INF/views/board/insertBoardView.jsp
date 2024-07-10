@@ -44,8 +44,8 @@
                     </tr>
                     <tr> 
                     	<th><label for="category">카테고리</label> </th>
-                    	<td><select name="categoryNo">
-                    			<option value="category" value="0">전체</option>
+                    	<td><select name="category">
+                    			<option value="0">전체</option>
                     			<c:forEach items="${ctList}" var="ct"> 
                     				<option value="${ct.categoryNo}">${ct.categoryName}</option>
                     			</c:forEach>

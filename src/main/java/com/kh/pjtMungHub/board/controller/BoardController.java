@@ -24,6 +24,7 @@ import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.*;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.template.Pagination;
+import com.kh.pjtMungHub.shop.model.vo.Attachment;
 
 
 
@@ -71,9 +72,6 @@ public class BoardController {
 	    	List = boardService.selectList(pi, sort,category);
 	    }
 	    
-	    System.out.println(sort);
-	    System.out.println(ctList);
-	    System.out.println(List);
 	    
 	    // 모델에 데이터 추가
 	    model.addAttribute("pi", pi);
@@ -107,39 +105,88 @@ public class BoardController {
 	
 	//게시물 작성 페이지로 이동하는 메소드
 	@GetMapping("insert.bo")
-	public String boardEnrollForm() {
-		
-		return "board/insertBoardView";
-		
-	}
-	/*
-	//게시물 등록 메소드
-	@PostMapping("insert.bo")
-	public String insertBoard(ModelAndView mv) {
+	public ModelAndView boardEnrollForm(ModelAndView mv) {
 		
 		ArrayList<Category> ctList = boardService.selectCategory();	
 		
 		mv.addObject("ctList",ctList);
+		mv.setViewName("board/insertBoardView");
 		
 		
+		return mv;
+		
+	}
+	
+	//게시물 등록 메소드
+	@PostMapping("insert.bo")
+	public ModelAndView insertBoard(Board b,ModelAndView mv,MultipartFile[] upfile,HttpSession session) {
+		
+		ArrayList<Attachment> aList = new ArrayList<>();
+		System.out.println(b);
+		for(int i=0;i<upfile.length;i++){
+			
+		
+		String fileType= upfile[i].getOriginalFilename();
+		int index = fileType.lastIndexOf(".");
+		String extension =fileType.substring(index+1).toLowerCase();
+		String type= "";
+		
+		if(extension.equals("avi")||
+		   extension.equals("mov")||
+		   extension.equals("mp4")||
+		   extension.equals("wmv")||
+		   extension.equals("asf")||
+		   extension.equals("mkv")) {
+			type="video";
+		}else if (extension.equals("jpeg")||
+				 extension.equals("jpg")||
+				 extension.equals("png")||
+				 extension.equals("gif")) {
+			type="image";
+			
+		}else {
+			type="file";
+		}
+		
+		String changeName = saveFile(upfile[i],session,type);
+		
+		Attachment a = Attachment.builder().
+				fileLev(i).
+				originName(upfile[i].getOriginalFilename()).
+				changeName(changeName).
+				filePath("/pjtMungHub/resources/uploadFiles/board/boardDetail/"+type+"/").
+				type(type).
+				build();
+		
+		aList.add(a);
+		}
 		
 		int result = boardService.insertBoard(b);
 		
 		if(result>0) {//게시글 작성 성공
 			session.setAttribute("alertMsg", "게시글 작성 성공!");
+			mv.setViewName("redirect:/list.bo");
+			
+			return mv;
 		}else { //게시글 작성 실패
+			for(int i=0;i<aList.size();i++) {
+				String deleteFile=aList.get(i).getFilePath()+aList.get(i).getChangeName();
+				new File(session.getServletContext().getRealPath(deleteFile)).delete();
+			}
 			session.setAttribute("alertMsg", "게시글 작성 실패!");
+			mv.setViewName("redirect:/insert.bo");
+			
+			return mv;
 		}
 
 		
 		
-		return "redirect/:list.bo";
+		
 	}
-	*/
+	
 	
 	// 파일 업로드 처리 메소드(재활용)
-	public String saveFile(MultipartFile upfile, HttpSession session) {
-
+	public String saveFile(MultipartFile upfile, HttpSession session, String type) {
 	// 파일명 수정작업하기
 	// 1.원본파일명 추출
 	String originName = upfile.getOriginalFilename();
@@ -153,7 +200,7 @@ public class BoardController {
 	// 5.하나로 합쳐주기
 	String changeName = currentTime + ranNum + ext;
 	// 6.업로드하고자하는 물리적인 경로 알아내기 (프로젝트 내에 저장될 실제 경로 찾기)
-	String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/");
+	String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/board");
 	// 7.경로와 수정 파일명을 합쳐서 파일 업로드 처리하기
 	try {
 		upfile.transferTo(new File(savePath + changeName));

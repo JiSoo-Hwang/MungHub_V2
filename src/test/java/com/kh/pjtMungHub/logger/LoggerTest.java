@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.kh.pjtMungHub.board.model.vo.Board;
-import com.kh.pjtMungHub.board.model.vo.ParameterVo;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
-import com.kh.pjtMungHub.petcare.model.vo.Reservation;
 
 import lombok.extern.slf4j.Slf4j;
 

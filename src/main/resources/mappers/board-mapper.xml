@@ -89,19 +89,36 @@
 
 	<insert id="insertBoard" parameterType="Board">
 		INSERT INTO BOARD(BOARD_NO
-						 ,FILE_NO
 						 ,CATEGORY_NO
 						 ,BOARD_TITLE
 						 ,BOARD_WRITER
 						 ,BOARD_CONTENT
 		)
 		VALUES (SEQ_BOARD.NEXTVAL
-		,#{fileNo}
 		,#{category}
 		,#{boardTitle}
 		,#{boardWriter}
 		,#{boardContent}
 		)
+	</insert>
+	<insert id="insertAttachment" parameterType="com.kh.pjtMungHub.board.model.vo.Attachment">
+	INSERT ALL
+	<foreach collection="aList" item="arr">
+	INTO BOARD_ATTACHMENT(
+	FILE_LEVEL,
+	ORIGIN_NAME,
+	CHANGE_NAME,
+	FILE_PATH,
+	TYPE
+	) VALUES(
+	#{arr.fileLevel},
+	#{arr.originName},
+	#{arr.changeName},
+	#{arr.filePath},
+	#{arr.type}
+	)
+	SELECT * FROM DUAL
+	</foreach>
 	</insert>
 	
 	
