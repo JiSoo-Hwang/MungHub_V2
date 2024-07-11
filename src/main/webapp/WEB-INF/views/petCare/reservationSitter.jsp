@@ -192,7 +192,7 @@
 				    <h4>${petSitter.petSitterName }</h4>
 				    <p>${petSitter.introduce }</p>
 				    <div class="sitterFont">가장 많이 만나본 반려견</div>
-				    <p class="popular-style">${petSitter.dogKeword }</p>
+				    <p class="popular-style">${petSitter.dogKeyword }</p>
 				    <div class="sitterFont">자신 있는 펫크기</div>
 				    <p class="popular-style">${petSitter.typeKeyword }</p>
 				    
