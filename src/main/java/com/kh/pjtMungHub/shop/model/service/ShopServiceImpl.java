@@ -241,11 +241,30 @@ public class ShopServiceImpl implements ShopService {
 		}
 		return result*result2;
 	}
+	
+	@Override
+	@Transactional
+	public int updateReview(Review review, ParameterVo fileParameter) {
+		// TODO Auto-generated method stub
+		int result2=1;
+		int result=shopDao.updateReview(sqlSession,review);
+		if(!fileParameter.getAtList().isEmpty()) {
+			result2=shopDao.updateAttachment(sqlSession, fileParameter);
+		}
+		return result*result2;
+	}
 
 	@Override
 	public int selectReviewCount(int productNo) {
 		// TODO Auto-generated method stub
-		return shopDao.selectReviewCount(sqlSession,productNo);
+		Integer result= shopDao.selectReviewCount(sqlSession,productNo);
+		
+		if(result==null) {
+			result=0;
+		}
+		
+		
+		return result;
 	}
 
 	@Override
@@ -374,5 +393,13 @@ public class ShopServiceImpl implements ShopService {
 		// TODO Auto-generated method stub
 		return shopDao.insertQuestion(sqlSession,q);
 	}
+
+	@Override
+	public Review selectReview(Review r) {
+		// TODO Auto-generated method stub
+		return shopDao.selectReview(sqlSession, r);
+	}
+
+	
 
 }

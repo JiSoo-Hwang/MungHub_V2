@@ -514,7 +514,7 @@ color: purple;
 			</c:if>
 			<div class="row align-items-center mt-3 ml-3 mr-3">
 				<c:forEach items="${best4Review}" var="r" varStatus="i">
-					<div class="col-sm mx-3 review-detail" data-bs-toggle="modal" data-bs-target="#reviewDetailModal${r.reviewNo }">
+					<div class="col-md-3 mx-3 review-detail" data-bs-toggle="modal" data-bs-target="#reviewDetailModal${r.reviewNo }">
 						<div class="review-content">
 						<div class="media-container">
 						<c:forEach items="${rAtList[i.index] }" var="rAt">
@@ -953,7 +953,7 @@ color: purple;
 
 	<div class="container" id="detail-section02">
 		<h2>구매후기</h2>
-		<div align="right">
+		<div align="right" id="reviewBtnDiv">
 		<button type="button" class="btn btn-primary" 
 		<c:if test="${not empty loginUser }"> data-bs-toggle="modal" data-bs-target="#reviewModal"</c:if>
 		id="reviewButton">리뷰작성</button>
@@ -1015,6 +1015,35 @@ color: purple;
 							$("#file-insert").hide();
 						}
 					});
+					
+					$.ajax({
+						url: "/pjtMungHub/selectReivew.sp",
+						data: {productNo : ${p.productNo},
+							   userNo : ${loginUser.userNo}},
+						success:function(result){
+							if(result!=null && result!=""){
+							var	str="";
+							var btnDiv="";
+							str+="<button type='button' class='btn btn-secondary'"
+							+"data-bs-toggle='modal' data-bs-target='#reviewModal'"
+							+"id='reviewButton'>리뷰수정</button>";
+							
+							btnDiv+="<button type='button'" 
+							+"class='btn btn-secondary'" 
+							+"data-bs-dismiss='modal'>취소</button>"
+							+"<button type='button' class='btn btn-warning' onclick='reviewUpdate("+result.reviewNo+")'>수정하기</button>"
+							$("#reviewBtnDiv").html(str);
+							$("#reviewOption").html(btnDiv);
+							}
+							
+						},error:function(){
+							console.log("통신오류");
+						}
+					
+						
+					});
+					
+					
 				});
 				
 				
@@ -1038,7 +1067,7 @@ color: purple;
 		  	</div>
 		  	</div>
 		      </div>
-		      <div class="modal-footer">
+		      <div class="modal-footer" id="reviewOption">
 		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
 		        <button type="button" class="btn btn-primary" id="review-write">작성하기</button>
 		      </div>
@@ -1087,11 +1116,13 @@ color: purple;
 				str+="<input type='hidden' value='picture' id='type'>"
 				$("#file").html(str);
 				str="";
+			
+			
 			});
 			
-			
-			
 			$("#review-write").click(function(){
+				if($("#content").val()!=""){
+					
 				
 
 				    var requestData = {userNo : ${loginUser.userNo},
@@ -1124,10 +1155,54 @@ color: purple;
 					
 					
 				});
+			}else{
+				alert("리뷰 내용을 작성해주세요.");
+			}
 			});
+	
 		});
 		
+		function reviewUpdate(num){
+			
+		if($("#content").val()!=""){
+			
 		
+		    var requestData = {userNo : ${loginUser.userNo},
+					productNo : ${p.productNo},
+					reviewContent : $("#content").val(),
+					score : $("input[name='rate']:checked").val(),
+					type : $("#type").val(),
+					reviewNo : num}
+
+		    var formData = new FormData();
+		    formData.append("uploadFile", $("#uploadFile")[0].files[0]);
+		    formData.append("review", new Blob([JSON.stringify(requestData)], {type: "application/json"}));
+		
+		
+		$.ajax({
+			url : "/pjtMungHub/updateReview.sp",
+			type : "post",
+			contentType: false, // 필수 : x-www-form-urlencoded로 파싱되는 것을 방지
+		    processData: false,  // 필수: contentType을 false로 줬을 때 QueryString 자동 설정됨. 해제
+			data : formData,
+			success : function(result){
+				$('#reviewModal').modal('hide');
+				alertify
+				  .alert("수정이 완료되었습니다.", function(){
+				    selectReview();
+				  });
+			},error : function(){
+				console.log("통신 오류");
+			}
+			
+			
+				});
+		}else{
+			alert("리뷰내용을 작성해주세요.");
+		}
+			}
+		
+				
 		</script>
 		
 		</c:if>

@@ -709,6 +709,15 @@ public class ShopController {
 		return result;
 	}
 	
+	@GetMapping("selectReivew.sp")
+	@ResponseBody
+	public Review selectReivew(Review r) {
+		
+		Review result=shopService.selectReview(r);
+		
+		return result;
+	}
+	
 	@PostMapping("insertReview.sp")
 	@ResponseBody
 	public int insertReview(@RequestPart(value="review")Review review,
@@ -769,6 +778,86 @@ public class ShopController {
 				.build();
 		
 		int result=shopService.insertReview(review,fileParameter);
+		
+		
+		return result;
+	}
+	
+	@PostMapping("updateReview.sp")
+	@ResponseBody
+	public int updateReview(@RequestPart(value="review")Review review,
+							@RequestPart(value="uploadFile",required=false) MultipartFile[] upfile,
+							HttpSession session) {
+		
+		ArrayList<Attachment> atList=new ArrayList<>();
+		Attachment at=new Attachment();
+		
+		ParameterVo parameter=ParameterVo.builder()
+				.justifying("review")
+				.number(review.getReviewNo())
+				.build();
+		System.out.println(parameter);
+		ArrayList<Attachment> deleteAtList=shopService.selectAttachmentList(parameter);
+		for (int i = 0; i < deleteAtList.size(); i++) {
+			String deleteFile= "resources/uploadFiles/shopFile/reviewFile/"+deleteAtList.get(i).getType()+"/"+deleteAtList.get(i).getChangeName();
+			File f=new File(session.getServletContext().getRealPath(deleteFile));
+			f.delete();
+			parameter.setFileLev(i);
+			shopService.deleteAttachment(parameter);
+		}
+		
+		if(upfile!=null) {
+		for (int i=0;i< upfile.length;i++) {
+			
+		
+				
+				String fileType=upfile[i].getOriginalFilename();
+				int index = fileType.lastIndexOf(".");
+				String extension = fileType.substring( index+1 ).toLowerCase();
+				String type="";
+				
+				if(extension.equals("avi")||
+				   extension.equals("mov")||
+				   extension.equals("mp4")||
+				   extension.equals("wmv")||
+				   extension.equals("asf")||
+				   extension.equals("mkv")) {
+							
+				   type="video";
+				   
+		  }else if(extension.equals("jpeg")||
+				   extension.equals("jpg")||
+				   extension.equals("png")||
+				   extension.equals("gif")) {
+			  
+				   type="image";
+		     }else{
+			       type="file";
+			}
+				
+				String changeName = saveFile(upfile[i],session,"reviewFile",type);
+				
+				at=Attachment.builder().
+						fileLev(0).
+						originName(upfile[i].getOriginalFilename()).
+						changeName(changeName).
+						fileJustify("review").
+						filePath("/pjtMungHub/resources/uploadFiles/shopFile/reviewFile/"+type+"/").
+						type(review.getType()).
+						build();
+				atList.add(at);
+			}
+			
+			
+			
+		}
+		ParameterVo fileParameter=ParameterVo.builder()
+				.atList(atList)
+				.justifying("review")
+				.number(review.getReviewNo())
+				.build();
+		
+		int result=shopService.updateReview(review,fileParameter);
 		
 		
 		return result;
