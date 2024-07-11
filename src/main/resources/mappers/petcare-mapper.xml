@@ -9,7 +9,7 @@
 		<result column="PET_SITTER_NO" property="petSitterNo"/>
 		<result column="PET_SITTER_NAME" property="petSitterName"/>
 		<result column="INTRODUCE" property="introduce"/>
-		<result column="DOG_KEYWORD" property="dogKeword"/>
+		<result column="DOG_KEYWORD" property="dogKeyword"/>
 		<result column="TYPE_KEYWORD" property="typeKeyword"/>
 		<result column="PHONE" property="phone"/>
 		<result column="EMAIL" property="email"/>
@@ -469,7 +469,7 @@
 		                              ,STAY_NO,CAUTION
 		                              ,PET_OWNER_NAME,ADDRESS,PHONE
 		                              ,STATUS,PAYMENT_STATUS
-		                              ,USER_ID,TOTAL_AMOUNT
+		                              ,USER_NO,TOTAL_AMOUNT
 					                  )
 					                  VALUES(
 			                           HOUSE_RESERVATION_SEQ.NEXTVAL,#{houseNo}
