@@ -518,7 +518,12 @@ color: purple;
 						<div class="review-content">
 						<div class="media-container">
 						<c:forEach items="${rAtList[i.index] }" var="rAt">
+						<c:if test="${rAt.type eq 'image' }">
 						<img src="${rAt.filePath }${rAt.changeName}" class="img-fluid">
+						</c:if>
+						<c:if test="${rAt.type eq 'video' }">
+						<video src="${rAt.filePath }${rAt.changeName}" style="max-height: 300px;" controls></video>
+						</c:if>
 						</c:forEach>
 						</div>
 	          
@@ -1029,7 +1034,7 @@ color: purple;
 		  	<div id="file">
 		  		<img onclick='photo()' src="/pjtMungHub/resources/uploadFiles/common/css/MUNGHUB_logo.png" width="100%" id='loadedFile'>
 				<input type='file' accept='image/*' id="uploadFile" onchange='loadFile(this)'>		  	
-		  		<input type='hidden' value='picture' id='type'>
+		  		<input type='hidden' value='image' id='type'>
 		  	</div>
 		  	</div>
 		      </div>
@@ -1111,6 +1116,7 @@ color: purple;
 						alertify
 						  .alert("작성이 완료되었습니다.", function(){
 						    alertify.success('마일리지가 적립되었습니다. 150P+');
+						    selectReview();
 						  });
 					},error : function(){
 						console.log("통신 오류");
@@ -1163,7 +1169,7 @@ color: purple;
 			</div>
 		</div>
 		<h4>
-			전체후기 <span><fmt:formatNumber type="number"
+			전체후기 <span id="totalReviewCount"><fmt:formatNumber type="number"
 					maxFractionDigits="0" value="${p.reviewCount }" />건</span>
 		</h4>
 
@@ -1292,6 +1298,18 @@ color: purple;
 						str+="<h1 align='center' class='py-5'>리뷰가 없습니다.</h1>"
 					}
 					$("#review_area").html(str+modal);
+					
+					$.ajax({
+						url : "/pjtMungHub/selectReviewCount.sp",
+						data : {productNo : ${p.productNo}},
+						success : function(result){
+							
+						$("#totalReviewCount").text(result);
+						},error : function(){
+							console.log("통신오류");
+						}
+						
+					});
 				},
 				error: function(){
 					console.log("통신오류");
@@ -1331,7 +1349,7 @@ color: purple;
 
 	<div class="container" id="detail-section03">
 		<h2>
-			상품문의 <span style="color: gray; font-size: 16px;">(4,666개)</span>
+			상품문의 <span id="questionCount" style="color: gray; font-size: 16px;">()</span>
 		</h2>
 
 		<hr>
@@ -1389,6 +1407,7 @@ color: purple;
 				success : function(result){
 					selectQuestionList(1);
 					alert("문의가 완료되었습니다. 최대한 빨리 답변할 수 있도록 노력하겠습니다.");
+					$('#insertQuestionModal').modal('hide');
 				},error : function(){
 					console.log("통신오류");
 				}
@@ -1409,18 +1428,6 @@ color: purple;
 
 
 		<table class="table table-borderless" id="question-area">
-			<tr class="question-list">
-				<td class="answerd"><p>답변완료</p></td>
-				<td><a href="#">[상품문의]입니다. <i class="bi bi-lock-fill"></i></a></td>
-				<td>작성자</td>
-				<td>2024.06.20</td>
-			</tr>
-			<tr class="question-list">
-				<td class="wating-answer"><p>답변대기</p></td>
-				<td><a href="#">[배송문의]입니다. <i class="bi bi-unlock"></i></a></td>
-				<td>작성자</td>
-				<td>2024.06.20</td>
-			</tr>
 		</table>
 		
 		<div align="center" id="pagination-container"></div>
@@ -1450,14 +1457,21 @@ color: purple;
 						}
 						
 						if(result.qList[i].openStatus=='N'){
+						  if(${loginUser.userGrade>0}){
+							  
+							  str+="<td><a href='/pjtMungHub/qnaPage.sp/"+result.qList[i].questionNo+"'>["+result.qList[i].categoryName+"]입니다.";
+							  str+="<i class='bi bi-lock-fill'></i>";
+						  }else{
 							if(${empty loginUser}){
-							str+="<td><button type='button' onclick='noAuth()'>["+result.qList[i].categoryName+"]입니다.</button>";
+							str+="<td><button type='button' onclick='noAuth()'>["+result.qList[i].categoryName+"]입니다.<i class='bi bi-lock-fill'></i></button>";
 							}else if(userNo!=result.qList[i].userNo){
-							str+="<td><button type='button' onclick='noAuth()'>["+result.qList[i].categoryName+"]입니다.</button>";
+							str+="<td><button type='button' onclick='noAuth()'>["+result.qList[i].categoryName+"]입니다.<i class='bi bi-lock-fill'></i></button>";
 							}else{
 							str+="<td><a href='/pjtMungHub/qnaPage.sp/"+result.qList[i].questionNo+"'>["+result.qList[i].categoryName+"]입니다.";
+							str+="<i class='bi bi-lock-fill'></i>";
 							}
-						str+="<i class='bi bi-lock-fill'></i>";
+							
+						  }
 						}else{
 							str+="<td><a href='/pjtMungHub/qnaPage.sp/"+result.qList[i].questionNo+"'>["+result.qList[i].categoryName+"]입니다.";
 							str+="<i class='bi bi-unlock'></i>";
@@ -1470,8 +1484,8 @@ color: purple;
 					
 					pagination+="<nav>"
 					+"<ul class='pagination justify-content-center'>";
-					if(result.pi.currentPage!=1){
-						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(i-1)+")'>이전</button></li>";
+					if(result.pi.currentPage>1){
+						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(result.pi.currentPage-1)+")'>이전</button></li>";
 					}
 					for (var i = 1; i <= result.pi.endPage; i++) {
 						if(result.pi.currentPage==i){
@@ -1481,11 +1495,15 @@ color: purple;
 						}
 					}
 					
-					if(result.pi.currentPage!=result.pi.maxPage){
-						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(i+1)+")'>다음</button></li>"
+					if(result.pi.currentPage<result.pi.maxPage){
+						if(result.pi.maxPage>0){
+							
+						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(result.pi.currentPage+1)+")'>다음</button></li>"
+						}
 					}
 					pagination+=" </ul></nav>";
 					
+					$("#questionCount").text("("+result.pi.listCount+")");
 					$("#question-area").html(str);
 					$("#pagination-container").html(pagination);
 				},error : function(){

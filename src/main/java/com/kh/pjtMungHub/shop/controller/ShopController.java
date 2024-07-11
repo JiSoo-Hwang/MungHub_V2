@@ -842,10 +842,16 @@ public class ShopController {
 			reviewJArr.add(jobj);
 			
 		}
-	
 		return reviewJArr;
 	}
 	
+	
+	@GetMapping("selectReviewCount.sp")
+	@ResponseBody
+	public int selectReviewCount(int productNo) {
+		int result=shopService.selectReviewCount(productNo);
+		return result;
+	}
 	
 	@GetMapping("reviewReplyList.sp")
 	@ResponseBody
@@ -918,6 +924,7 @@ public class ShopController {
 		
 		
 		JSONObject jobj=new JSONObject();
+		
 		
 		jobj.put("qList", qList);
 		jobj.put("pi", pi);
