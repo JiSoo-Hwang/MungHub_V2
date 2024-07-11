@@ -97,7 +97,7 @@ public class WeddingController {
 	public String insertWeddingForm(HttpSession session, Model model) {
 		Member m = (Member) session.getAttribute("loginUser");
 		int userNo = m.getUserNo();
-		ArrayList<Pet> pet = service.selectPet(userNo);
+		ArrayList<Pet> pet = service.selectPets(userNo);
 		model.addAttribute("petList", pet);
 		return "wedding/insertWeddingView";
 	}
@@ -143,15 +143,49 @@ public class WeddingController {
 	}
 
 	@GetMapping("update.wd")
-	public ModelAndView updateWedding(int weddingNo, ModelAndView mv, HttpSession session) {
-		Member m = (Member) session.getAttribute("loginUser");
+	public ModelAndView updateWeddingView(int weddingNo, ModelAndView mv) {
 		Wedding w = service.selectWedding(weddingNo);
-		ArrayList<Pet> p = service.selectPet(m.getUserNo());
-		mv.addObject("wedding", w).addObject("petList", p).setViewName("wedding/updateWeddingView");
-		;
+		Pet p = service.selectPetByNo(Integer.parseInt(w.getPetNo()));
+		mv.addObject("wedding", w).addObject("pet", p).setViewName("wedding/updateWeddingView");
 		return mv;
 	}
 
+	@PostMapping("update.wd")
+	public String updateWedding(Wedding w,MultipartFile reupFile,HttpSession session) {
+		boolean isThereFile = false;
+		String deleteFile = "";
+		if(!reupFile.getOriginalFilename().equals("")) {
+			if(w.getOriginName()!=null) {
+				isThereFile = true;
+				deleteFile = w.getChangeName();
+			}
+			String changeName = saveFile(reupFile, session);
+			w.setOriginName(reupFile.getOriginalFilename());
+			w.setChangeName("resources/uploadFiles/wedding/"+changeName);
+		}
+		int result = service.updateWedding(w);
+		String message = "";
+		if(result>0) {
+			message = "신청서가 수정되었습니다!상대방의 수락을 기다려보아요~♥੯•́໒";
+			if(isThereFile) {
+				File file = new File(session.getServletContext().getRealPath(deleteFile));
+				file.delete();
+			}
+		}else {
+			message = "신청서가 제대로 수정이 안됐어요...8ㅅ8... 다시 시도해보세요!";
+		}
+		session.setAttribute("alertMsg", message);
+		Member m = (Member)session.getAttribute("loginUser");
+		return "redirect:/regList.wd?userNo="+m.getUserNo();
+	}
+	
+	@ResponseBody
+	@GetMapping("delete.wd")
+	public int deleteWedding(int weddingNo) {
+		int result = service.deleteWedding(weddingNo);
+		return result;
+	}
+	
 	@PostMapping("reject.wd")
 	public String rejectReg(Wedding w, HttpSession session) {
 		int result = service.rejectReg(w);
@@ -189,7 +223,7 @@ public class WeddingController {
 	public String applyMatchingForm(int petNo, HttpSession session, Model model) {
 		Member m = (Member) session.getAttribute("loginUser");
 		int count = service.countAppliedList(m.getUserNo());
-		ArrayList<Pet> pet = service.selectPet(m.getUserNo());
+		ArrayList<Pet> pet = service.selectPets(m.getUserNo());
 		if (count >= 3) {
 			session.setAttribute("alertMsg", "계정당 만남 신청은 3회로 제한되어있습니다 ꌩ-ꌩ");
 			return "redirect:/wedList.wd";

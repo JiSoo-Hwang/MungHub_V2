@@ -13,7 +13,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MungHub 펫시터 선택페이지</title>
+<title>펫시터 선택화면</title>
 	<style>
 		@font-face {
 	        font-family: 'MangoDdobak-B';
@@ -331,6 +331,15 @@
 				var endTime = startTime+duration;
 				//펫크기
 				var petTypeNo = $(".petType-btn.selected").val();
+				
+				
+				console.log(visitDate);
+				console.log(startTime);
+				console.log(duration);
+				console.log(endTime);
+				console.log(petTypeNo);
+				
+				
 				
 				if(visitDate && startTime && duration && petTypeNo){
 					$.ajax({

@@ -137,6 +137,33 @@
 		<result column="originName03" property="ORIGIN_NAME_03"/>
 	</resultMap>
 	
+	<!-- 병원 resultSet -->
+	<resultMap type="HospitalRe" id="hospitalReResultSet">
+	    <result column="HOS_RE_NO" property="hosReNo"/>
+	    <result column="USER_NO" property="userNo"/>
+	    <result column="PET_OWNER_NAME" property="petOwnerName"/>
+	    <result column="OWNER_PHONE" property="ownerPhone"/>
+	    <result column="HOS_NAME" property="hosName"/>
+	    <result column="HOS_PHONE" property="hosPhone"/>
+	    <result column="HOS_ADDRESS" property="hosAddress"/>
+	    <result column="RE_DATE" property="reDate"/>
+	    <result column="RE_TIME" property="reTime"/>
+	    <result column="PET_NAME" property="petName"/>
+	    <result column="PET_KIND" property="petKind"/>
+	    <result column="PET_BIRTH_DAY" property="petBirthDay"/>
+	    <result column="PET_GENDER" property="petGender"/>
+	    <result column="NEUTERED" property="neutralization"/>
+	    <result column="SPECIAL_NOTES" property="specialNotes"/>
+	    <result column="PET_TYPE_NO" property="petTypeNo"/>
+	    <result column="P.PET_TYPE_NAME" property="petTypeName"/>
+	    <result column="SYMPTOM" property="symptom"/>
+	    <result column="ORIGIN_NAME" property="originName"/>
+	    <result column="CHANGE_NAME" property="changeName"/>
+	    <result column="DISEASE_NAME" property="diseaseName"/>
+	    <result column="STATUS" property="status"/>
+	    <result column="UPDATE_DAY" property="updateDay"/>
+	</resultMap>
+	
 	
 	<!-- ============================ 단기예약 ================================ -->
 	<select id="selectSitterCount" resultType="_int">
@@ -166,7 +193,7 @@
 		    WHERE R.PET_SITTER_NO = P.PET_SITTER_NO
 		    AND R.VISIT_DATE = TO_DATE(#{visitDate}, 'YYYY-MM-DD')
 		    AND (
-		        (R.START_TIME &lt; #{startTime} AND R.END_TIME > #{endTime})
+		        (R.START_TIME &lt; #{endTime} AND R.END_TIME > #{startTime})
 		    	)
 			)
 	</select>
@@ -213,7 +240,7 @@
 		    #{petOwnerName},
 		    #{address},
 		    #{phone},
-		    TO_DATE(#{visitDate}, 'YYYY-MM-DD'),
+		    TO_DATE(#{visitDate}, 'RR-MM-DD'),
 		    #{startTime},
 		    #{endTime},
 		    SYSDATE,
@@ -495,6 +522,118 @@
 	</select>
 	
 	<!-- ============================ 장기돌봄 예약 ================================ -->
+	
+	
+	<!-- ============================ 동물병원 ================================ -->
+	<!-- 증상으로 병명 가져오기 -->
+	<select id="diseaseName" parameterType="map" resultType="String">
+		SELECT DISEASE_NAME
+		FROM DISEASE
+		WHERE 
+		<foreach item="symName" collection="symList" open="(" separator=" OR " close=")">
+			SYMPTOM LIKE '%'||#{symName}||'%'
+		</foreach>
+	</select>
+	
+	<!-- 병원 예약하기 -->
+	<insert id="insertHosRe" parameterType="HospitalRe">
+		INSERT INTO HOSPITAL_RE (
+		    HOS_RE_NO,
+		    USER_NO,
+		    PET_OWNER_NAME,
+		    OWNER_PHONE,
+		    HOS_NAME,
+		    HOS_PHONE,
+		    HOS_ADDRESS,
+		    RE_DATE,
+		    RE_TIME,
+		    PET_NAME,
+		    PET_KIND,
+		    PET_BIRTH_DAY,
+		    PET_GENDER,
+		    NEUTERED,
+		    SPECIAL_NOTES,
+		    PET_TYPE_NO,
+		    SYMPTOM,
+		    ORIGIN_NAME,
+		    CHANGE_NAME,
+		    DISEASE_NAME,
+		    STATUS,
+		    UPDATE_DAY
+		) VALUES (
+		    HOSPITAL_RE_SEQ.NEXTVAL,
+		    #{userNo},
+		    #{petOwnerName},
+		    #{ownerPhone},
+		    #{hosName},
+		    #{hosPhone},
+		    #{hosAddress},
+		    #{reDate},
+		    #{reTime},
+		    #{petName},
+		    #{petKind}, 
+		    #{petBirthDay},
+		    #{petGender},
+		    #{neutralization},
+		    #{specialNotes},
+		    #{petTypeNo},
+		    #{symptom},
+		    #{originName},
+		    #{changeName},
+		    #{diseaseName},
+		    DEFAULT,
+		    SYSDATE
+		)
+	</insert>
+	
+	<!-- 펫이름 가져오기 -->
+	<select id="selectPetType" parameterType="HospitalRe" resultType="String">
+		SELECT PET_TYPE_NAME
+		FROM PET_TYPE
+		WHERE PET_TYPE_NO = #{petTypeNo}
+	</select>
+	
+	<!-- 예약번호 가져오기 -->
+	<select id="selectHosReNo" resultType="_int">
+		SELECT HOSPITAL_RE_SEQ.CURRVAL
+		FROM DUAL
+	</select>
+	
+	<!-- 업데이트 정보와 함께 페이지 이동 -->
+	<select id="selectHospitalRe" parameterType="_int" resultType="HospitalRe">
+	    SELECT H.HOS_RE_NO AS hosReNo,
+	           H.USER_NO AS userNo,
+	           H.PET_OWNER_NAME AS petOwnerName,
+	           H.OWNER_PHONE AS ownerPhone,
+	           H.HOS_NAME AS hosName,
+	           H.HOS_PHONE AS hosPhone,
+	           H.HOS_ADDRESS AS hosAddress,
+	           H.RE_DATE AS reDate,
+	           H.RE_TIME AS reTime,
+	           H.PET_NAME AS petName,
+	           H.PET_KIND AS petKind,
+	           H.PET_BIRTH_DAY AS petBirthDay,
+	           H.PET_GENDER AS petGender,
+	           H.NEUTERED AS neutralization,
+	           H.SPECIAL_NOTES AS specialNotes,
+	           H.PET_TYPE_NO AS petTypeNo,
+	           P.PET_TYPE_NAME AS petTypeName,
+	           H.SYMPTOM AS symptom,
+	           H.ORIGIN_NAME AS originName,
+	           H.CHANGE_NAME AS changeName,
+	           H.DISEASE_NAME AS diseaseName,
+	           H.STATUS AS status,
+	           H.UPDATE_DAY AS updateDay
+		FROM HOSPITAL_RE H
+		JOIN PET_TYPE P ON (H.PET_TYPE_NO = P.PET_TYPE_NO)
+		WHERE HOS_RE_NO = #{hosReNo}	
+	</select>
+	
+	
+	
+	
+	
+	<!-- ============================ 동물병원 ================================ -->
 	
 	
 	

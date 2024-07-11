@@ -59,12 +59,14 @@
 	</select>
 	
 	<select id="selectScorePercent" parameterType="_int"
-	resultType="_int">
-	SELECT ROUND(RATIO_TO_REPORT(SCORE) OVER(), 2) * 100 AS PERCENT
+	resultType="com.kh.pjtMungHub.shop.model.vo.ScorePercent">
+	SELECT 
+	SCORE score,
+	ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percent
 	FROM PRODUCT_REVIEW
-	WHERE PRODUCT_NO=#{productNo}
+	WHERE PRODUCT_NO = #{productNo}
 	GROUP BY SCORE
-	ORDER BY SCORE
+	ORDER BY SCORE DESC
 	</select>
 	
 	<select id="selectScoreAvg" parameterType="_int"
@@ -82,6 +84,15 @@
 		FROM FAVORITE
 		WHERE PRODUCT_NO=#{productNo}
 		AND USER_NO=#{userNo}
+		AND DELETE_STATUS=#{justifying}
+	</select>
+	
+	<select id="selectFavoriteList" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo" 
+	resultType="com.kh.pjtMungHub.shop.model.vo.Favorite">
+		SELECT USER_NO userNo,
+		PRODUCT_NO productNo
+		FROM FAVORITE
+		WHERE USER_NO=#{userNo}
 		AND DELETE_STATUS=#{justifying}
 	</select>
 	
@@ -149,6 +160,9 @@
 	FROM PRODUCT_REVIEW R
 	JOIN MEMBER M ON (R.USER_NO = M.USER_NO)
 	WHERE PRODUCT_NO=#{productNo}
+	<if test="star!=0">
+	AND SCORE=#{star}
+	</if>
 	<choose>
 	<when test="justifying=='latest'">
 	ORDER BY CREATE_DATE DESC
@@ -162,17 +176,114 @@
 	<when test="justifying=='best'">
 	WHERE ROWNUM BETWEEN 1 AND 4
 	</when>
-	<when test="amount!=0">
-	WHERE ROWNUM <![CDATA[<=]]> #{amount}
-	</when>
 	<otherwise>
 	</otherwise>
 	</choose>
-	<if test="star!=0">
-	AND SCORE=#{star}
-	</if>
-		
+
+	</select>
 	
+	<select id="selectReviewReplyList" 
+	resultType="com.kh.pjtMungHub.shop.model.vo.ReviewReply"
+	parameterType="_int">
+	SELECT REPLY_NO replyNo,
+	REPLY_CONTENT replyContent,
+	REVIEW_NO reviewNo,
+    M.USER_NO userNo,
+	NAME userName,
+	CREATE_DATE createDate
+	FROM PRODUCT_REVIEW_REPLY R
+	JOIN MEMBER M ON R.USER_NO= M.USER_NO
+	WHERE REVIEW_NO=${reviewNo}
+	</select>
+	
+	<insert id="insertReviewReply"
+	parameterType="com.kh.pjtMungHub.shop.model.vo.ReviewReply">
+	INSERT INTO PRODUCT_REVIEW_REPLY (
+	REPLY_NO,
+	REPLY_CONTENT,
+	REVIEW_NO,
+	USER_NO
+	)VALUES(
+	SEQ_RRPLY.NEXTVAL,
+	#{replyContent},
+	#{reviewNo},
+	#{userNo}
+	)
+	</insert>
+	
+	<delete id="deleteReply" parameterType="_int">
+	DELETE FROM PRODUCT_REVIEW_REPLY
+     WHERE REPLY_NO = #{replyNo}
+	</delete>
+	
+	<insert id="reviewLike"
+	 parameterType="com.kh.pjtMungHub.shop.model.vo.Review">
+	 MERGE INTO PRODUCT_REVIEW_LIKE
+	USING DUAL
+	ON (REVIEW_NO=#{reviewNo} AND USER_NO=#{userNo})
+	WHEN MATCHED THEN
+    UPDATE SET 
+    DELETE_STATUS='N'
+	WHEN NOT MATCHED THEN
+     INSERT 
+	(REVIEW_NO,USER_NO)
+	VALUES
+	(#{reviewNo},#{userNo})
+	 </insert>
+	 
+	 <delete id="deleteLike">
+	 DELETE FROM PRODUCT_REVIEW_LIKE
+	 WHERE DELETE_STATUS='N'
+	 </delete>
+	 
+	 <update id="updateLikeCount"
+	  parameterType="com.kh.pjtMungHub.shop.model.vo.Review">
+	 	UPDATE PRODUCT_REVIEW SET
+		LIKE_COUNT = #{likeCount}
+		WHERE REVIEW_NO=#{reviewNo}
+	 </update>
+	 
+	 
+	 <select id="selectQuestionCategory"
+	 resultType="com.kh.pjtMungHub.shop.model.vo.Category">
+	 SELECT CATEGORY_NO categoryNo,
+	 		CATEGORY_NAME categoryName
+	 FROM QUESTION_CATEGORY
+	 </select>
+	 
+	 <select id="selectQuestionList" 
+	  resultType="com.kh.pjtMungHub.shop.model.vo.Question"
+	 parameterType="_int">
+	 SELECT QUESTION_NO questionNo,
+		PRODUCT_NO productNo,
+		USER_NO userNo,
+		NAME userName,
+		QUESTION_CONTENT content,
+		Q.CATEGORY_NO categoryNo,
+		Q.CATEGORY_NAME categoryName,
+		OPEN_STATUS openStatus,
+		CREATE_DATE createDate
+	FROM PRODUCT_QUESTION P
+	JOIN QUESTION_CATEGORY Q ON P.CATEGORY_NO=Q.CATEGORY_NO
+	JOIN MEMBER USING (USER_NO)
+	WHERE PRODUCT_NO=#{productNo}
+	 
+	 </select>
+	 
+	 <select id="selectLikeCount" 
+ 	parameterType="com.kh.pjtMungHub.shop.model.vo.Review"
+ 	resultType="_int">
+ 	SELECT MAX(ROWNUM)
+	FROM PRODUCT_REVIEW_LIKE
+	WHERE REVIEW_NO=#{reviewNo}
+ </select>
+	 
+	<select id="selectQuestionCount" 
+	parameterType="_int"
+	resultType="_int">
+	SELECT MAX(ROWNUM)
+	FROM PRODUCT_QUESTION
+	WHERE PRODUCT_NO=#{productNo}
 	</select>
 	<insert id="insertProduct" parameterType="Product">
 		INSERT INTO PRODUCT(
@@ -212,6 +323,7 @@
 		CHANGE_NAME,
 		FILE_JUSTIFY,
 		FILE_PATH,
+		TYPE,
 		<choose>
 			<when test="justifying=='product'">
 				PRODUCT_NO
@@ -229,6 +341,7 @@
 			#{arr.changeName},
 			#{arr.fileJustify},
 			#{arr.filePath},
+			#{arr.type},
 			<choose>
 				<when test="justifying=='product'">
 					SEQ_PRODUCT.CURRVAL
@@ -244,6 +357,45 @@
 		</foreach>
 		SELECT * FROM DUAL <!-- 없으면 오류남 -->
 	</insert>
+	
+	<select id="selectAttachment" 
+	parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Attachment">
+		SELECT
+		FILE_LEVEL fileLev,
+		ORIGIN_NAME originName,
+		CHANGE_NAME changeName,
+		UPLOAD_DATE uploadDate,
+		FILE_JUSTIFY fileJustify,
+		FILE_PATH filePath,
+		TYPE type,
+		<choose>
+			<when test="justifying=='product'">
+				PRODUCT_NO productNo
+			</when>
+			<when test="justifying=='review'">
+				REVIEW_NO reviewNo
+			</when>
+			<when test="justifying=='brand'">
+				BRAND_CODE brandNo
+			</when>
+		</choose>
+		FROM PRODUCT_ATTACHMENT
+		WHERE 
+		<choose>
+			<when test="justifying=='product'">
+				PRODUCT_NO=
+			</when>
+			<when test="justifying=='review'">
+				REVIEW_NO=
+			</when>
+			<when test="justifying=='brand'">
+				BRAND_CODE=
+			</when>
+		</choose>
+		#{number} <!-- 주요키를 담을 공통적으로 사용할 변수  -->
+	AND FILE_LEVEL = #{fileLev}
+	</select>
 	
 	<select id="selectAttachmentList" 
 	parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo"
@@ -293,8 +445,10 @@
 		WHEN
 		MATCHED THEN
 		UPDATE SET
+		FILE_PATH=#{arr.filePath},
 		ORIGIN_NAME=#{arr.originName},
 		CHANGE_NAME=#{arr.changeName},
+		TYPE=#{arr.type},
 		UPLOAD_DATE=SYSDATE
 		WHERE 
 		<choose>
@@ -317,6 +471,7 @@
 		CHANGE_NAME,
 		FILE_JUSTIFY,
 		FILE_PATH,
+		TYPE,
 		<choose>
 			<when test="justifying=='product'">
 				PRODUCT_NO
@@ -334,6 +489,7 @@
 			#{arr.changeName},
 			#{arr.fileJustify},
 			#{arr.filePath},
+			#{arr.type},
 			#{number}
 			)
 	</foreach>
@@ -341,7 +497,7 @@
 	
 	<delete id="deleteAttachment" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
 	  DELETE FROM PRODUCT_ATTACHMENT
-    WHERE FILE_LEVEL =#{at.fileLev}
+    WHERE FILE_LEVEL =#{fileLev}
     AND 
 	<choose>
 			<when test="justifying=='product'">
@@ -361,7 +517,7 @@
 	<update id="rearrangeAttachment" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo">
 	 UPDATE PRODUCT_ATTACHMENT SET
 	   FILE_LEVEL= FILE_LEVEL-1
-	   WHERE FILE_LEVEL BETWEEN #{at.fileLev} AND 100
+	   WHERE FILE_LEVEL BETWEEN #{fileLev} AND 100
 	   AND PRODUCT_NO=#{number}
 	</update>
 
@@ -464,8 +620,18 @@
 	#{recipient},
 	#{phone}
 	)
-	
 	</insert>
+	
+	<update id="updateSalesCount"
+	parameterType="Product">
+	<foreach collection="list" item="arr">
+	UPDATE PRODUCT SET
+	SALES_COUNT = SALES_COUNT+#{arr.quantity}
+	WHERE PRODUCT_NO = #{arr.productNo}
+	</foreach>
+	</update>
+	
+	
 	<select id="selectShipInfoList"
 	 resultType="com.kh.pjtMungHub.shop.model.vo.ShipInfo" 
 	 parameterType="_int">

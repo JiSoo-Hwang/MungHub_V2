@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import com.kh.pjtMungHub.board.model.dao.BoardDao;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
+import com.kh.pjtMungHub.board.model.vo.Reply;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
+
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -20,36 +22,34 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private BoardDao boardDao;
 
+	//게시물 총 개수 조회
 	@Override
 	public int listCount() {
 		// TODO Auto-generated method stub
 		return boardDao.listCount(sqlSession);
 	}
+	//해당 카테고리 게시물 조회
 	@Override
-	public int listCount(String category) {
+	public int listCount(int category) {
 		// TODO Auto-generated method stub
 		return boardDao.listCount(sqlSession,category);
 	}
-
-	@Override
-	public ArrayList<Board> selectList(PageInfo pi) {
-		// TODO Auto-generated method stub
-		return boardDao.selectList(sqlSession,pi);
-	}
-	@Override
-	public ArrayList<Board> selectList(PageInfo pi, String sort) {
-		// TODO Auto-generated method stub
-		return boardDao.selectList(sqlSession,pi,sort);
-	}
-	@Override
-	public ArrayList<Board> selectList(PageInfo pi, String sort, String category) {
-		// TODO Auto-generated method stub
-		return boardDao.selectList(sqlSession,pi,sort,category);
-	}
+	//카테고리 선택
 	@Override
 	public ArrayList<Category> selectCategory() {
 		// TODO Auto-generated method stub
 		return boardDao.selectCategory(sqlSession);
+	}
+	
+	 @Override
+	 public ArrayList<Board> selectList(PageInfo pi, String sort) {
+		 // TODO Auto-generated method stub
+	     return boardDao.selectList(sqlSession, pi, sort);
+	 }
+	@Override
+	public ArrayList<Board> selectList(PageInfo pi, String sort, int category) {
+		// TODO Auto-generated method stub
+		return boardDao.selectList(sqlSession,pi,sort,category);
 	}
 
 	@Override
@@ -65,11 +65,24 @@ public class BoardServiceImpl implements BoardService {
 		
 		return boardDao.selectBoard(sqlSession,boardNo);
 	}
-
+	
 	@Override
-	public int insertBoard(int boardNo) {
+	public int insertBoard(Board b) {
 		// TODO Auto-generated method stub
-		return boardDao.insertBoard(sqlSession,boardNo);
+		return boardDao.insertBoard(sqlSession,b);
+	}
+
+	
+	@Override
+	public ArrayList<Reply> replyList(int boardNo) {
+		// TODO Auto-generated method stub
+		return boardDao.replyList(sqlSession,boardNo);
+	}
+	
+	@Override
+	public int insertReply(Reply r) {
+		// TODO Auto-generated method stub
+		return boardDao.insertReply(sqlSession,r);
 	}
 
 	

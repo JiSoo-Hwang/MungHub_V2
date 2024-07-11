@@ -4,58 +4,73 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
-	<style>
-        .order-completion {
-            max-width: 600px;
+    <title>결제내역</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
             margin: 50px auto;
             padding: 20px;
+            background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .order-header {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
-            color: green;
+            color: #28a745;
+            text-align: center;
             margin-bottom: 20px;
         }
-        .order-info, .order-details, .payment-info {
+        .order-info, .order-details, .payment-info, .order-summary {
             margin-bottom: 20px;
         }
-        .order-info p, .order-details p, .payment-info p {
-            margin: 0;
+        .order-info p, .order-details p, .payment-info p, .order-summary p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        .order-info p strong, .order-summary p strong, .payment-info p strong {
+            display: inline-block;
+            width: 150px;
+            color: #343a40;
         }
         .order-summary {
             font-size: 18px;
             font-weight: bold;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
         }
         .btn-order-details {
-            background-color: #E0F7FA;
-            color: #007BFF;
+            background-color: #007bff;
+            color: #fff;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
             font-size: 16px;
+            cursor: pointer;
+            text-align: center;
         }
         .btn-order-details:hover {
-            background-color: #B2EBF2;
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-	<%@include file="/WEB-INF/views/common/header.jsp" %>
+    <%@include file="/WEB-INF/views/common/header.jsp" %>
 
-	<h2>결제내역 페이지</h2>
-	
-	  <div class="container order-completion">
-        <div class="order-header text-center">주문 완료 되었습니다</div>
+    <div class="container order-completion">
+        <div class="order-header">주문 완료 되었습니다</div>
         <div class="order-info">
             <p><strong>주문번호:</strong> ${p.paymentId }</p>
-            <p>견주님 성함<strong>${p.userName }</strong></p>
-            <p>펫시터가 연락드릴 번호<strong>${p.phone }</strong></p>
-            <p>방문주소<strong>${p.address }</strong></p>
-            <p>방문 예정일:<strong>로그인 후 넣을예정</strong></p>
+            <p><strong>견주님 성함:</strong> ${p.userName }</p>
+            <p><strong>연락드릴 번호:</strong> ${p.phone }</p>
+            <p><strong>방문주소:</strong> ${p.address }</p>
         </div>
         <div class="order-summary">
             <p><strong>주문금액:</strong> ${p.amount }</p>
@@ -63,13 +78,12 @@
         </div>
         <div class="payment-info">
             <p><strong>결제상세:</strong></p>
-            <p>결제방법<strong>${p.paymentMethod }</strong></p>
-            <p>결제일<strong>${p.paymentDate }</strong></p>
+            <p><strong>결제방법:</strong> card </p>
+            <p><strong>결제일:</strong> ${p.paymentDate }</p>
         </div>
         <div class="text-center">
             <button class="btn-order-details" onclick="location.href='/pjtMungHub/'">메인으로 돌아가기</button>
         </div>
     </div>
-
 </body>
 </html>

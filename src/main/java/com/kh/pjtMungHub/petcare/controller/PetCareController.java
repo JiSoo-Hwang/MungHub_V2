@@ -10,9 +10,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -48,6 +52,7 @@ import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.service.PetCareServiceImpl;
 import com.kh.pjtMungHub.petcare.model.vo.AvailableTimes;
 import com.kh.pjtMungHub.petcare.model.vo.Certification;
+import com.kh.pjtMungHub.petcare.model.vo.Disease;
 import com.kh.pjtMungHub.petcare.model.vo.Environment;
 import com.kh.pjtMungHub.petcare.model.vo.HospitalRe;
 import com.kh.pjtMungHub.petcare.model.vo.House;
@@ -110,11 +115,6 @@ public class PetCareController {
 		
 		ArrayList<PetSitter> sList = petCareService.selectSitter(at,pi);
 		
-		for(PetSitter p : sList) {
-			System.out.println(p);
-		}
-		System.out.println(pi);
-		
 		HashMap<String,Object> result = new HashMap<>();
 		result.put("list", sList);
 		result.put("pi", pi);
@@ -141,6 +141,10 @@ public class PetCareController {
 		//날짜 지정 후 시간 비활성화에 필요한
 		ArrayList<Reservation> disabledPlan = petCareService.disabledDates(petSitter.getPetSitterNo());
 		
+		for(Reservation d : disabledPlan) {
+			System.out.println(d);
+		}
+		
 		mv.addObject("disabledPlan", disabledPlan).setViewName("petCare/reservationSitter");
 		mv.addObject("petSitter", petSitter).setViewName("petCare/reservationSitter");
 		return mv;
@@ -165,6 +169,7 @@ public class PetCareController {
 								   ,MultipartFile upfile
 								   ,HttpSession session
 								   ,Model model) {
+		
 		
 		if(!upfile.getOriginalFilename().equals("")) {
 			
@@ -385,8 +390,6 @@ public class PetCareController {
 	@RequestMapping(value="hospitalList.ho", produces="text/xml;charset=UTF-8")
 	public String hospitalList(String location) throws IOException {
 		
-		System.out.println(location);
-		
 		String serviceKey = "00d6f801245544b987ad67dfe6210312";
 		String url = "https://openapi.gg.go.kr/Animalhosptl";
 		url+="?KEY="+serviceKey;
@@ -466,13 +469,81 @@ public class PetCareController {
 	    return "petCare/hospital";
 	}
 	
+	//접수 페이지로 이동
 	@GetMapping("hospital.re")
 	public ModelAndView hospitalReservation(ModelAndView mv,HospitalRe hosRe) {
 		
-		System.out.println(hosRe);
-		
 		mv.addObject("hosRe",hosRe).setViewName("petCare/hospitalReservation");
+		
 		return mv;
+	}
+	
+	//접수한 예약 내용 저장 후 확인 페이지로 이동
+	@PostMapping("hospitalInsert.re")
+	public ModelAndView enrollReservation(HospitalRe hosRe
+								   ,MultipartFile upfile
+								   ,HttpSession session
+								   ,ModelAndView mv) {
+
+		if(!upfile.getOriginalFilename().equals("")) {
+			String changeName = PetSaveFile.getHospitalFile(upfile, session);
+			hosRe.setOriginName(upfile.getOriginalFilename());
+			hosRe.setChangeName("resources/uploadFiles/hospital/"+changeName);
+		}
+		//증상(구토,설사) 을 배열->해쉬맵 으로 바꿔서 mapper 에 전달
+		String symptomName = hosRe.getSymptom();
+		List<String> symList = Arrays.asList(symptomName.split(","));//쉼표를 기준으로 List로 변환
+		HashMap<String,Object> symMap = new HashMap<>();
+		symMap.put("symList", symList); //증상들을 해쉬맵에 담아서 병명 쿼리문으로 보내주기
+		
+		//병명은 쿼리문으로 
+		List <String> diseaseName = petCareService.diseaseName(symMap);
+		//List 형태 -> String 변환
+		StringBuilder sb = new StringBuilder();
+		for(String name : diseaseName) {
+			if(sb.length() > 0) {
+				sb.append(", ");
+			}
+			sb.append(name);
+		}
+		String resultName = sb.toString();
+		hosRe.setDiseaseName(resultName);
+		
+		int result = petCareService.insertHosRe(hosRe);
+		//펫타입no를 이름으로 가져오기
+		String petType = petCareService.selectPetType(hosRe);
+		hosRe.setPetTypeNo(petType);
+		
+		if(result>0) {
+			//업데이트 식별자 hosReNo 가져오기
+			int hosReNo = petCareService.selectHosReNo();
+			hosRe.setHosReNo(hosReNo);
+
+			//시간형태 00:00 으로 변경
+			String timeString = hosRe.getReTime();
+			LocalTime time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HHmm"));
+			String formattedTime = time.format(DateTimeFormatter.ofPattern("HH:mm"));
+			hosRe.setReTime(formattedTime);
+			
+			mv.addObject("alertMsg","예약성공! 내역을 확인해주세요.").addObject("hosRe",hosRe).setViewName("petCare/hospitalDetail");
+		}else {
+			mv.addObject("alertMsg","예약실패 ㅠㅠ 관리자에게 문의 해주세요.").setViewName("redirect:/hospital.ho");
+		}
+		return mv;
+	}
+	
+	//업데이트 정보와 함께 페이지로 이동
+	@RequestMapping("hospitalUpdate.re")
+	public String hospitalUpdate(String hosReNo,ModelAndView mv) {
+		
+		
+		HospitalRe hosRe = petCareService.selectHospitalRe(Integer.parseInt(hosReNo));
+		
+		
+		mv.addObject("hosRe",hosRe).setViewName("petCare/hospitalUpdate");
+		
+		
+		return "";
 	}
 	
 	

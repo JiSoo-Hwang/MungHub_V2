@@ -19,8 +19,9 @@
             </div>
             <h5 class="card-title">주문 상세 정보</h5>
             <p class="card-text"><strong>주문 번호:</strong> ${orderInfo.merchantUid }</p>
-            <p class="card-text"><strong>제품명:</strong> ${orderInfo.items }</p>
-            <p class="card-text"><strong>수량:</strong> ${orderInfo.itemsQuantity }</p>
+            <p class="card-text"><strong>제품명:</strong> <c:forEach items="${pList }" var="p">
+             <a href="/pjtMungHub/detail.sp/${p.productNo }">${p.productName }</a> ${p.quantity }개 , </c:forEach>
+            </p>
             <p class="card-text"><strong>총 가격:</strong> ${orderInfo.totalPrice }</p>
             <a href="/pjtMungHub/list.sp" class="btn btn-primary">계속 쇼핑하기</a>
             <a href="/pjtMungHub/orderList/${loginUser.userNo }" class="btn btn-secondary">주문 내역 보기</a>

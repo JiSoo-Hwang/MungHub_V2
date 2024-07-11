@@ -2,6 +2,8 @@ package com.kh.pjtMungHub.shop.model.vo;
 
 import java.util.ArrayList;
 
+import com.kh.pjtMungHub.common.model.vo.PageInfo;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,5 +28,9 @@ public class ParameterVo {
 	private int star;
 	private int currentPage;
 	
+	private int fileLev;
+	
 	private ArrayList<Integer> checkedItem;
+	
+	private PageInfo pi;
 }

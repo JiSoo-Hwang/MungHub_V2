@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
@@ -12,7 +13,10 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
+import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
+import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 public interface ShopService {
@@ -105,7 +109,7 @@ public interface ShopService {
 	int selectReviewCount(int productNo);
 
 
-	ArrayList<Integer> selectScorePercent(int productNo);
+	ArrayList<ScorePercent> selectScorePercent(int productNo);
 
 
 	double selectScoreAvg(int productNo);
@@ -113,6 +117,39 @@ public interface ShopService {
 
 
 	ArrayList<Review> selectReviewList(ParameterVo parameter2);
+
+
+	Attachment selectAttachment(ParameterVo parameter);
+
+
+	ArrayList<Favorite> selectFavoriteList(ParameterVo parameter);
+
+
+	int updateSalesCount(ArrayList<Product> pList);
+
+
+	ArrayList<ReviewReply> selectReviewReplyList(int reviewNo);
+
+
+	int insertReviewReply(ReviewReply reply);
+
+
+	int deleteReply(int replyNo);
+
+
+	int reviewLike(Review r);
+
+
+	int selectLikeCount(Review r);
+
+
+	ArrayList<Category> selectQuestionCategory();
+
+
+	ArrayList<Question> selectQuestionList(int productNo, PageInfo pi);
+
+
+	int selectQuestionCount(int productNo);
 
 
 

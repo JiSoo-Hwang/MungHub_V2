@@ -21,4 +21,6 @@ public class Product {
 	private String attachment;
 	private int reviewCount;
 	private double reviewTScore;
+	
+	private int quantity;
 }

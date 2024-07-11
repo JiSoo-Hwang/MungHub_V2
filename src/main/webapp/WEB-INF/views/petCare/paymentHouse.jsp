@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>장기돌봄 결제</title>
 <style>
     .order-section {
         background-color: #f8f9fa;
@@ -61,7 +61,7 @@
 	<input type="hidden" id="reservationHouseNo" value="${reservationHouseNo }"> 
 	
 	 <div class="container mt-5">
-	 <h3>결제페이지</h3>
+	 <h3>장기돌봄 결제</h3>
 	 
         <div class="order-section">
             <h5>예약정보 확인</h5>

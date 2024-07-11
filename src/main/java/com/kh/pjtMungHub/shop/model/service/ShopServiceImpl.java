@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.shop.model.dao.ShopDao;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
@@ -16,7 +17,10 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
+import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
+import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
 import com.kh.pjtMungHub.shop.model.vo.ShipInfo;
 
 @Service
@@ -58,6 +62,9 @@ public class ShopServiceImpl implements ShopService {
 	public int insertProduct(Product p, ParameterVo fileParameter) {
 
 		int result=shopDao.insertProduct(sqlSession, p);
+		
+		System.out.println(fileParameter);
+		
 		int result2=shopDao.insertAttachment(sqlSession, fileParameter);
 		
 		return result*result2;
@@ -202,12 +209,10 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
+	@Transactional
 	public int deleteAttachment(ParameterVo parameter) {
-		// TODO Auto-generated method stub
-		
 		int result = shopDao.deleteAttachment(sqlSession, parameter);
 		int result2= shopDao.rearrangeAttachment(sqlSession,parameter);
-		
 		return result*result2;
 	}
 
@@ -229,7 +234,7 @@ public class ShopServiceImpl implements ShopService {
 		// TODO Auto-generated method stub
 		int result2=1;
 		int result=shopDao.insertReview(sqlSession, review);
-		if(fileParameter.getAtList().get(0).getOriginName()!=null) {
+		if(!fileParameter.getAtList().isEmpty()) {
 			
 			result2=shopDao.insertAttachment(sqlSession, fileParameter);
 		}
@@ -243,7 +248,7 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public ArrayList<Integer> selectScorePercent(int productNo) {
+	public ArrayList<ScorePercent> selectScorePercent(int productNo) {
 		// TODO Auto-generated method stub
 		return shopDao.selectScorePercent(sqlSession,productNo);
 	}
@@ -258,6 +263,93 @@ public class ShopServiceImpl implements ShopService {
 	public ArrayList<Review> selectReviewList(ParameterVo parameter2) {
 		// TODO Auto-generated method stub
 		return shopDao.selectReviewList(sqlSession,parameter2);
+	}
+
+	@Override
+	public Attachment selectAttachment(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.selectAttachment(sqlSession,parameter);
+	}
+
+	@Override
+	public ArrayList<Favorite> selectFavoriteList(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return shopDao.selectFavoriteList(parameter, sqlSession);
+	}
+
+	@Override
+	public int updateSalesCount(ArrayList<Product> pList) {
+		// TODO Auto-generated method stub
+		return shopDao.updateSalesCount(pList,sqlSession);
+	}
+
+	@Override
+	public ArrayList<ReviewReply> selectReviewReplyList(int reviewNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectReviewReplyList(reviewNo,sqlSession);
+	}
+
+	@Override
+	public int insertReviewReply(ReviewReply reply) {
+		// TODO Auto-generated method stub
+		return shopDao.insertReviewReply(sqlSession,reply);
+	}
+
+	@Override
+	public int deleteReply(int replyNo) {
+		// TODO Auto-generated method stub
+		return shopDao.deleteReply(sqlSession,replyNo);
+	}
+
+	@Override
+	@Transactional
+	public int reviewLike(Review r) {
+		// TODO Auto-generated method stub
+		int result=shopDao.reviewLike(sqlSession,r);
+		int deleteN=shopDao.deleteLike(sqlSession);
+		Integer count=shopDao.selectLikeCount(sqlSession, r);
+		if(count!=null) {
+			r.setLikeCount(count);
+		}else {
+			r.setLikeCount(0);
+		}
+		int updateLikeCount=shopDao.updateLikeCount(sqlSession,r);
+		return result*deleteN*updateLikeCount;
+	}
+
+	@Override
+	public int selectLikeCount(Review r) {
+		// TODO Auto-generated method stub
+		Integer count=shopDao.selectLikeCount(sqlSession,r);
+		if(count==null) {
+			count=0;
+		}
+		return count;
+	}
+
+	@Override
+	public ArrayList<Category> selectQuestionCategory() {
+		// TODO Auto-generated method stub
+		return shopDao.selectQuestionCategory(sqlSession);
+	}
+
+	@Override
+	public ArrayList<Question> selectQuestionList(int productNo,PageInfo pi) {
+		// TODO Auto-generated method stub
+		return shopDao.selectQuestionList(sqlSession,productNo,pi);
+	}
+
+	@Override
+	public int selectQuestionCount(int productNo) {
+		// TODO Auto-generated method stub
+		Integer count=shopDao.selectQuestionCount(sqlSession,productNo);
+		if(count!=null) {
+			return count;
+		}else {
+			
+			return 0;
+		}
+		
 	}
 
 }

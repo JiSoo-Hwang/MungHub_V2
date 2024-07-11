@@ -4,78 +4,148 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="boardMapper">
 
-	<resultMap type="Board" id="boardResultSet">
-		<result column="BOARD_NO" property="boardNo"/>
-		<result column="BOARD_TITLE" property="boardTitle"/>
-		<result column="BOARD_WRITER" property="boardWriter"/>
-		<result column="BOARD_CONTENT" property="boardContent"/>
-		<result column="COUNT" property="count"/>
-		<result column="RECOMMEND" property="recommend"/>
-		<result column="UPLOAD_DATE" property="uploadDate"/>
-		<result column="REVISE_DATE" property="reviseDate"/>
-		<result column="STATUS" property="status"/>
-	</resultMap>
-	
-	<select id="listCount" resultType="_int" >
+ 	<resultMap type="Board" id="boardResultSet">
+		<result column="BOARD_NO" property="boardNo" />
+		<result column="CATEGORY_NO" property="categoryNo" />
+		<result column="FILE_NO" property="fileNo" />
+		<result column="BREED_ID" property="breedId" />
+		<result column="BOARD_TITLE" property="boardTitle" />
+		<result column="USER_ID" property="boardWriter" />
+		<result column="BOARD_CONTENT" property="boardContent" />
+		<result column="COUNT" property="count" />
+		<result column="RECOMMEND" property="recommend" />
+		<result column="UPLOAD_DATE" property="uploadDate" />
+		<result column="REVISE_DATE" property="reviseDate" />
+		<result column="STATUS" property="status" />
+	</resultMap> 
+
+	<select id="listCount" resultType="_int" parameterType="com.kh.pjtMungHub.board.model.vo.ParameterVo">
 		SELECT COUNT(*)
 		FROM BOARD
 		WHERE STATUS ='Y'
+		<if test="category != 0">
+		AND CATEGORY_NO =#{categoryNo}
+		</if>
 	</select>
-	
-	
-	<select id="selectList" resultMap="boardResultSet">
-		SELECT BOARD_NO
-			  ,CATEGORY_NAME category_name
-		      ,BOARD_TITLE
-		      ,BOARD_CONTENT
-		      ,USER_ID
-		      ,RECOMMEND
-		      ,COUNT
-		      ,UPLOAD_DATE
-		FROM BOARD
-		JOIN BOARD_CATEGORY USING(CATEGORY_NO)
-		JOIN MEMBER ON(BOARD_WRITER=USER_NO)
-		WHERE BOARD.STATUS= 'Y'
+	<select id="selectList" resultType="Board" parameterType="com.kh.pjtMungHub.board.model.vo.ParameterVo">
+		SELECT BOARD_NO boardNo
+			,BOARD_TITLE boardTitle
+			,USER_ID boardWriter
+			,CATEGORY_NO category
+			,COUNT count
+			,UPLOAD_DATE uploadDate
+			,B.STATUS
+		FROM BOARD B
+		JOIN MEMBER M ON M.USER_NO=B.BOARD_WRITER
+		WHERE B.STATUS='Y'
+	<if test="category!=0">
+		AND CATEGORY_NO = #{category}
+	</if>
+ 		ORDER BY
+		<choose>
+			<when test="sort == 'latest'">
+				UPLOAD_DATE DESC
+			</when>
+			<when test="sort == 'view'">
+				COUNT DESC
+			</when>
+			<when test="sort == 'recommned'">
+				RECOMMEND DESC
+			</when>
+			<otherwise>
+				UPLOAD_DATE DESC
+			</otherwise>
+		</choose>
+
 	</select>
-	
-	<select id="selectCategory" resultType="com.kh.pjtMungHub.board.model.vo.Category">
-		SELECT CATEGORY_NO categoryNo,CATEGORY_NAME categoryName
+
+	<select id="selectCategory"
+		resultType="com.kh.pjtMungHub.board.model.vo.Category">
+		SELECT CATEGORY_NO categoryNo
+			  ,CATEGORY_NAME categoryName
 		FROM BOARD_CATEGORY
 	</select>
-	
 
 	<update id="increaseCount" parameterType="_int">
 		UPDATE BOARD
-		SET COUNT=COUNT+1
-		WHERE BOARD_NO=#{boardNo}
-		AND STATUS ='Y'					 
+		SET COUNT = (COUNT+1)
+		WHERE BOARD_NO = #{boardNo}
+		AND STATUS ='Y'
 	</update>
-	<select id="selectBoard" parameterType="_int" resultMap="boardResultSet">
-		SELECT BOARD_NO
-			  ,BOARD_TITLE
-			  ,BOARD_WRITER
-			  ,BOARD_CONTENT
-			  ,UPLOAD_DATE
-			  ,COUNT
-		 FROM BOARD
-		 WHERE BOARD_NO = #{boardNo}
-		 AND STATUS ='Y'
-	</select>
 	
+	<select id="selectBoard" parameterType="_int" resultType="Board" >
+		SELECT BOARD_TITLE boardTitle
+		 	  ,BOARD_NO boardNo
+			  ,USER_ID boardWriter
+			  ,COUNT count
+			  ,RECOMMEND recommend
+			  ,UPLOAD_DATE uploadDate
+			  ,BOARD_CONTENT boardContent
+		FROM BOARD B
+		JOIN MEMBER M ON M.USER_NO=B.BOARD_WRITER
+		WHERE B.BOARD_NO = #{boardNo}
+		AND B.STATUS = 'Y'
+	</select>
+
 	<insert id="insertBoard" parameterType="Board">
 		INSERT INTO BOARD(BOARD_NO
-		                 ,BOARD_TITLE
-		                 ,BOARD_WRITER
-		                 ,BOARD_CONTENT
-		                 ,ORIGIN_NAME
-		                 ,CHANAGE_NAME
-		                 )
-        		VALUES (SEQ_BOARD.NEXTVAL
-               			,#{boardTitle}
-               			,#{boardWriter}
-               			,#{boardContent}
-               			,#{originName}
-               			,#{changeName}
+						 ,CATEGORY_NO
+						 ,BOARD_TITLE
+						 ,BOARD_WRITER
+						 ,BOARD_CONTENT
+		)
+		VALUES (SEQ_BOARD.NEXTVAL
+		,#{category}
+		,#{boardTitle}
+		,#{boardWriter}
+		,#{boardContent}
+		)
+	</insert>
+	<insert id="insertAttachment" parameterType="com.kh.pjtMungHub.board.model.vo.Attachment">
+	INSERT ALL
+	<foreach collection="aList" item="arr">
+	INTO BOARD_ATTACHMENT(
+	FILE_LEVEL,
+	ORIGIN_NAME,
+	CHANGE_NAME,
+	FILE_PATH,
+	TYPE
+	) VALUES(
+	#{arr.fileLevel},
+	#{arr.originName},
+	#{arr.changeName},
+	#{arr.filePath},
+	#{arr.type}
+	)
+	SELECT * FROM DUAL
+	</foreach>
 	</insert>
 	
+	
+	<!-- 여기는 댓글 추가기능입니다. -->
+	<select id="replyList" parameterType="_int" 
+	resultType="Reply" >
+		SELECT REPLY_NO replyNo
+			  ,REPLY_CONTENT replyContent
+			  ,USER_ID replyWriter
+			  ,CREATE_DATE createDate
+		FROM BOARD_REPLY R
+		JOIN BOARD B ON B.BOARD_NO = R.REF_BNO
+		JOIN MEMBER M ON M.USER_NO = R.REPLY_WRITER
+		WHERE REF_BNO = #{boardNo}
+		AND REPLY_STATUS ='Y'
+		ORDER BY CREATE_DATE DESC
+	</select>
+	<insert id="insertReply" parameterType="Reply">
+	INSERT INTO BOARD_REPLY(REPLY_NO
+						   ,REPLY_CONTENT
+				           ,REPLY_WRITER
+				           ,REF_BNO)
+					VALUES(SEQ_BRE.NEXTVAL
+						   ,#{replyContent}
+						   ,#{replyWriter}
+						   ,#{refBno})
+	</insert>
+	
+
 </mapper>

@@ -49,14 +49,18 @@ position : relative;
 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
 id="cart-count"></span></a>
 
+<c:if test="${not empty loginUser }">
 <script>
 $(function(){
+	
 	$.ajax({
-		url : "cartCount.sp",
+		url : "/pjtMungHub/cartCount.sp",
 		data : {userNo : ${loginUser.userNo}},
 		success : function(result){
+			if(result!=null){
 				
 			$("#cart-count").text(result)
+			}
 		},
 		error : function(){
 			console.log("통신오류")
@@ -64,6 +68,7 @@ $(function(){
 	});
 });
 </script>
+</c:if>
 
 
 <a href="/pjtMungHub/orderList/${loginUser.userNo }" class="btn btn-secondary">주문 내역 보기</a>
@@ -71,7 +76,7 @@ $(function(){
 
 <c:if test="${loginUser.userGrade > 0 }">
 <div id="adminMenu" align="right">
-<a class="btn btn-info" href="/pjtMungHub/">관리자 페이지</a>
+<a class="btn btn-info" href="/pjtMungHub/adminPage.sp">관리자 페이지</a>
 <a class="btn btn-primary" href="/pjtMungHub/insert.sp">상품등록</a>
 <c:choose>
 <c:when test="${empty notPostList}">
@@ -89,7 +94,14 @@ $(function(){
 <div class="col-lg-3 my-3 ">
 	<div class="card" onclick="location.href='detail.sp/${p.productNo}'">
 	<div>
-	<img class="card-img-top img-fluid" src="${p.attachment }">
+	<c:choose>
+	<c:when test="${atList[status.index].type eq 'video' }">
+		<video class="card-img-top img-fluid" src="${atList[status.index].filePath }${atList[status.index].changeName}" autoplay loop></video>
+	</c:when>
+	<c:otherwise>
+	<img class="card-img-top img-fluid" src="${atList[status.index].filePath }${atList[status.index].changeName}">
+	</c:otherwise>
+	</c:choose>
 	</div>
 	<div class="card-body" style="width:250px;">
 		<h5 class="card-title">${p.productName }</h5>
@@ -105,13 +117,76 @@ $(function(){
 
 		<strong style="color:rgb(250, 58, 14)">${p.discount }%</strong>
 		
+		<button class="btn btn-outline-dark flex-shrink-0" type="button" 
+		name="proventBubbling" id="favor${p.productNo }" 
+		onclick="convertFavor(${p.productNo});">
+		<i class="bi bi-heart"></i>
+		</button>
 	</div> 
 	</div>
 </div>
 </c:forEach>
 </div>
 </div>
+<c:if test="${not empty loginUser }">
+<script>
 
+function selectFavor(){
+	
+	$.ajax({
+		url : "/pjtMungHub/selectFavoriteList.sp",
+		data : { userNo:${loginUser.userNo}
+				 },
+		success : function (result){
+			for(var i=0; result.length; i++){
+			$("#favor"+result[i].productNo).html("<i class='bi bi-heart-fill' style='color:red'></i>");
+				
+			}
+		},
+		error:function(){
+			console.log("통신오류");
+		}
+		
+	});
+	}
+
+
+function convertFavor(num){
+	 
+	 $.ajax({
+		 url : "/pjtMungHub/subscribe.sp",
+		 type : "post",
+		 data : { userNo:${loginUser.userNo}
+	 			,productNo : num
+			 	  },
+		success : function(result){
+			$("#favor"+num).html("<i class='bi bi-heart'></i>");
+			selectFavor();
+		},
+		error : function(){
+			console.log("통신오류");
+		}
+	 });
+}
+
+$(function(){
+		
+	selectFavor();
+	
+	
+	
+
+ });
+ 
+	$("button[name=proventBubbling]").click(function(e){
+			e.stopPropagation();
+			selectFavor();
+		});
+
+
+
+</script>
+</c:if>
 
 <br> <br>
 </body>

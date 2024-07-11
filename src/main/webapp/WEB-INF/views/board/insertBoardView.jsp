@@ -42,9 +42,19 @@
                         <th><label for="title">제목</label></th>
                         <td><input type="text" id="title" class="form-control" name="boardTitle" required></td>
                     </tr>
+                    <tr> 
+                    	<th><label for="category">카테고리</label> </th>
+                    	<td><select name="category">
+                    			<option value="0">전체</option>
+                    			<c:forEach items="${ctList}" var="ct"> 
+                    				<option value="${ct.categoryNo}">${ct.categoryName}</option>
+                    			</c:forEach>
+                    		</select>
+                    	</td>
+                    </tr>
                     <tr>
                         <th><label for="writer">작성자</label></th>
-                        <td><input type="text" id="writer" class="form-control" value="${loginUser.userId }" name="boardWriter" readonly></td>
+                        <td><input type="text" id="writer" class="form-control" value="${loginUser.userNo }" name="boardWriter" readonly></td>
                     </tr>
                     <tr>
                         <th><label for="upfile">첨부파일</label></th>

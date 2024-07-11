@@ -75,7 +75,7 @@
 		UPDATE PET SET BREED_ID=#{breed},PET_NAME=#{petName},PET_AGE=#{petAge},PET_GENDER=#{petGender},WEIGHT=#{weight},PHOTO_NO=#{photoNo} WHERE PET_NO=#{petNo}
 	</update>
 	<update id="updateMember" parameterType="Member">
-		UPDATE MEMBER SET USER_NAME=${name},PHONE=#{phone},EMAIL=#{email},ADDRESS=#{address},PET_YN=${petYN} WHERE USER_NO=#{userNo}
+		UPDATE MEMBER SET USER_NAME=#{name},PHONE=#{phone},EMAIL=#{email},ADDRESS=#{address},PET_YN=#{petYN} WHERE USER_NO=#{userNo}
 	</update>
 	<select id="searchUser" parameterType="Member" resultMap="memberResultSet">
 		SELECT * FROM MEMBER WHERE USER_ID LIKE #{userId}
