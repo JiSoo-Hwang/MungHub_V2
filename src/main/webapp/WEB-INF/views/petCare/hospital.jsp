@@ -4,11 +4,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>병원정보</title>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3dcfbff0a780d5171a2a2f039fc60ac0&libraries=services,clusterer,drawing"></script>
 	<style>
 		#result tbody td span{
 			cursor: pointer;
+		}
+		th, .nowrap {
+			white-space: nowrap;
 		}
 	
 	</style>
@@ -17,75 +20,75 @@
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
 	
-	<button onclick="test2();">테스트2</button>
-	
+	<!--  스크롤 연습용이었음.
  	<form action="mapInfo.ho">
         <button type="submit">전송</button>
     </form>
+    -->
     
     <div>
         <pre>${reviewText}</pre>
-    </div>    
-    
+    </div>
+
     <div>
         <pre>${reviewHtml}</pre>
     </div>
-	
-	지역 : 
-	<select id="location">
-	    <option value="41820">가평군</option>
-	    <option value="41280">고양시</option>
-	    <option value="41290">과천시</option>
-	    <option value="41210">광명시</option>
-	    <option value="41610">광주시</option>
-	    <option value="41310">구리시</option>
-	    <option value="41410">군포시</option>
-	    <option value="41570">김포시</option>
-	    <option value="41360">남양주시</option>
-	    <option value="41250">동두천시</option>
-	    <option value="41190">부천시</option>
-	    <option value="41130">성남시</option>
-	    <option value="41110">수원시</option>
-	    <option value="41390">시흥시</option>
-	    <option value="41270">안산시</option>
-	    <option value="41550">안성시</option>
-	    <option value="41170">안양시</option>
-	    <option value="41630">양주시</option>
-	    <option value="41830">양평군</option>
-	    <option value="41670">여주시</option>
-	    <option value="41800">연천군</option>
-	    <option value="41370">오산시</option>
-	    <option value="41460">용인시</option>
-	    <option value="41430">의왕시</option>
-	    <option value="41150">의정부시</option>
-	    <option value="41500">이천시</option>
-	    <option value="41480">파주시</option>
-	    <option value="41220">평택시</option>
-	    <option value="41650">포천시</option>
-	    <option value="41450">하남시</option>
-	    <option value="41590">화성시</option>
-	</select>
-	
-	<div class="container mt-4">
-	      <h1 class="text-center">Hospital List</h1>
-	      <button id="test" class="btn btn-primary mb-3">테스트</button>
-	
-	      <table class="table table-bordered" id="result">
-	          <thead class="table-dark">
-	              <tr>
-	                  <th>시군명</th>
-	                  <th>사업장명</th>
-	                  <th>전화번호</th>
-	                  <th>도로명주소</th>
-	                  <th>소재지지번주소</th>
-	                  <th>카카오 제공정보</th>
-	              </tr>
-	          </thead>
-	          <tbody>
-	              <!-- 병원 리스트가 여기에 삽입됩니다 -->
-	          </tbody>
-	      </table>
-	</div>
+
+    <div class="container mt-4">
+        <h1 class="text-center">Hospital List</h1>
+        <div class="d-flex mb-3">
+            <button id="test" class="btn btn-primary nowrap">검색</button>
+            <select id="location"  class="ms-2 form-select">
+                <option value="41820">가평군</option>
+                <option value="41280">고양시</option>
+                <option value="41290">과천시</option>
+                <option value="41210">광명시</option>
+                <option value="41610">광주시</option>
+                <option value="41310">구리시</option>
+                <option value="41410">군포시</option>
+                <option value="41570">김포시</option>
+                <option value="41360">남양주시</option>
+                <option value="41250">동두천시</option>
+                <option value="41190">부천시</option>
+                <option value="41130">성남시</option>
+                <option value="41110">수원시</option>
+                <option value="41390">시흥시</option>
+                <option value="41270">안산시</option>
+                <option value="41550">안성시</option>
+                <option value="41170">안양시</option>
+                <option value="41630">양주시</option>
+                <option value="41830">양평군</option>
+                <option value="41670">여주시</option>
+                <option value="41800">연천군</option>
+                <option value="41370">오산시</option>
+                <option value="41460">용인시</option>
+                <option value="41430">의왕시</option>
+                <option value="41150">의정부시</option>
+                <option value="41500">이천시</option>
+                <option value="41480">파주시</option>
+                <option value="41220">평택시</option>
+                <option value="41650">포천시</option>
+                <option value="41450">하남시</option>
+                <option value="41590">화성시</option>
+            </select>
+        </div>
+
+        <table class="table table-bordered" id="result">
+            <thead class="table-dark">
+                <tr>
+                    <th>지역명</th>
+                    <th>사업장명</th>
+                    <th>전화번호</th>
+                    <th>도로명주소</th>
+                    <th>소재지지번주소</th>
+                    <th>카카오 제공정보</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 병원 리스트가 여기에 삽입됩니다 -->
+            </tbody>
+        </table>
+    </div>
 	
 	<br><br>
 

@@ -152,9 +152,10 @@
 	    <result column="PET_KIND" property="petKind"/>
 	    <result column="PET_BIRTH_DAY" property="petBirthDay"/>
 	    <result column="PET_GENDER" property="petGender"/>
-	    <result column="NEUTRALIZATION" property="neutralization"/>
+	    <result column="NEUTERED" property="neutralization"/>
 	    <result column="SPECIAL_NOTES" property="specialNotes"/>
 	    <result column="PET_TYPE_NO" property="petTypeNo"/>
+	    <result column="P.PET_TYPE_NAME" property="petTypeName"/>
 	    <result column="SYMPTOM" property="symptom"/>
 	    <result column="ORIGIN_NAME" property="originName"/>
 	    <result column="CHANGE_NAME" property="changeName"/>
@@ -192,7 +193,7 @@
 		    WHERE R.PET_SITTER_NO = P.PET_SITTER_NO
 		    AND R.VISIT_DATE = TO_DATE(#{visitDate}, 'YYYY-MM-DD')
 		    AND (
-		        (R.START_TIME &lt; #{startTime} AND R.END_TIME > #{endTime})
+		        (R.START_TIME &lt; #{endTime} AND R.END_TIME > #{startTime})
 		    	)
 			)
 	</select>
@@ -239,7 +240,7 @@
 		    #{petOwnerName},
 		    #{address},
 		    #{phone},
-		    TO_DATE(#{visitDate}, 'YYYY-MM-DD'),
+		    TO_DATE(#{visitDate}, 'RR-MM-DD'),
 		    #{startTime},
 		    #{endTime},
 		    SYSDATE,
@@ -599,31 +600,32 @@
 	</select>
 	
 	<!-- 업데이트 정보와 함께 페이지 이동 -->
-	<select id="selectHospitalRe" parameterType="_int" resultMap="hospitalReResultSet">
-		SELECT HOS_RE_NO,
-			    USER_NO,
-			    PET_OWNER_NAME,
-			    OWNER_PHONE,
-			    HOS_NAME,
-			    HOS_PHONE,
-			    HOS_ADDRESS,
-			    RE_DATE,
-			    RE_TIME,
-			    PET_NAME,
-			    PET_KIND,
-			    PET_BIRTH_DAY,
-			    PET_GENDER,
-			    NEUTERED,
-			    SPECIAL_NOTES,
-			    PET_TYPE_NAME,
-			    SYMPTOM,
-			    ORIGIN_NAME,
-			    CHANGE_NAME,
-			    DISEASE_NAME,
-			    STATUS,
-			    UPDATE_DAY
+	<select id="selectHospitalRe" parameterType="_int" resultType="HospitalRe">
+	    SELECT H.HOS_RE_NO AS hosReNo,
+	           H.USER_NO AS userNo,
+	           H.PET_OWNER_NAME AS petOwnerName,
+	           H.OWNER_PHONE AS ownerPhone,
+	           H.HOS_NAME AS hosName,
+	           H.HOS_PHONE AS hosPhone,
+	           H.HOS_ADDRESS AS hosAddress,
+	           H.RE_DATE AS reDate,
+	           H.RE_TIME AS reTime,
+	           H.PET_NAME AS petName,
+	           H.PET_KIND AS petKind,
+	           H.PET_BIRTH_DAY AS petBirthDay,
+	           H.PET_GENDER AS petGender,
+	           H.NEUTERED AS neutralization,
+	           H.SPECIAL_NOTES AS specialNotes,
+	           H.PET_TYPE_NO AS petTypeNo,
+	           P.PET_TYPE_NAME AS petTypeName,
+	           H.SYMPTOM AS symptom,
+	           H.ORIGIN_NAME AS originName,
+	           H.CHANGE_NAME AS changeName,
+	           H.DISEASE_NAME AS diseaseName,
+	           H.STATUS AS status,
+	           H.UPDATE_DAY AS updateDay
 		FROM HOSPITAL_RE H
-		JOIN PET_TYPE P USING (PET_TYPE_NO)
+		JOIN PET_TYPE P ON (H.PET_TYPE_NO = P.PET_TYPE_NO)
 		WHERE HOS_RE_NO = #{hosReNo}	
 	</select>
 	

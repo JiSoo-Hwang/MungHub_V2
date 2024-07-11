@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>동물병원 예약확인</title>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js">
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -188,7 +188,7 @@ import listPlugin from '@fullcalendar/list';
 <body>
     <%@include file="/WEB-INF/views/common/header.jsp" %>
     <input type="hidden" id="formattedDate" value="<%=formattedDate %>">
-    <input id="hosReNo" name="hosReNo" value="${hosRe.hosReNo }">
+    <input type="hidden" id="hosReNo" name="hosReNo" value="${hosRe.hosReNo }">
     
     <div class="container">
             <h4 class="h4">예약내역 확인란</h4>
@@ -253,22 +253,10 @@ import listPlugin from '@fullcalendar/list';
 	<script>
 		$(function(){
 			$('#upDateBtn').click(function(){
-				location.href="hospitalUpdate.re?hosReNo="+$('#hosReNo').val();
+				var hosReNo = $('#hosReNo').val();
+				location.href="hospitalUpdate.re?hosReNo="+hosReNo;
 			});
 		});
-	
-	
-	
 	</script>
-	
-	
-	
 </body>
 </html>
-
-
-
-
-
-
-

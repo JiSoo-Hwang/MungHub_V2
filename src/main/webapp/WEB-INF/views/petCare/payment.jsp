@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MungHub 단기돌봄 결제 페이지</title>
+<title>결제</title>
 
 <style>
     .order-section {
@@ -57,27 +57,14 @@
 </head>
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
-	<!-- 포인트/머니 섹션 
-        <div class="order-section">
-            <div class="order-title">포인트/머니</div>
-            <div class="d-flex justify-content-between">
-                <div>보유 포인트</div>
-                <div>9,047P</div>
-            </div>
-            <div class="d-flex justify-content-between mt-2">
-                <input type="text" class="form-control" placeholder="사용 포인트 입력">
-                <button class="btn btn-primary ml-2">전체사용</button>
-            </div>
-        </div>
-		-->
 	
 	 <div class="container mt-5">
 	 <h3>결제페이지</h3>
 	 
-	 <input type="text" id="userNo" value="${loginUser.userNo }">
-	 <input type="text" id="userId" value="${loginUser.userId }">
-	 <input type="text" id="differentNo" value="1">
-	 <input type="text" id="reservationId" value="${reservationId}">
+	 <input type="hidden" id="userNo" value="${loginUser.userNo }">
+	 <input type="hidden" id="userId" value="${loginUser.userId }">
+	 <input type="hidden" id="differentNo" value="1">
+	 <input type="hidden" id="reservationId" value="${reservationId}">
 	 
         <!-- 배송지 섹션 -->
         <div class="order-section">

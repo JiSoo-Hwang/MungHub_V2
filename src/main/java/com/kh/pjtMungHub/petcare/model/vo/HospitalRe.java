@@ -26,6 +26,7 @@ public class HospitalRe {
 	private String neutralization; //중성화 유무 DEFAULT 'N'
 	private String specialNotes; //특이사항
 	private String petTypeNo; //대중소 펫크기
+	private String petTypeName; //대중소 펫크기
 	private String symptom; //증상
 	private String originName; //펫사진 원래이름
 	private String changeName; //펫사진 서버저장 이름
