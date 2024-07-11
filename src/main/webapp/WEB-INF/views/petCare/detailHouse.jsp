@@ -15,7 +15,7 @@
 <!-- fullcalender -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
 
-<title>장기돌봄 예약페이지</title>
+<title>집 소개 및 예약</title>
 <style>
 	@font-face {
         font-family: 'MangoDdobak-B';

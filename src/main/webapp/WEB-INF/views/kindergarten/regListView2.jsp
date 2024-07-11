@@ -63,13 +63,6 @@
 			</tbody>
 		</table>
 	</div>
-	<script>
-	$(".reject").click(function () {
-		
-		var ownerNo = $(this).parent().siblings(':eq(1)').text();
-
-	});
-	</script>
 </body>
 </html>
 

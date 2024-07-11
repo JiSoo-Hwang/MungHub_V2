@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.template.Pagination;
 import com.kh.pjtMungHub.shop.model.service.ShopService;
+import com.kh.pjtMungHub.shop.model.vo.Answer;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
@@ -32,6 +33,7 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
 import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
@@ -165,6 +167,9 @@ public class ShopController {
 			
 		}
 		
+		ArrayList<Category> questionCategoryList=shopService.selectQuestionCategory();
+		
+		mv.addObject("cList",questionCategoryList);
 		mv.addObject("rAtList",reviewAt);
 		mv.addObject("best4Review",bestReviewTop4);
 		mv.addObject("percent",percent);
@@ -837,10 +842,16 @@ public class ShopController {
 			reviewJArr.add(jobj);
 			
 		}
-	
 		return reviewJArr;
 	}
 	
+	
+	@GetMapping("selectReviewCount.sp")
+	@ResponseBody
+	public int selectReviewCount(int productNo) {
+		int result=shopService.selectReviewCount(productNo);
+		return result;
+	}
 	
 	@GetMapping("reviewReplyList.sp")
 	@ResponseBody
@@ -871,6 +882,74 @@ public class ShopController {
 	public int deleteReply(int replyNo) {
 		
 		int result=shopService.deleteReply(replyNo);
+		
+		return result;
+	}
+	
+	@PostMapping("reviewLike.sp")
+	@ResponseBody
+	public int reviewLike(Review r) {
+		
+		int result=shopService.reviewLike(r);
+		
+		
+		int likeCount=shopService.selectLikeCount(r);
+		
+		return likeCount;
+	}
+	
+	
+	@GetMapping("questionList.sp")
+	@ResponseBody
+	public JSONObject selectQuestionList(int productNo,int currentPage){
+		
+		int listCount=shopService.selectQuestionCount(productNo);
+		int pageLimit=10;
+		int boardLimit= 10;
+		
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		ArrayList<Question> qList=shopService.selectQuestionList(productNo,pi);
+		
+		
+		Answer answer=new Answer(); 
+		for (int i = 0; i < qList.size(); i++) {
+			answer=shopService.selectAnswer(qList.get(i).getQuestionNo());
+			if(answer!=null) {
+				qList.get(i).setAnswerStatus("Y");
+			}else {
+				qList.get(i).setAnswerStatus("N");
+			}
+		}
+		
+		
+		JSONObject jobj=new JSONObject();
+		
+		
+		jobj.put("qList", qList);
+		jobj.put("pi", pi);
+		
+		return jobj;
+	}
+	
+	@GetMapping("qnaPage.sp/{questionNo}")
+	public ModelAndView qnaPage(ModelAndView mv,@PathVariable int questionNo) {
+		
+		Question q=shopService.selectQuestionDetail(questionNo);
+		Answer a =shopService.selectAnswer(questionNo);
+		
+		mv.addObject("q",q);
+		mv.addObject("a",a);
+		mv.setViewName("shop/qnaPage");
+		return mv;
+	}
+	
+	@PostMapping("insertQuestion.sp")
+	@ResponseBody
+	public int insertQuestion(Question q) {
+		
+		int result=shopService.insertQuestion(q);
+		
 		
 		return result;
 	}

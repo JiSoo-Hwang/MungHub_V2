@@ -38,8 +38,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
+import com.kh.pjtMungHub.chatting.vo.MessageVO;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.common.template.Pagination;
@@ -49,6 +49,7 @@ import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.member.model.vo.Message;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
+import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 
 @Controller
 public class MemberController {
@@ -153,27 +154,38 @@ public class MemberController {
 	}
 	
 	@RequestMapping("login.me")
-	public ModelAndView loginMember(Member m, ModelAndView mv, HttpSession session) {
+	public String loginMember(Member m, HttpSession session) {
 		Member loginUser = service.loginMember(m);
+		String msg="";
 		if(loginUser==null || !bcryptPasswordEncoder.matches(m.getPassword(),loginUser.getPassword())) {
-			mv.addObject("alertMsg","로그인 실패");
-			mv.setViewName("/");
+			msg="로그인 실패";
+			session.setAttribute("alertMsg", msg);
+			return "redirect:/enter.me";
 		}else if(loginUser.getStatus().equals("N")){
-			mv.addObject("alertMsg","아직 승인처리가 완료되지 않았습니다. 관리자에게 문의하시기 바랍니다.");
+			msg="아직 승인처리가 완료되지 않았습니다. 관리자에게 문의하시기 바랍니다.";
 		}else {
-			mv.addObject("alertMsg",loginUser.getUserId()+"님 환영합니다.");
+			msg=loginUser.getUserId()+"님 환영합니다.";
 			session.setAttribute("loginUser", loginUser);
+			ArrayList<MessageVO> cList=service.getChatList(loginUser);
+			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+			System.out.println(cList);
+			for(MessageVO c:cList) {
+				c.setMasterNo(loginUser.getUserNo());
+				chatList.add(service.getNewChat(c));
+			}
+			session.setAttribute("chatList", chatList);
+			session.setAttribute("sitterList", service.getSitterList());
 		}
-		mv.setViewName("redirect:/");
-		return mv;
+		session.setAttribute("alertMsg", msg);
+		return "redirect:/";
 	}
 	
 	@RequestMapping("logout.me")
-	public ModelAndView logoutMember(ModelAndView mv,HttpSession session) {
-		mv.addObject("alertMsg", "이용해 주셔서 감사합니다.");
+	public String logoutMember(HttpSession session) {
+		session.setAttribute("alertMsg", "이용해 주셔서 감사합니다.");
 		session.removeAttribute("loginUser");
-		mv.setViewName("redirect:/");
-		return mv;
+		session.removeAttribute("sitterUser");
+		return "redirect:/";
 	}
 	
 	@ResponseBody
@@ -211,39 +223,37 @@ public class MemberController {
 	}
 	
 	@PostMapping("searchId.me")
-	public ModelAndView searchId(Member m, ModelAndView mv, HttpSession session) {
+	public String searchId(Member m, HttpSession session) {
 		Member result = service.searchId(m);
 		if(result!=null) {
-			mv.addObject("alertMsg", "조회하신 아이디는 "+result.getUserId()+" 입니다.");
-			mv.setViewName("member/memberLoginUpdate");
+			session.setAttribute("alertMsg", "조회하신 아이디는 "+result.getUserId()+" 입니다.");
+			return "member/memberLoginUpdate";
 		}else {
-			mv.addObject("alertMsg","입력한 데이터를 다시 확인해 주세요.");
-			mv.setViewName("member/memberLoginForm");
+			session.setAttribute("alertMsg","입력한 데이터를 다시 확인해 주세요.");
+			return "member/memberLoginForm";
 		}
-		return mv;
 	}
 	
 	@PostMapping("changePw.me")
-	public ModelAndView changePw(Member m, ModelAndView mv, HttpSession session) {
+	public String changePw(Member m, HttpSession session) {
 		Member result=service.searchId(m);
 		if(result==null||!result.getUserId().equals(m.getUserId())) {
-			mv.addObject("alertMsg", "입력하신 정보를 다시 확인해 주세요.");
+			session.setAttribute("alertMsg", "입력하신 정보를 다시 확인해 주세요.");
 		}else {
 			m.setPassword(bcryptPasswordEncoder.encode(m.getPassword()));
 			
 			int rnum=service.changePw(m);
 			if(rnum>0) {
-				mv.addObject("alertMsg", "비밀번호가 변경되었습니다. 다시 로그인해 주세요.");
+				session.setAttribute("alertMsg", "비밀번호가 변경되었습니다. 다시 로그인해 주세요.");
 			}else {
 				System.out.println("통신오류");
 			}
 		}
-		mv.setViewName("redirect:/enter.me");
-		return mv;
+		return "redirect:/enter.me";
 	}
 
 	@PostMapping("enrollPet.me")
-	public ModelAndView enrollPet(Pet p, MultipartFile upFile, ModelAndView mv, HttpSession session) {
+	public String enrollPet(Pet p, MultipartFile upFile, HttpSession session) {
 		System.out.println(p);
 		System.out.println(upFile);
 		Member m=(Member)session.getAttribute("loginUser");
@@ -278,8 +288,7 @@ public class MemberController {
 			alertMsg="반려견 등록을 실패하셨습니다.";
 		}
 		session.setAttribute("alertMsg", alertMsg);
-		mv.setViewName("redirect:/myPage.me");
-		return mv;
+		return "redirect:/myPage.me";
 	}
 	
 	@PostMapping("updatePetStat.me")
@@ -564,12 +573,38 @@ public class MemberController {
 	@GetMapping("google.me")
 	public String googleLogin(Member m,HttpSession session) {
 		Member loginUser=service.socialMember(m);
+		PetSitter sitterUser=service.selectSitterbySocial(m);
 		String msg="";
-		if(loginUser==null) {
-			msg="해당하는 회원을 찾을 수 없습니다. 회원 가입 후 이용해 주세요.";
-		}else {
+		if(loginUser!=null) {
 			msg=loginUser.getUserId()+"님 환영합니다.";
 			session.setAttribute("loginUser", loginUser);
+			ArrayList<MessageVO> cList=service.getChatList(loginUser);
+			System.out.println(cList);
+			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+			for(MessageVO c:cList) {
+				c.setMasterNo(loginUser.getUserNo());
+				chatList.add(service.getNewChat(c));
+			}
+			session.setAttribute("chatList", chatList);
+			session.setAttribute("sitterList", service.getSitterList());
+		}else if(sitterUser!=null) {
+			session.setAttribute("sitterUser", sitterUser);
+			msg=sitterUser.getPetSitterName()+" 펫시터님 환영합니다.";
+			ArrayList<MessageVO> cList=service.getSitterChatList(sitterUser);
+			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+			ArrayList<Member> masterList=new ArrayList<>();
+			for(MessageVO c:cList) {
+				c.setSitterNo(sitterUser.getPetSitterNo());
+				chatList.add(service.getNewChat(c));
+				Member mem=new Member();
+				mem.setUserNo(c.getMasterNo());
+				masterList.add(service.selectMaster(mem));
+			}
+			session.setAttribute("masterList", masterList);
+			session.setAttribute("chatList", chatList);
+			session.removeAttribute("loginUser");
+		}else {			
+			msg="해당하는 회원을 찾을 수 없습니다. 회원 가입 후 이용해 주세요.";
 		}
 		session.setAttribute("alertMsg", msg);
 		return "redirect:/";
@@ -671,17 +706,43 @@ public class MemberController {
 		String url="redirect:/";
 		Member snsJoin=(Member)session.getAttribute("snsJoin");
 		Member loginUser=(Member)session.getAttribute("loginUser");
-		if(snsJoin!=null) {
+		PetSitter sitterUser=service.selectSitterbySocial(snsJoin);
+		if(sitterUser!=null) {
+			session.setAttribute("alertMsg",sitterUser.getPetSitterName()+" 펫시터님 환영합니다.");
+			ArrayList<MessageVO> cList=service.getSitterChatList(sitterUser);
+			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+			for(MessageVO c:cList) {
+				chatList.add(service.getNewChat(c));
+			}
+			session.setAttribute("chatList", chatList);
+		}else if(snsJoin!=null) {
 			session.setAttribute("alertMsg", "가입된 아이디가 없습니다. 회원 가입 페이지로 이동합니다.");
 			url+="enroll.me";
 		}else if(loginUser==null){
 			session.setAttribute("alertMsg", "잘못된 접근");
 		}else {
         	session.setAttribute("alertMsg", loginUser.getUserId()+"님 환영합니다.");
+			ArrayList<MessageVO> cList=service.getChatList(loginUser);
+			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+			for(MessageVO c:cList) {
+				chatList.add(service.getNewChat(c));
+			}
+			session.setAttribute("chatList", chatList);
+			session.setAttribute("sitterList", service.getSitterList());
 		}
 		return url;
 	}
 	
+	@ResponseBody
+	@GetMapping("searchSitter.me")
+	public PetSitter searchSitterStatus(PetSitter pst,HttpSession session) {
+		PetSitter sitter=service.searchSitterStatus(pst);
+		if(sitter!=null) {
+			session.setAttribute("sitterUser", sitter);
+		}
+		return sitter;
+	}
+
 	public String generateState()
 	{
 	    SecureRandom random = new SecureRandom();

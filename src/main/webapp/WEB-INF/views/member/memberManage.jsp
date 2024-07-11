@@ -29,6 +29,14 @@
 	tbody tr{
 		border-bottom:1px solid lightGray;
 	}
+	.search-member{
+		border-radius:5px;
+		background-color:#FFEAE3;
+	}
+	.search-member>*{
+		margin-left:10px;
+		margin-top:10px;
+	}
 </style>
 </head>
 <body>

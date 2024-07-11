@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>노필터 예약화면</title>
 <!-- fullcalender -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
 	<style>
@@ -183,7 +183,7 @@
 		<h4>원하시는 날짜를 골라주세요.</h4>
 		<div class="container">
 			<div id="calendar" class="calendar-container">
-			
+				<!-- fullCalendar -->
 			</div>
 			
 			<div class="sitter-list-container"  id="sitterListContainer">
@@ -192,7 +192,7 @@
 				    <h4>${petSitter.petSitterName }</h4>
 				    <p>${petSitter.introduce }</p>
 				    <div class="sitterFont">가장 많이 만나본 반려견</div>
-				    <p class="popular-style">${petSitter.dogKeword }</p>
+				    <p class="popular-style">${petSitter.dogKeyword }</p>
 				    <div class="sitterFont">자신 있는 펫크기</div>
 				    <p class="popular-style">${petSitter.typeKeyword }</p>
 				    
@@ -275,7 +275,7 @@
 		//============== 달력 ===================
 		 $(document).ready(function() {
 			    var disabledDates = [];
-
+			    
 			    // 예약 정보를 배열에 추가
 			    $('.reservation-id').each(function(index) { //index : 현재 반복중인 요소
 			      var reservation = {
@@ -286,9 +286,13 @@
 			      };
 			      disabledDates.push(reservation); //reservation 객체를 disabledDates [] 에 추가
 			    });
+			    
+			    console.log(disabledDates);
+			    
 
 			    // FullCalendar 설정
 			    var calendarEl = document.getElementById('calendar');
+			    var today = new Date().toISOString().split('T')[0]; //오늘날짜
 			    var calendar = new FullCalendar.Calendar(calendarEl, {
 			      initialView: 'dayGridMonth',
 			      locale: 'ko',
@@ -297,44 +301,45 @@
 			          center: 'title',
 			          right: 'prev,next'
 			        },
+			      validRange:{ //오늘날짜 이전 막아주기
+			        	start : today
+			      },
 			      dateClick: function(info) {
-			        var selectedDate = info.dateStr; //선택된 날짜
-			        $('#visitDate').val(selectedDate); // 선택된 값 hidden으로
-			        //모든 날짜에 스타일 제거
-			        $('.fc-daygrid-day').removeClass('fc-day-selected');
-			        
-			        // 선택된 날짜에 스타일 추가
-			        var selectedDayE1 = document.querySelector('[data-date="' + selectedDate + '"]');
-			        if(selectedDayE1){
-			        	selectedDayE1.classList.add('fc-day-selected');
-			        	//classList 속성 : 클래스 이름추가/제거, 클래스 존재확인
-			        	// add,remove,toggle,contains,replace(클래스이름)
-			        	// toggle : 이름이 존재하면 제거, 없으면 추가
-			        	// contains : 이름이 존재하면 true, 아니면 false 반환
+			            var selectedDate = info.dateStr;
+			            $('#visitDate').val(selectedDate);
+
+			            // 모든 날짜에 스타일 제거
+			            $('.fc-daygrid-day').removeClass('fc-day-selected');
+			            
+			            // 선택된 날짜에 스타일 추가
+			            var selectedDayEl = document.querySelector('[data-date="' + selectedDate + '"]');
+			            if (selectedDayEl) {
+			                selectedDayEl.classList.add('fc-day-selected');
+			            }
+
+			            // 선택된 날짜와 동일한 예약 정보 필터링
+			            var reservations = disabledDates.filter(function(reservation) {
+			                return reservation.date === selectedDate;
+			            });
+
+			            // 해당 예약 시간 범위 내의 버튼을 비활성화
+			            $('.str-btn').removeAttr('disabled'); // 먼저 모든 버튼을 활성화
+			            reservations.forEach(function(reservation) {
+			                $('.str-btn').filter(function() {
+			                    var value = parseInt($(this).val(), 10);
+			                    var reservationStart = parseInt(reservation.start, 10);
+			                    var reservationEnd = parseInt(reservation.end, 10);
+			                    
+			                    return value >= reservationStart && value < reservationEnd;
+			                }).attr('disabled', true);
+			            });
 			        }
-
-			        // 선택된 날짜에 예약된 날짜와 동일한지 확인하고 reservations 에 담기
-			        var reservations = disabledDates.filter(function(reservation) {
-			          return reservation.date === selectedDate;
-			        });
-
-			        // 해당 예약 시간 범위 내의 버튼을 비활성화
-			        $('.str-btn').removeAttr('disabled'); // 먼저 모든 버튼을 활성화
-			        
-			        reservations.forEach(function(reservation) {//선택된 날짜의 예약정보 반복문
-			        	
-			          $('.str-btn').filter(function() {
-			            var value = parseInt($(this).val(), 10);
-			            return value >= reservation.start && value <= reservation.end;
-			          }).attr('disabled', true);
-			        });
-			      }
 			    });
 			    
 			    setTimeout(function() {
 			        calendar.render();
 			        
-			      //페이지 로드시 오늘날짜 선택
+			      		//페이지 로드시 오늘날짜 선택
 			        	function selectToday(){
 			        		// new Date() 형태가 2024-07-01T12:34:56.789Z 와 같이 나오기 때문에
 					        // toISOString () 로 위에 값을 문자열로 변환

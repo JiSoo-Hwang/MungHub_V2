@@ -90,6 +90,25 @@
           </div>
 				<script>
 				
+				  //날짜 포맷 변환 함수
+		        function formatDate(datetime) {
+		            //문자열 날짜 데이터를 날짜객체로 변환
+		            const dateObj = new Date(datetime);
+		            // 그냥은 못 가져오니까 Date 객체에 담는다 
+		           //그러면 string 으로 받을수 있다
+		 
+		            //날짜객체를 통해 각 날짜 정보 얻기
+		            let year = dateObj.getFullYear();
+		            //1월이 0으로 설정되어있음.
+		            let month = dateObj.getMonth() + 1;
+		            let day = dateObj.getDate();
+		            (month < 10) ? month = '0' + month: month;
+		            (day < 10) ? day = '0' + day: day;
+		            return year + "-" + month + "-" + day;
+		        }
+				
+				
+				
 				$(function(){
 					$("#file-insert").hide();
 					

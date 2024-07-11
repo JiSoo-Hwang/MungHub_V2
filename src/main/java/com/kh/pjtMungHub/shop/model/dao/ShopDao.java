@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
+import com.kh.pjtMungHub.shop.model.vo.Answer;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
@@ -17,6 +18,7 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
 import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
@@ -253,6 +255,68 @@ public class ShopDao {
 	public int deleteReply(SqlSessionTemplate sqlSession, int replyNo) {
 		// TODO Auto-generated method stub
 		return sqlSession.delete("shopMapper.deleteReply",replyNo);
+	}
+
+	public int reviewLike(SqlSessionTemplate sqlSession, Review r) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.reviewLike",r);
+	}
+
+	public int updateLikeCount(SqlSessionTemplate sqlSession, Review r) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateLikeCount",r);
+	}
+
+	public Integer selectLikeCount(SqlSessionTemplate sqlSession, Review r) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectLikeCount",r);
+	}
+
+	public int deleteLike(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("shopMapper.deleteLike");
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Category> selectQuestionCategory(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectQuestionCategory");
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Question> selectQuestionList(SqlSessionTemplate sqlSession, int productNo, PageInfo pi) {
+		// TODO Auto-generated method stub
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage()-1)*limit;
+		
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		return (ArrayList)sqlSession.selectList("shopMapper.selectQuestionList",productNo,rowBounds);
+	}
+
+	public Integer selectQuestionCount(SqlSessionTemplate sqlSession, int productNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectQuestionCount",productNo);
+	}
+
+	public Answer selectAnswer(SqlSessionTemplate sqlSession, int questionNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectAnswer",questionNo);
+	}
+
+	public int updateQuestionStatus(SqlSessionTemplate sqlSession, int questionNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateQuestionStatus",questionNo);
+		
+	}
+
+	public Question selectQuestionDetail(SqlSessionTemplate sqlSession, int questionNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectQuestionDetail",questionNo);
+	}
+
+	public int insertQuestion(SqlSessionTemplate sqlSession, Question q) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.insertQuestion",q);
 	}
 
 

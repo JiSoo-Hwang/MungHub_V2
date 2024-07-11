@@ -275,6 +275,10 @@ $("#certBtn").click(function () {
 		}
 	});
 });
+$(function(){
+	var reason = $("textarea[name=inputNAME]");
+	console.log(reason);
+});
 </script>
 		
 </body>
