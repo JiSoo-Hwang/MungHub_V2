@@ -53,6 +53,7 @@
                     <th>작성일</th>
                     <td>${b.uploadDate }</td>
                 </tr>
+                
                 <tr>
                     <td colspan="4">
                     <p style="height:150px;">${b.boardContent}</p>
@@ -64,7 +65,7 @@
             <div align="center">
                 <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우에만 보여져야 함 -->
                 <c:if test="${loginUser.userId eq b.boardWriter }">
-	                <a class="btn btn-primary" href="update.bo?boardNo=${b.boardNo }">수정하기</a>
+	                <a class="btn btn-primary" href="update.bo?boardNo=${b.boardNo}">수정하기</a>
     	            <button type="button" class="btn btn-danger" id="deleteBtn">삭제하기</button>
                 </c:if>
             </div>
@@ -75,10 +76,8 @@
             <script>
             	$(function(){
             		replyList();
-            		
             		//댓글작성 
                 	$("#replyArea button").click(function(){
-                		
                 		$.ajax({
                 			url : "insertReply.bo",
                 			type : "post",
@@ -89,7 +88,6 @@
                 			},
                 			success : function(result){
                 				//dml구문 실행 후 처리된 행 수
-                				
                 				if(result>0){//성공
                 					alert("댓글작성 성공!");
                 					replyList(); //추가된 댓글정보까지 다시 조회
@@ -102,10 +100,7 @@
                 				console.log("통신오류");
                 			}
                 		});
-                		
-                		
                 	});
-            	
             	});
             	
             	
@@ -147,7 +142,7 @@
             <table id="replyArea" class="table" align="center">
                 <thead>
                 	<c:choose>
-						<c:when test="${empty loginUser }">
+						<c:when test="${empty loginUser}">
 		                    <tr>
 		                        <th colspan="2">
 		                            <textarea class="form-control" cols="55" rows="2" style="resize:none; width:100%;" readonly>로그인 후 이용해주세요.</textarea>

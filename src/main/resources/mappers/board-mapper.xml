@@ -95,31 +95,54 @@
 						 ,BOARD_CONTENT
 		)
 		VALUES (SEQ_BOARD.NEXTVAL
-		,#{category}
-		,#{boardTitle}
-		,#{boardWriter}
-		,#{boardContent}
-		)
+				,#{category}
+				,#{boardTitle}
+				,#{boardWriter}
+				,#{boardContent}
+				)
 	</insert>
 	<insert id="insertAttachment" parameterType="com.kh.pjtMungHub.board.model.vo.Attachment">
 	INSERT ALL
 	<foreach collection="aList" item="arr">
-	INTO BOARD_ATTACHMENT(
-	FILE_LEVEL,
-	ORIGIN_NAME,
-	CHANGE_NAME,
-	FILE_PATH,
-	TYPE
-	) VALUES(
-	#{arr.fileLevel},
-	#{arr.originName},
-	#{arr.changeName},
-	#{arr.filePath},
-	#{arr.type}
-	)
-	SELECT * FROM DUAL
-	</foreach>
+	INTO BOARD_ATTACHMENT(FILE_LEVEL,
+						 ORIGIN_NAME,
+						 CHANGE_NAME,
+						 FILE_PATH,
+						 TYPE
+		         ) VALUES(
+						#{arr.fileLevel},
+						#{arr.originName},
+						#{arr.changeName},
+						#{arr.filePath},
+						#{arr.type}
+						)
+						SELECT * FROM DUAL
+						</foreach>
 	</insert>
+	<select id="selectAttachment" resultType="com.kh.pjtMungHub.board.model.vo.Attachment">
+	SELECT
+	FILE_LEVEL fileLevel,
+	ORIGIN_NAME originName,
+	CHANGE_NAME changeName,
+	UPLOAD_DATE uploadDate,
+	FILE_PATH filePath,
+	FILE_TYPE fileType
+	FROM BOARD_ATTACHMENT
+	WHERE FILE_NO=#{number}
+	AND FILE_LEVEL=#{fileLevel}
+	</select>
+	<select id="selectAttachmentList" resultType="com.kh.pjtMungHub.board.model.vo.Attachment">
+	SELECT
+	FILE_LEVEL fileLevel,
+	ORIGIN_NAME originName,
+	CHANGE_NAME changeName,
+	UPLOAD_DATE uploadDate,
+	FILE_PATH filePath,
+	FILE_TYPE fileType
+	FROM BOARD_ATTACHMENT
+	WHERE FILE_NO=#{number}
+	ORDER BY FILE_LEVEL
+	</select>
 	
 	
 	<!-- 여기는 댓글 추가기능입니다. -->

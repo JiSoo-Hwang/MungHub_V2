@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.servlet.http.HttpSession;
@@ -21,10 +22,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.pjtMungHub.board.model.service.BoardService;
 import com.kh.pjtMungHub.board.model.vo.Board;
-import com.kh.pjtMungHub.board.model.vo.*;
+import com.kh.pjtMungHub.board.model.vo.Category;
+import com.kh.pjtMungHub.board.model.vo.Reply;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.template.Pagination;
-import com.kh.pjtMungHub.shop.model.vo.Attachment;
+import com.kh.pjtMungHub.board.model.vo.Attachment;
 
 
 
@@ -108,85 +110,82 @@ public class BoardController {
 	public ModelAndView boardEnrollForm(ModelAndView mv) {
 		
 		ArrayList<Category> ctList = boardService.selectCategory();	
-		
-		mv.addObject("ctList",ctList);
-		mv.setViewName("board/insertBoardView");
-		
-		
-		return mv;
-		
+			
+			mv.addObject("ctList",ctList);
+			mv.setViewName("board/insertBoardView");
+			
+			return mv;
 	}
 	
 	//게시물 등록 메소드
 	@PostMapping("insert.bo")
-	public ModelAndView insertBoard(Board b,ModelAndView mv,MultipartFile[] upfile,HttpSession session) {
+	public ModelAndView insertBoard(Board b,ModelAndView mv
+			,MultipartFile[] upfile
+			,HttpSession session) {
 		
 		ArrayList<Attachment> aList = new ArrayList<>();
-		System.out.println(b);
-		for(int i=0;i<upfile.length;i++){
-			
-		
-		String fileType= upfile[i].getOriginalFilename();
-		int index = fileType.lastIndexOf(".");
-		String extension =fileType.substring(index+1).toLowerCase();
-		String type= "";
-		
-		if(extension.equals("avi")||
-		   extension.equals("mov")||
-		   extension.equals("mp4")||
-		   extension.equals("wmv")||
-		   extension.equals("asf")||
-		   extension.equals("mkv")) {
-			type="video";
-		}else if (extension.equals("jpeg")||
-				 extension.equals("jpg")||
-				 extension.equals("png")||
-				 extension.equals("gif")) {
-			type="image";
-			
-		}else {
-			type="file";
-		}
-		
-		String changeName = saveFile(upfile[i],session,type);
-		
-		Attachment a = Attachment.builder().
-				fileLev(i).
-				originName(upfile[i].getOriginalFilename()).
-				changeName(changeName).
-				filePath("/pjtMungHub/resources/uploadFiles/board/boardDetail/"+type+"/").
-				type(type).
-				build();
-		
-		aList.add(a);
-		}
-		
-		int result = boardService.insertBoard(b);
-		
-		if(result>0) {//게시글 작성 성공
-			session.setAttribute("alertMsg", "게시글 작성 성공!");
-			mv.setViewName("redirect:/list.bo");
-			
-			return mv;
-		}else { //게시글 작성 실패
-			for(int i=0;i<aList.size();i++) {
-				String deleteFile=aList.get(i).getFilePath()+aList.get(i).getChangeName();
-				new File(session.getServletContext().getRealPath(deleteFile)).delete();
+		if(!(upfile.length>0)) {
+			for (int i = 0; i < upfile.length; i++) {
+
+				String fileType = upfile[i].getOriginalFilename();
+				int index = fileType.lastIndexOf(".");
+
+				String extension =fileType.substring(index + 1).toLowerCase();
+				String type = determineFileType(extension);
+				String changeName = saveFile(upfile[i], session, type);
+				
+				Attachment a = Attachment.builder().fileLevel(i)
+						.originName(upfile[i].getOriginalFilename())
+						.changeName(changeName)
+						.filePath("/pjtMungHub/resources/uploadFiles/board/boardDetail/" + type + "/").fileType(type)
+						.build();
+
+				aList.add(a);
 			}
-			session.setAttribute("alertMsg", "게시글 작성 실패!");
-			mv.setViewName("redirect:/insert.bo");
-			
-			return mv;
 		}
 
-		
-		
-		
+		int result = boardService.insertBoard(b);
+
+		if (result > 0) {// 게시글 작성 성공
+
+			session.setAttribute("alertMsg", "게시글 작성 성공!");
+			mv.setViewName("redirect:/list.bo");
+
+
+		} else { // 게시글 작성 실패
+			deleteUploadedFiles(aList, session);
+			session.setAttribute("alertMsg", "게시글 작성 실패!");
+			mv.setViewName("redirect:/insert.bo");
+
+		}
+		return mv;
+	}
+	
+	//파일 업로드 실패시 파일 삭제하는 구문
+	private void deleteUploadedFiles(ArrayList<Attachment> aList, HttpSession session) {
+	    for (Attachment a : aList) {
+	    	
+	        String deleteFile = a.getFilePath() + a.getChangeName();
+	        
+	        new File(session.getServletContext().getRealPath(deleteFile)).delete();
+	    }
+	}
+
+	
+	//파일 종류 확인하는 메소드
+	private String determineFileType(String extension) {
+	    if (Arrays.asList("avi", "mov", "mp4", "wmv", "asf", "mkv").contains(extension)) {
+	        return "video";
+	    } else if (Arrays.asList("jpeg", "jpg", "png", "gif").contains(extension)) {
+	        return "image";
+	    } else {
+	        return "file";
+	    }
 	}
 	
 	
 	// 파일 업로드 처리 메소드(재활용)
-	public String saveFile(MultipartFile upfile, HttpSession session, String type) {
+	public String saveFile(MultipartFile upfile, HttpSession session, String fileType) {
 	// 파일명 수정작업하기
 	// 1.원본파일명 추출
 	String originName = upfile.getOriginalFilename();
