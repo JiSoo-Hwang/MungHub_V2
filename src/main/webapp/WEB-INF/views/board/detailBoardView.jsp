@@ -43,11 +43,11 @@
                 </tr>
                 <tr>
                     <th>글번호</th>
-                    <td>${b.boardNo }</td>
+                    <td>${b.boardNo}</td>
                     <th>작성자</th>
                     <td>${b.boardWriter}</td>
                     <th>조회수</th>
-                    <td>${b.count }</td>
+                    <td>${b.count}</td>
                     <th>추천수</th>
                     <td>${b.recommend }</td>
                     <th>작성일</th>
@@ -70,10 +70,67 @@
                 </c:if>
             </div>
             <br><br>
+
+			<script>
+			//삭제하기 버튼을 눌렀을때 삭제 처리를 post 방식으로 진행하기
+            	//mapping 주소만으로 쿼리스트링을 전달해버리면 삭제가 되어버리는 문제 발생 
+            	//때문에 중요 작업들은 post방식으로 처리하여 url 노출을 피한다.
+            	$(function(){
+            		
+            		$("#deleteBtn").click(function(){
+            			//form태그 생성하고 각 속성 채워준 뒤 
+            			//원하는 데이터가 있다면 해당 데이터도 태그로 생성한뒤 채워주고 
+            			//마지막으로 완성된 form태그 구문에 submit 작업을 하면 된다.
+            			
+            			//form,input 태그 생성
+            			var formObj = $("<form>");
+            			var inputObj = $("<input>"); 
+            			var filePath = $("<input>");
+            			//생성된 form 태그와 input태그에 필요한 속성과 값을 채워 준뒤 form안에 input 넣기 
+            			formObj.prop("action","delete.bo").prop("method","post");
+            			
+            			//input 태그에 type과 name과 value 설정하기 (전달할 데이터)
+            			inputObj.prop("type","hidden").prop("name","boardNo").prop("value","${b.boardNo}");
+            			//서버에서 업로드되어있는 파일도 삭제해야 하기 때문에 파일 경로 전달해주기 
+            			filePath.prop("type","hidden").prop("name","filePath").prop("value","${b.changeName}");
+            			
+            			//form안에 input 넣기
+            			var obj = formObj.append(inputObj).append(filePath);
+            			
+            			//생성된 최종 form 태그를 이 문서에 포함시키기 
+            			$("body").append(obj);
+            			
+            			//완성된 form태그를 이용하여 submit() 메소드 수행 
+            			obj.submit();
+            		});
+            		
+            		
+            	});
+            	
+            	
             
+            </script>
+
+
+			<script type="text/javascript">
+            //날짜 포맷 변환 함수
+            function formatDate(datetime) {
+            	
+                //문자열 날짜 데이터를 날짜객체로 변환
+                const dateObj = new Date(datetime);
+                
+                // 그냥은 못 가져오니까 Date 객체에 담는다 
+                //그러면 string 으로 받을수 있다
+                //날짜객체를 통해 각 날짜 정보 얻기
+                let year = dateObj.getFullYear();
+                //1월이 0으로 설정되어있음.
+                let month = dateObj.getMonth() + 1;
+                let day = dateObj.getDate();
+                (month < 10) ? month = '0' + month: month;
+                (day < 10) ? day = '0' + day: day;
+                return year + "-" + month + "-" + day;
+            }
             
-            
-            <script>
             	$(function(){
             		replyList();
             		//댓글작성 
@@ -102,11 +159,7 @@
                 		});
                 	});
             	});
-            	
-            	
-            	
             	//댓글 목록 비동기로 조회해오기
-            	
             	function replyList(){
             		$.ajax({
             			url : "replyList.bo",
@@ -121,7 +174,7 @@
             					str += "<tr>"
             						+"<th>"+result[i].replyWriter+"</th>"
             						+"<td>"+result[i].replyContent+"</td>"
-            						+"<td>"+result[i].createDate+"</td>"
+            						+"<td>"+formatDate(result[i].createDate)+"</td>"
             						+"</tr>";
             				}
             				
@@ -138,8 +191,8 @@
             		});
             	}
             </script>
-            
-            <table id="replyArea" class="table" align="center">
+
+			<table id="replyArea" class="table" align="center">
                 <thead>
                 	<c:choose>
 						<c:when test="${empty loginUser}">

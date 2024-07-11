@@ -100,6 +100,7 @@
 	});
 	
 	function loadImg(inputFile,num){
+		
 		if(inputFile.files.length==1){
 			var reader = new FileReader();
 			

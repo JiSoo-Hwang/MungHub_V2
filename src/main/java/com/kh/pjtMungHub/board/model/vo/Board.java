@@ -25,7 +25,8 @@ public class Board {
 	private Date reviseDate;//	REVISE_DATE	DATE
 	private String status;
 	
-	
+	private String originName;
+	private String changeName;
 	//댓글 목록 조회용
 	private ArrayList<Reply> rList;
 

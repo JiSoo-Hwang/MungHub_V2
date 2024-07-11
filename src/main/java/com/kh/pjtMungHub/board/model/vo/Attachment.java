@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Attachment {
 	
-		private int fileNo;//	FILE_NO	NUMBER
+		private int attBno;//	
 		private String originName;//	ORIGIN_NAME	VARCHAR2(255 BYTE)
 		private String changeName;//	CHANAGE_NAME	VARCHAR2(255 BYTE)
 		private String filePath;//	FILE_PATH	VARCHAR2(1000 BYTE)
