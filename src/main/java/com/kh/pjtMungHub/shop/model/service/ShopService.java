@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
@@ -12,6 +13,7 @@ import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
 import com.kh.pjtMungHub.shop.model.vo.ScorePercent;
@@ -133,6 +135,21 @@ public interface ShopService {
 
 
 	int deleteReply(int replyNo);
+
+
+	int reviewLike(Review r);
+
+
+	int selectLikeCount(Review r);
+
+
+	ArrayList<Category> selectQuestionCategory();
+
+
+	ArrayList<Question> selectQuestionList(int productNo, PageInfo pi);
+
+
+	int selectQuestionCount(int productNo);
 
 
 

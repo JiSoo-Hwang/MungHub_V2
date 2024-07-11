@@ -11,7 +11,7 @@
 
 
 
-#best {
+.review-detail {
 	cursor:pointer;
 }
 
@@ -100,19 +100,20 @@ h2 {
 	width: 50%;
 }
 
-.first {
+.answerd {
+	text-align: center !important;
+}
+
+.answerd> p {
+	color: orange !important;
+	margin-bottom:0 !important;
+}
+
+.wating-answer {
 	text-align: center;
 }
 
-.first p {
-	color: orange;
-}
-
-.second {
-	text-align: center;
-}
-
-.second p {
+.wating-answer p {
 	color: gray;
 }
 
@@ -174,9 +175,12 @@ h2 {
 margin-right: 10px;
 }
 .reviewReply{
-border-bottom : 1px solid gray;
+padding: 4px;
+border-bottom : 1px solid lightgray;
 }
-
+.bi-hand-thumbs-up-fill{
+color: purple;
+}
 </style>
 </head>
 <body>
@@ -200,10 +204,10 @@ border-bottom : 1px solid gray;
 					    	<input type="hidden" value="${status.index }">
 					    	<c:choose>
 					    		<c:when test="${at.type eq 'video' }">
-					    	<video src="${at.filePath }${at.changeName}" class="d-block w-100"style="height: 100%; width:100%" autoplay loop></video>
+					    	<video src="${at.filePath }${at.changeName}" class="d-block w-100"style="height: 100%;" autoplay loop></video>
 					    		</c:when>
 					    		<c:otherwise>
-					      <img src="${at.filePath }${at.changeName}" class="d-block w-100" style="height: 100%; width:100%">
+					      <img src="${at.filePath }${at.changeName}" class="d-block w-100" style="height: 100%">
 					    		</c:otherwise>
 					    	</c:choose>
 					    </div>
@@ -502,9 +506,9 @@ border-bottom : 1px solid gray;
 			<a href="/pjtMungHub/reviewListAll.sp/${p.productNo}" class="btn-review-all"><span>전체리뷰보기</span><i
 				class="bi bi-caret-right-fill"></i> </a> <br>
 			</c:if>
-			<div class="row row-cols-2 align-items-center mt-3 ml-3 mr-3">
+			<div class="row align-items-center mt-3 ml-3 mr-3">
 				<c:forEach items="${best4Review}" var="r" varStatus="i">
-					<div id="best" class="col-sm mx-3" data-bs-toggle="modal" data-bs-target="#reviewDetailModal${r.reviewNo }">
+					<div class="col-sm mx-3 review-detail" data-bs-toggle="modal" data-bs-target="#reviewDetailModal${r.reviewNo }">
 						<div class="review-content">
 						<div class="media-container">
 						<c:forEach items="${rAtList[i.index] }" var="rAt">
@@ -515,10 +519,14 @@ border-bottom : 1px solid gray;
 							<div class="wrap-star">
 						    <div class='review-star'>
 						        <span style ="width: ${r.score*20}%"></span>
+						       
 						    </div>
 							</div>
-							<br> <small class="text-muted">${r.userName }</small> <small
-								class="text-muted">${r.createDate }</small>
+							&nbsp;<span id="likeCountB${r.reviewNo }">${r.likeCount }</span> &nbsp;<i class="bi bi-hand-thumbs-up-fill"></i>
+							<br> 
+							<small class="text-muted">${r.userName }</small> 
+							<small class="text-muted">${r.createDate }</small>
+							
 						</div>
 						<p>${r.reviewContent }</p>
 					</div>
@@ -558,10 +566,10 @@ border-bottom : 1px solid gray;
 					 <small class="text-muted">${r.createDate }</small>
 				  <p>${r.reviewContent }</p>
 					</div>
-					<div class="col-sm-1" align="center">
+					<div class="col-sm-1" id="likeCount${r.reviewNo }" align="center">
 					${r.likeCount }
 					</div>
-				  <button class='btn btn-primary col-sm-1' style="max-height:40px"><i class='bi bi-hand-thumbs-up'></i></button>
+				  <button class='btn btn-primary col-sm-1' style="max-height:40px" onclick="like(${r.reviewNo})"><i class='bi bi-hand-thumbs-up'></i></button>
 					</div>
 					<div class="row align-items-center justify-content-center py-2">
 					<hr>
@@ -570,7 +578,7 @@ border-bottom : 1px solid gray;
 					</div>
 					<hr>
 					
-					<div id="reviewReply${r.reviewNo }">
+					<div id="reviewReply${r.reviewNo }" class="mb-3">
 					</div>
 					<c:choose>
 					<c:when test="${not empty loginUser }">
@@ -588,7 +596,7 @@ border-bottom : 1px solid gray;
 									for (var i=0; i<result.length; i++) {
 									str+="<div class='reviewReply row'>"
 										+"<div class='col-10'>"
-										+"<div><small style='color:gray'>"+result[i].userName+" "+result[i].createDate+"</small></div>"
+										+"<div><small style='color:gray'>"+result[i].userName+" "+formatDate(result[i].createDate)+"</small></div>"
 										+"<div>"+result[i].replyContent+"</div>"
 										+"</div>";
 										if(result[i].userNo==${loginUser.userNo}){
@@ -677,7 +685,7 @@ border-bottom : 1px solid gray;
 											
 										str+="<div class='col-1'>"
 										+"<button style='background-color:transparent;border:0px;'"
-										+"onclick='deleteReply("+result[i].replyNo+")'>"
+										+"onclick='deleteReply("+result[i].replyNo+","+result[i].reviewNo+")'>"
 										+"<i class='bi bi-x-lg'></i></button>";
 										}
 										str+="</div>"
@@ -695,16 +703,7 @@ border-bottom : 1px solid gray;
 				}
 				
 				
-				</script>
 				
-				
-				</c:if>
-				
-				
-				
-				
-				
-				<script>
 				
 				
 				function deleteReply(replyNo,reviewNo){
@@ -725,7 +724,6 @@ border-bottom : 1px solid gray;
 				function insertReply(num){
 					
 					var replyContent = $("#replyContent"+num).val();
-					console.log(replyContent);
 					$.ajax({
 						url : "/pjtMungHub/insertReviewReply.sp",
 						type : "post",
@@ -745,9 +743,29 @@ border-bottom : 1px solid gray;
 					
 				}
 				
+				function like(num){
+					$.ajax({
+						url : "/pjtMungHub/reviewLike.sp",
+						type : "post",
+						data : {userNo : ${loginUser.userNo},
+								reviewNo : num},
+						success : function(result){
+							console.log(result);
+							$("#likeCount"+num).text(result);
+							$("#likeCountB"+num).text(result);
+							selectReview();
+							
+							},error : function(){
+							console.log("통신오류");
+						}
+					});
+				}
 				
 				
 				</script>
+				
+			</c:if>
+				
 			</div>
 		</div>
 	</section>
@@ -1135,6 +1153,26 @@ border-bottom : 1px solid gray;
 		
 		<script type="text/javascript">
 		
+		
+		   //날짜 포맷 변환 함수
+        function formatDate(datetime) {
+            //문자열 날짜 데이터를 날짜객체로 변환
+            const dateObj = new Date(datetime);
+            // 그냥은 못 가져오니까 Date 객체에 담는다 
+           //그러면 string 으로 받을수 있다
+ 
+            //날짜객체를 통해 각 날짜 정보 얻기
+            let year = dateObj.getFullYear();
+            //1월이 0으로 설정되어있음.
+            let month = dateObj.getMonth() + 1;
+            let day = dateObj.getDate();
+            (month < 10) ? month = '0' + month: month;
+            (day < 10) ? day = '0' + day: day;
+            return year + "-" + month + "-" + day;
+        }
+
+		
+		
 		$(function(){
 			selectReview();
 		});
@@ -1151,18 +1189,19 @@ border-bottom : 1px solid gray;
 					
 			success : function(result){
 					
+					var modal="";
 					for (var i = 0; i < result.length; i++) {
-					var img=""
+					var img="";
 						for (var k = 0; k < result[i].atList.length; k++) {
 						if(result[i].atList[k].type=='video'){
-						img+="<video src='"+result[i].atList[k].filePath+result[i].atList[k].changeName+"' style='max-height: 300px;' controls/>"	
+						img+="<video src='"+result[i].atList[k].filePath+result[i].atList[k].changeName+"' style='max-height: 300px;' controls/>";
 						}else{
 							
 				 		img+="<img src='"+result[i].atList[k].filePath+result[i].atList[k].changeName+"' class='img-fluid' style='max-height: 300px;'>";
 						}
 				 			
 						}
-					str+="<div class='col-10 mb-4'>"
+					str+="<div class='col-10 mb-4' >"
 	                +"<div class='card'>"
 	                +"<div class='media-container p-3'>"
 	                +img
@@ -1174,18 +1213,59 @@ border-bottom : 1px solid gray;
 				    +"<span style ='width: "+(result[i].score*20)+"%'></span>"
 				    +"</div>"
 					+"</div>"
-	                +"<h6 class='card-subtitle mb-2 text-muted'>"+result[i].createDate+"</h6>"
+	                +"<h6 class='card-subtitle mb-2 text-muted'>"+formatDate(result[i].createDate)+"</h6>"
 	                +"<p class='card-text'>"+result[i].reviewContent+"</p>"
 	                +"<div class='btn-div' align='right'>"
-	                +"<button class='btn btn-primary'><i class='bi bi-hand-thumbs-up'></i>Like</button>"
-	                +"<button class='btn btn-secondary'>Comment</button>"
+	                +"<span class='mx-3' id='likeCountT"+result[i].reviewNo+"'>"+result[i].likeCount+"</span>"
+	                +"<button class='btn btn-primary' onclick='like("+result[i].reviewNo+")'><i class='bi bi-hand-thumbs-up'></i></button>"
+	                +"<button class='btn btn-secondary' data-bs-toggle='modal' data-bs-target='#reviewDetailModal"+result[i].reviewNo+"'>댓글보기</button>"
 	                +"</div>"
 	                +"</div>"
 	                +"</div>"
 		            +"</div>"
 					+"</div>";
 					
-					
+					modal+="<div class='modal fade' id='reviewDetailModal"+result[i].reviewNo+"'" 
+					+"data-bs-backdrop='static' data-bs-keyboard='false'"
+					+"tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true'>"
+					+"<div class='modal-dialog'>"
+					+"<div class='modal-content'>"
+					+"<div class='modal-header'>"
+					+"<h1 class='modal-title fs-5' id='staticBackdropLabel'>리뷰 보기</h1>"
+					+"<button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>"
+					+"</div>"
+					+"<div class='modal-body'>"
+					+"<div class='media-container'>"
+					+img      
+					+"</div>"
+					+"<div class='wrap-star'>"
+					+"<div class='review-star'>"
+					+"<span style ='width: "+(result[i].score*20)+"%'></span>"
+					+"</div>"
+					+"</div>"
+					+"<div class='row align-items-center justify-content-center'>"
+					+"<div class='col-sm-10'>"
+					+"<small class='text-muted'>"+result[i].userName+"</small>"
+					+"<small class='text-muted'>"+formatDate(result[i].createDate)+"</small>"
+					+"<p>"+result[i].reviewContent+"</p>"
+					+"</div>"
+					+"<div class='col-sm-1' id='likeCountTmodal"+result[i].reviewNo+"' align='center'>"
+					+result[i].likeCount
+					+"</div>"
+					+"<button class='btn btn-primary col-sm-1' style='max-height:40px' onclick='like("+result[i].reviewNo+")'><i class='bi bi-hand-thumbs-up'></i></button>"
+					+"</div>"
+					+"<div class='row align-items-center justify-content-center py-2'>"
+					+"<hr>"
+					+"<textarea class='col-sm-9 mx-2' id='replyContent"+result[i].reviewNo+"' rows='5' cols='5' style='resize:none'></textarea>"
+				    +"<button class='btn btn-secondary col-sm-2' style='max-height:40px;' onclick='insertReply("+result[i].reviewNo+")'><p style='font-size:0.8em; margin-bottom:0;'>댓글작성</p></button>"
+					+"</div>"
+					+"<hr>"
+					+"<div id='reviewReply"+result[i].reviewNo+"' class='pb-3'>"
+					+"</div>"
+					+"</div>"
+					+"</div>"
+					+"</div>"
+					+"</div>";
 					}
 					if(str!=""){
 						
@@ -1193,7 +1273,7 @@ border-bottom : 1px solid gray;
 					}else{
 						str+="<h1 align='center' class='py-5'>리뷰가 없습니다.</h1>"
 					}
-					$("#review_area").html(str);
+					$("#review_area").html(str+modal);
 				},
 				error: function(){
 					console.log("통신오류");
@@ -1242,21 +1322,81 @@ border-bottom : 1px solid gray;
 				<a href="" class="btn btn-outline-dark flex-shrink-0">상품 문의하기</a>
 		</div>
 
-		<table class="table table-borderless">
+		<table class="table table-borderless" id="question-area">
 			<tr class="question-list">
-				<td class="first"><p>답변완료</p></td>
+				<td class="answerd"><p>답변완료</p></td>
 				<td><a href="#">[상품문의]입니다. <i class="bi bi-lock-fill"></i></a></td>
 				<td>작성자</td>
 				<td>2024.06.20</td>
 			</tr>
 			<tr class="question-list">
-				<td class="second"><p>답변대기</p></td>
+				<td class="wating-answer"><p>답변대기</p></td>
 				<td><a href="#">[배송문의]입니다. <i class="bi bi-unlock"></i></a></td>
 				<td>작성자</td>
 				<td>2024.06.20</td>
 			</tr>
 		</table>
+		
+		<div align="center" id="pagination-container"></div>
 	</div>
+	
+	<script>
+		function selectQuestionList(num){
+			$.ajax({
+				url: "/pjtMungHub/questionList.sp",
+				data : {productNo : ${p.productNo},
+						currentPage : num},
+				success : function(result){
+					var str="";
+					var pagination="";
+					
+					for (var i = 0; i < result.qList.length; i++) {
+						str+="<tr class='question-list'>"
+						+"<td class='answerd'><p>답변완료</p></td>"
+						+"<td><a href='#'>["+result.qList[i].categoryName+"]입니다.";
+						if(result.qList[i].openStatus=='N'){
+							
+						str+="<i class='bi bi-lock-fill'></i>";
+						}else{
+							str+="<i class='bi bi-unlock'></i>";
+						}
+						str+="</a></td>"
+						+"<td>"+result.qList[i].userName+"</td>"
+						+"<td>"+formatDate(result.qList[i].createDate)+"</td>"
+						+"</tr>";
+					}
+					
+					pagination+="<nav>"
+					+"<ul class='pagination justify-content-center'>";
+					if(result.pi.currentPage!=1){
+						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(i-1)+")'>이전</button></li>";
+					}
+					for (var i = 1; i <= result.pi.endPage; i++) {
+						if(result.pi.currentPage==i){
+							pagination+="<li class='page-item disabled'><button class='page-link'>"+i+"</button></li>"
+						}else{
+							pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+i+")'>"+i+"</button></li>"
+						}
+					}
+					
+					if(result.pi.currentPage!=result.pi.maxPage){
+						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(i+1)+")'>다음</button></li>"
+					}
+					pagination+=" </ul></nav>";
+					
+					$("#question-area").html(str);
+					$("#pagination-container").html(pagination);
+				},error : function(){
+					console.log("통신오류");
+				}
+			});
+		}
+		
+		$(function(){
+			selectQuestionList(1);
+		})
+	
+	</script>
 
 
 	<br>

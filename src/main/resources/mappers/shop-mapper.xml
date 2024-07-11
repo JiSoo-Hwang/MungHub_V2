@@ -216,6 +216,75 @@
      WHERE REPLY_NO = #{replyNo}
 	</delete>
 	
+	<insert id="reviewLike"
+	 parameterType="com.kh.pjtMungHub.shop.model.vo.Review">
+	 MERGE INTO PRODUCT_REVIEW_LIKE
+	USING DUAL
+	ON (REVIEW_NO=#{reviewNo} AND USER_NO=#{userNo})
+	WHEN MATCHED THEN
+    UPDATE SET 
+    DELETE_STATUS='N'
+	WHEN NOT MATCHED THEN
+     INSERT 
+	(REVIEW_NO,USER_NO)
+	VALUES
+	(#{reviewNo},#{userNo})
+	 </insert>
+	 
+	 <delete id="deleteLike">
+	 DELETE FROM PRODUCT_REVIEW_LIKE
+	 WHERE DELETE_STATUS='N'
+	 </delete>
+	 
+	 <update id="updateLikeCount"
+	  parameterType="com.kh.pjtMungHub.shop.model.vo.Review">
+	 	UPDATE PRODUCT_REVIEW SET
+		LIKE_COUNT = #{likeCount}
+		WHERE REVIEW_NO=#{reviewNo}
+	 </update>
+	 
+	 
+	 <select id="selectQuestionCategory"
+	 resultType="com.kh.pjtMungHub.shop.model.vo.Category">
+	 SELECT CATEGORY_NO categoryNo,
+	 		CATEGORY_NAME categoryName
+	 FROM QUESTION_CATEGORY
+	 </select>
+	 
+	 <select id="selectQuestionList" 
+	  resultType="com.kh.pjtMungHub.shop.model.vo.Question"
+	 parameterType="_int">
+	 SELECT QUESTION_NO questionNo,
+		PRODUCT_NO productNo,
+		USER_NO userNo,
+		NAME userName,
+		QUESTION_CONTENT content,
+		Q.CATEGORY_NO categoryNo,
+		Q.CATEGORY_NAME categoryName,
+		OPEN_STATUS openStatus,
+		CREATE_DATE createDate
+	FROM PRODUCT_QUESTION P
+	JOIN QUESTION_CATEGORY Q ON P.CATEGORY_NO=Q.CATEGORY_NO
+	JOIN MEMBER USING (USER_NO)
+	WHERE PRODUCT_NO=#{productNo}
+	 
+	 </select>
+	 
+	 <select id="selectLikeCount" 
+ 	parameterType="com.kh.pjtMungHub.shop.model.vo.Review"
+ 	resultType="_int">
+ 	SELECT MAX(ROWNUM)
+	FROM PRODUCT_REVIEW_LIKE
+	WHERE REVIEW_NO=#{reviewNo}
+ </select>
+	 
+	<select id="selectQuestionCount" 
+	parameterType="_int"
+	resultType="_int">
+	SELECT MAX(ROWNUM)
+	FROM PRODUCT_QUESTION
+	WHERE PRODUCT_NO=#{productNo}
+	</select>
 	<insert id="insertProduct" parameterType="Product">
 		INSERT INTO PRODUCT(
 		PRODUCT_NO,
