@@ -196,12 +196,13 @@ clear: both;
 </head>
 <body>
 <c:choose>
-<c:when test="${!empty loginUser }">
-<span style="float: right; margin: 10px; ">${loginUser.userId} 님 환영합니다&ensp;|&ensp;<a href="myPage.me" style="text-decoration: none; color: black;">마이페이지</a></span>
-</c:when>
-<c:when test="${!empty sitterUser}">
-<span style="float: right; margin: 10px; ">${sitterUser.petSitterName} 님 환영합니다&ensp;</span>
-</c:when>
+	<c:when test="${!empty loginUser }">
+		<span style="float: right; margin: 10px; ">${loginUser.userId} 님 환영합니다&ensp;|&ensp;<a href="myPage.me" style="text-decoration: none; color: black;">마이페이지</a></span>
+	</c:when>
+	<c:when test="${!empty sitterUser}">
+		<span style="float: right; margin: 10px; ">${sitterUser.petSitterName} 님 환영합니다&ensp;</span>
+	</c:when>
+</c:choose>
 <br clear="all">
     <nav id="header">
         <nav id="header_1">
