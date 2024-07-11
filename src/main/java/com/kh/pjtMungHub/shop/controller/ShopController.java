@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.template.Pagination;
 import com.kh.pjtMungHub.shop.model.service.ShopService;
+import com.kh.pjtMungHub.shop.model.vo.Answer;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
@@ -904,6 +905,18 @@ public class ShopController {
 		
 		ArrayList<Question> qList=shopService.selectQuestionList(productNo,pi);
 		
+		
+		Answer answer=new Answer(); 
+		for (int i = 0; i < qList.size(); i++) {
+			answer=shopService.selectAnswer(qList.get(i).getQuestionNo());
+			if(answer!=null) {
+				qList.get(i).setAnswerStatus("Y");
+			}else {
+				qList.get(i).setAnswerStatus("N");
+			}
+		}
+		
+		
 		JSONObject jobj=new JSONObject();
 		
 		jobj.put("qList", qList);
@@ -912,6 +925,26 @@ public class ShopController {
 		return jobj;
 	}
 	
+	@GetMapping("qnaPage.sp/{questionNo}")
+	public ModelAndView qnaPage(ModelAndView mv,@PathVariable int questionNo) {
+		
+		Question q=shopService.selectQuestionDetail(questionNo);
+		Answer a =shopService.selectAnswer(questionNo);
+		
+		mv.addObject("q",q);
+		mv.addObject("a",a);
+		mv.setViewName("shop/qnaPage");
+		return mv;
+	}
+	
+	@PostMapping("insertQuestion.sp")
+	@ResponseBody
+	public int insertQuestion(Question q) {
+		
+		int result=shopService.insertQuestion(q);
+		
+		return result;
+	}
 	
 	
 	@GetMapping("adminPage.sp")

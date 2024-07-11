@@ -267,8 +267,46 @@
 	JOIN QUESTION_CATEGORY Q ON P.CATEGORY_NO=Q.CATEGORY_NO
 	JOIN MEMBER USING (USER_NO)
 	WHERE PRODUCT_NO=#{productNo}
-	 
+	ORDER BY CREATE_DATE DESC
 	 </select>
+	 
+	 <select id="selectQuestionDetail"
+	 resultType="com.kh.pjtMungHub.shop.model.vo.Question"
+	 parameterType="_int">
+	  SELECT QUESTION_NO questionNo,
+		PRODUCT_NO productNo,
+		USER_NO userNo,
+		NAME userName,
+		QUESTION_CONTENT content,
+		Q.CATEGORY_NO categoryNo,
+		Q.CATEGORY_NAME categoryName,
+		OPEN_STATUS openStatus,
+		CREATE_DATE createDate
+	FROM PRODUCT_QUESTION P
+	JOIN QUESTION_CATEGORY Q ON P.CATEGORY_NO=Q.CATEGORY_NO
+	JOIN MEMBER USING (USER_NO)
+	WHERE QUESTION_NO=#{questionNo}
+	 </select>
+	 
+	 <insert id="insertQuestion"
+	 parameterType="com.kh.pjtMungHub.shop.model.vo.Question">
+	 INSERT INTO PRODUCT_QUESTION(
+		QUESTION_NO,
+		PRODUCT_NO,
+		USER_NO,
+		QUESTION_CONTENT,
+		CATEGORY_NO,
+		OPEN_STATUS
+		)VALUES(
+		SEQ_QUESTION.NEXTVAL,
+		#{productNo},
+		#{userNo},
+		#{content},
+		#{categoryNo},
+		#{openStatus}
+		)
+	 </insert>
+	 
 	 
 	 <select id="selectLikeCount" 
  	parameterType="com.kh.pjtMungHub.shop.model.vo.Review"
@@ -285,6 +323,24 @@
 	FROM PRODUCT_QUESTION
 	WHERE PRODUCT_NO=#{productNo}
 	</select>
+	
+	<select id="selectAnswer" parameterType="_int"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Answer">
+	SELECT ANSWER_NO answerNo,
+	QUESTION_NO questionNo,
+	USER_NO userNo,
+	ANSWER_CONTENT content,
+	CREATE_DATE createDate
+	FROM PRODUCT_ANSWER
+	WHERE QUESTION_NO=#{questionNo}
+	</select>
+	
+	<update id="updateQuestionStatus" parameterType="_int">
+	UPDATE PRODUCT_QUESTION SET
+	ANSWER_STATUS='Y'
+	WHERE QUESTION_NO=#{questionNo}
+	</update>
+	
 	<insert id="insertProduct" parameterType="Product">
 		INSERT INTO PRODUCT(
 		PRODUCT_NO,

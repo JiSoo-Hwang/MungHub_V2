@@ -110,16 +110,16 @@ h2 {
 }
 
 .wating-answer {
-	text-align: center;
+	text-align: center !important;
 }
 
 .wating-answer p {
-	color: gray;
+	color: gray !important;
 }
 
 .question-list>td a {
-	text-decoration: none;
-	color: gray;
+	text-decoration: none !important;
+	color: gray !important;
 }
 #favor{
  transition : transform 0.3s ease-in-out;
@@ -763,8 +763,20 @@ color: purple;
 				
 				
 				</script>
-				
 			</c:if>
+			
+			<c:if test="${empty loginUser }">
+			<script>
+			function like(num){
+				alert("로그인 이후에 이용해주세요.");
+			}
+			function insertReply(num){
+				alert("로그인 이후에 이용해주세요.")
+			}
+			</script>
+			
+			</c:if>
+			
 				
 			</div>
 		</div>
@@ -1319,8 +1331,76 @@ color: purple;
 		<hr>
 		<div class="d-grid gap-2 d-md-block qna">
 			<a href="" class="btn btn-outline-secondary flex-shrink-0">1:1 문의하기</a> 
-				<a href="" class="btn btn-outline-dark flex-shrink-0">상품 문의하기</a>
+			<button type="button" class="btn btn-outline-dark flex-shrink-0"
+			data-bs-toggle="modal" data-bs-target="#insertQuestionModal">상품 문의하기</button>
 		</div>
+
+			<div class="modal fade" id="insertQuestionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-sm modal-dialog-centered">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h1 class="modal-title fs-5" id="staticBackdropLabel">문의하기</h1>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body" align="center">
+		      <div class="py-2">
+		      <select id="category">
+		      	<c:forEach items="${cList }" var="c">
+		      		<option value="${c.categoryNo }">${c.categoryName }</option>
+		      	</c:forEach>
+		      </select>
+		      <label for="openStatus">비밀글</label><input type="checkbox" id="openStatus" checked>
+		      </div>
+		        <textarea rows="10" cols="30" id="Qcontent"></textarea>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+		        <button type="button" onclick="insertQuestion()" class="btn btn-primary">작성</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+
+		<c:if test="${not empty loginUser }">
+		<script>
+			function insertQuestion(){
+				var openStatus="";
+				if($("#openStatus").is(":checked")){
+				openStatus='N';
+				}else{
+				openStatus='Y';
+				}
+			$.ajax({
+				url: "/pjtMungHub/insertQuestion.sp",
+				type : "post",
+				data : {userNo : ${loginUser.userNo}
+						,content: $("#Qcontent").val()
+						,productNo : ${p.productNo}
+						,categoryNo : $("#category option:selected").val()
+						,openStatus : openStatus
+						},
+				success : function(result){
+					selectQuestionList(1);
+					alert("문의가 완료되었습니다. 최대한 빨리 답변할 수 있도록 노력하겠습니다.");
+				},error : function(){
+					console.log("통신오류");
+				}
+					
+			});
+		}
+		</script>
+		</c:if>
+		
+		<c:if test="${empty loginUser }">
+		<script>
+		function insertQuestion(){
+			alert("로그인 이후에 이용해주세요.");
+		}
+		</script>
+		
+		</c:if>
+
 
 		<table class="table table-borderless" id="question-area">
 			<tr class="question-list">
@@ -1341,6 +1421,7 @@ color: purple;
 	</div>
 	
 	<script>
+		
 		function selectQuestionList(num){
 			$.ajax({
 				url: "/pjtMungHub/questionList.sp",
@@ -1351,9 +1432,13 @@ color: purple;
 					var pagination="";
 					
 					for (var i = 0; i < result.qList.length; i++) {
-						str+="<tr class='question-list'>"
-						+"<td class='answerd'><p>답변완료</p></td>"
-						+"<td><a href='#'>["+result.qList[i].categoryName+"]입니다.";
+						str+="<tr class='question-list'>";
+						if(result.qList[i].answerStatus=='Y'){
+						str+="<td class='answerd'><p>답변완료</p></td>";
+						}else{
+						str+="<td class='wating-answer'><p>답변대기</p></td>";
+						}
+						str+="<td><a href='/pjtMungHub/qnaPage.sp/"+result.qList[i].questionNo+"'>["+result.qList[i].categoryName+"]입니다.";
 						if(result.qList[i].openStatus=='N'){
 							
 						str+="<i class='bi bi-lock-fill'></i>";
