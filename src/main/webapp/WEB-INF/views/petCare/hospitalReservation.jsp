@@ -10,7 +10,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>병원 예약 페이지</title>
+<title>동물병원 예약</title>
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js">
 import { Calendar } from '@fullcalendar/core';

@@ -191,11 +191,20 @@ import listPlugin from '@fullcalendar/list';
 <body>
     <%@include file="/WEB-INF/views/common/header.jsp" %>
     <input type="hidden" id="formattedDate" value="<%=formattedDate %>">
+    
+   HospitalRe(hosReNo=31, userNo=1, reTime=10:00, 
+   petName=멍뭉이, petKind=웰시코기, petBirthDay=2024-07-04, petGender=남, neutralization=예, specialNotes=ㅇㅇㅇ, 
+   petTypeNo=1, petTypeName=소형, symptom=구토, originName=null, changeName=null, 
+   diseaseName=파보바이러스, 렙토스피라증, 장염, status=Y, updateDay=2024-07-10)
+
+    
+    
 
     <div class="container">
         
         <form action="hospitalInsert.re" method="post" enctype="multipart/form-data">
             <input type="hidden" id="userNo" name="userNo" value="${loginUser.userNo }">
+            <input type="hidden" id="preReDate" name="preReDate" value="${hosRe.reDate }">
             <input type="hidden" id="reDate" name="reDate" value="">
             <input type="hidden" id="reTime" name="reTime" value="">
             <input type="hidden" id="petTypeNo" name="petTypeNo" value="">
@@ -205,9 +214,9 @@ import listPlugin from '@fullcalendar/list';
                 <div class="sitter-info">
                     <h5 class="h5">보호자의 정보를 입력해주세요.</h5>
                     <label for="ownerName">성명:</label>
-                    <input type="text" id="ownerName" name="petOwnerName" class="form-control" placeholder="필히 적어주세요." required>
+                    <input type="text" id="ownerName" name="petOwnerName" class="form-control" value="${hosRe.petOwnerName }" placeholder="필히 적어주세요." required>
                     <label for="ownerPhone">연락처:</label>
-                    <input type="text" id="ownerPhone" name="ownerPhone" class="form-control" placeholder="필히 적어주세요." required>
+                    <input type="text" id="ownerPhone" name="ownerPhone" class="form-control" value="${hosRe.ownerPhone }" placeholder="필히 적어주세요." required>
                 </div>
                 <div class="sitter-info">
                     <h5 class="h5">병원 정보 확인란</h5>
@@ -467,6 +476,7 @@ import listPlugin from '@fullcalendar/list';
 	
 		//============== 달력 ===================
 		$(function() {
+			var reDate =  $('#preReDate').val();//예약한 날짜 기준
 			var formattedDate = $('#formattedDate').val(); //오늘날짜기준
 		    var calendarEl = $('#calendar')[0];
 		    var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -493,17 +503,19 @@ import listPlugin from '@fullcalendar/list';
 		        }
 		    });
 		    setTimeout(function() {
+		    	
 		        calendar.render();
-		     // 페이지 첫번째 로드시 오늘 날짜, 예약시간, 펫크기 기본선택 및 스타일 적용
+		        
+		     // 페이지 첫번째 로드시 오늘 날짜 자동선택
 	            var todayEl = $('.fc-daygrid-day[data-date="' + formattedDate + '"]');
 	            todayEl.addClass('fc-day-selected');
 	            $('#reDate').val(formattedDate);
-	         // 에약시간
+	         // 에약시간 자동선택
 	         	var firstStrBtn = $('.str-btn').first();
 	         	firstStrBtn.addClass('selected');
 	         	$('#reTime').val(firstStrBtn.val());
 	         
-	         // 펫크기
+	         // 펫크기 자동선택
 	         	var firstPetTypeBtn = $('.petType-btn').first();
 	         	firstPetTypeBtn.addClass('selected');
 	         	$('#petType').val(firstPetTypeBtn.val());

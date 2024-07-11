@@ -115,11 +115,6 @@ public class PetCareController {
 		
 		ArrayList<PetSitter> sList = petCareService.selectSitter(at,pi);
 		
-		for(PetSitter p : sList) {
-			System.out.println(p);
-		}
-		System.out.println(pi);
-		
 		HashMap<String,Object> result = new HashMap<>();
 		result.put("list", sList);
 		result.put("pi", pi);
@@ -146,6 +141,10 @@ public class PetCareController {
 		//날짜 지정 후 시간 비활성화에 필요한
 		ArrayList<Reservation> disabledPlan = petCareService.disabledDates(petSitter.getPetSitterNo());
 		
+		for(Reservation d : disabledPlan) {
+			System.out.println(d);
+		}
+		
 		mv.addObject("disabledPlan", disabledPlan).setViewName("petCare/reservationSitter");
 		mv.addObject("petSitter", petSitter).setViewName("petCare/reservationSitter");
 		return mv;
@@ -170,6 +169,7 @@ public class PetCareController {
 								   ,MultipartFile upfile
 								   ,HttpSession session
 								   ,Model model) {
+		
 		
 		if(!upfile.getOriginalFilename().equals("")) {
 			
@@ -472,7 +472,9 @@ public class PetCareController {
 	//접수 페이지로 이동
 	@GetMapping("hospital.re")
 	public ModelAndView hospitalReservation(ModelAndView mv,HospitalRe hosRe) {
+		
 		mv.addObject("hosRe",hosRe).setViewName("petCare/hospitalReservation");
+		
 		return mv;
 	}
 	
@@ -488,13 +490,6 @@ public class PetCareController {
 			hosRe.setOriginName(upfile.getOriginalFilename());
 			hosRe.setChangeName("resources/uploadFiles/hospital/"+changeName);
 		}
-		
-		//시간형태 00:00 으로 변경
-		String timeString = hosRe.getReTime();
-		LocalTime time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HHmm"));
-		String formattedTime = time.format(DateTimeFormatter.ofPattern("HH:mm"));
-		hosRe.setReTime(formattedTime);
-		
 		//증상(구토,설사) 을 배열->해쉬맵 으로 바꿔서 mapper 에 전달
 		String symptomName = hosRe.getSymptom();
 		List<String> symList = Arrays.asList(symptomName.split(","));//쉼표를 기준으로 List로 변환
@@ -514,8 +509,6 @@ public class PetCareController {
 		String resultName = sb.toString();
 		hosRe.setDiseaseName(resultName);
 		
-		
-		
 		int result = petCareService.insertHosRe(hosRe);
 		//펫타입no를 이름으로 가져오기
 		String petType = petCareService.selectPetType(hosRe);
@@ -525,7 +518,12 @@ public class PetCareController {
 			//업데이트 식별자 hosReNo 가져오기
 			int hosReNo = petCareService.selectHosReNo();
 			hosRe.setHosReNo(hosReNo);
-			System.out.println(hosRe);
+
+			//시간형태 00:00 으로 변경
+			String timeString = hosRe.getReTime();
+			LocalTime time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HHmm"));
+			String formattedTime = time.format(DateTimeFormatter.ofPattern("HH:mm"));
+			hosRe.setReTime(formattedTime);
 			
 			mv.addObject("alertMsg","예약성공! 내역을 확인해주세요.").addObject("hosRe",hosRe).setViewName("petCare/hospitalDetail");
 		}else {
@@ -536,14 +534,16 @@ public class PetCareController {
 	
 	//업데이트 정보와 함께 페이지로 이동
 	@RequestMapping("hospitalUpdate.re")
-	public ModelAndView hospitalUpdate(int hosReNo,ModelAndView mv) {
+	public String hospitalUpdate(String hosReNo,ModelAndView mv) {
 		
-		HospitalRe hosRe = petCareService.selectHospitalRe(hosReNo);
 		
-		System.out.println(hosRe);
+		HospitalRe hosRe = petCareService.selectHospitalRe(Integer.parseInt(hosReNo));
+		
 		
 		mv.addObject("hosRe",hosRe).setViewName("petCare/hospitalUpdate");
-		return mv;
+		
+		
+		return "";
 	}
 	
 	
