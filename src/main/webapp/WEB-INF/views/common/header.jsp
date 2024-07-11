@@ -207,18 +207,18 @@ clear: both;
                 <li class="menu"><a href="#contact">Realestate</a></li>
 				<li style="float: right">
 					<c:choose>
-						<c:when test="${not empty sitterUser}">
-							<span>${sitterUser.petSitterName} 펫시터님 환영합니다.</span>
-							<a class="active" href="/pjtMungHub/logout.me"
-							style="color: white;">Logout</a>
-						</c:when>
 						<c:when test="${empty sitterUser&&empty loginUser}">
 							<a class="active" href="/pjtMungHub/enter.me"
 							style="color: white;">Login</a>
 						</c:when>
-						<c:otherwise>
+						<c:when test="${not empty loginUser}">
 							<span>${loginUser.userId} 님 환영합니다.</span>
 							<a href="myPage.me">마이페이지</a>
+							<a class="active" href="/pjtMungHub/logout.me"
+							style="color: white;">Logout</a>
+						</c:when>
+						<c:otherwise>
+							<span>${sitterUser.petSitterName} 펫시터님 환영합니다.</span>
 							<a class="active" href="/pjtMungHub/logout.me"
 							style="color: white;">Logout</a>
 						</c:otherwise>
@@ -286,24 +286,28 @@ clear: both;
 				<c:choose>
 				<c:when test="${not empty chatList}">
 					<c:forEach items="${chatList}" var="cList">
-						<div class="chatCont">
-							<c:choose>
+						<c:choose>
 							<c:when test="${not empty loginUser}">
+							<div class="chatCont sitter">
 								<input type="hidden" value="${cList.sitterNo}">
 								<span style="font-weight:bold;">
 									<c:forEach items="${sitterList}" var="sitter">${cList.sitterNo eq sitter.petSitterNo ? sitter.petSitterName:""}</c:forEach> 펫시터님
 								</span>
+								<br>
+								<span>${cList.chatContent}</span>
+							</div>
 							</c:when>
-							<c:when test="${not empty sitterUser}">
+							<c:when test="${empty loginUser&&not empty sitterUser}">
+							<div class="chatCont master">
 								<input type="hidden" value="${cList.masterNo}">
 								<span style="font-weight:bold;">
 									<c:forEach items="${masterList}" var="master">${cList.masterNo eq master.userNo ? master.name:""}</c:forEach> 견주님
 								</span>
+								<br>
+								<span>${cList.chatContent}</span>
+							</div>
 							</c:when>
-							</c:choose>
-							<br>
-							<span>${cList.chatContent}</span>
-						</div>
+						</c:choose>
 					</c:forEach>
 				</c:when>
 				<c:otherwise>
@@ -321,7 +325,7 @@ clear: both;
 				$(".chatList").slideUp();
 			}
 		})
-		$(".chatCont").on("click",function(){
+		$(".sitter").on("click",function(){
 			var sitterNo= $(this).children().eq(0).val();
 			var sitterUser;
 			$.ajax({
@@ -338,6 +342,14 @@ clear: both;
 			});
 			var code='';
 				code=sitterNo+'n'+${loginUser.userNo};
+
+			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=550');
+		})
+		$(".master").on("click",function(){
+			var masterNo= $(this).children().eq(0).val();
+			var sitterUser;
+			var code='';
+				code=${sitterUser.petSitterNo}+'n'+masterNo;
 
 			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=550');
 		})

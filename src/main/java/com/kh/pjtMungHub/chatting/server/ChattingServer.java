@@ -96,5 +96,6 @@ public class ChattingServer extends TextWebSocketHandler{
 			sitters.remove(session);	
 			log.debug("펫시터 세션 삭제");
 		}
+		System.out.println(session);
 	}
 }

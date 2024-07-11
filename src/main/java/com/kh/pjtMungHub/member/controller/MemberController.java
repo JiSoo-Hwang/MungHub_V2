@@ -602,6 +602,7 @@ public class MemberController {
 			}
 			session.setAttribute("masterList", masterList);
 			session.setAttribute("chatList", chatList);
+			session.removeAttribute("loginUser");
 		}else {			
 			msg="해당하는 회원을 찾을 수 없습니다. 회원 가입 후 이용해 주세요.";
 		}

@@ -113,7 +113,6 @@
 				</tr>
 				<tr>
 					<td colspan=3>
-						<input type="checkbox" id="rememberID"><label for="rememberID">아이디 기억하기</label>
 					</td>
 				</tr>
 			</table>

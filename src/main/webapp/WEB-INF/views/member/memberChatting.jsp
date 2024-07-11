@@ -7,11 +7,7 @@
 <title>채팅창</title>
 </head>
 <style>
-	.chat-total{
-		width:100%;
-		height:100%;
-		overflow: auto;
-	}
+
 	.sitter-photo{
 		margin-top:10px;
 		margin-left:10px;
@@ -28,10 +24,9 @@
 		left:50%;
 	}
 	.chatHeader{
-		height:auto;
-		width:100%;
+		height:180px;
 		border-bottom:1px solid gray;
-		position:fixed;
+		position:absolute;
 		background-color: rgb(218, 253, 255);
 	}
 	.empty{
@@ -44,8 +39,8 @@
 		background-color: rgb(255,219,244);
 		height:100%;
 		position:absolute;
-		z-index: -15;
-		top:0px;
+		overflow: auto;
+		z-index: -3;
 	}
 	.chat-main>div{
 		display:block;
@@ -69,10 +64,10 @@
 		margin-top:5px;
 		margin-bottom:10px;
 		width:80%;
-		height:100px;
+		height:200px;
 		float:left;
 	}
-	.chat-total>div{
+	.chatHeader,.chat-main,.chatSender{
 		width:100%;
 	}
 	.userChat{
@@ -115,12 +110,12 @@
 		background-color: lightGray;
 		float:right;
 	}
+
 </style>	
 <body>
 	<div hidden="true">
 		<%@include file="/WEB-INF/views/common/header.jsp" %>
 	</div>
-<div class="chat-total">
 	<div class="chatHeader">
 		<div class="sitter-left">
 			<div class="sitter-photo">
@@ -138,9 +133,7 @@
 			<button class="exitButton" onclick="disconnect();">나가기</button>
 			</c:if>
 		</div>
-		<br>
 	</div>
-	<br>
 	<div class="chat-main">
 		<div class="empty"></div>
 		<div class="chatArea">
@@ -157,12 +150,10 @@
 			</c:if>
 		</div>
 	</div>
-	<br>
 	<div class="chatSender">
 	<textarea id="summernote" class="chat"></textarea>
 	<button class="sendButton" onclick="send();">보내기</button>
 	</div>
-</div>
 	
 	<script>
 		// 웹소켓 접속 함수
@@ -209,7 +200,6 @@
 			}
 		})
 		function disconnect(){
-			alert("채팅방을 나갈 시 진행한 대화가 전부 사라집니다. 정말 나가시겠습니까?");
 			socket.close();
 			window.close();
 		}
@@ -217,6 +207,9 @@
 			toolbar:[
 				['insert',['picture','link','video']]
 			]});
+		$(".note-toolbar").on("click",function(){
+			$(".note-modal-backdrop").prop("style","z-index:1;");
+		})
 		// 메시지 전송 함수
 		function send(){
 			// 사용자가 입력한 텍스트를 추출하여 웹소켓에 전달하기
