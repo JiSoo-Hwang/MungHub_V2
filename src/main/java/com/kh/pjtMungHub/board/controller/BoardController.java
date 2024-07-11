@@ -1,9 +1,10 @@
 package com.kh.pjtMungHub.board.controller;
 
 import java.io.File;
-import java.sql.Date;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.servlet.http.HttpSession;
 
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -21,6 +24,7 @@ import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.*;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.template.Pagination;
+import com.kh.pjtMungHub.shop.model.vo.Attachment;
 
 
 
@@ -36,48 +40,54 @@ public class BoardController {
 	@GetMapping("list.bo")
 	public String boardList(Model model,
 	                        @RequestParam(value="currentPage", defaultValue="1") int currentPage,
-	                        @RequestParam(value="category", defaultValue="0") String category,
+	                        @RequestParam(value="category", defaultValue="0") int category,
 	                        @RequestParam(value="sort", defaultValue="latest") String sort) {
 
 	    // 전체 게시글 수 조회
-	    int listCount;
-	    if (category.equals("0")) {
+	    int listCount = boardService.listCount();
+	    
+	    int pageLimit = 10;
+	    int boardLimit = 20;
+	    
+	    // 페이지 정보 객체 생성
+	    PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+	   
+	    // 게시글 목록 조회
+	    ArrayList<Board> List = boardService.selectList(pi,sort);
+	    
+	    if (category==0) {
 	        listCount = boardService.listCount();
 	    } else {
 	        listCount = boardService.listCount(category);
 	    }
 	    
-	    int pageLimit = 5;
-	    int boardLimit = 5;
-
-	    // 페이지 정보 객체 생성
-	    PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
-
-	    // 게시글 목록 조회
-	    ArrayList<Board> pList;
-	    if (category.equals("0")) {
-	        pList = boardService.selectList(pi, sort);
-	    } else {
-	        pList = boardService.selectList(pi, category, sort);
-	    }
-
+	    
 	    // 카테고리 목록 조회
 	    ArrayList<Category> ctList = boardService.selectCategory();
-	    System.out.println(ctList);
 
+	    
+	    if (category==0) {
+	    	List = boardService.selectList(pi, sort);
+	    } else {
+	    	List = boardService.selectList(pi, sort,category);
+	    }
+	    
+	    
 	    // 모델에 데이터 추가
 	    model.addAttribute("pi", pi);
-	    model.addAttribute("pList", pList);
-	    model.addAttribute("ctList", ctList);
-	    model.addAttribute("category", category);
 	    model.addAttribute("sort", sort);
+	    model.addAttribute("category", category);
+	    model.addAttribute("ctList",ctList);
+	    model.addAttribute("List",List);
 
+	    
 	    return "board/boardListView";
 	}
 	
 	@GetMapping("detail.bo")
 	public ModelAndView selectBoard(int boardNo,
 									ModelAndView mv) {
+		
 		//조회수 증가시키기
 		int result = boardService.increaseCount(boardNo);
 		
@@ -95,52 +105,138 @@ public class BoardController {
 	
 	//게시물 작성 페이지로 이동하는 메소드
 	@GetMapping("insert.bo")
-	public String boardEnrollForm() {
+	public ModelAndView boardEnrollForm(ModelAndView mv) {
 		
-		return "board/EnrollForm";
+		ArrayList<Category> ctList = boardService.selectCategory();	
+		
+		mv.addObject("ctList",ctList);
+		mv.setViewName("board/insertBoardView");
+		
+		
+		return mv;
 		
 	}
-	/*
+	
 	//게시물 등록 메소드
-	@PostMapping("")
-	public String insertBoard(Board b,
-							  MultipartFile upfile,
-							  HttpSession session) {
+	@PostMapping("insert.bo")
+	public ModelAndView insertBoard(Board b,ModelAndView mv,MultipartFile[] upfile,HttpSession session) {
 		
-		if(!upfile.getOriginalFilename().equals("")) {
-			//1.원본파일명 추출
-			String originName = upfile.getOriginalFilename();
-			//2.시간형식 문자열로 만들기
-			String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-			//3.확장자 추출하기 파일명 뒤에서부터 . 찾아서 뒤로 잘라내기
-			String ext = originName.substring(originName.lastIndexOf(","));
-			//4.랜덤값 5자리 뽑기
-			int ranNum=(int)(Math.random()*90000+10000);
-			//5.하나로 합쳐주기
-			String changeName = currentTime+ranNum+ext;
-			//6. 업로드하고자 하는 물리적인 경로 알아내기
-			String savePath = session.getServletContext().getRealPath("/resources/uploardFiles/");
+		ArrayList<Attachment> aList = new ArrayList<>();
+		System.out.println(b);
+		for(int i=0;i<upfile.length;i++){
 			
-			//7. 경로와 수정파일명을 합쳐서 파일 업로드하기
-			upfile.transferTo(new File(savePath+changeName));
-			//만들어 놓은 파일 업로드 메소드 사용하기
-			String chanageName = saveFile(upfile,session);
+		
+		String fileType= upfile[i].getOriginalFilename();
+		int index = fileType.lastIndexOf(".");
+		String extension =fileType.substring(index+1).toLowerCase();
+		String type= "";
+		
+		if(extension.equals("avi")||
+		   extension.equals("mov")||
+		   extension.equals("mp4")||
+		   extension.equals("wmv")||
+		   extension.equals("asf")||
+		   extension.equals("mkv")) {
+			type="video";
+		}else if (extension.equals("jpeg")||
+				 extension.equals("jpg")||
+				 extension.equals("png")||
+				 extension.equals("gif")) {
+			type="image";
+			
+		}else {
+			type="file";
 		}
 		
+		String changeName = saveFile(upfile[i],session,type);
+		
+		Attachment a = Attachment.builder().
+				fileLev(i).
+				originName(upfile[i].getOriginalFilename()).
+				changeName(changeName).
+				filePath("/pjtMungHub/resources/uploadFiles/board/boardDetail/"+type+"/").
+				type(type).
+				build();
+		
+		aList.add(a);
+		}
 		
 		int result = boardService.insertBoard(b);
 		
 		if(result>0) {//게시글 작성 성공
 			session.setAttribute("alertMsg", "게시글 작성 성공!");
+			mv.setViewName("redirect:/list.bo");
+			
+			return mv;
 		}else { //게시글 작성 실패
+			for(int i=0;i<aList.size();i++) {
+				String deleteFile=aList.get(i).getFilePath()+aList.get(i).getChangeName();
+				new File(session.getServletContext().getRealPath(deleteFile)).delete();
+			}
 			session.setAttribute("alertMsg", "게시글 작성 실패!");
+			mv.setViewName("redirect:/insert.bo");
+			
+			return mv;
 		}
 
 		
 		
-		return "redirect/:list.bo";
+		
 	}
-	*/
+	
+	
+	// 파일 업로드 처리 메소드(재활용)
+	public String saveFile(MultipartFile upfile, HttpSession session, String type) {
+	// 파일명 수정작업하기
+	// 1.원본파일명 추출
+	String originName = upfile.getOriginalFilename();
+	// 2.시간형식 문자열로 만들기
+	// 20240527162730
+	String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+	// 3.확장자 추출하기 파일명 뒤에서부터 . 찾아서 뒤로 잘라내기
+	String ext = originName.substring(originName.lastIndexOf("."));
+	// 4.랜덤값 5자리 뽑기
+	int ranNum = (int) (Math.random() * 90000 + 10000);
+	// 5.하나로 합쳐주기
+	String changeName = currentTime + ranNum + ext;
+	// 6.업로드하고자하는 물리적인 경로 알아내기 (프로젝트 내에 저장될 실제 경로 찾기)
+	String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/board");
+	// 7.경로와 수정 파일명을 합쳐서 파일 업로드 처리하기
+	try {
+		upfile.transferTo(new File(savePath + changeName));
+	} catch (IllegalStateException | IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+
+	return changeName;
+
+	}
+
+	// 댓글 목록 조회
+	@ResponseBody
+	@RequestMapping(value = "replyList.bo", produces = "application/json;charset=UTF-8")
+	public ArrayList<Reply> replyList(int boardNo) {
+
+		ArrayList<Reply> rList = boardService.replyList(boardNo);
+
+		return rList;
+	}
+	
+	//댓글 입력
+	@ResponseBody
+	@RequestMapping("insertReply.bo")
+	public int insertReply(Reply r) {
+		
+		System.out.println(r);
+		
+		int result = boardService.insertReply(r);
+		
+		return result;
+	}	
+	
+	//댓글 삭제 기능 추가예정
 	
 		
 		
