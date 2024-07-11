@@ -134,7 +134,9 @@
 			<div class="sitter-introduce">
 				${sitterUser.introduce}
 			</div>
+			<c:if test="${not empty loginUser}">
 			<button class="exitButton" onclick="disconnect();">나가기</button>
+			</c:if>
 		</div>
 		<br>
 	</div>

@@ -193,9 +193,6 @@ clear: both;
 		bottom:10px;
 		right:10px;
 	}
-	.chatList{
-		display:none;
-	}
 </style>
 </head>
 <body>
@@ -210,7 +207,12 @@ clear: both;
                 <li class="menu"><a href="#contact">Realestate</a></li>
 				<li style="float: right">
 					<c:choose>
-						<c:when test="${empty loginUser}">
+						<c:when test="${not empty sitterUser}">
+							<span>${sitterUser.petSitterName} 펫시터님 환영합니다.</span>
+							<a class="active" href="/pjtMungHub/logout.me"
+							style="color: white;">Logout</a>
+						</c:when>
+						<c:when test="${empty sitterUser&&empty loginUser}">
 							<a class="active" href="/pjtMungHub/enter.me"
 							style="color: white;">Login</a>
 						</c:when>
@@ -271,12 +273,13 @@ clear: both;
 	</c:if>
 	
 	<!-- 실시간 채팅창 -->
-	<c:if test="${not empty loginUser}">
+
+	<c:if test="${not empty loginUser||not empty sitterUser}">
 	    <div class="chatTotal">
 			<div class="chatArea">
 				<button type="button">채팅</button>
 			</div>
-			<div class="chatList">
+			<div class="chatList" style="display:none;">
 				<div class="chatTitle">
 					<span>채팅 목록</span>
 				</div>
@@ -284,41 +287,28 @@ clear: both;
 				<c:when test="${not empty chatList}">
 					<c:forEach items="${chatList}" var="cList">
 						<div class="chatCont">
-							<input type="hidden" value="${cList.sitterNo}">
-							<span style="font-weight:bold;">
-								<c:forEach items="${sitterList}" var="sitter">${cList.sitterNo eq sitter.petSitterNo ? sitter.petSitterName:""}</c:forEach> 펫시터님
-							</span>
+							<c:choose>
+							<c:when test="${not empty loginUser}">
+								<input type="hidden" value="${cList.sitterNo}">
+								<span style="font-weight:bold;">
+									<c:forEach items="${sitterList}" var="sitter">${cList.sitterNo eq sitter.petSitterNo ? sitter.petSitterName:""}</c:forEach> 펫시터님
+								</span>
+							</c:when>
+							<c:when test="${not empty sitterUser}">
+								<input type="hidden" value="${cList.masterNo}">
+								<span style="font-weight:bold;">
+									<c:forEach items="${masterList}" var="master">${cList.masterNo eq master.userNo ? master.name:""}</c:forEach> 견주님
+								</span>
+							</c:when>
+							</c:choose>
 							<br>
 							<span>${cList.chatContent}</span>
 						</div>
 					</c:forEach>
 				</c:when>
-				</c:choose>
-			</div>
-		</div>
-	</c:if>
-	<c:if test="${not empty sitterUser}">
-	    <div class="chatTotal">
-			<div class="chatArea">
-				<button type="button">채팅</button>
-			</div>
-			<div class="chatList">
-				<div class="chatTitle">
-					<span>채팅 목록</span>
-				</div>
-				<c:choose>
-				<c:when test="${not empty chatList}">
-					<c:forEach items="${chatList}" var="cList">
-						<div class="chatCont">
-							<input type="hidden" value="${cList.masterNo}">
-							<span style="font-weight:bold;">
-								<c:forEach items="${masterList}" var="sitter">${cList.sitterNo eq sitter.petSitterNo ? sitter.petSitterName:""}</c:forEach> 펫시터님
-							</span>
-							<br>
-							<span>${cList.chatContent}</span>
-						</div>
-					</c:forEach>
-				</c:when>
+				<c:otherwise>
+					현재 진행된 채팅이 없습니다.
+				</c:otherwise>
 				</c:choose>
 			</div>
 		</div>

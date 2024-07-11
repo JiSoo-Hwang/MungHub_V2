@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.pjtMungHub.chatting.vo.MessageVO;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
@@ -155,34 +154,38 @@ public class MemberController {
 	}
 	
 	@RequestMapping("login.me")
-	public ModelAndView loginMember(Member m, ModelAndView mv, HttpSession session) {
+	public String loginMember(Member m, HttpSession session) {
 		Member loginUser = service.loginMember(m);
+		String msg="";
 		if(loginUser==null || !bcryptPasswordEncoder.matches(m.getPassword(),loginUser.getPassword())) {
-			mv.addObject("alertMsg","로그인 실패");
-			mv.setViewName("/");
+			msg="로그인 실패";
+			session.setAttribute("alertMsg", msg);
+			return "redirect:/enter.me";
 		}else if(loginUser.getStatus().equals("N")){
-			mv.addObject("alertMsg","아직 승인처리가 완료되지 않았습니다. 관리자에게 문의하시기 바랍니다.");
+			msg="아직 승인처리가 완료되지 않았습니다. 관리자에게 문의하시기 바랍니다.";
 		}else {
-			mv.addObject("alertMsg",loginUser.getUserId()+"님 환영합니다.");
+			msg=loginUser.getUserId()+"님 환영합니다.";
 			session.setAttribute("loginUser", loginUser);
 			ArrayList<MessageVO> cList=service.getChatList(loginUser);
 			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+			System.out.println(cList);
 			for(MessageVO c:cList) {
+				c.setMasterNo(loginUser.getUserNo());
 				chatList.add(service.getNewChat(c));
 			}
 			session.setAttribute("chatList", chatList);
 			session.setAttribute("sitterList", service.getSitterList());
 		}
-		mv.setViewName("redirect:/");
-		return mv;
+		session.setAttribute("alertMsg", msg);
+		return "redirect:/";
 	}
 	
 	@RequestMapping("logout.me")
-	public ModelAndView logoutMember(ModelAndView mv,HttpSession session) {
-		mv.addObject("alertMsg", "이용해 주셔서 감사합니다.");
+	public String logoutMember(HttpSession session) {
+		session.setAttribute("alertMsg", "이용해 주셔서 감사합니다.");
 		session.removeAttribute("loginUser");
-		mv.setViewName("redirect:/");
-		return mv;
+		session.removeAttribute("sitterUser");
+		return "redirect:/";
 	}
 	
 	@ResponseBody
@@ -220,39 +223,37 @@ public class MemberController {
 	}
 	
 	@PostMapping("searchId.me")
-	public ModelAndView searchId(Member m, ModelAndView mv, HttpSession session) {
+	public String searchId(Member m, HttpSession session) {
 		Member result = service.searchId(m);
 		if(result!=null) {
-			mv.addObject("alertMsg", "조회하신 아이디는 "+result.getUserId()+" 입니다.");
-			mv.setViewName("member/memberLoginUpdate");
+			session.setAttribute("alertMsg", "조회하신 아이디는 "+result.getUserId()+" 입니다.");
+			return "member/memberLoginUpdate";
 		}else {
-			mv.addObject("alertMsg","입력한 데이터를 다시 확인해 주세요.");
-			mv.setViewName("member/memberLoginForm");
+			session.setAttribute("alertMsg","입력한 데이터를 다시 확인해 주세요.");
+			return "member/memberLoginForm";
 		}
-		return mv;
 	}
 	
 	@PostMapping("changePw.me")
-	public ModelAndView changePw(Member m, ModelAndView mv, HttpSession session) {
+	public String changePw(Member m, HttpSession session) {
 		Member result=service.searchId(m);
 		if(result==null||!result.getUserId().equals(m.getUserId())) {
-			mv.addObject("alertMsg", "입력하신 정보를 다시 확인해 주세요.");
+			session.setAttribute("alertMsg", "입력하신 정보를 다시 확인해 주세요.");
 		}else {
 			m.setPassword(bcryptPasswordEncoder.encode(m.getPassword()));
 			
 			int rnum=service.changePw(m);
 			if(rnum>0) {
-				mv.addObject("alertMsg", "비밀번호가 변경되었습니다. 다시 로그인해 주세요.");
+				session.setAttribute("alertMsg", "비밀번호가 변경되었습니다. 다시 로그인해 주세요.");
 			}else {
 				System.out.println("통신오류");
 			}
 		}
-		mv.setViewName("redirect:/enter.me");
-		return mv;
+		return "redirect:/enter.me";
 	}
 
 	@PostMapping("enrollPet.me")
-	public ModelAndView enrollPet(Pet p, MultipartFile upFile, ModelAndView mv, HttpSession session) {
+	public String enrollPet(Pet p, MultipartFile upFile, HttpSession session) {
 		System.out.println(p);
 		System.out.println(upFile);
 		Member m=(Member)session.getAttribute("loginUser");
@@ -287,8 +288,7 @@ public class MemberController {
 			alertMsg="반려견 등록을 실패하셨습니다.";
 		}
 		session.setAttribute("alertMsg", alertMsg);
-		mv.setViewName("redirect:/myPage.me");
-		return mv;
+		return "redirect:/myPage.me";
 	}
 	
 	@PostMapping("updatePetStat.me")
@@ -579,8 +579,10 @@ public class MemberController {
 			msg=loginUser.getUserId()+"님 환영합니다.";
 			session.setAttribute("loginUser", loginUser);
 			ArrayList<MessageVO> cList=service.getChatList(loginUser);
+			System.out.println(cList);
 			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
 			for(MessageVO c:cList) {
+				c.setMasterNo(loginUser.getUserNo());
 				chatList.add(service.getNewChat(c));
 			}
 			session.setAttribute("chatList", chatList);
@@ -592,6 +594,7 @@ public class MemberController {
 			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
 			ArrayList<Member> masterList=new ArrayList<>();
 			for(MessageVO c:cList) {
+				c.setSitterNo(sitterUser.getPetSitterNo());
 				chatList.add(service.getNewChat(c));
 				Member mem=new Member();
 				mem.setUserNo(c.getMasterNo());

@@ -178,7 +178,7 @@ public class MemberDao {
 	}
 
 	public PetSitter selectSitterbySocial(SqlSessionTemplate sqlSession, Member m) {
-		return sqlSession.selectOne("memberMapper.selectSittebySocial",m);
+		return sqlSession.selectOne("memberMapper.selectSitterbySocial",m);
 	}
 
 	public ArrayList<MessageVO> getSitterChatList(SqlSessionTemplate sqlSession, PetSitter sitterUser) {

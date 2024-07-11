@@ -23,25 +23,47 @@ public class WebsocketController {
 	private MemberService service;
 	@GetMapping("/{code}")
 	public String enterChat(@PathVariable String code, HttpSession session) {
-		ArrayList<PetSitter> sitterList=service.getSitterList();
-		ArrayList<MessageVO> lastChat=(ArrayList)session.getAttribute("chatList");
-		String[] code2=code.split("n");
-		int petSitterNo=Integer.parseInt(code2[0]);
-		MessageVO p= new MessageVO();
-		for(MessageVO msg:lastChat) {
-			if(msg.getSitterNo()==petSitterNo) {
-				p=msg;
+		Member loginUser=(Member)session.getAttribute("loginUser");
+		PetSitter sitterUser=(PetSitter)session.getAttribute("sitterUser");
+		if(loginUser!=null) {
+			ArrayList<PetSitter> sitterList=service.getSitterList();
+			ArrayList<MessageVO> lastChat=(ArrayList)session.getAttribute("chatList");
+			String[] code2=code.split("n");
+			int petSitterNo=Integer.parseInt(code2[0]);
+			MessageVO p= new MessageVO();
+			for(MessageVO msg:lastChat) {
+				if(msg.getSitterNo()==petSitterNo) {
+					p=msg;
+				}
 			}
-		}
-		ArrayList<MessageVO> chatList=service.selectChatList(p);
-		for(PetSitter pst :sitterList){
-			if(pst.getPetSitterNo()==p.getSitterNo()) {
-				session.setAttribute("sitterUser",pst);
-				break;
+			ArrayList<MessageVO> chatList=service.selectChatList(p);
+			for(PetSitter pst :sitterList){
+				if(pst.getPetSitterNo()==p.getSitterNo()) {
+					session.setAttribute("counterUser",pst);
+					break;
+				}
 			}
+			session.setAttribute("chatList", chatList);
+		}else if(sitterUser!=null){
+			ArrayList<MessageVO> lastChat=(ArrayList)session.getAttribute("chatList");
+			String[] code2=code.split("n");
+			int masterNo=Integer.parseInt(code2[1]);
+			MessageVO p= new MessageVO();
+			for(MessageVO msg:lastChat) {
+				if(msg.getMasterNo()==masterNo) {
+					p=msg;
+				}
+			}
+			ArrayList<MessageVO> chatList=service.selectChatList(p);
+			ArrayList<Member> masterList=(ArrayList)session.getAttribute("masterList");
+			for(Member mem :masterList){
+				if(mem.getUserNo()==p.getMasterNo()) {
+					session.setAttribute("counterUser",mem);
+					break;
+				}
+			}
+			session.setAttribute("chatList", chatList);
 		}
-		session.setAttribute("chatList", chatList);
-		System.out.println(chatList);
 		return "member/memberChatting";
 	}
 
