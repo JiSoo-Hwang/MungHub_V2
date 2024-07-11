@@ -329,7 +329,7 @@ clear: both;
 				}
 			});
 			var code='';
-				code=sitterNo+'n'+${loginUser.userNo};
+				code=sitterNo+'n'+"${loginUser.userNo}";
 
 			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=550');
 		})

@@ -110,16 +110,22 @@ h2 {
 }
 
 .wating-answer {
-	text-align: center;
+	text-align: center !important;
 }
 
 .wating-answer p {
-	color: gray;
+	color: gray !important;
 }
 
 .question-list>td a {
-	text-decoration: none;
-	color: gray;
+	text-decoration: none !important;
+	color: gray !important;
+}
+
+.question-list>td button {
+	text-decoration: none !important;
+	color: gray !important;
+	border: 0px;
 }
 #favor{
  transition : transform 0.3s ease-in-out;
@@ -512,7 +518,12 @@ color: purple;
 						<div class="review-content">
 						<div class="media-container">
 						<c:forEach items="${rAtList[i.index] }" var="rAt">
+						<c:if test="${rAt.type eq 'image' }">
 						<img src="${rAt.filePath }${rAt.changeName}" class="img-fluid">
+						</c:if>
+						<c:if test="${rAt.type eq 'video' }">
+						<video src="${rAt.filePath }${rAt.changeName}" style="max-height: 300px;" controls></video>
+						</c:if>
 						</c:forEach>
 						</div>
 	          
@@ -763,8 +774,20 @@ color: purple;
 				
 				
 				</script>
-				
 			</c:if>
+			
+			<c:if test="${empty loginUser }">
+			<script>
+			function like(num){
+				alert("로그인 이후에 이용해주세요.");
+			}
+			function insertReply(num){
+				alert("로그인 이후에 이용해주세요.")
+			}
+			</script>
+			
+			</c:if>
+			
 				
 			</div>
 		</div>
@@ -1011,7 +1034,7 @@ color: purple;
 		  	<div id="file">
 		  		<img onclick='photo()' src="/pjtMungHub/resources/uploadFiles/common/css/MUNGHUB_logo.png" width="100%" id='loadedFile'>
 				<input type='file' accept='image/*' id="uploadFile" onchange='loadFile(this)'>		  	
-		  		<input type='hidden' value='picture' id='type'>
+		  		<input type='hidden' value='image' id='type'>
 		  	</div>
 		  	</div>
 		      </div>
@@ -1093,6 +1116,7 @@ color: purple;
 						alertify
 						  .alert("작성이 완료되었습니다.", function(){
 						    alertify.success('마일리지가 적립되었습니다. 150P+');
+						    selectReview();
 						  });
 					},error : function(){
 						console.log("통신 오류");
@@ -1145,7 +1169,7 @@ color: purple;
 			</div>
 		</div>
 		<h4>
-			전체후기 <span><fmt:formatNumber type="number"
+			전체후기 <span id="totalReviewCount"><fmt:formatNumber type="number"
 					maxFractionDigits="0" value="${p.reviewCount }" />건</span>
 		</h4>
 
@@ -1274,6 +1298,18 @@ color: purple;
 						str+="<h1 align='center' class='py-5'>리뷰가 없습니다.</h1>"
 					}
 					$("#review_area").html(str+modal);
+					
+					$.ajax({
+						url : "/pjtMungHub/selectReviewCount.sp",
+						data : {productNo : ${p.productNo}},
+						success : function(result){
+							
+						$("#totalReviewCount").text(result);
+						},error : function(){
+							console.log("통신오류");
+						}
+						
+					});
 				},
 				error: function(){
 					console.log("통신오류");
@@ -1313,34 +1349,96 @@ color: purple;
 
 	<div class="container" id="detail-section03">
 		<h2>
-			상품문의 <span style="color: gray; font-size: 16px;">(4,666개)</span>
+			상품문의 <span id="questionCount" style="color: gray; font-size: 16px;">()</span>
 		</h2>
 
 		<hr>
 		<div class="d-grid gap-2 d-md-block qna">
 			<a href="" class="btn btn-outline-secondary flex-shrink-0">1:1 문의하기</a> 
-				<a href="" class="btn btn-outline-dark flex-shrink-0">상품 문의하기</a>
+			<button type="button" class="btn btn-outline-dark flex-shrink-0"
+			data-bs-toggle="modal" data-bs-target="#insertQuestionModal">상품 문의하기</button>
 		</div>
 
+			<div class="modal fade" id="insertQuestionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-sm modal-dialog-centered">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h1 class="modal-title fs-5" id="staticBackdropLabel">문의하기</h1>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body" align="center">
+		      <div class="py-2">
+		      <select id="category">
+		      	<c:forEach items="${cList }" var="c">
+		      		<option value="${c.categoryNo }">${c.categoryName }</option>
+		      	</c:forEach>
+		      </select>
+		      <label for="openStatus">비밀글</label><input type="checkbox" id="openStatus" checked>
+		      </div>
+		        <textarea rows="10" cols="30" id="Qcontent"></textarea>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+		        <button type="button" onclick="insertQuestion()" class="btn btn-primary">작성</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+
+		<c:if test="${not empty loginUser }">
+		<script>
+			function insertQuestion(){
+				var openStatus="";
+				if($("#openStatus").is(":checked")){
+				openStatus='N';
+				}else{
+				openStatus='Y';
+				}
+			$.ajax({
+				url: "/pjtMungHub/insertQuestion.sp",
+				type : "post",
+				data : {userNo : ${loginUser.userNo}
+						,content: $("#Qcontent").val()
+						,productNo : ${p.productNo}
+						,categoryNo : $("#category option:selected").val()
+						,openStatus : openStatus
+						},
+				success : function(result){
+					selectQuestionList(1);
+					alert("문의가 완료되었습니다. 최대한 빨리 답변할 수 있도록 노력하겠습니다.");
+					$('#insertQuestionModal').modal('hide');
+				},error : function(){
+					console.log("통신오류");
+				}
+					
+			});
+		}
+		</script>
+		</c:if>
+		
+		<c:if test="${empty loginUser }">
+		<script>
+		function insertQuestion(){
+			alert("로그인 이후에 이용해주세요.");
+		}
+		</script>
+		
+		</c:if>
+
+
 		<table class="table table-borderless" id="question-area">
-			<tr class="question-list">
-				<td class="answerd"><p>답변완료</p></td>
-				<td><a href="#">[상품문의]입니다. <i class="bi bi-lock-fill"></i></a></td>
-				<td>작성자</td>
-				<td>2024.06.20</td>
-			</tr>
-			<tr class="question-list">
-				<td class="wating-answer"><p>답변대기</p></td>
-				<td><a href="#">[배송문의]입니다. <i class="bi bi-unlock"></i></a></td>
-				<td>작성자</td>
-				<td>2024.06.20</td>
-			</tr>
 		</table>
 		
 		<div align="center" id="pagination-container"></div>
 	</div>
 	
 	<script>
+		function noAuth(){
+			alert("해당 문의를 조회할 권한이 없습니다.");
+		}	
+	
+	
 		function selectQuestionList(num){
 			$.ajax({
 				url: "/pjtMungHub/questionList.sp",
@@ -1349,18 +1447,36 @@ color: purple;
 				success : function(result){
 					var str="";
 					var pagination="";
-					
+					var userNo="${loginUser.userNo}";
 					for (var i = 0; i < result.qList.length; i++) {
-						str+="<tr class='question-list'>"
-						+"<td class='answerd'><p>답변완료</p></td>"
-						+"<td><a href='#'>["+result.qList[i].categoryName+"]입니다.";
-						if(result.qList[i].openStatus=='N'){
-							
-						str+="<i class='bi bi-lock-fill'></i>";
+						str+="<tr class='question-list'>";
+						if(result.qList[i].answerStatus=='Y'){
+						str+="<td class='answerd'><p>답변완료</p></td>";
 						}else{
+						str+="<td class='wating-answer'><p>답변대기</p></td>";
+						}
+						
+						if(result.qList[i].openStatus=='N'){
+						  if(${loginUser.userGrade>0}){
+							  
+							  str+="<td><a href='/pjtMungHub/qnaPage.sp/"+result.qList[i].questionNo+"'>["+result.qList[i].categoryName+"]입니다.";
+							  str+="<i class='bi bi-lock-fill'></i>";
+						  }else{
+							if(${empty loginUser}){
+							str+="<td><button type='button' onclick='noAuth()'>["+result.qList[i].categoryName+"]입니다.<i class='bi bi-lock-fill'></i></button>";
+							}else if(userNo!=result.qList[i].userNo){
+							str+="<td><button type='button' onclick='noAuth()'>["+result.qList[i].categoryName+"]입니다.<i class='bi bi-lock-fill'></i></button>";
+							}else{
+							str+="<td><a href='/pjtMungHub/qnaPage.sp/"+result.qList[i].questionNo+"'>["+result.qList[i].categoryName+"]입니다.";
+							str+="<i class='bi bi-lock-fill'></i>";
+							}
+							
+						  }
+						}else{
+							str+="<td><a href='/pjtMungHub/qnaPage.sp/"+result.qList[i].questionNo+"'>["+result.qList[i].categoryName+"]입니다.";
 							str+="<i class='bi bi-unlock'></i>";
 						}
-						str+="</a></td>"
+						str+="</td>"
 						+"<td>"+result.qList[i].userName+"</td>"
 						+"<td>"+formatDate(result.qList[i].createDate)+"</td>"
 						+"</tr>";
@@ -1368,8 +1484,8 @@ color: purple;
 					
 					pagination+="<nav>"
 					+"<ul class='pagination justify-content-center'>";
-					if(result.pi.currentPage!=1){
-						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(i-1)+")'>이전</button></li>";
+					if(result.pi.currentPage>1){
+						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(result.pi.currentPage-1)+")'>이전</button></li>";
 					}
 					for (var i = 1; i <= result.pi.endPage; i++) {
 						if(result.pi.currentPage==i){
@@ -1379,11 +1495,15 @@ color: purple;
 						}
 					}
 					
-					if(result.pi.currentPage!=result.pi.maxPage){
-						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(i+1)+")'>다음</button></li>"
+					if(result.pi.currentPage<result.pi.maxPage){
+						if(result.pi.maxPage>0){
+							
+						pagination+="<li class='page-item'><button class='page-link' onclick='selectQuestionList("+(result.pi.currentPage+1)+")'>다음</button></li>"
+						}
 					}
 					pagination+=" </ul></nav>";
 					
+					$("#questionCount").text("("+result.pi.listCount+")");
 					$("#question-area").html(str);
 					$("#pagination-container").html(pagination);
 				},error : function(){

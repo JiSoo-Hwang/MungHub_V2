@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.shop.model.dao.ShopDao;
+import com.kh.pjtMungHub.shop.model.vo.Answer;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
@@ -350,6 +351,28 @@ public class ShopServiceImpl implements ShopService {
 			return 0;
 		}
 		
+	}
+
+	@Override
+	public Answer selectAnswer(int questionNo) {
+		// TODO Auto-generated method stub
+		Answer result=shopDao.selectAnswer(sqlSession,questionNo);
+		if(result!=null) {
+		int update=shopDao.updateQuestionStatus(sqlSession,questionNo);
+		}
+		return result;
+	}
+
+	@Override
+	public Question selectQuestionDetail(int questionNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectQuestionDetail(sqlSession, questionNo);
+	}
+
+	@Override
+	public int insertQuestion(Question q) {
+		// TODO Auto-generated method stub
+		return shopDao.insertQuestion(sqlSession,q);
 	}
 
 }
