@@ -2,6 +2,7 @@ package com.kh.pjtMungHub.member.model.service;
 
 import java.util.ArrayList;
 
+import com.kh.pjtMungHub.chatting.vo.MessageVO;
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.member.model.vo.Message;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
+import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 
 public interface MemberService {
 
@@ -44,5 +46,13 @@ public interface MemberService {
 	int enableMember(Member m);
 	boolean isUserRestricted(int userNo);
 	int restrictUser(int userNo,int days);
+	PetSitter searchSitterStatus(PetSitter pst);
+	ArrayList<MessageVO> getChatList(Member loginUser);
+	MessageVO getNewChat(MessageVO c);
+	ArrayList<PetSitter> getSitterList();
+	ArrayList<MessageVO> selectChatList(MessageVO p);
+	PetSitter selectSitterbySocial(Member m);
+	ArrayList<MessageVO> getSitterChatList(PetSitter sitterUser);
+	Member selectMaster(Member m);
 	LocalDateTime getRestrictedUntil(int userNo);
 }

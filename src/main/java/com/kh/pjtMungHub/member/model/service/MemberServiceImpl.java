@@ -1,14 +1,13 @@
 package com.kh.pjtMungHub.member.model.service;
 
-
 import java.util.ArrayList;
 import java.time.LocalDateTime;
-
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kh.pjtMungHub.chatting.vo.MessageVO;
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
 import com.kh.pjtMungHub.kindergarten.model.vo.Kindergarten;
 import com.kh.pjtMungHub.member.model.dao.MemberDao;
@@ -16,6 +15,7 @@ import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.member.model.vo.Message;
 import com.kh.pjtMungHub.pet.model.vo.Breed;
 import com.kh.pjtMungHub.pet.model.vo.Pet;
+import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -186,6 +186,45 @@ public class MemberServiceImpl implements MemberService{
 		return dao.enableMember(sqlSession, m);
 	}
 
+	@Override
+	public PetSitter searchSitterStatus(PetSitter pst) {
+		return dao.searchSitterStatus(sqlSession,pst);
+	}
+
+	@Override
+	public ArrayList<MessageVO> getChatList(Member loginUser) {
+		return dao.getChatList(sqlSession,loginUser);
+	}
+
+	@Override
+	public MessageVO getNewChat(MessageVO c) {
+		return dao.getNewChat(sqlSession,c);
+	}
+
+	@Override
+	public ArrayList<PetSitter> getSitterList() {
+		return dao.getSitterList(sqlSession);
+	}
+
+	@Override
+	public ArrayList<MessageVO> selectChatList(MessageVO p) {
+		return dao.selectChatList(sqlSession, p);
+	}
+
+	@Override
+	public PetSitter selectSitterbySocial(Member m) {
+		return dao.selectSitterbySocial(sqlSession, m);
+	}
+
+	@Override
+	public ArrayList<MessageVO> getSitterChatList(PetSitter sitterUser) {
+		return dao.getSitterChatList(sqlSession,sitterUser);
+	}
+
+	@Override
+	public Member selectMaster(Member m) {
+		return dao.selectMaster(sqlSession,m);
+	}
 	public LocalDateTime getRestrictedUntil(int userNo) {
 		return dao.getRestrictedUntil(sqlSession,userNo);
 	}

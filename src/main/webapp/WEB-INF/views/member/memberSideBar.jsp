@@ -12,20 +12,22 @@
 	}
 	.left-sidebar>ul{
 		list-style-type:none;
-		background-color:lightGray;
+		background-color:#F4D3D3;
 		margin:0;
 		padding:0;
+		border-radius:3px;
 		text-align:center;
 		height:auto;
 		position:fixed;
 	}
+
 	.sidebar-link{
-		background-color:gray;
+		background-color:#FFEAE3;
 		margin:5px;
 	}
 	.sidebar-link>a{
 		text-decoration:none;
-		color: white;
+		color: #492F10;
 	}
 		div .left, .right{
 		display:inline-block;
@@ -65,7 +67,6 @@
 	}
 	.mypage-left{
 		width:20%;
-		margin-right:15px;
 	}
 	.mypage-main{
 		width:70%;
@@ -74,11 +75,14 @@
 		width:100%;
 		margin-bottom:5px;
 	}
+	h3{
+		color:#492F10;
+	}
 </style>
 <body>
 <div class="left-sidebar">
 	<ul>
-		<li><h3>마이페이지</h3></li>
+		<li class="sidebar-title"><h3>마이페이지</h3></li>
 		<li class="sidebar-link">
 			<a href="myPage.me">개인 정보 확인 / 수정</a>
 		</li>
