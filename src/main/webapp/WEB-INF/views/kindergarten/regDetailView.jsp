@@ -131,12 +131,12 @@ li {
 									<td style="text-align: center;"><br> <br> <br>
 										<br> <br> <br>
 										<c:choose>
-										<c:when test="${loginUser.userGrade ne 2 }">
-										<a type="button" class="btn btn-warning" href="regList.do">목록으로</a>
-										</c:when>
 										<c:when test="${loginUser.userGrade eq 2 }">
 										<a type="button" class="btn btn-warning" href="regList2.do">목록으로</a>
 										</c:when>
+										<c:otherwise>
+										<a type="button" class="btn btn-warning" href="regList.do">목록으로</a>
+										</c:otherwise>
 										</c:choose>
 										<c:choose>
 										<c:when test="${registration.approval eq 'N' && loginUser.userNo eq registration.userNo }">

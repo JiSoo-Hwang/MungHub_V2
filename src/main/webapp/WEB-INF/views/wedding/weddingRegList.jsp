@@ -40,7 +40,7 @@
 						</tr>
 						<tr>
 							<td></td>
-							<td><a href="wedList.wd" class="btn btn-success">등록되어있는 강아지들 구경하러 가기</a></td>
+							<td class="text-center"><a href="wedList.wd" class="btn btn-success">등록되어있는 강아지들 구경하러 가기</a></td>
 							<td></td>
 						</tr>
 					</c:when>
@@ -58,7 +58,7 @@
 								<a class="btn btn-primary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 								&ensp;<button class="btn btn-secondary btn-sm cancelApplied">만남취소</button>
 								&ensp;<button type="button" class="btn btn-primary btn-sm contactBtn" data-bs-toggle="modal" data-bs-target="#infoModal">
-								 상대 견주 연락처</button>
+								 연락처</button>
 								 <!-- The Modal -->
 								<div class="modal fade" id="infoModal">
 								  <div class="modal-dialog">
