@@ -943,6 +943,7 @@ public class ShopController {
 		
 		int result=shopService.insertQuestion(q);
 		
+		
 		return result;
 	}
 	

@@ -121,6 +121,12 @@ h2 {
 	text-decoration: none !important;
 	color: gray !important;
 }
+
+.question-list>td button {
+	text-decoration: none !important;
+	color: gray !important;
+	border: 0px;
+}
 #favor{
  transition : transform 0.3s ease-in-out;
 }
@@ -1421,7 +1427,11 @@ color: purple;
 	</div>
 	
 	<script>
-		
+		function noAuth(){
+			alert("해당 문의를 조회할 권한이 없습니다.");
+		}	
+	
+	
 		function selectQuestionList(num){
 			$.ajax({
 				url: "/pjtMungHub/questionList.sp",
@@ -1430,7 +1440,7 @@ color: purple;
 				success : function(result){
 					var str="";
 					var pagination="";
-					
+					var userNo="${loginUser.userNo}";
 					for (var i = 0; i < result.qList.length; i++) {
 						str+="<tr class='question-list'>";
 						if(result.qList[i].answerStatus=='Y'){
@@ -1438,14 +1448,21 @@ color: purple;
 						}else{
 						str+="<td class='wating-answer'><p>답변대기</p></td>";
 						}
-						str+="<td><a href='/pjtMungHub/qnaPage.sp/"+result.qList[i].questionNo+"'>["+result.qList[i].categoryName+"]입니다.";
+						
 						if(result.qList[i].openStatus=='N'){
-							
+							if(${empty loginUser}){
+							str+="<td><button type='button' onclick='noAuth()'>["+result.qList[i].categoryName+"]입니다.</button>";
+							}else if(userNo!=result.qList[i].userNo){
+							str+="<td><button type='button' onclick='noAuth()'>["+result.qList[i].categoryName+"]입니다.</button>";
+							}else{
+							str+="<td><a href='/pjtMungHub/qnaPage.sp/"+result.qList[i].questionNo+"'>["+result.qList[i].categoryName+"]입니다.";
+							}
 						str+="<i class='bi bi-lock-fill'></i>";
 						}else{
+							str+="<td><a href='/pjtMungHub/qnaPage.sp/"+result.qList[i].questionNo+"'>["+result.qList[i].categoryName+"]입니다.";
 							str+="<i class='bi bi-unlock'></i>";
 						}
-						str+="</a></td>"
+						str+="</td>"
 						+"<td>"+result.qList[i].userName+"</td>"
 						+"<td>"+formatDate(result.qList[i].createDate)+"</td>"
 						+"</tr>";
