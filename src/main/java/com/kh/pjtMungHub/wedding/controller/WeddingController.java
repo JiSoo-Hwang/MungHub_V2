@@ -96,6 +96,11 @@ public class WeddingController {
 	@GetMapping("insert.wd")
 	public String insertWeddingForm(HttpSession session, Model model) {
 		Member m = (Member) session.getAttribute("loginUser");
+		int count = service.countAppliedList(m.getUserNo());
+		if (count >= 3) {
+			session.setAttribute("alertMsg", "계정당 신청은 3회로 제한되어있습니다 ꌩ-ꌩ");
+			return "redirect:/wedList.wd";
+			}
 		int userNo = m.getUserNo();
 		ArrayList<Pet> pet = service.selectPets(userNo);
 		model.addAttribute("petList", pet);
@@ -192,14 +197,14 @@ public class WeddingController {
 		Member m=(Member)session.getAttribute("loginUser");
 		if (result > 0) {
 			session.setAttribute("alertMsg", "거절 처리되었습니다(´ᴥ`)");
-			if(m.getName().equals("admin")) {
+			if(m.getUserId().equals("admin")) {
 				return "redirect:/admin.wd";
 			}else {
 				return "redirect:/regList.wd?userNo=" + m.getUserNo();
 			}
 		} else {
 			session.setAttribute("alertMsg", "처리 실패. 다시 시도해주세요.");
-			if(m.getName().equals("admin")) {
+			if(m.getUserId().equals("admin")) {
 				return "redirect:/admin.wd";
 			}else {
 				return "redirect:/regList.wd?userNo=" + m.getUserNo();

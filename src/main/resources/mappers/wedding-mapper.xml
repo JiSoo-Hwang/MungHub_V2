@@ -135,7 +135,7 @@ WHERE WEDDING_NO = #{weddingNo}
 
 <select id="countAppliedList" parameterType="_int" resultType="_int">
 SELECT COUNT(*) COUNT FROM WEDDING
-WHERE PET_NO = #{petNo}
+WHERE USER_NO = #{userNo}
 AND APPROVAL = 'N'
 </select>
 
