@@ -292,7 +292,8 @@
 
 			    // FullCalendar 설정
 			    var calendarEl = document.getElementById('calendar');
-			    var today = new Date().toISOString().split('T')[0]; //오늘날짜
+			    var preToday = new Date();
+	            var today = new Date(preToday.getTime() - (preToday.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 			    var calendar = new FullCalendar.Calendar(calendarEl, {
 			      initialView: 'dayGridMonth',
 			      locale: 'ko',

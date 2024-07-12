@@ -100,7 +100,7 @@
 	    <result column="CHANGE_NAME" property="changeName"/>
 	    <result column="STATUS" property="status"/>
 	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
-	    <result column="USER_ID" property="userId"/>
+	    <result column="USER_NO" property="userId"/>
 	    <result column="TOTAL_AMOUNT" property="totalAmount"/>
 	</resultMap>
 	
@@ -469,7 +469,7 @@
 		                              ,STAY_NO,CAUTION
 		                              ,PET_OWNER_NAME,ADDRESS,PHONE
 		                              ,STATUS,PAYMENT_STATUS
-		                              ,USER_ID,TOTAL_AMOUNT
+		                              ,USER_NO,TOTAL_AMOUNT
 					                  )
 					                  VALUES(
 			                           HOUSE_RESERVATION_SEQ.NEXTVAL,#{houseNo}
