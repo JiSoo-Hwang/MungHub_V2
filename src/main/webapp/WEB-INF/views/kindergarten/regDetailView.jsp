@@ -131,12 +131,12 @@ li {
 									<td style="text-align: center;"><br> <br> <br>
 										<br> <br> <br>
 										<c:choose>
-										<c:when test="${loginUser.userGrade ne 2 }">
-										<a type="button" class="btn btn-warning" href="regList.do">목록으로</a>
-										</c:when>
 										<c:when test="${loginUser.userGrade eq 2 }">
 										<a type="button" class="btn btn-warning" href="regList2.do">목록으로</a>
 										</c:when>
+										<c:otherwise>
+										<a type="button" class="btn btn-warning" href="regList.do">목록으로</a>
+										</c:otherwise>
 										</c:choose>
 										<c:choose>
 										<c:when test="${registration.approval eq 'N' && loginUser.userNo eq registration.userNo }">
@@ -165,7 +165,7 @@ li {
         <form action="reject.do" method="post">
       <div class="modal-body">
       	<input type="hidden" name="reservNo" value="${registration.reservNo}">
-        <textarea rows="4" cols="50" name="reason" placeholder="견주님 마음 상하지 않게 거절 이유를 친절하게 적어주세요."></textarea>
+        <textarea rows="4" cols="50" name="reason" placeholder="견주님 마음 상하지 않게 거절 이유를 친절하게 적어주세요." required></textarea>
       </div>
 
       <!-- Modal footer -->

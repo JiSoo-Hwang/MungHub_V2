@@ -32,7 +32,7 @@ public class WeddingDao {
 	}
 
 	public ArrayList<Pet> selectPets(SqlSessionTemplate sqlSession,int userNo) {
-		return (ArrayList)sqlSession.selectList("weddingMapper.selectPet",userNo);
+		return (ArrayList)sqlSession.selectList("weddingMapper.selectPets",userNo);
 	}
 
 	//해당 메소드를 하나의 트랜잭션으로 관리할 것

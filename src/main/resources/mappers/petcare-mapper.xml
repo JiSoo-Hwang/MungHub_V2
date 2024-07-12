@@ -9,7 +9,7 @@
 		<result column="PET_SITTER_NO" property="petSitterNo"/>
 		<result column="PET_SITTER_NAME" property="petSitterName"/>
 		<result column="INTRODUCE" property="introduce"/>
-		<result column="DOG_KEYWORD" property="dogKeword"/>
+		<result column="DOG_KEYWORD" property="dogKeyword"/>
 		<result column="TYPE_KEYWORD" property="typeKeyword"/>
 		<result column="PHONE" property="phone"/>
 		<result column="EMAIL" property="email"/>
@@ -100,7 +100,7 @@
 	    <result column="CHANGE_NAME" property="changeName"/>
 	    <result column="STATUS" property="status"/>
 	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
-	    <result column="USER_ID" property="userId"/>
+	    <result column="USER_NO" property="userId"/>
 	    <result column="TOTAL_AMOUNT" property="totalAmount"/>
 	</resultMap>
 	
@@ -469,7 +469,7 @@
 		                              ,STAY_NO,CAUTION
 		                              ,PET_OWNER_NAME,ADDRESS,PHONE
 		                              ,STATUS,PAYMENT_STATUS
-		                              ,USER_ID,TOTAL_AMOUNT
+		                              ,USER_NO,TOTAL_AMOUNT
 					                  )
 					                  VALUES(
 			                           HOUSE_RESERVATION_SEQ.NEXTVAL,#{houseNo}
@@ -626,12 +626,72 @@
 	           H.UPDATE_DAY AS updateDay
 		FROM HOSPITAL_RE H
 		JOIN PET_TYPE P ON (H.PET_TYPE_NO = P.PET_TYPE_NO)
-		WHERE HOS_RE_NO = #{hosReNo}	
+		WHERE HOS_RE_NO = #{hosReNo}
+		AND H.STATUS = 'Y'	
 	</select>
 	
+	<!-- 예약정보 업데이트 -->
+	<update id="hospitalEnrollUp" parameterType="HospitalRe">
+		UPDATE HOSPITAL_RE
+		SET  USER_NO = #{userNo}
+		     ,PET_OWNER_NAME = #{petOwnerName}
+		     ,OWNER_PHONE = #{ownerPhone}
+		     ,HOS_NAME = #{hosName}
+		     ,HOS_PHONE = #{hosPhone}
+		     ,HOS_ADDRESS = #{hosAddress}
+		     ,RE_DATE = TO_DATE(#{reDate},'RRRR-MM-DD')
+		     ,RE_TIME = #{reTime}
+		     ,PET_NAME = #{petName}
+		     ,PET_KIND = #{petKind}
+		     ,PET_BIRTH_DAY = TO_DATE(#{petBirthDay},'RRRR-MM-DD')
+		     ,PET_GENDER = #{petGender}
+		     ,NEUTERED = #{neutralization}
+		     ,SPECIAL_NOTES = #{specialNotes}
+		     ,PET_TYPE_NO = #{petTypeNo}
+		     ,SYMPTOM = #{symptom}
+		     ,ORIGIN_NAME = #{originName}
+		     ,CHANGE_NAME = #{changeName}
+		     ,DISEASE_NAME = #{diseaseName}
+		WHERE HOS_RE_NO = #{hosReNo}
+	</update>
 	
+	<!-- 예약내역 불러오기 -->
+	<select id="hospitalChk" parameterType="_int" resultType="HospitalRe">
+		SELECT H.HOS_RE_NO AS hosReNo,
+	           H.USER_NO AS userNo,
+	           H.PET_OWNER_NAME AS petOwnerName,
+	           H.OWNER_PHONE AS ownerPhone,
+	           H.HOS_NAME AS hosName,
+	           H.HOS_PHONE AS hosPhone,
+	           H.HOS_ADDRESS AS hosAddress,
+	           H.RE_DATE AS reDate,
+	           H.RE_TIME AS reTime,
+	           H.PET_NAME AS petName,
+	           H.PET_KIND AS petKind,
+	           H.PET_BIRTH_DAY AS petBirthDay,
+	           H.PET_GENDER AS petGender,
+	           H.NEUTERED AS neutralization,
+	           H.SPECIAL_NOTES AS specialNotes,
+	           H.PET_TYPE_NO AS petTypeNo,
+	           P.PET_TYPE_NAME AS petTypeName,
+	           H.SYMPTOM AS symptom,
+	           H.ORIGIN_NAME AS originName,
+	           H.CHANGE_NAME AS changeName,
+	           H.DISEASE_NAME AS diseaseName,
+	           H.STATUS AS status,
+	           H.UPDATE_DAY AS updateDay
+		FROM HOSPITAL_RE H
+		JOIN PET_TYPE P ON (H.PET_TYPE_NO = P.PET_TYPE_NO)
+		WHERE H.USER_NO = #{userNo}
+		AND	H.STATUS = 'Y'	
+	</select>
 	
-	
+	<!-- 예약내역 삭제하기 -->
+	<update id="hospitalDelete" parameterType="_int">
+		UPDATE HOSPITAL_RE
+		SET STATUS = 'N'
+		WHERE HOS_RE_NO = #{hosRe}
+	</update>
 	
 	<!-- ============================ 동물병원 ================================ -->
 	

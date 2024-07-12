@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
+import com.kh.pjtMungHub.shop.model.vo.Answer;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
@@ -187,10 +188,10 @@ public class ShopDao {
 
 	public int insertReview(SqlSessionTemplate sqlSession, Review review) {
 		// TODO Auto-generated method stub
-		return sqlSession.insert("shopMapper.inserReview",review);
+		return sqlSession.insert("shopMapper.insertReview",review);
 	}
 
-	public int selectReviewCount(SqlSessionTemplate sqlSession, int productNo) {
+	public Integer selectReviewCount(SqlSessionTemplate sqlSession, int productNo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("shopMapper.selectReviewCount",productNo);
 	}
@@ -295,6 +296,37 @@ public class ShopDao {
 	public Integer selectQuestionCount(SqlSessionTemplate sqlSession, int productNo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("shopMapper.selectQuestionCount",productNo);
+	}
+
+	public Answer selectAnswer(SqlSessionTemplate sqlSession, int questionNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectAnswer",questionNo);
+	}
+
+	public int updateQuestionStatus(SqlSessionTemplate sqlSession, int questionNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateQuestionStatus",questionNo);
+		
+	}
+
+	public Question selectQuestionDetail(SqlSessionTemplate sqlSession, int questionNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectQuestionDetail",questionNo);
+	}
+
+	public int insertQuestion(SqlSessionTemplate sqlSession, Question q) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.insertQuestion",q);
+	}
+
+	public Review selectReview(SqlSessionTemplate sqlSession, Review r) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectReview",r);
+	}
+
+	public int updateReview(SqlSessionTemplate sqlSession, Review review) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateReview",review);
 	}
 
 

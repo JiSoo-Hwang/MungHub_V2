@@ -63,7 +63,7 @@ li {
 								<c:otherwise>
 								<td>
 								<select name="petNo" id="petNo">
-								<option>반려견을 선택해주세요</option>
+								<option id="defaultOption">반려견을 선택해주세요</option>
 								<c:forEach items="${petList }" var="p">
 								<option value="${p.petNo }">${p.petName }</option>
 								</c:forEach>
@@ -182,6 +182,8 @@ $(function () {
 	var checkNum = $("input[class='form-check-input']:checked").length;
 		if(checkNum==5){
 			$("button[type='submit']").prop("disabled",false);
+		}else{
+			$("button[type='submit']").prop("disabled",true);
 		}
 	});
 });
@@ -193,10 +195,14 @@ $("#petNo").change(function () {
 		type: "get",
 		data:{petNo:petNo},
 		success: function (pet) {
+			var gender = pet.petGender;
+			if(gender=="${partnerPet.petGender}"){
+				alert("성별이 같은 강아지는 매칭 신청이 불가합니다8ㅅ8");
+				$("#defaultOption").prop("selected",true);
+			}else{
 			$("#breed").val(pet.breed);
 			$("#petAge").val(pet.petAge);
 			$("#weight").val(pet.weight);
-			var gender = pet.petGender;
 			switch (gender) {
 			case 'M':
 				$("#gender").val('왕자님');
@@ -205,6 +211,7 @@ $("#petNo").change(function () {
 				$("#gender").val('공주님');
 				break;
 			}
+			}
 		},
 		error: function () {
 			console.log("반려견 정보 불러오기 실패");
@@ -212,7 +219,6 @@ $("#petNo").change(function () {
 	});
 	
 });
-
 /* 혈통 관련 안내 팝업 */
 var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {

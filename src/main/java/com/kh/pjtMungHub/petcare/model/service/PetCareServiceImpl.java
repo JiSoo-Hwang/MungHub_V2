@@ -220,6 +220,30 @@ public class PetCareServiceImpl implements PetCareService {
 		return petCareDao.selectHospitalRe(sqlSession,hosReNo);
 	}
 	
+	//예약정보 업데이트
+	@Override
+	public int hospitalEnrollUp(HospitalRe hosRe) {
+		return petCareDao.hospitalEnrollUp(sqlSession,hosRe);
+	}
+	
+	//예약정보 불러오기
+	@Override
+	public ArrayList<HospitalRe> hospitalChk(int userNo) {
+		return petCareDao.hospitalChk(sqlSession,userNo);
+	}
+	
+	//불러온 예약내역보기
+	@Override
+	public HospitalRe hospitalChkView(int hosReNo) {
+		return petCareDao.hospitalChkView(sqlSession,hosReNo);
+	}
+	
+	//예약내역 삭제하기
+	@Override
+	public int hospitalDelete(int hosReNo) {
+		return petCareDao.hospitalDelete(sqlSession,hosReNo);
+	}
+	
 
 	
 

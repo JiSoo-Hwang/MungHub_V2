@@ -89,14 +89,34 @@ import listPlugin from '@fullcalendar/list';
             resize: none;
         }
 
-        .reservation-btn {
+        .reservation-btn{
+            background-color: blue;
+            border: none;
+            padding: 15px 0;
+            color: #ffffff;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: 32%;
+            font-size: 1.5em;
+        }
+        .update-btn {
             background-color: #ef6c00;
             border: none;
             padding: 15px 0;
             color: #ffffff;
             border-radius: 5px;
             margin-top: 20px;
-            width: 100%;
+            width: 32%;
+            font-size: 1.5em;
+        }
+        .delete-btn {
+            background-color: red;
+            border: none;
+            padding: 15px 0;
+            color: #ffffff;
+            border-radius: 5px;
+            margin-top: 20px;
+            width: 32%;
             font-size: 1.5em;
         }
 
@@ -246,7 +266,9 @@ import listPlugin from '@fullcalendar/list';
                 	</div>
                 </div>
             </div>
-            <button type="button" class="reservation-btn" id="upDateBtn">예약사항 변경하기</button>
+            <button type="button" class="update-btn" id="upDateBtn">예약사항 변경하기</button>
+            <button type="button" class="reservation-btn" id="doneBtn">예약 확정</button>
+            <button type="button" class="delete-btn" id="deleteBtn">예약 삭제하기</button>
     </div>	
 	<br><br>
 	
@@ -256,7 +278,15 @@ import listPlugin from '@fullcalendar/list';
 				var hosReNo = $('#hosReNo').val();
 				location.href="hospitalUpdate.re?hosReNo="+hosReNo;
 			});
+			$('#doneBtn').click(function(){
+				location.href="hospitalDone.re";
+			});
+			$('#deleteBtn').click(function(){
+				var hosReNo = $('#hosReNo').val();
+				location.href="hospitalDelete.re?hosReNo="+hosReNo;
+			});
 		});
+		
 	</script>
 </body>
 </html>

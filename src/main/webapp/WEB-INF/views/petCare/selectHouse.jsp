@@ -407,7 +407,9 @@
 	        var calendar;
 	        
 	        $('#staticBackdrop3').on('shown.bs.modal', function() {
-	            var today = new Date().toISOString().split('T')[0];
+	        	var preToday = new Date();
+	            var today = new Date(preToday.getTime() - (preToday.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+	            console.log(today);
 	            
 	            calendar = new FullCalendar.Calendar(calendarEl, {
 	                initialView: 'dayGridMonth',
@@ -487,6 +489,7 @@
 			
 			// 최종 검색버튼 (주소 + 필터링)
 			$('#searchBtn').click(function(){
+				
 				var address = $("#inputAddress").val(); //주소
 				var endDatePlus = parseInt(daysNight);
 				//java.util.Date 로 받았기 때문에, controller에서 sql.Date로 변환예정
@@ -572,10 +575,13 @@
 		    var startDate = $('#hiddenStartDate').val();
 		    var endDate = $('#hiddenEndDate').val();
 		    var daysNight = $('#hiddenDaysNight').val();
+		    
+		    console.log(page);
 
 		    $.ajax({
 		        url: "selectHouseList.re",
 		        data: {
+		        	currentPage : page,
 		        	address : address,
 					startDate : inputDate,
 					endJavaDate : endDate,
@@ -587,6 +593,8 @@
 		        success: function(result) {
 		            var list = result.houseList;
 		            var pi = result.pi;
+		            
+		            console.log(pi);
 
 		            var houseList = "";
 		            for (var i = 0; i < list.length; i++) {
@@ -623,9 +631,6 @@
 		            for (var p = pi.startPage; p <= pi.endPage; p++) {
 		                pagination += "<li class='page-item'><a class='page-link' href='#' onclick='goToPage(" + p + ")'>" + p + "</a></li>";
 		            }
-		            
-		            console.log('페이지번호  '+p);
-		            
 		            // 다음버튼
 		            if (pi.currentPage == pi.maxPage) {
 		                pagination += "<li class='page-item disabled'><a class='page-link' href='#'>▶</a></li>";

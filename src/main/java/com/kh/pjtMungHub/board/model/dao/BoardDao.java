@@ -9,6 +9,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kh.pjtMungHub.board.model.vo.Attachment;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
 import com.kh.pjtMungHub.board.model.vo.ParameterVo;
@@ -88,6 +89,11 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.insert("boardMapper.insertBoard", b);
 	}
+	public int insertAttachment(SqlSessionTemplate sqlSession, ArrayList<Attachment> aList) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("boardMapper.insertAttachment",aList);
+	}
+	
 
 	public ArrayList<Reply> replyList(SqlSessionTemplate sqlSession, int boardNo) {
 		// TODO Auto-generated method stub
@@ -98,6 +104,7 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.insert("boardMapper.insertReply",r);
 	}
+
 
 
 }

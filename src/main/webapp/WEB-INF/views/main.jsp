@@ -4,14 +4,18 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Welcome to MungHub</title>
+<style>
+.container-fluid {
+	width: 100%;
+	height: 100%; margin : 10px;
+	margin-left: 10px;
+	margin: 10px;
+}
+</style>
 </head>
 <body>
-<%@include file="/WEB-INF/views/common/header.jsp" %>
-	
-	
-	
-	
+	<%@include file="/WEB-INF/views/common/header.jsp"%>
 	
 </body>
 </html>

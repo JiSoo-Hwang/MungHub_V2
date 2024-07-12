@@ -285,12 +285,12 @@
 							 	+ "<div class='sitter-info'>"
 		                        + "<h4>" + list[i].petSitterName + "</h4>"
 		                        + "<p>" + list[i].introduce + "</p>"
-		                        + "<p class='popular-style'>" + list[i].dogKeword + "</p>"
+		                        + "<p class='popular-style'>" + list[i].dogKeyword + "</p>"
 		                        + "<p class='popular-style'>" + list[i].typeKeyword + "</p>"
 		                        + "<input type='hidden' name='petSitterNo' value='" + list[i].petSitterNo + "'>"
 		                        + "<input type='hidden' name='petSitterName' value='" + list[i].petSitterName + "'>"
 		                        + "<input type='hidden' name='introduce' value='" + list[i].introduce + "'>"
-		                        + "<input type='hidden' name='dogKeword' value='" + list[i].dogKeword + "'>"
+		                        + "<input type='hidden' name='dogKeyword' value='" + list[i].dogKeyword + "'>"
 		                        + "<input type='hidden' name='typeKeyword' value='" + list[i].typeKeyword + "'>"
 		                        + "<input type='hidden' name='phone' value='" + list[i].phone + "'>"
 		                        + "<input type='hidden' name='originName' value='" + list[i].originName + "'>"
@@ -332,15 +332,6 @@
 				//펫크기
 				var petTypeNo = $(".petType-btn.selected").val();
 				
-				
-				console.log(visitDate);
-				console.log(startTime);
-				console.log(duration);
-				console.log(endTime);
-				console.log(petTypeNo);
-				
-				
-				
 				if(visitDate && startTime && duration && petTypeNo){
 					$.ajax({
 						url : "selectSitter.re",
@@ -363,7 +354,7 @@
 				                        + "<div class='sitter-info'>"
 				                        + "<h4>" + list[i].petSitterName + "</h4>"
 				                        + "<p>" + list[i].introduce + "</p>"
-				                        + "<p class='popular-style'>" + list[i].dogKeword + "</p>"
+				                        + "<p class='popular-style'>" + list[i].dogKeyword + "</p>"
 				                        + "<p class='popular-style'>" + list[i].typeKeyword + "</p>"
 				                        + "<input type='hidden' name='petSitterNo' value='" + list[i].petSitterNo + "'>"
 				                        + "<input type='hidden' name='visitDate' value='" + visitDate + "'>"

@@ -192,7 +192,7 @@
 				    <h4>${petSitter.petSitterName }</h4>
 				    <p>${petSitter.introduce }</p>
 				    <div class="sitterFont">가장 많이 만나본 반려견</div>
-				    <p class="popular-style">${petSitter.dogKeword }</p>
+				    <p class="popular-style">${petSitter.dogKeyword }</p>
 				    <div class="sitterFont">자신 있는 펫크기</div>
 				    <p class="popular-style">${petSitter.typeKeyword }</p>
 				    
@@ -292,7 +292,8 @@
 
 			    // FullCalendar 설정
 			    var calendarEl = document.getElementById('calendar');
-			    var today = new Date().toISOString().split('T')[0]; //오늘날짜
+			    var preToday = new Date();
+	            var today = new Date(preToday.getTime() - (preToday.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 			    var calendar = new FullCalendar.Calendar(calendarEl, {
 			      initialView: 'dayGridMonth',
 			      locale: 'ko',

@@ -85,14 +85,14 @@
             content: 'BEST';
             display: block;
             font-size: 10px;
-            color: #007bff;
+            color: gray;
             margin-top: 5px;
         }
         .petType-btn.best::after {
             content: 'BEST';
             display: block;
             font-size: 10px;
-            color: #007bff;
+            color: gray;
             margin-top: 5px;
         }
 
@@ -163,6 +163,11 @@
         #homeBtn, .form-group{
         	margin-bottom: 5%;
         }
+        .str-btn.active, .duration-btn.active, .petType-btn.active {
+		    background-color: skyblue;
+		    color: black;
+		    border-color: skyblue;
+		}
     </style>
 </head>
 <body>

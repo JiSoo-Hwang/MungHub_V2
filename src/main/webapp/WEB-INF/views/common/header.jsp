@@ -37,7 +37,7 @@
 		closable : true,
 		closableByDimmer : true,
 		invokeOnCloseOff : false,
-		frameless : true,
+		frameless : false,
 		defaultFocusOff : false,
 		maintainFocus : true, // <== global default not per instance, applies to all dialogs
 		maximizable : true,
@@ -82,7 +82,7 @@
 		// language resources 
 		glossary : {
 			// dialogs default title
-			title : '성공',
+			title : '',
 			// ok button text
 			ok : '확인',
 			// cancel button text
@@ -329,7 +329,7 @@ clear: both;
 				}
 			});
 			var code='';
-				code=sitterNo+'n'+${loginUser.userNo};
+				code=sitterNo+'n'+"${loginUser.userNo}";
 
 			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/code'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=850');
 		})

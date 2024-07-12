@@ -141,10 +141,6 @@ public class PetCareController {
 		//날짜 지정 후 시간 비활성화에 필요한
 		ArrayList<Reservation> disabledPlan = petCareService.disabledDates(petSitter.getPetSitterNo());
 		
-		for(Reservation d : disabledPlan) {
-			System.out.println(d);
-		}
-		
 		mv.addObject("disabledPlan", disabledPlan).setViewName("petCare/reservationSitter");
 		mv.addObject("petSitter", petSitter).setViewName("petCare/reservationSitter");
 		return mv;
@@ -418,8 +414,6 @@ public class PetCareController {
 	//지도 api 를 통해서 가져온 url 주소로 필요한 특정 데이터 가져오기
 	@RequestMapping("mapInfo.ho")
 	public String getMapInfo(Model model,String url) {
-		
-		
 		//처음엔 RestTemplate 를 활용하여 정보를 추출하려 했으나 실패
 		//Selenium(브라우저 제어, UI테스트, 크롤링, 스크립트작성)
 		//Jsoup(HTML파싱, 데이터 추출 및 조작, HTML 필터링)
@@ -532,21 +526,100 @@ public class PetCareController {
 		return mv;
 	}
 	
-	//업데이트 정보와 함께 페이지로 이동
+	//업데이트 실행할 정보와 함께 페이지로 이동
 	@RequestMapping("hospitalUpdate.re")
-	public String hospitalUpdate(String hosReNo,ModelAndView mv) {
-		
-		
+	public ModelAndView hospitalUpdate(String hosReNo,ModelAndView mv) {
 		HospitalRe hosRe = petCareService.selectHospitalRe(Integer.parseInt(hosReNo));
-		
-		
 		mv.addObject("hosRe",hosRe).setViewName("petCare/hospitalUpdate");
-		
-		
-		return "";
+		return mv;
 	}
 	
+	//예약정보 업데이트
+	@RequestMapping("hospitalEnrollUp.re")
+	public ModelAndView hospitalEnrollUp(HospitalRe hosRe,MultipartFile upfile,HttpSession session, ModelAndView mv) {
+		
+		String oldFilePath = hosRe.getChangeName(); //기존 파일경로
+		String oldChangeName = oldFilePath.substring(oldFilePath.lastIndexOf("/")+1);
+		
+		//새로운 파일이 업로드 됐을때
+		if(!upfile.getOriginalFilename().equals("")) {
+			//기존파일 삭제
+			if(!oldFilePath.equals("")) {
+				String realPath = session.getServletContext().getRealPath("/resources/uploadFiles/hospital/")+oldChangeName;
+				
+				File oldFile = new File(realPath);
+				if(oldFile.exists()) {
+					oldFile.delete();
+				}
+			}
+			//새로운 파일 서버에 저장 후 이름지정
+			String changeName = PetSaveFile.getHospitalFile(upfile, session);
+			
+			hosRe.setOriginName(upfile.getOriginalFilename());
+			hosRe.setChangeName("resources/uploadFiles/hospital/"+changeName);
+		}
+		
+		System.out.println(hosRe);
 	
+		int result = petCareService.hospitalEnrollUp(hosRe);
+		
+		if(result>0) {
+			//펫타입no를 이름으로 가져오기
+			String petType = petCareService.selectPetType(hosRe);
+			hosRe.setPetTypeNo(petType);
+			mv.addObject("alertMsg","예약정보 변경에 성공 했습니다.").addObject("hosRe",hosRe).setViewName("petCare/hospitalDetail");
+		}else {
+			mv.addObject("alertMsg","예약정보 변경실패 ㅠㅠ").setViewName("redirect:/hospital.re");
+		}
+		return mv;
+	}
+	//예약 확정버튼 클릭(메인으로)
+	@RequestMapping("hospitalDone.re")
+	public String hospitalDone(HttpSession session) {
+	    session.setAttribute("alertMsg", "예약이 확정 되었습니다. 내역에서 확인가능");
+	    return "redirect:/hospital.ho";
+	}
+	
+	//나의 예약내역 불러오기
+	@ResponseBody
+	@RequestMapping("hospitalChk.re")
+	public ArrayList<HospitalRe> hospitalChk(String userNo) {
+		int newUserNo = Integer.parseInt(userNo);
+		ArrayList<HospitalRe> hosRe = petCareService.hospitalChk(newUserNo);
+		return hosRe;
+	}
+	
+	//불러온 예약내역 보기
+	@RequestMapping("hospitalChkView.re")
+	public ModelAndView hospitalChkView(String hosReNo,ModelAndView mv) {
+		
+		int newHosReNo = Integer.parseInt(hosReNo);
+		
+		HospitalRe hosRe = petCareService.hospitalChkView(newHosReNo);
+		//펫타입no를 이름으로 가져오기
+		String petType = petCareService.selectPetType(hosRe);
+		hosRe.setPetTypeNo(petType);
+		
+		System.out.println(hosRe);
+		
+		mv.addObject("hosRe",hosRe).setViewName("petCare/hospitalDetail");
+		
+		return mv;
+	}
+	
+	//예약내역 삭제하기
+	@RequestMapping("hospitalDelete.re")
+	public ModelAndView hospitalDelete(String hosReNo, ModelAndView mv) {
+		
+		int newHosReNo = Integer.parseInt(hosReNo);
+		int result = petCareService.hospitalDelete(newHosReNo);
+		if(result > 0) {
+			mv.addObject("alertMsg","예약 삭제완료!!").setViewName("redirect:/hospital.ho");
+		}else {
+			mv.addObject("alertMsg","예약 삭제실패.. 관리자에게 문의").setViewName("redirect:/hospital.ho");
+		}
+		return mv;
+	}
 	
 	
 }

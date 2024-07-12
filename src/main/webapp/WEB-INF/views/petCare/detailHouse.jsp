@@ -252,7 +252,7 @@
 		<input type="hidden" id="houseNo" name="houseNo" value="${house.houseNo }"> <!-- houseNo -->
 		<input type="hidden" id="endDate" name="javaDate" value=""> <!-- "endDate" -->
 		<input type="hidden" id="stayNo" name="stayNo" value=""> <!-- stayNo -->
-		<input type="hidden" id="userId" name="userId" value="${loginUser.userId }"> <!-- userId -->
+		<input type="hidden" id="userId" name="userId" value="${loginUser.userNo }"> <!-- userId -->
 	
 		<div class="all-container">
 			<section class="slider">

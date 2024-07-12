@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.shop.model.dao.ShopDao;
+import com.kh.pjtMungHub.shop.model.vo.Answer;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
@@ -240,11 +241,30 @@ public class ShopServiceImpl implements ShopService {
 		}
 		return result*result2;
 	}
+	
+	@Override
+	@Transactional
+	public int updateReview(Review review, ParameterVo fileParameter) {
+		// TODO Auto-generated method stub
+		int result2=1;
+		int result=shopDao.updateReview(sqlSession,review);
+		if(!fileParameter.getAtList().isEmpty()) {
+			result2=shopDao.updateAttachment(sqlSession, fileParameter);
+		}
+		return result*result2;
+	}
 
 	@Override
 	public int selectReviewCount(int productNo) {
 		// TODO Auto-generated method stub
-		return shopDao.selectReviewCount(sqlSession,productNo);
+		Integer result= shopDao.selectReviewCount(sqlSession,productNo);
+		
+		if(result==null) {
+			result=0;
+		}
+		
+		
+		return result;
 	}
 
 	@Override
@@ -351,5 +371,35 @@ public class ShopServiceImpl implements ShopService {
 		}
 		
 	}
+
+	@Override
+	public Answer selectAnswer(int questionNo) {
+		// TODO Auto-generated method stub
+		Answer result=shopDao.selectAnswer(sqlSession,questionNo);
+		if(result!=null) {
+		int update=shopDao.updateQuestionStatus(sqlSession,questionNo);
+		}
+		return result;
+	}
+
+	@Override
+	public Question selectQuestionDetail(int questionNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectQuestionDetail(sqlSession, questionNo);
+	}
+
+	@Override
+	public int insertQuestion(Question q) {
+		// TODO Auto-generated method stub
+		return shopDao.insertQuestion(sqlSession,q);
+	}
+
+	@Override
+	public Review selectReview(Review r) {
+		// TODO Auto-generated method stub
+		return shopDao.selectReview(sqlSession, r);
+	}
+
+	
 
 }

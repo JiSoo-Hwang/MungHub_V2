@@ -2,6 +2,7 @@ package com.kh.pjtMungHub.board.model.service;
 
 import java.util.ArrayList;
 
+import com.kh.pjtMungHub.board.model.vo.Attachment;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
 import com.kh.pjtMungHub.board.model.vo.Reply;
@@ -32,6 +33,7 @@ public interface BoardService {
 
 		//게시물 만들기
 		int insertBoard(Board b);
+		int insertBoard(Board b, ArrayList<Attachment> aList);
 		
 		//댓글 목록 조회
 		ArrayList<Reply> replyList(int boardNo);
