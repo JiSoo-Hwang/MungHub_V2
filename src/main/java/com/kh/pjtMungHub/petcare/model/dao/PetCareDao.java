@@ -139,10 +139,6 @@ public class PetCareDao {
 
 	//장기돌봄 예약저장
 	public int enrollHouse(SqlSessionTemplate sqlSession, HouseReservation hr) {
-		
-		System.out.println(hr);
-		
-		
 		return sqlSession.insert("petcareMapper.enrollHouse",hr);
 	}
 	
@@ -203,6 +199,11 @@ public class PetCareDao {
 	//업데이트 정보와 함께 페이지 이동
 	public HospitalRe selectHospitalRe(SqlSessionTemplate sqlSession, int hosReNo) {
 		return sqlSession.selectOne("petcareMapper.selectHospitalRe",hosReNo);
+	}
+	
+	//예약정보 업데이트
+	public int hospitalEnrollUp(SqlSessionTemplate sqlSession, HospitalRe hosRe) {
+		return sqlSession.update("petcareMapper.hospitalEnrollUp",hosRe);
 	}
 
 	

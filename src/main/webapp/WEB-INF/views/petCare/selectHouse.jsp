@@ -141,9 +141,6 @@
 	<input type="hidden" id="hiddenDaysNight" name="daysNight">
 	<input type="hidden" id="firstCurrentPage" value="${currentPage }">
 	
-	
-	<input type="text" value="${loginUser }">
-	
     <header>
         <div class="search-bar">
         
