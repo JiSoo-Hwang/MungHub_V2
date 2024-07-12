@@ -96,7 +96,8 @@ public interface PetCareService {
 	int selectHosReNo();
 	//업데이트 정보와 함께 페이지 이동
 	HospitalRe selectHospitalRe(int hosReNo);
-	
+	//예약정보 업데이트
+	int hospitalEnrollUp(HospitalRe hosRe);
 	
 	
 	

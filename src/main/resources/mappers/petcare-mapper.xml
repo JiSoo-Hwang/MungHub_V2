@@ -629,7 +629,30 @@
 		WHERE HOS_RE_NO = #{hosReNo}	
 	</select>
 	
-	
+	<!-- 예약정보 업데이트 -->
+	<update id="hospitalEnrollUp" parameterType="HospitalRe">
+		UPDATE HOSPITAL_RE
+		SET  USER_NO = #{userNo}
+		     ,PET_OWNER_NAME = #{petOwnerName}
+		     ,OWNER_PHONE = #{ownerPhone}
+		     ,HOS_NAME = #{hosName}
+		     ,HOS_PHONE = #{hosPhone}
+		     ,HOS_ADDRESS = #{hosAddress}
+		     ,RE_DATE = TO_DATE(#{reDate},'RRRR-MM-DD')
+		     ,RE_TIME = #{reTime}
+		     ,PET_NAME = #{petName}
+		     ,PET_KIND = #{petKind}
+		     ,PET_BIRTH_DAY = TO_DATE(#{petBirthDay},'RRRR-MM-DD')
+		     ,PET_GENDER = #{petGender}
+		     ,NEUTERED = #{neutralization}
+		     ,SPECIAL_NOTES = #{specialNotes}
+		     ,PET_TYPE_NO = #{petTypeNo}
+		     ,SYMPTOM = #{symptom}
+		     ,ORIGIN_NAME = #{originName}
+		     ,CHANGE_NAME = #{changeName}
+		     ,DISEASE_NAME = #{diseaseName}
+		WHERE HOS_RE_NO = #{hosReNo}
+	</update>
 	
 	
 	

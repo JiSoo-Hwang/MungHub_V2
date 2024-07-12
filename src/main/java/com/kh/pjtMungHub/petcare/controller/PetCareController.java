@@ -414,8 +414,6 @@ public class PetCareController {
 	//지도 api 를 통해서 가져온 url 주소로 필요한 특정 데이터 가져오기
 	@RequestMapping("mapInfo.ho")
 	public String getMapInfo(Model model,String url) {
-		
-		
 		//처음엔 RestTemplate 를 활용하여 정보를 추출하려 했으나 실패
 		//Selenium(브라우저 제어, UI테스트, 크롤링, 스크립트작성)
 		//Jsoup(HTML파싱, 데이터 추출 및 조작, HTML 필터링)
@@ -528,12 +526,58 @@ public class PetCareController {
 		return mv;
 	}
 	
-	//업데이트 정보와 함께 페이지로 이동
+	//업데이트 실행할 정보와 함께 페이지로 이동
 	@RequestMapping("hospitalUpdate.re")
 	public ModelAndView hospitalUpdate(String hosReNo,ModelAndView mv) {
 		HospitalRe hosRe = petCareService.selectHospitalRe(Integer.parseInt(hosReNo));
 		mv.addObject("hosRe",hosRe).setViewName("petCare/hospitalUpdate");
 		return mv;
+	}
+	
+	//예약정보 업데이트
+	@RequestMapping("hospitalEnrollUp.re")
+	public ModelAndView hospitalEnrollUp(HospitalRe hosRe,MultipartFile upfile,HttpSession session, ModelAndView mv) {
+		
+		String oldFilePath = hosRe.getChangeName(); //기존 파일경로
+		String oldChangeName = oldFilePath.substring(oldFilePath.lastIndexOf("/")+1);
+		
+		//새로운 파일이 업로드 됐을때
+		if(!upfile.getOriginalFilename().equals("")) {
+			//기존파일 삭제
+			if(!oldFilePath.equals("")) {
+				String realPath = session.getServletContext().getRealPath("/resources/uploadFiles/hospital/")+oldChangeName;
+				
+				File oldFile = new File(realPath);
+				if(oldFile.exists()) {
+					oldFile.delete();
+				}
+			}
+			//새로운 파일 서버에 저장 후 이름지정
+			String changeName = PetSaveFile.getHospitalFile(upfile, session);
+			
+			hosRe.setOriginName(upfile.getOriginalFilename());
+			hosRe.setChangeName("resources/uploadFiles/hospital/"+changeName);
+		}
+		
+		System.out.println(hosRe);
+	
+		int result = petCareService.hospitalEnrollUp(hosRe);
+		
+		if(result>0) {
+			//펫타입no를 이름으로 가져오기
+			String petType = petCareService.selectPetType(hosRe);
+			hosRe.setPetTypeNo(petType);
+			mv.addObject("alertMsg","예약정보 변경에 성공 했습니다.").addObject("hosRe",hosRe).setViewName("petCare/hospitalDetail");
+		}else {
+			mv.addObject("alertMsg","예약정보 변경실패 ㅠㅠ").setViewName("redirect:/hospital.re");
+		}
+		return mv;
+	}
+	
+	@RequestMapping("hospitalDone.re")
+	public String hospitalDone(HttpSession session) {
+	    session.setAttribute("alertMsg", "예약이 확정 되었습니다. 내역에서 확인가능");
+	    return "redirect:/hospital.ho";
 	}
 	
 	

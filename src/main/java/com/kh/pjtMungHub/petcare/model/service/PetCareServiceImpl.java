@@ -220,6 +220,12 @@ public class PetCareServiceImpl implements PetCareService {
 		return petCareDao.selectHospitalRe(sqlSession,hosReNo);
 	}
 	
+	//예약정보 업데이트
+	@Override
+	public int hospitalEnrollUp(HospitalRe hosRe) {
+		return petCareDao.hospitalEnrollUp(sqlSession,hosRe);
+	}
+	
 
 	
 
