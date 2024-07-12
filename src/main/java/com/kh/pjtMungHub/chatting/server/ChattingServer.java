@@ -12,6 +12,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.google.gson.Gson;
 import com.kh.pjtMungHub.chatting.vo.MessageVO;
+import com.kh.pjtMungHub.member.controller.MemberController;
 import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.petcare.model.vo.PetSitter;
 
@@ -35,16 +36,21 @@ public class ChattingServer extends TextWebSocketHandler{
 		log.debug("session : {}",session);
 		log.debug("정보 : {}",session.getAttributes().get("loginUser"));
 		Member loginUser=(Member)session.getAttributes().get("loginUser");
+		WebSocketSession counter=null;
 		if(loginUser!=null) {
 			PetSitter counterUser=(PetSitter)session.getAttributes().get("counterUser");
 			users.add(session);
 			chattingSet.add(session);
-			chattingSet.add(chatSitter.get(counterUser.getPetSitterNo()));
+			counter=chatSitter.get(counterUser.getPetSitterNo());
+
 		}else {
 			Member counterUser=(Member)session.getAttributes().get("counterUser");
 			sitters.add(session);
 			chattingSet.add(session);
-			chattingSet.add(chatUser.get(counterUser.getUserNo()));
+			counter=chatUser.get(counterUser.getUserNo());
+		}
+		if(counter!=null) {
+			chattingSet.add(counter);
 		}
 	}
 	
@@ -53,14 +59,14 @@ public class ChattingServer extends TextWebSocketHandler{
 		// TODO Auto-generated method stub
 		// 메시지를 전달받아 아이디와 메시지를 vo에 담아 처리해보기
 		Member loginUser = ((Member)(session.getAttributes().get("loginUser")));
+		MessageVO mv=new MessageVO();
 		if(loginUser!=null) {
 			PetSitter counterUser = ((PetSitter)(session.getAttributes().get("counterUser")));
 			int lnth=message.getPayloadLength();
-			MessageVO mv=new MessageVO();
 			mv.setSitterNo(counterUser.getPetSitterNo());
 			mv.setMasterNo(loginUser.getUserNo());
-			mv.setChatContent(message.getPayload().substring(0, lnth-6));
-			mv.setChatWriter(message.getPayload().substring(lnth-6,lnth));
+			mv.setChatContent(message.getPayload().substring(0, (lnth-6)));
+			mv.setChatWriter(message.getPayload().substring((lnth-6)));
 			// VO 정보를 json화시켜 메시지 객체에 담아 전달하기
 			// json화시켜 문자열로 만든 값을 담아 전달하고 데이터를 받는 위치에서 다시 json으로 파싱
 			message = new TextMessage(new Gson().toJson(mv));
@@ -69,16 +75,25 @@ public class ChattingServer extends TextWebSocketHandler{
 			PetSitter sitterUser=(PetSitter)session.getAttributes().get("sitterUser");
 			Member counterUser=(Member)session.getAttributes().get("counterUser");
 			int lnth=message.getPayloadLength();
-			MessageVO mv=new MessageVO();
 			mv.setSitterNo(sitterUser.getPetSitterNo());
 			mv.setMasterNo(counterUser.getUserNo());
 			mv.setChatContent(message.getPayload().substring(0, lnth-6));
-			mv.setChatWriter(message.getPayload().substring(lnth-6,lnth));
+			mv.setChatWriter(message.getPayload().substring(lnth-6));
 			message = new TextMessage(new Gson().toJson(mv));
 			}
+//		System.out.println(mv);
+//		int result=new MemberController().chatUpload(mv);
+//		if(result>0) {
+//			log.debug("채팅저장완료");
+//		}else {
+//			log.debug("채팅저장실패");			
+//		}
+		System.out.println(chattingSet);
 		for(WebSocketSession ws : chattingSet) {
+			System.out.println(ws);
 			ws.sendMessage(message);
 		}
+		log.debug("전송완료");
 	}
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {

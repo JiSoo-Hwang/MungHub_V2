@@ -194,4 +194,13 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.getRestrictedUntil",userNo);
 	}
 
+	public int chatUpload(SqlSessionTemplate sqlSession, MessageVO message) {
+		return sqlSession.insert("memberMapper.chatUpload", message);
+	}
+	public int chatReadSitter(SqlSessionTemplate sqlSession, MessageVO message) {
+		return sqlSession.update("memberMapper.chatReadSitter", message);
+	}
+	public int chatReadMaster(SqlSessionTemplate sqlSession, MessageVO message) {
+		return sqlSession.update("memberMapper.chatReadMaster", message);
+	}
 }

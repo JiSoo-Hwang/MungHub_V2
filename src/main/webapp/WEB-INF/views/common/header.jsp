@@ -200,7 +200,7 @@ clear: both;
 		<span style="float: right; margin: 10px; ">${loginUser.userId} 님 환영합니다&ensp;|&ensp;<a href="myPage.me" style="text-decoration: none; color: black;">마이페이지</a></span>
 	</c:when>
 	<c:when test="${!empty sitterUser}">
-		<span style="float: right; margin: 10px; ">${sitterUser.petSitterName} 님 환영합니다&ensp;</span>
+		<span style="float: right; margin: 10px; ">${sitterUser.petSitterName} 펫시터님 환영합니다&ensp;</span>
 	</c:when>
 </c:choose>
 <br clear="all">
@@ -331,7 +331,7 @@ clear: both;
 			var code='';
 				code=sitterNo+'n'+${loginUser.userNo};
 
-			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=550');
+			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/code'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=850');
 		})
 		$(".master").on("click",function(){
 			var masterNo= $(this).children().eq(0).val();
@@ -339,7 +339,7 @@ clear: both;
 			var code='';
 				code=${sitterUser.petSitterNo}+'n'+masterNo;
 
-			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=550');
+			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/code'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=850');
 		})
 	</script>
 </body>

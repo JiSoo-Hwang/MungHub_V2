@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.TextMessage;
 
 import com.kh.pjtMungHub.chatting.vo.MessageVO;
 import com.kh.pjtMungHub.common.model.vo.PetPhoto;
@@ -227,5 +228,20 @@ public class MemberServiceImpl implements MemberService{
 	}
 	public LocalDateTime getRestrictedUntil(int userNo) {
 		return dao.getRestrictedUntil(sqlSession,userNo);
+	}
+
+	@Override
+	public int chatUpload(MessageVO message) {
+		return dao.chatUpload(sqlSession,message);
+	}
+
+	@Override
+	public int chatReadSitter(MessageVO message) {
+		return dao.chatReadSitter(sqlSession, message);
+	}
+
+	@Override
+	public int chatReadMaster(MessageVO message) {
+		return dao.chatReadMaster(sqlSession, message);
 	}
 }

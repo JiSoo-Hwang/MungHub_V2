@@ -59,13 +59,11 @@
 		bottom:0px;
 		left:0px;
 	}
-	.chatSender>div{
-		margin-left:5px;
-		margin-top:5px;
-		margin-bottom:10px;
+	.chatSender>*{
 		width:80%;
 		height:200px;
 		float:left;
+		overflow:auto;
 	}
 	.chatHeader,.chat-main,.chatSender{
 		width:100%;
@@ -104,8 +102,8 @@
 		background-color:white;
 	}
 	.sendButton{
-		width:19%;
-		height:115px;;
+		width:20%;
+		height:200px;
 		border:none;
 		background-color: lightGray;
 		float:right;
@@ -151,8 +149,8 @@
 		</div>
 	</div>
 	<div class="chatSender">
-	<textarea id="summernote" class="chat"></textarea>
-	<button class="sendButton" onclick="send();">보내기</button>
+		<textarea id="summernote"></textarea>
+		<button class="sendButton" onclick="send(); return false;">보내기</button>
 	</div>
 	
 	<script>
@@ -184,16 +182,39 @@
 				var newDiv = document.createElement("div");
 				var sender="user-chat "+data.chatWriter;
 				var newSpan= document.createElement("span");
-				newSpan.textContent = data.chatContent;
 				newDiv.appendChild(newSpan).setAttribute("class",sender);
-				div.appendChild(newDiv).setAttribute("class","userChat");
-				$(".MASTER").prop("style","display:block; float:right; position:relative;");
-
+				newSpan.innerHTML = data.chatContent;
+				newDiv.setAttribute("class","userChat");
+				console.log(newDiv);
+				div.appendChild(newDiv);
+				$(".userChat").prop("style","margin-bottom:5px; overflow:auto;");
+				$(".user-chat").prop("style","height:auto");
+				$(".MASTER").prop("style","float:right;");
+				$(".SITTER").prop("style","float:left;");
 				var newMsg=window.opener.getElementsById("chatCont");
-				var sitterNo=${sitterUser.petSitterNo};
+				var counterNo=0;
+				if(${not empty loginUser}){
+					counterNo=data.sitterNo;
+				}else{
+					counterNo=data.masterNo;
+				}
 				newMsg.children().eq(0).each(function(){
 					if(this.val()=sitterNo){
-						$(this).siblings().eq(2).innerText(data.chatContent);
+						$(this).siblings().eq(2).innerHTML(data.chatContent);
+					}
+				})
+				$.ajax({
+					url:"chatRead.chat",
+					data:data,
+					success:function(num){
+						if(num>0){
+							console.log("읽기완료");
+						}else{
+							console.log("읽기실패");
+						}
+					},
+					error:function(){
+						console.log("읽기처리 오류");
 					}
 				})
 
@@ -204,24 +225,57 @@
 			window.close();
 		}
 		$('#summernote').summernote({
+			height:140,
+			disableResizeEditor:true,
 			toolbar:[
 				['insert',['picture','link','video']]
-			]});
+			],
+			callbacks:{
+				onImageUpload:function(files,editor,welEditable){
+					for(var i=0;i<files.length;i++){
+						uploadFile(files[i],this);
+					}
+				}
+			}
+		});
 		$(".note-toolbar").on("click",function(){
 			$(".note-modal-backdrop").prop("style","z-index:1;");
 		})
+		function uploadFile(file,el){
+			var form_data = new FormData();
+			form_data.append('file',file);
+			$.ajax({
+				url : "uploadFile.chat",
+				type:"post",
+				data:form_data,
+				encType: 'multipart/form-data',
+				cache:false,
+				contentType:false,
+				processData:false, 
+				success: function(url){
+					console.log(url);
+					$(el).summernote('insertImage',url,function($image){
+						$image.css('width',"25%");
+					});
+				},
+				error:function(){
+					console.log("통신오류");
+				}
+			});
+		}
 		// 메시지 전송 함수
 		function send(){
 			// 사용자가 입력한 텍스트를 추출하여 웹소켓에 전달하기
-			var message = document.getElementById("chat").value;
+			var message = document.getElementById("summernote").value;
 			var loginUser=${empty loginUser};
 			if(loginUser){
 				message+='SITTER';
 			}else{
 				message+='MASTER';
 			}
+			console.log(message);
 			socket.send(message);
-			document.getElementById("chat").value="";
+			document.getElementById("summernote").value="";
 		}
 	</script>
 </body>

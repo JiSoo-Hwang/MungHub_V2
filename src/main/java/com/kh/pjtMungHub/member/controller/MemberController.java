@@ -141,7 +141,7 @@ public class MemberController {
 			if(teacher!=null) {				
 				for(Member me:teacher) {
 					tList.add(me);
-					if(me.getStatus()=="N") {						
+					if(me.getStatus().equals("N")) {						
 						count++;
 					}
 				}
@@ -741,6 +741,10 @@ public class MemberController {
 			session.setAttribute("sitterUser", sitter);
 		}
 		return sitter;
+	}
+	
+	public int chatUpload(MessageVO msg) {
+		return service.chatUpload(msg);
 	}
 
 	public String generateState()
