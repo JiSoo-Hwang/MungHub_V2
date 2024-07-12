@@ -165,7 +165,7 @@ li {
         <form action="reject.do" method="post">
       <div class="modal-body">
       	<input type="hidden" name="reservNo" value="${registration.reservNo}">
-        <textarea rows="4" cols="50" name="reason" placeholder="견주님 마음 상하지 않게 거절 이유를 친절하게 적어주세요."></textarea>
+        <textarea rows="4" cols="50" name="reason" placeholder="견주님 마음 상하지 않게 거절 이유를 친절하게 적어주세요." required></textarea>
       </div>
 
       <!-- Modal footer -->
