@@ -68,6 +68,19 @@
 		<url-pattern>/houseList.re</url-pattern>
 		<url-pattern>/sitter.re</url-pattern>
 		<url-pattern>/hospital.ho</url-pattern>
+		<url-pattern>/map.do</url-pattern>
+		<url-pattern>/reg.do</url-pattern>
+		<url-pattern>/regDetail.do</url-pattern>
+		<url-pattern>/regList.do</url-pattern>
+		<url-pattern>/regList2.do</url-pattern>
+		<url-pattern>/deleteReg.do</url-pattern>
+		<url-pattern>/insert.wd</url-pattern>
+		<url-pattern>/wedList.wd</url-pattern>
+		<url-pattern>/detail.wd</url-pattern>
+		<url-pattern>/admin.wd</url-pattern>
+		<url-pattern>/update.wd</url-pattern>
+		<url-pattern>/apply.wd</url-pattern>
+		<url-pattern>/regList.wd</url-pattern>
 	</filter-mapping>
 	
 </web-app>
