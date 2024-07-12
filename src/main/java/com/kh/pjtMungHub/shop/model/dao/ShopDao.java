@@ -188,10 +188,10 @@ public class ShopDao {
 
 	public int insertReview(SqlSessionTemplate sqlSession, Review review) {
 		// TODO Auto-generated method stub
-		return sqlSession.insert("shopMapper.inserReview",review);
+		return sqlSession.insert("shopMapper.insertReview",review);
 	}
 
-	public int selectReviewCount(SqlSessionTemplate sqlSession, int productNo) {
+	public Integer selectReviewCount(SqlSessionTemplate sqlSession, int productNo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("shopMapper.selectReviewCount",productNo);
 	}
@@ -317,6 +317,16 @@ public class ShopDao {
 	public int insertQuestion(SqlSessionTemplate sqlSession, Question q) {
 		// TODO Auto-generated method stub
 		return sqlSession.insert("shopMapper.insertQuestion",q);
+	}
+
+	public Review selectReview(SqlSessionTemplate sqlSession, Review r) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectReview",r);
+	}
+
+	public int updateReview(SqlSessionTemplate sqlSession, Review review) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateReview",review);
 	}
 
 

@@ -162,5 +162,11 @@ public interface ShopService {
 	int insertQuestion(Question q);
 
 
+	Review selectReview(Review r);
+
+
+	int updateReview(Review review, ParameterVo fileParameter);
+
+
 
 }
