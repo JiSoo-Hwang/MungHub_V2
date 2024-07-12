@@ -332,15 +332,6 @@
 				//펫크기
 				var petTypeNo = $(".petType-btn.selected").val();
 				
-				
-				console.log(visitDate);
-				console.log(startTime);
-				console.log(duration);
-				console.log(endTime);
-				console.log(petTypeNo);
-				
-				
-				
 				if(visitDate && startTime && duration && petTypeNo){
 					$.ajax({
 						url : "selectSitter.re",

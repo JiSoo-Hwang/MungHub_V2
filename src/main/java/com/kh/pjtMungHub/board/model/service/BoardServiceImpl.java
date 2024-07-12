@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.pjtMungHub.board.model.dao.BoardDao;
+import com.kh.pjtMungHub.board.model.vo.Attachment;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
 import com.kh.pjtMungHub.board.model.vo.Reply;
@@ -67,10 +69,17 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	@Override
-	public int insertBoard(Board b) {
+	@Transactional
+	public int insertBoard(Board b, ArrayList<Attachment> aList) {
 		// TODO Auto-generated method stub
-		return boardDao.insertBoard(sqlSession,b);
+		int result = boardDao.insertBoard(sqlSession, b);
+		
+		int result2 = boardDao.insertAttachment(sqlSession, aList);
+		
+		return result*result2;
 	}
+	
+	
 
 	
 	@Override
@@ -84,8 +93,11 @@ public class BoardServiceImpl implements BoardService {
 		// TODO Auto-generated method stub
 		return boardDao.insertReply(sqlSession,r);
 	}
-
-	
+	@Override
+	public int insertBoard(Board b) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 	
 

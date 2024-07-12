@@ -192,7 +192,8 @@ import listPlugin from '@fullcalendar/list';
     <%@include file="/WEB-INF/views/common/header.jsp" %>
     <input type="hidden" id="formattedDate" value="<%=formattedDate %>">
     
-   HospitalRe(hosReNo=31, userNo=1, reTime=10:00, 
+   HospitalRe(hosReNo=31, userNo=1,
+   
    petName=멍뭉이, petKind=웰시코기, petBirthDay=2024-07-04, petGender=남, neutralization=예, specialNotes=ㅇㅇㅇ, 
    petTypeNo=1, petTypeName=소형, symptom=구토, originName=null, changeName=null, 
    diseaseName=파보바이러스, 렙토스피라증, 장염, status=Y, updateDay=2024-07-10)
@@ -204,9 +205,11 @@ import listPlugin from '@fullcalendar/list';
         
         <form action="hospitalInsert.re" method="post" enctype="multipart/form-data">
             <input type="hidden" id="userNo" name="userNo" value="${loginUser.userNo }">
-            <input type="hidden" id="preReDate" name="preReDate" value="${hosRe.reDate }">
-            <input type="hidden" id="reDate" name="reDate" value="">
+            기존날짜 <input type="text" id="preReDate" name="preReDate" value="${hosRe.reDate }"> <!-- 예약한날짜 -->
+            <input type="hidden" id="reDate" name="reDate" value=""> <!-- 업데이트 날짜 -->
+            기존시간 <input type="text" id="preReTime" name="preReTime" value="${hosRe.reTime }">
             <input type="hidden" id="reTime" name="reTime" value="">
+            기존 펫타입<input type="text" id="prePetType" name="prePetType" value="${hosRe.petTypeNo }">
             <input type="hidden" id="petTypeNo" name="petTypeNo" value="">
             
             <h4 class="h4">접수증</h4>
@@ -234,6 +237,7 @@ import listPlugin from '@fullcalendar/list';
                 <div id="calendar" class="calendar-container">
                     <!-- fullCalendar -->
                 </div>
+                
                 <div class="time-container" id="startTime">
                     <h5 class="h5">방문시간을 선택해주세요.</h5>
                     <button type="button" class="str-btn" value="1000">10:00</button>
@@ -507,19 +511,21 @@ import listPlugin from '@fullcalendar/list';
 		        calendar.render();
 		        
 		     // 페이지 첫번째 로드시 오늘 날짜 자동선택
-	            var todayEl = $('.fc-daygrid-day[data-date="' + formattedDate + '"]');
+	            var todayEl = $('.fc-daygrid-day[data-date="' + reDate + '"]');
 	            todayEl.addClass('fc-day-selected');
-	            $('#reDate').val(formattedDate);
+	            $('#reDate').val(reDate);
+	            
 	         // 에약시간 자동선택
 	         	var firstStrBtn = $('.str-btn').first();
 	         	firstStrBtn.addClass('selected');
 	         	$('#reTime').val(firstStrBtn.val());
 	         
 	         // 펫크기 자동선택
-	         	var firstPetTypeBtn = $('.petType-btn').first();
-	         	firstPetTypeBtn.addClass('selected');
-	         	$('#petType').val(firstPetTypeBtn.val());
-	            
+	         	var prePetType = $('#').val();
+	         	var firstPetBtn = $('.petType-btn[value="'+ prePetType +'" ]');
+	         	firstPetBtn.addClass('selected');
+	         	$('#petType').val(prePetType);
+	         	
 		    }, 500);
 		});
 	</script>

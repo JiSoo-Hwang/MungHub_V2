@@ -100,7 +100,7 @@
 	    <result column="CHANGE_NAME" property="changeName"/>
 	    <result column="STATUS" property="status"/>
 	    <result column="PAYMENT_STATUS" property="paymentStatus"/>
-	    <result column="USER_ID" property="userId"/>
+	    <result column="USER_NO" property="userId"/>
 	    <result column="TOTAL_AMOUNT" property="totalAmount"/>
 	</resultMap>
 	

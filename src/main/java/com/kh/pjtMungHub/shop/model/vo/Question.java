@@ -20,4 +20,5 @@ public class Question {
 	private String categoryName;
 	private String openStatus;
 	private Date createDate;
+	private String answerStatus;
 }

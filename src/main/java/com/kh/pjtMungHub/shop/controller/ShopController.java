@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.template.Pagination;
 import com.kh.pjtMungHub.shop.model.service.ShopService;
+import com.kh.pjtMungHub.shop.model.vo.Answer;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
@@ -708,6 +709,15 @@ public class ShopController {
 		return result;
 	}
 	
+	@GetMapping("selectReivew.sp")
+	@ResponseBody
+	public Review selectReivew(Review r) {
+		
+		Review result=shopService.selectReview(r);
+		
+		return result;
+	}
+	
 	@PostMapping("insertReview.sp")
 	@ResponseBody
 	public int insertReview(@RequestPart(value="review")Review review,
@@ -768,6 +778,86 @@ public class ShopController {
 				.build();
 		
 		int result=shopService.insertReview(review,fileParameter);
+		
+		
+		return result;
+	}
+	
+	@PostMapping("updateReview.sp")
+	@ResponseBody
+	public int updateReview(@RequestPart(value="review")Review review,
+							@RequestPart(value="uploadFile",required=false) MultipartFile[] upfile,
+							HttpSession session) {
+		
+		ArrayList<Attachment> atList=new ArrayList<>();
+		Attachment at=new Attachment();
+		
+		ParameterVo parameter=ParameterVo.builder()
+				.justifying("review")
+				.number(review.getReviewNo())
+				.build();
+		System.out.println(parameter);
+		ArrayList<Attachment> deleteAtList=shopService.selectAttachmentList(parameter);
+		for (int i = 0; i < deleteAtList.size(); i++) {
+			String deleteFile= "resources/uploadFiles/shopFile/reviewFile/"+deleteAtList.get(i).getType()+"/"+deleteAtList.get(i).getChangeName();
+			File f=new File(session.getServletContext().getRealPath(deleteFile));
+			f.delete();
+			parameter.setFileLev(i);
+			shopService.deleteAttachment(parameter);
+		}
+		
+		if(upfile!=null) {
+		for (int i=0;i< upfile.length;i++) {
+			
+		
+				
+				String fileType=upfile[i].getOriginalFilename();
+				int index = fileType.lastIndexOf(".");
+				String extension = fileType.substring( index+1 ).toLowerCase();
+				String type="";
+				
+				if(extension.equals("avi")||
+				   extension.equals("mov")||
+				   extension.equals("mp4")||
+				   extension.equals("wmv")||
+				   extension.equals("asf")||
+				   extension.equals("mkv")) {
+							
+				   type="video";
+				   
+		  }else if(extension.equals("jpeg")||
+				   extension.equals("jpg")||
+				   extension.equals("png")||
+				   extension.equals("gif")) {
+			  
+				   type="image";
+		     }else{
+			       type="file";
+			}
+				
+				String changeName = saveFile(upfile[i],session,"reviewFile",type);
+				
+				at=Attachment.builder().
+						fileLev(0).
+						originName(upfile[i].getOriginalFilename()).
+						changeName(changeName).
+						fileJustify("review").
+						filePath("/pjtMungHub/resources/uploadFiles/shopFile/reviewFile/"+type+"/").
+						type(review.getType()).
+						build();
+				atList.add(at);
+			}
+			
+			
+			
+		}
+		ParameterVo fileParameter=ParameterVo.builder()
+				.atList(atList)
+				.justifying("review")
+				.number(review.getReviewNo())
+				.build();
+		
+		int result=shopService.updateReview(review,fileParameter);
 		
 		
 		return result;
@@ -841,10 +931,16 @@ public class ShopController {
 			reviewJArr.add(jobj);
 			
 		}
-	
 		return reviewJArr;
 	}
 	
+	
+	@GetMapping("selectReviewCount.sp")
+	@ResponseBody
+	public int selectReviewCount(int productNo) {
+		int result=shopService.selectReviewCount(productNo);
+		return result;
+	}
 	
 	@GetMapping("reviewReplyList.sp")
 	@ResponseBody
@@ -904,7 +1000,20 @@ public class ShopController {
 		
 		ArrayList<Question> qList=shopService.selectQuestionList(productNo,pi);
 		
+		
+		Answer answer=new Answer(); 
+		for (int i = 0; i < qList.size(); i++) {
+			answer=shopService.selectAnswer(qList.get(i).getQuestionNo());
+			if(answer!=null) {
+				qList.get(i).setAnswerStatus("Y");
+			}else {
+				qList.get(i).setAnswerStatus("N");
+			}
+		}
+		
+		
 		JSONObject jobj=new JSONObject();
+		
 		
 		jobj.put("qList", qList);
 		jobj.put("pi", pi);
@@ -912,6 +1021,27 @@ public class ShopController {
 		return jobj;
 	}
 	
+	@GetMapping("qnaPage.sp/{questionNo}")
+	public ModelAndView qnaPage(ModelAndView mv,@PathVariable int questionNo) {
+		
+		Question q=shopService.selectQuestionDetail(questionNo);
+		Answer a =shopService.selectAnswer(questionNo);
+		
+		mv.addObject("q",q);
+		mv.addObject("a",a);
+		mv.setViewName("shop/qnaPage");
+		return mv;
+	}
+	
+	@PostMapping("insertQuestion.sp")
+	@ResponseBody
+	public int insertQuestion(Question q) {
+		
+		int result=shopService.insertQuestion(q);
+		
+		
+		return result;
+	}
 	
 	
 	@GetMapping("adminPage.sp")
