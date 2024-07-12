@@ -198,6 +198,8 @@ $(function () {
 	var checkNum = $("input[class='form-check-input']:checked").length;
 		if(checkNum==5){
 			$("button[type='submit']").prop("disabled",false);
+		}else{
+			$("button[type='submit']").prop("disabled",true);
 		}
 	});
 });
