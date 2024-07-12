@@ -53,7 +53,7 @@ AND W.USER_NO = M.USER_NO
 AND WEDDING_NO= #{weddingNo}
 </select>
 
-<select id="selectPet" parameterType="_int" resultType="Pet">
+<select id="selectPets" parameterType="_int" resultType="Pet">
 SELECT PET_NO petNo
 ,BREED_NAME breed
 ,OWNER_NO ownerNo

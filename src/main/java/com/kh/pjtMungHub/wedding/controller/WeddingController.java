@@ -224,11 +224,13 @@ public class WeddingController {
 		Member m = (Member) session.getAttribute("loginUser");
 		int count = service.countAppliedList(m.getUserNo());
 		ArrayList<Pet> pet = service.selectPets(m.getUserNo());
+		Pet partnerPet = service.selectPetByNo(petNo);
 		if (count >= 3) {
 			session.setAttribute("alertMsg", "계정당 만남 신청은 3회로 제한되어있습니다 ꌩ-ꌩ");
 			return "redirect:/wedList.wd";
 		} else {
 			model.addAttribute("matchingPet", petNo);
+			model.addAttribute("partnerPet",partnerPet);
 			model.addAttribute("petList", pet);
 			return "wedding/apply4MatchingView";
 		}
