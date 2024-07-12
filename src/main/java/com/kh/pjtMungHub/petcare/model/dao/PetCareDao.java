@@ -139,6 +139,10 @@ public class PetCareDao {
 
 	//장기돌봄 예약저장
 	public int enrollHouse(SqlSessionTemplate sqlSession, HouseReservation hr) {
+		
+		System.out.println(hr);
+		
+		
 		return sqlSession.insert("petcareMapper.enrollHouse",hr);
 	}
 	
