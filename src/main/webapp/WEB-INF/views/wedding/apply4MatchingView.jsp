@@ -147,7 +147,7 @@ li {
 								<td></td>
 								<td style="text-align: center;">
 									<a href="wedList.wd" class="btn btn-outline-primary">목록으로</a>
-									<button type="button" id="submitBtn" class="btn btn-outline-success" data-bs-toggle="tooltip" title="모든 백신접종이 체크되어야 신청버튼이 활성화됩니다 :)" disabled>신청하기</button>
+									<button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" title="모든 백신접종이 체크되어야 신청버튼이 활성화됩니다 :)" disabled>신청하기</button>
 								</td>
 							</tr>
 						</tbody>
