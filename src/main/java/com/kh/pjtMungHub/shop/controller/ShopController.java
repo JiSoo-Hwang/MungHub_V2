@@ -32,6 +32,7 @@ import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
+import com.kh.pjtMungHub.shop.model.vo.Point;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
@@ -551,7 +552,12 @@ public class ShopController {
 	public ModelAndView productOrder(ModelAndView mv ,
 			@RequestParam ArrayList<Integer> chooseOrNot,
 			@RequestParam int userNo) {
+		Point p =shopService.selectPoint(userNo);
 		
+		if(p==null) {
+			p=Point.builder().userNo(userNo).point(0).build();
+			int pointUpdate=shopService.updatePoint(p);
+		}
 		
 		ParameterVo parameter = ParameterVo.builder()
 				.userNo(userNo)
@@ -583,7 +589,7 @@ public class ShopController {
 			
 			totalPrice+=(price-(price/discount)*amount);
 		}
-		
+		mv.addObject("point",p);
 		mv.addObject("itemsNo",itemsNo);
 		mv.addObject("itemsQuantity",itemsQuantity);
 		mv.addObject("itemList",itemList);
@@ -779,7 +785,9 @@ public class ShopController {
 		
 		int result=shopService.insertReview(review,fileParameter);
 		
-		
+		Point point= Point.builder().userNo(review.getUserNo()).point(150).build();
+		int pointUpdate=shopService.updatePoint(point);
+				
 		return result;
 	}
 	
@@ -796,7 +804,6 @@ public class ShopController {
 				.justifying("review")
 				.number(review.getReviewNo())
 				.build();
-		System.out.println(parameter);
 		ArrayList<Attachment> deleteAtList=shopService.selectAttachmentList(parameter);
 		for (int i = 0; i < deleteAtList.size(); i++) {
 			String deleteFile= "resources/uploadFiles/shopFile/reviewFile/"+deleteAtList.get(i).getType()+"/"+deleteAtList.get(i).getChangeName();
@@ -1042,6 +1049,14 @@ public class ShopController {
 		
 		return result;
 	}
+	
+	@PostMapping("updatePoint.sp")
+	@ResponseBody
+	public int updatePoint(Point p) {
+		int result=shopService.updatePoint(p);
+		return result;
+	}
+	
 	
 	
 	@GetMapping("adminPage.sp")

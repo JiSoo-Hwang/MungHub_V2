@@ -293,7 +293,7 @@ color: purple;
 					</div>
 					<div class="d-flex justify-content-end">
 						<input class="form-control text-center me-3" id="inputQuantity"
-							type="number" min="1" value="1" style="max-width: 3rem">
+							type="number" min="1" max="99" value="1" style="max-width: 4rem" onkeyup="minusChk()">
 						&nbsp;&nbsp;
 						<button class="btn btn-outline-dark flex-shrink-0" id="addCart" type="button">
 							<i class="bi bi-bag-plus-fill"></i>&nbsp; 장바구니 추가
@@ -324,7 +324,17 @@ color: purple;
 	</div>
 	
 	<script>
-	
+	function minusChk(){
+		var value=$("#inputQuantity").val();
+		if(value<1){
+			$("#inputQuantity").val("1");
+		}
+		
+		if(value>99){
+			$("#inputQuantity").val("99");
+		}
+		
+	}
 	
 	function selectFavor(){
 		
@@ -771,7 +781,24 @@ color: purple;
 						}
 					});
 				}
-				
+				function likeModal(num){
+					$.ajax({
+						url : "/pjtMungHub/reviewLike.sp",
+						type : "post",
+						data : {userNo : ${loginUser.userNo},
+								reviewNo : num},
+						success : function(result){
+							console.log(result);
+							$("#likeCountT"+num).text(result);
+							$("#likeCount"+num).text(result);
+							$("#likeCountB"+num).text(result);
+							$("#likeCountTmodal"+num).text(result);
+							
+							},error : function(){
+							console.log("통신오류");
+						}
+					});
+				}
 				
 				</script>
 			</c:if>
@@ -954,9 +981,12 @@ color: purple;
 	<div class="container" id="detail-section02">
 		<h2>구매후기</h2>
 		<div align="right" id="reviewBtnDiv">
-		<button type="button" class="btn btn-primary" 
+		<button type="button" class="btn btn-primary position-relative" 
 		<c:if test="${not empty loginUser }"> data-bs-toggle="modal" data-bs-target="#reviewModal"</c:if>
-		id="reviewButton">리뷰작성</button>
+		id="reviewButton"> 
+	<span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
+    <span class="visually-hidden">New alerts</span> <small>작성 시 150P 적립!</small>
+  </span>리뷰작성</button>
 		</div>
 		
 		<c:if test="${empty loginUser }">
@@ -1351,7 +1381,7 @@ color: purple;
 					+"<div class='col-sm-1' id='likeCountTmodal"+result[i].reviewNo+"' align='center'>"
 					+result[i].likeCount
 					+"</div>"
-					+"<button class='btn btn-primary col-sm-1' style='max-height:40px' onclick='like("+result[i].reviewNo+")'><i class='bi bi-hand-thumbs-up'></i></button>"
+					+"<button class='btn btn-primary col-sm-1' style='max-height:40px' onclick='likeModal("+result[i].reviewNo+")'><i class='bi bi-hand-thumbs-up'></i></button>"
 					+"</div>"
 					+"<div class='row align-items-center justify-content-center py-2'>"
 					+"<hr>"
@@ -1481,7 +1511,11 @@ color: purple;
 						},
 				success : function(result){
 					selectQuestionList(1);
-					alert("문의가 완료되었습니다. 최대한 빨리 답변할 수 있도록 노력하겠습니다.");
+					
+					
+
+					alertify
+					  .alert("문의글 작성완료","문의가 완료되었습니다. 최대한 빨리 답변할 수 있도록 노력하겠습니다.");
 					$('#insertQuestionModal').modal('hide');
 				},error : function(){
 					console.log("통신오류");

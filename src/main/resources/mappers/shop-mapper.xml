@@ -884,5 +884,27 @@
 		WHERE USER_NO=#{userNo}
 		ORDER BY PAY_DATE DESC
 	</select>
+	
+	<update id="updatePoint" parameterType="com.kh.pjtMungHub.shop.model.vo.Point">
+	MERGE INTO SHOP_POINT
+		USING DUAL
+		ON(USER_NO=#{userNo})
+		WHEN
+		MATCHED THEN
+		UPDATE SET POINT = POINT+#{point}
+		WHEN NOT MATCHED
+		THEN
+		INSERT (USER_NO,POINT)
+		VALUES(#{userNo},#{point})
+	</update>
+	
+	<select id="selectPoint" 
+	parameterType="_int"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Point">
+	SELECT POINT point,
+	USER_NO userNo
+	FROM SHOP_POINT
+	WHERE USER_NO=${userNo}
+	</select>
 
 </mapper>

@@ -17,6 +17,7 @@ import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
+import com.kh.pjtMungHub.shop.model.vo.Point;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
@@ -327,6 +328,16 @@ public class ShopDao {
 	public int updateReview(SqlSessionTemplate sqlSession, Review review) {
 		// TODO Auto-generated method stub
 		return sqlSession.update("shopMapper.updateReview",review);
+	}
+
+	public int updatePoint(SqlSessionTemplate sqlSession, Point point) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updatePoint",point);
+	}
+
+	public Point selectPoint(SqlSessionTemplate sqlSession, int userNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectPoint",userNo);
 	}
 
 

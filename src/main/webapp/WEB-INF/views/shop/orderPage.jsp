@@ -43,13 +43,10 @@
 	    var merchantUid = hours+minutes+seconds+milliseconds;
 	    
 	    function pay(){
-	    	var totalPrice;
-	    	
-	    	if(${totalPrice}>300000){
-	    		totalPrice=${totalPrice};
-	    	}else{
-	    		totalPrice=${totalPrice+2500};
-	    	}
+	    	var totalPrice=${totalPrice};
+	    	var usePoint=$("#usePoint").val();
+	    	var shipFee=$("#shipFee").val();
+	    	console.log(shipFee);
 	    	
 	    	 var recipient="${shipInfo.recipient }";
 	    	 var phone="${shipInfo.phone}";
@@ -66,7 +63,7 @@
 	    		pay_method : 'card',
 	    		merchant_uid: "IMP"+merchantUid,
 	    		name : '${itemList}',
-	    		amount : 100,
+	    		amount : ((totalPrice-usePoint)+Number(shipFee)),
 	    		custom_data : {
 	    			message : $("#request-area").val()
 	    			},
@@ -93,9 +90,27 @@
 	    					success: function(result){
 	    						
 	    						if(result>0){
+	    							var point=0;
+									
+									$("input[name=mileage]").each(function(index){
+											point+=parseInt($(this).val());
+									});
+	    							$.ajax({
+	    								url : "/pjtMungHub/updatePoint.sp",
+	    								type : "post",
+	    								data : {userNo : ${loginUser.userNo}
+	    										,point : point-Number(usePoint)},
+	    								success : function(result){
+	    									console.log("포인트 적립 성공");
+	    								},error : function(){
+	    									console.log("포인트 적립 오류");
+	    								}
+	    								
+	    								
+	    							});
 	    							location.href="/pjtMungHub/orderConfirm/"+rsp.merchant_uid;
 	    						}else{
-	    							alert("관리자에게 문의하세요.");
+	    							alert("배송정보 저장에 오류가 발생했습니다. \n관리자에게 문의하세요.");
 	    						}
 	    					},
 	    					error: function(){
@@ -168,8 +183,10 @@
                         <div class="col-sm-8">
                             <span id="tax" class="form-control-plaintext">
 		
-						 <c:if test="${totalPrice > 30000 }">배송비 무료</c:if>
-						 <c:if test="${totalPrice < 30000 }">₩2,500 원</c:if>
+						 <c:if test="${totalPrice > 30000 }">
+						 <input type="hidden" id="shipFee" value="0">배송비 무료</c:if>
+						 <c:if test="${totalPrice < 30000 }">
+						 <input type="hidden" id="shipFee" value="2500">₩2,500 원</c:if>
 
 							</span>
                         </div>
@@ -211,9 +228,60 @@
               					<fmt:formatNumber type="number"
 							maxFractionDigits="0" value="${totalPrice+2500 }" /> 원</c:if>
                             </span>
-                        </div>
+                         
+                        
                     </div>
                 </div>
+                
+                 <div class="form-group row">
+                  <label for="point" class="col-sm-4 col-form-label">보유 포인트 :</label>
+                        <div class="col-sm-8">
+                            <span id="point" class="form-control-plaintext">
+                            ${point.point }P
+                            </span>
+                        </div>
+                 
+                 </div>
+                  <div class="form-group row">
+                  <label for="usePoint" class="col-sm-4 col-form-label">사용 포인트 :</label>
+                  <input type="text" class="col-sm-6" value="0" id="usePoint">
+                 </div>
+                 
+                 <script>
+                 $(function(){
+                	 
+                 $("#usePoint").keyup(function() {
+                	var result=0;
+                	 var regExp=/^[0-9]+$/;
+                	var point=$("#usePoint").val();
+                	if(regExp.test(point)){
+                		
+                		if(${point.point }<point){
+                    		alert("소지한 point보다 많이 입력되었습니다.");
+                    		$("#usePoint").val(${point.point });
+                		}else if(${totalPrice}<point){
+                			alert("결제금액보다 point가 많이 입력되었습니다.");
+                    		$("#usePoint").val(${totalPrice});
+            			}else{
+                		
+	                	 result=${totalPrice}-point;
+	                	 
+	                	 if(${totalPrice}<30000){
+	                		 result+=2500;
+	                	 }
+	                	 
+	                	 $("#total").text("₩ "+result.toLocaleString("ko-KR")+" 원");
+                		}
+                	
+                	}else{
+                		alert("숫자만 입력해 주십시오.");
+                		$("#usePoint").val(0);
+                		
+                	}
+                	});
+                 });
+                 
+                 </script>
                 <div class="customer-details mt-5 ml-5">
                     <h3>주문자 정보</h3>
                     <div class="form-group row">
@@ -244,7 +312,7 @@
                         <label for="address" class="col-sm-4 col-form-label">요청사항:</label>
                         <div class="col-sm-8">
                             <div id="request" class="form-control-plaintext">
-								<select id="request-option" onchange="request()">
+								<select id="request-option" onchange="request()" style="width:100%">
 									<option>직접 입력(현관비밀번호,요청사항)</option>
 									<option>안전운전 부탁드립니다.</option>
 									<option>초인종 울리지 말아주세요</option>
@@ -276,6 +344,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </body>
 </html>

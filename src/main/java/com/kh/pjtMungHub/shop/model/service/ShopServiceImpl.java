@@ -17,6 +17,7 @@ import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
+import com.kh.pjtMungHub.shop.model.vo.Point;
 import com.kh.pjtMungHub.shop.model.vo.Product;
 import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
@@ -63,8 +64,6 @@ public class ShopServiceImpl implements ShopService {
 	public int insertProduct(Product p, ParameterVo fileParameter) {
 
 		int result=shopDao.insertProduct(sqlSession, p);
-		
-		System.out.println(fileParameter);
 		
 		int result2=shopDao.insertAttachment(sqlSession, fileParameter);
 		
@@ -398,6 +397,18 @@ public class ShopServiceImpl implements ShopService {
 	public Review selectReview(Review r) {
 		// TODO Auto-generated method stub
 		return shopDao.selectReview(sqlSession, r);
+	}
+
+	@Override
+	public int updatePoint(Point point) {
+		// TODO Auto-generated method stub
+		return shopDao.updatePoint(sqlSession,point);
+	}
+
+	@Override
+	public Point selectPoint(int userNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectPoint(sqlSession,userNo);
 	}
 
 	
