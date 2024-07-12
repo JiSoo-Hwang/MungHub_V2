@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.kh.pjtMungHub.board.model.vo.Attachment;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
+import com.kh.pjtMungHub.board.model.vo.ParameterVo;
 import com.kh.pjtMungHub.board.model.vo.Reply;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 
@@ -30,10 +31,11 @@ public interface BoardService {
 
 		//게시물 상세보기
 		Board selectBoard(int boardNo);
+		ArrayList<Attachment> AttachmentList(int boardNo);
 
 		//게시물 만들기
-		int insertBoard(Board b);
-		int insertBoard(Board b, ArrayList<Attachment> aList);
+		
+		int insertBoard(Board b,ParameterVo fileParameter);
 		
 		//댓글 목록 조회
 		ArrayList<Reply> replyList(int boardNo);

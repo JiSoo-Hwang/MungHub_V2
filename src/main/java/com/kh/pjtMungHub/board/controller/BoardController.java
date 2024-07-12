@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.pjtMungHub.board.model.service.BoardService;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
+import com.kh.pjtMungHub.board.model.vo.ParameterVo;
 import com.kh.pjtMungHub.board.model.vo.Reply;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.template.Pagination;
@@ -93,13 +94,23 @@ public class BoardController {
 		//조회수 증가시키기
 		int result = boardService.increaseCount(boardNo);
 		
+		ArrayList<Attachment> aList = new ArrayList<>();
+		
+		
 		//조회수가 제대로 증가되었다면 상세조회 
 		if(result>0) {
+			
 			Board b = boardService.selectBoard(boardNo);
+			aList = boardService.AttachmentList(boardNo); 
+			mv.addObject("aList",aList);
+			
 			mv.addObject("b",b).setViewName("board/detailBoardView");
+			
 		}else {
 			mv.addObject("errorMsg","상세조회 실패!");
+			
 		}
+		
 		
 		return mv;
 		
@@ -124,10 +135,13 @@ public class BoardController {
 			,HttpSession session) {
 		
 		ArrayList<Attachment> aList = new ArrayList<>();
-		if(!(upfile.length>0)) {
+		
+		
+		if(!upfile[0].getOriginalFilename().equals("")){
 			for (int i = 0; i < upfile.length; i++) {
 
 				String fileType = upfile[i].getOriginalFilename();
+				
 				int index = fileType.lastIndexOf(".");
 
 				String extension =fileType.substring(index + 1).toLowerCase();
@@ -144,8 +158,9 @@ public class BoardController {
 				aList.add(a);
 			}
 		}
+		ParameterVo fileParameter=ParameterVo.builder().aList(aList).build();
 
-		int result = boardService.insertBoard(b,aList);
+		int result = boardService.insertBoard(b,fileParameter);
 
 		if (result > 0) {// 게시글 작성 성공
 

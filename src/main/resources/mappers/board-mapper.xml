@@ -7,7 +7,6 @@
  	<resultMap type="Board" id="boardResultSet">
 		<result column="BOARD_NO" property="boardNo" />
 		<result column="CATEGORY_NO" property="categoryNo" />
-		<result column="FILE_NO" property="fileNo" />
 		<result column="BREED_ID" property="breedId" />
 		<result column="BOARD_TITLE" property="boardTitle" />
 		<result column="USER_ID" property="boardWriter" />
@@ -73,7 +72,7 @@
 		AND STATUS ='Y'
 	</update>
 	
-	<select id="selectBoard" parameterType="com.kh.pjtMungHub.board.model.vo.Attachment" resultType="Board" >
+	<select id="selectBoard" parameterType="_int" resultType="Board" >
 		SELECT BOARD_TITLE boardTitle
 		 	  ,BOARD_NO boardNo
 			  ,USER_ID boardWriter
@@ -81,11 +80,8 @@
 			  ,RECOMMEND recommend
 			  ,UPLOAD_DATE uploadDate
 			  ,BOARD_CONTENT boardContent
-			  ,ORIGIN_NAME originName
-			  ,CHANGE_NAME changeName
 		FROM BOARD B
 		JOIN MEMBER M ON M.USER_NO=B.BOARD_WRITER
-		LEFT JOIN BOARD_ATTACHMENT ON (BOARD_NO=ATT_BNO)
 		WHERE B.BOARD_NO = #{boardNo}
 		AND B.STATUS = 'Y'
 	</select>
@@ -107,35 +103,24 @@
 	<insert id="insertAttachment" parameterType="com.kh.pjtMungHub.board.model.vo.Attachment">
 	INSERT ALL
 	<foreach collection="aList" item="arr">
-	INTO BOARD_ATTACHMENT(FILE_LEVEL,
+	INTO BOARD_ATTACHMENT(ATT_BNO,
 						 ORIGIN_NAME,
 						 CHANGE_NAME,
 						 FILE_PATH,
+						 FILE_LEVEL,
 						 FILE_TYPE
-		         ) VALUES(
-						#{arr.fileLevel},
+		         ) 
+		         VALUES (SEQ_BOARD.CURRVAL,
 						#{arr.originName},
 						#{arr.changeName},
 						#{arr.filePath},
+						#{arr.fileLevel},
 						#{arr.fileType}
 						)
-						SELECT * FROM DUAL
-						</foreach>
+	</foreach>
+	SELECT * FROM DUAL 
 	</insert>
-	<select id="selectAttachment"
-	resultType="com.kh.pjtMungHub.board.model.vo.Attachment">
-	SELECT
-	FILE_LEVEL fileLevel,
-	ORIGIN_NAME originName,
-	CHANGE_NAME changeName,
-	UPLOAD_DATE uploadDate,
-	FILE_PATH filePath,
-	FILE_TYPE fileType
-	FROM BOARD_ATTACHMENT
-	WHERE FILE_NO=#{number}
-	AND
-	FILE_LEVEL=#{fileLevel}
-</select>
+
 	<select id="selectAttachmentList"
 		resultType="com.kh.pjtMungHub.board.model.vo.Attachment">
 		SELECT
@@ -146,7 +131,7 @@
 		FILE_PATH filePath,
 		FILE_TYPE fileType
 		FROM BOARD_ATTACHMENT
-		WHERE FILE_NO=#{number}
+		WHERE ATT_BNO=#{boardNo}
 		ORDER BY FILE_LEVEL
 	</select>
 	

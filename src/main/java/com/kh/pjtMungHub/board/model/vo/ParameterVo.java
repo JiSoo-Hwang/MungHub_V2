@@ -19,6 +19,10 @@ public class ParameterVo {
 	private int category;
 	private String sort;
 	
+	private ArrayList<Attachment> aList;
+	private Attachment a;
+	private int number;
+	private String[] items;
 	
 
 }

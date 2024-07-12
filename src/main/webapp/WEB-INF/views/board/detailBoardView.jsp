@@ -53,11 +53,23 @@
                     <th>작성일</th>
                     <td>${b.uploadDate }</td>
                 </tr>
-                
                 <tr>
                     <td colspan="4">
                     <p style="height:150px;">${b.boardContent}</p>
                     </td>
+                </tr>
+                <tr> 
+                <c:forEach items="${aList}" var="result">
+                	<c:choose>
+                		<c:when test="${result.fileType eq 'image'}"> 
+                			<img src="${result.filePath}${result.changeName}"> 
+                		</c:when>
+                		<c:otherwise>
+                			<video src="${result.filePath}${result.changeName}">
+                			</video>
+                		</c:otherwise>
+                	</c:choose>
+                </c:forEach>
                 </tr>
             </table>
             <br>

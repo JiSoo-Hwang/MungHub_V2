@@ -84,14 +84,18 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("boardMapper.selectBoard", boardNo);
 	}
+	public ArrayList<Attachment> AttachmentList(SqlSessionTemplate sqlSession, int boardNo) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("boardMapper.selectAttachmentList",boardNo);
+	}
 
 	public int insertBoard(SqlSessionTemplate sqlSession, Board b) {
 		// TODO Auto-generated method stub
 		return sqlSession.insert("boardMapper.insertBoard", b);
 	}
-	public int insertAttachment(SqlSessionTemplate sqlSession, ArrayList<Attachment> aList) {
+	public int insertAttachment(SqlSessionTemplate sqlSession, ParameterVo fileParameter) {
 		// TODO Auto-generated method stub
-		return sqlSession.insert("boardMapper.insertAttachment",aList);
+		return sqlSession.insert("boardMapper.insertAttachment",fileParameter);
 	}
 	
 
@@ -104,6 +108,7 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.insert("boardMapper.insertReply",r);
 	}
+
 
 
 

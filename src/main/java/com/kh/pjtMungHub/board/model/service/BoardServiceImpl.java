@@ -11,6 +11,7 @@ import com.kh.pjtMungHub.board.model.dao.BoardDao;
 import com.kh.pjtMungHub.board.model.vo.Attachment;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
+import com.kh.pjtMungHub.board.model.vo.ParameterVo;
 import com.kh.pjtMungHub.board.model.vo.Reply;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 
@@ -67,21 +68,26 @@ public class BoardServiceImpl implements BoardService {
 		
 		return boardDao.selectBoard(sqlSession,boardNo);
 	}
+	@Override
+	public ArrayList<Attachment> AttachmentList(int boardNo) {
+		// TODO Auto-generated method stub
+		return boardDao.AttachmentList(sqlSession,boardNo);
+	}
 	
 	@Override
 	@Transactional
-	public int insertBoard(Board b, ArrayList<Attachment> aList) {
+	public int insertBoard(Board b, ParameterVo fileParameter) {
 		// TODO Auto-generated method stub
-		int result = boardDao.insertBoard(sqlSession, b);
 		
-		int result2 = boardDao.insertAttachment(sqlSession, aList);
-		
-		return result*result2;
+		int result1=boardDao.insertBoard(sqlSession, b);
+		int result2=1;
+		if(!fileParameter.getAList().isEmpty()) {
+			
+			result2=boardDao.insertAttachment(sqlSession,fileParameter);
+		}
+		return result1*result2;
 	}
-	
-	
 
-	
 	@Override
 	public ArrayList<Reply> replyList(int boardNo) {
 		// TODO Auto-generated method stub
@@ -92,11 +98,6 @@ public class BoardServiceImpl implements BoardService {
 	public int insertReply(Reply r) {
 		// TODO Auto-generated method stub
 		return boardDao.insertReply(sqlSession,r);
-	}
-	@Override
-	public int insertBoard(Board b) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	
