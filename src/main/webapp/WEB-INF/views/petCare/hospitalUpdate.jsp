@@ -191,35 +191,23 @@ import listPlugin from '@fullcalendar/list';
 <body>
     <%@include file="/WEB-INF/views/common/header.jsp" %>
     <input type="hidden" id="formattedDate" value="<%=formattedDate %>">
-    
-hosReNo=0, userNo=1, petOwnerName=어두민, ownerPhone=00000000, 
-hosName=가평축산농협 동물병원, hosPhone=031-582-4111, hosAddress=경기도 가평군 가평읍 가화로 55-17, 
-reDate=2024-07-19, reTime=1400, petName=멍뭉이, petKind=웰시코기, petBirthDay=2024-07-18, 
-petGender=여, neutralization=아니오, specialNotes=qqqqqqqqq, petTypeNo=중형, petTypeName=null, 
-symptom=구토,기침, 
-originName=2.png, changeName=resources/uploadFiles/hospital/2024071210212373920.png, 
-diseaseName=파보바이러스, 홍역, 전염성 기관지염, 렙토스피라증, 장염, 심장사상충증, status=null, updateDay=null)
-
-
-    
-    
 
     <div class="container">
         
         <form action="hospitalEnrollUp.re" method="post" enctype="multipart/form-data">
-            <input type="text" id="hosReNo" name="hosReNo" value="${hosRe.hosReNo }">
-            <input type="hidden" id="userNo" name="userNo" value="${loginUser.userNo }">
-            기존날짜 <input type="text" id="preReDate" name="preReDate" value="${hosRe.reDate }"> <!-- 예약한날짜 -->
+            <input type="hidden" id="hosReNo" name="hosReNo" value="${hosRe.hosReNo }"> <!-- 예약번호 -->
+            <input type="hidden" id="userNo" name="userNo" value="${loginUser.userNo }"> <!-- 유저넘버 -->
+            <input type="hidden" id="preReDate" name="preReDate" value="${hosRe.reDate }"> <!-- 기존 예약한날짜 -->
             <input type="hidden" id="reDate" name="reDate" value=""> <!-- 업데이트 날짜 -->
-            기존시간 <input type="text" id="preReTime" name="preReTime" value="${hosRe.reTime }">
-            <input type="hidden" id="reTime" name="reTime" value="">
-            기존 펫타입<input type="text" id="prePetType" name="prePetType" value="${hosRe.petTypeNo }">
-            <input type="hidden" id="petTypeNo" name="petTypeNo" value="">
-            기존 예상병명<input type="text" id="preSymptom" value="${hosRe.symptom }">
-            기존 성별<input type="text" id="prePetGender" value="${hosRe.petGender }">
-            기존 중성화<input type="text" id="preNeutralization" value="${hosRe.neutralization }">
-            기존 파일경로<input type="text" name="changeName" value="${hosRe.changeName }">
-            <input type="hidden" name="diseaseName" value="${hosRe.diseaseName }">
+            <input type="hidden" id="preReTime" name="preReTime" value="${hosRe.reTime }"> <!-- 기존 예약한 시간 -->
+            <input type="hidden" id="reTime" name="reTime" value=""> <!-- 업데이트 시간 -->
+            <input type="hidden" id="prePetType" name="prePetType" value="${hosRe.petTypeNo }"> <!-- 기존 펫타입 -->
+            <input type="hidden" id="petTypeNo" name="petTypeNo" value=""> <!-- 업데이트 펫타입 -->
+            <input type="hidden" id="preSymptom" value="${hosRe.symptom }"> <!-- 기존 예상병명 -->
+            <input type="hidden" id="prePetGender" value="${hosRe.petGender }"> <!-- 기존 성별  -->
+            <input type="hidden" id="preNeutralization" value="${hosRe.neutralization }"> <!-- 기존 중성화  -->
+            <input type="hidden" name="changeName" value="${hosRe.changeName }"> <!-- 기존 파일경로 -->
+            <input type="hidden" name="diseaseName" value="${hosRe.diseaseName }"> <!-- 예상병명 -->
             
             <h4 class="h4">접수증</h4>
             <div class="info-container mb-3">

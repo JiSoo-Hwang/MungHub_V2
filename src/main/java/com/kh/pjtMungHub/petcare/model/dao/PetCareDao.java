@@ -205,6 +205,21 @@ public class PetCareDao {
 	public int hospitalEnrollUp(SqlSessionTemplate sqlSession, HospitalRe hosRe) {
 		return sqlSession.update("petcareMapper.hospitalEnrollUp",hosRe);
 	}
+	
+	//예약내역 불러오기
+	public ArrayList<HospitalRe> hospitalChk(SqlSessionTemplate sqlSession, int userNo) {
+		return (ArrayList)sqlSession.selectList("petcareMapper.hospitalChk",userNo);
+	}
+	
+	//불러온 예약내역보기
+	public HospitalRe hospitalChkView(SqlSessionTemplate sqlSession, int hosReNo) {
+		return sqlSession.selectOne("petcareMapper.selectHospitalRe",hosReNo);
+	}
+	
+	//예약내역 삭제하기
+	public int hospitalDelete(SqlSessionTemplate sqlSession, int hosReNo) {
+		return sqlSession.update("petcareMapper.hospitalDelete",hosReNo);
+	}
 
 	
 

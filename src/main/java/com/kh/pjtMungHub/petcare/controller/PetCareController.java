@@ -573,14 +573,53 @@ public class PetCareController {
 		}
 		return mv;
 	}
-	
+	//예약 확정버튼 클릭(메인으로)
 	@RequestMapping("hospitalDone.re")
 	public String hospitalDone(HttpSession session) {
 	    session.setAttribute("alertMsg", "예약이 확정 되었습니다. 내역에서 확인가능");
 	    return "redirect:/hospital.ho";
 	}
 	
+	//나의 예약내역 불러오기
+	@ResponseBody
+	@RequestMapping("hospitalChk.re")
+	public ArrayList<HospitalRe> hospitalChk(String userNo) {
+		int newUserNo = Integer.parseInt(userNo);
+		ArrayList<HospitalRe> hosRe = petCareService.hospitalChk(newUserNo);
+		return hosRe;
+	}
 	
+	//불러온 예약내역 보기
+	@RequestMapping("hospitalChkView.re")
+	public ModelAndView hospitalChkView(String hosReNo,ModelAndView mv) {
+		
+		int newHosReNo = Integer.parseInt(hosReNo);
+		
+		HospitalRe hosRe = petCareService.hospitalChkView(newHosReNo);
+		//펫타입no를 이름으로 가져오기
+		String petType = petCareService.selectPetType(hosRe);
+		hosRe.setPetTypeNo(petType);
+		
+		System.out.println(hosRe);
+		
+		mv.addObject("hosRe",hosRe).setViewName("petCare/hospitalDetail");
+		
+		return mv;
+	}
+	
+	//예약내역 삭제하기
+	@RequestMapping("hospitalDelete.re")
+	public ModelAndView hospitalDelete(String hosReNo, ModelAndView mv) {
+		
+		int newHosReNo = Integer.parseInt(hosReNo);
+		int result = petCareService.hospitalDelete(newHosReNo);
+		if(result > 0) {
+			mv.addObject("alertMsg","예약 삭제완료!!").setViewName("redirect:/hospital.ho");
+		}else {
+			mv.addObject("alertMsg","예약 삭제실패.. 관리자에게 문의").setViewName("redirect:/hospital.ho");
+		}
+		return mv;
+	}
 	
 	
 }

@@ -13,12 +13,20 @@
 		th, .nowrap {
 			white-space: nowrap;
 		}
+		
+		#reserBtn, #updateBtn{
+			margin-right: 2%;
+		}
+		#searchBtn{
+			margin-left: 2%;
+		}
 	
 	</style>
 
 </head>
 <body>
 	<%@include file="/WEB-INF/views/common/header.jsp" %>
+	<input type="hidden" id="userNo" value="${loginUser.userNo }">
 	
 	<!--  스크롤 연습용이었음.
  	<form action="mapInfo.ho">
@@ -37,7 +45,7 @@
     <div class="container mt-4">
         <h1 class="text-center">Hospital List</h1>
         <div class="d-flex mb-3">
-            <button id="test" class="btn btn-primary nowrap">검색</button>
+            <button id="reserBtn" class="btn btn-primary nowrap">나의 예약내역</button>
             <select id="location"  class="ms-2 form-select">
                 <option value="41820">가평군</option>
                 <option value="41280">고양시</option>
@@ -71,6 +79,7 @@
                 <option value="41450">하남시</option>
                 <option value="41590">화성시</option>
             </select>
+       		<button id="searchBtn" class="btn btn-success nowrap">검색</button>
         </div>
 
         <table class="table table-bordered" id="result">
@@ -95,7 +104,7 @@
 	<script>
 	
 		$(function() {
-		    $('#test').on('click', function() {
+		    $('#searchBtn').on('click', function() {
 		        var location = $('#location').val();
 		        $.ajax({
 		            url: "hospitalList.ho",
@@ -140,20 +149,54 @@
 		            }
 		        });
 		    });
+		    
+		//나의 예약내역
+		var userNo = $('#userNo').val();
+		$('#reserBtn').click(function(){
+			
+			$.ajax({
+				url : "hospitalChk.re",
+				data : {userNo : userNo},
+				success : function(result){
+					var str = "";
+					
+					result.forEach(function(list){
+						str += "<tr>" 
+							+ "<input type='hidden' class='hosReNo' value='" + list.hosReNo + "'/>"
+                            + "<td><span>" + list.hosAddress.substring(0,8)  + "</span></td>"
+                            + "<td><span>" + list.hosName + "</span></td>"
+                            + "<td><span>" + list.hosPhone  + "</span></td>"
+                            + "<td><span>" + list.hosAddress + "</span></td>"
+                            + "<td><span>" + list.hosAddress + "</span></td>"
+                            + "<td>"
+                            + "<button id='deleteBtn' class='btn btn-danger nowrap' onclick='location.href?hosReNo='"+list.hosReNo+"'>삭제</button>"
+                            + "</td>" 
+                            + "</tr>";
+					});
+					$('#result tbody').html(str); // 결과를 테이블 본문에 삽입
+                   },
+				error : function(){
+					console.log('통신실패');
+				}
+			});
+		});		    
+		
+		$(document).on('click', '#result tbody td span', function() {
+		    var row = $(this).closest('tr'); //closest: 가장 가까운 조상요소
+		    var hosReNo = row.find('.hosReNo').val();
+
+		    if (hosReNo) {
+		    	location.href="hospitalChkView.re?hosReNo="+hosReNo;
+		    } else {
+		        var hosName = row.find('td:nth-child(2) span').text();
+		        var hosPhone = row.find('td:nth-child(3) span').text();
+		        var hosAddress = row.find('td:nth-child(4) span').text();
+
+		        // encodeURIComponent: 전달값을 조금 더 정확하게 전달해줌
+		        var url = "hospital.re?hosName=" + encodeURIComponent(hosName) + "&hosPhone=" + encodeURIComponent(hosPhone) + "&hosAddress=" + encodeURIComponent(hosAddress);
+		        location.href = url;
+		    }
 		});
-		function rowCilck(){ // tr 클릭 이벤트 (병원 정보와 함께 예약 페이지로 이동)
-			$('#result tbody td span').on('click', function() {
-				var row = $(this).closest('tr'); //현재 클린된 sapn의 요소의 부모 tr 요소를 찾음
-	            var hosName = row.find('td:nth-child(2) span').text();
-	            var hosPhone = row.find('td:nth-child(3) span').text();
-	            var hosAddress = row.find('td:nth-child(4) span').text();
-	            
-	            // encodeURIComponent: 전달값을 조금더 정확하게 전달해줌
-	            var url = "hospital.re?hosName=" + encodeURIComponent(hosName) + "&hosPhone=" + encodeURIComponent(hosPhone) + "&hosAddress=" + encodeURIComponent(hosAddress);
-				console.log(url);
-	            location.href = url;
-	        });
-		}
 	
 		// 카카오 지도 API를 사용하여 특정 주소의 업체 정보를 가져오는 함수
 		function getCompanyInfoByAddress(dataAddress, rowElement) {
@@ -196,6 +239,11 @@
 		        kakaoInfo.innerHTML = '<p>카카오 제공정보가 없습니다.</p>';
 		    }
 		}
+		
+
+	});
+		
+		
 		/* json 형태로 받아올 경우
 		$('#test').on('click',function(){
 			$.ajax({
