@@ -46,7 +46,11 @@
 	    	var totalPrice=${totalPrice};
 	    	var usePoint=$("#usePoint").val();
 	    	var shipFee=$("#shipFee").val();
-	    	console.log(shipFee);
+	    	var address="${shipInfo.address }";
+	    	
+	    	if(address.includes('제주특별자치도')){
+	    		shipFee+=Number(1500);
+	    	}
 	    	
 	    	 var recipient="${shipInfo.recipient }";
 	    	 var phone="${shipInfo.phone}";

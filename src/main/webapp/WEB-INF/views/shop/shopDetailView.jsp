@@ -870,12 +870,27 @@ color: purple;
 		</div>
 	</section>
 
+			
 	<section class="py-5">
 		<div class="container" id="detail-section01">
 			<h4>상품 설명</h4>
-
-			<table class="mt-5" align="center">
-
+							<c:if test="${not empty loginUser and loginUser.userGrade>0 }">
+								<c:choose>
+								<c:when test="${not empty pDetail}">
+								<div align="center">
+									<a href="/pjtMungHub/updateDetailInfo/${p.productNo }" class="btn btn-warning">상품 상세정보 수정</a>
+								</div>
+								</c:when>
+								<c:otherwise>
+								<div align="center">
+									<a href="/pjtMungHub/insertDetailInfo/${p.productNo }" class="btn btn-primary">상품 상세정보 작성</a>
+								</div>
+								</c:otherwise>
+								</c:choose>
+								</c:if>
+		<c:if test="${not empty pDetail}">
+			<table class="mt-5 py-5" align="center" style="border: 1px solid lightgray">
+			
 				<tbody>
 					<tr>
 						<td class="detail-tag">
@@ -890,7 +905,7 @@ color: purple;
 							<p>인증사항</p>
 						</td>
 						<td class="detail-content">
-							<p>해당없음</p>
+							<p><a href="" download></a></p>
 						</td>
 					</tr>
 					<tr>
@@ -898,7 +913,7 @@ color: purple;
 							<p>제조국 또는 원산지</p>
 						</td>
 						<td class="detail-content">
-							<p>조선인민민주주의공화국</p>
+							<p>${pDetail.originContry }</p>
 						</td>
 					</tr>
 					<tr>
@@ -906,7 +921,7 @@ color: purple;
 							<p>제조자/수입자</p>
 						</td>
 						<td class="detail-content">
-							<p>멍허브</p>
+							<p>${pDetail.manufacturer }</p>
 						</td>
 					</tr>
 					<tr>
@@ -914,7 +929,7 @@ color: purple;
 							<p>소비자 상담관련 전화번호</p>
 						</td>
 						<td class="detail-content">
-							<p>010-6689-5059</p>
+							<p>${pDetail.phone }</p>
 						</td>
 					</tr>
 					<tr>
@@ -922,7 +937,7 @@ color: purple;
 							<p>유통기한</p>
 						</td>
 						<td class="detail-content">
-							<p>별도표기</p>
+							<p>${pDetail.expireDate }</p>
 						</td>
 					</tr>
 					<tr>
@@ -930,7 +945,7 @@ color: purple;
 							<p>권장연령</p>
 						</td>
 						<td class="detail-content">
-							<p>어덜트</p>
+							<p>${pDetail.recommendedAge }</p>
 						</td>
 					</tr>
 					<tr>
@@ -938,7 +953,7 @@ color: purple;
 							<p>중량</p>
 						</td>
 						<td class="detail-content">
-							<p>9.95kg</p>
+							<p>${pDetail.weight }</p>
 						</td>
 					</tr>
 					<tr>
@@ -946,7 +961,7 @@ color: purple;
 							<p>원료구성</p>
 						</td>
 						<td class="detail-content">
-							<p>대충 닭이랑 생선이랑 기타 영양성분</p>
+							<p>${pDetail.ingredient }</p>
 						</td>
 					</tr>
 					<tr>
@@ -954,12 +969,36 @@ color: purple;
 							<p>성분구성</p>
 						</td>
 						<td class="detail-content">
-							<p>조단백 100% 조지방 100% 칼슘 1%</p>
+							<p>${pDetail.component }</p>
 						</td>
 					</tr>
 				</tbody>
 
 			</table>
+			
+			<div class="row py-5" align="center">
+			<c:forEach items="${dAtList }" var="dAt">
+			      		<c:choose>
+					    		<c:when test="${dAt.type eq 'video' }">
+					    		<div class="col-sm-12">
+					    	<video src="${dAt.filePath }${dAt.changeName}" class="img-fluid" controls></video>
+					    		</div>
+					    		</c:when>
+					    		<c:otherwise>
+					    		<div class="col-sm-12">
+					      <img src="${dAt.filePath }${dAt.changeName}" class="img-fluid" >
+					     			 </div>
+					    		</c:otherwise>
+					    	</c:choose>
+					</c:forEach>
+			</div>
+		</c:if>
+		
+		<c:if test="${empty pDetail}">
+		<div align="center" class='py-5'>
+		<h1>작성대기중</h1>
+		</div>
+		</c:if>
 
 		</div>
 	</section>

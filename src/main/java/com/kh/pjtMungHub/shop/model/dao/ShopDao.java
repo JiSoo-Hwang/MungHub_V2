@@ -19,6 +19,7 @@ import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Point;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.ProductDetail;
 import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
@@ -136,7 +137,7 @@ public class ShopDao {
 		return (ArrayList)sqlSession.selectList("shopMapper.selectOrderList",userNo);
 	}
 
-	public int selectCartCount(SqlSessionTemplate sqlSession, int userNo) {
+	public Integer selectCartCount(SqlSessionTemplate sqlSession, int userNo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("shopMapper.selectCartCount",userNo);
 	}
@@ -338,6 +339,21 @@ public class ShopDao {
 	public Point selectPoint(SqlSessionTemplate sqlSession, int userNo) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("shopMapper.selectPoint",userNo);
+	}
+
+	public ProductDetail selectProductInfo(SqlSessionTemplate sqlSession, int productNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectProductInfo",productNo);
+	}
+
+	public int insertDetailInfo(SqlSessionTemplate sqlSession, ProductDetail pd) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.insertDetailInfo",pd);
+	}
+
+	public int updateDetailInfo(SqlSessionTemplate sqlSession, ProductDetail pd) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateDetailInfo",pd);
 	}
 
 

@@ -50,6 +50,66 @@
 		AND FILE_LEVEL = 0
 	</select>
 	
+	<select id="selectProductInfo"
+	parameterType="_int"
+	resultType="com.kh.pjtMungHub.shop.model.vo.ProductDetail">
+	SELECT DETAIL_NO detailNo,
+	PRODUCT_NO productNo,
+	ORIGIN originContry,
+	MANUFACTURER manufacturer,
+	PHONE phone,
+	EXPIRE_DATE expireDate,
+	RECOMMENDED_AGE recommendedAge,
+	WEIGHT weight,
+	INGREDIENT ingredient,
+	COMPONENT component
+	FROM PRODUCT_DETAIL
+	WHERE PRODUCT_NO=#{productNo}
+	
+	</select>
+	
+	<insert id="insertDetailInfo"
+	parameterType="com.kh.pjtMungHub.shop.model.vo.ProductDetail">
+	INSERT INTO PRODUCT_DETAIL(
+	DETAIL_NO,
+	PRODUCT_NO,
+	ORIGIN,
+	MANUFACTURER,
+	PHONE,
+	EXPIRE_DATE,
+	RECOMMENDED_AGE,
+	WEIGHT,
+	INGREDIENT,
+	COMPONENT
+	)VALUES(
+	SEQ_DETAIL.NEXTVAL,
+	#{productNo},
+	#{originContry},
+	#{manufacturer},
+	#{phone},
+	#{expireDate},
+	#{recommendedAge},
+	#{weight},
+	#{ingredient},
+	#{component}
+	)
+	</insert>
+	
+	<update id="updateDetailInfo"
+	parameterType="com.kh.pjtMungHub.shop.model.vo.ProductDetail">
+	UPDATE PRODUCT_DETAIL SET
+	ORIGIN=#{originContry},
+	MANUFACTURER=#{manufacturer},
+	PHONE=#{phone},
+	EXPIRE_DATE=#{expireDate},
+	RECOMMENDED_AGE=#{recommendedAge},
+	WEIGHT=#{weight},
+	INGREDIENT=#{ingredient},
+	COMPONENT=#{component}
+	WHERE DETAIL_NO=#{detailNo}
+	
+	</update>
+	
 	<select id="selectReviewCount" parameterType="_int"
 	resultType="_int">
 	SELECT MAX(ROWNUM)
@@ -412,6 +472,9 @@
 			<when test="justifying=='brand'">
 				BRAND_CODE
 			</when>
+			<when test="justifying=='pDetail'">
+			DETAIL_NO
+			</when>
 		</choose>
 		)VALUES(
 			#{arr.fileLev},
@@ -430,6 +493,9 @@
 				<when test="justifying=='brand'">
 					SEQ_BRAND.CURRVAL
 				</when>
+				<when test="justifying=='pDetail'">
+					SEQ_DETAIL.CURRVAL
+			</when>
 			</choose>
 			)
 		</foreach>
@@ -457,21 +523,27 @@
 			<when test="justifying=='brand'">
 				BRAND_CODE brandNo
 			</when>
+			<when test="justifying=='pDetail'">
+			DETAIL_NO
+			</when>
 		</choose>
 		FROM PRODUCT_ATTACHMENT
 		WHERE 
 		<choose>
 			<when test="justifying=='product'">
-				PRODUCT_NO=
+				PRODUCT_NO
 			</when>
 			<when test="justifying=='review'">
-				REVIEW_NO=
+				REVIEW_NO
 			</when>
 			<when test="justifying=='brand'">
-				BRAND_CODE=
+				BRAND_CODE
+			</when>
+			<when test="justifying=='pDetail'">
+			DETAIL_NO
 			</when>
 		</choose>
-		#{number} <!-- 주요키를 담을 공통적으로 사용할 변수  -->
+		=#{number} <!-- 주요키를 담을 공통적으로 사용할 변수  -->
 	AND FILE_LEVEL = #{fileLev}
 	</select>
 	
@@ -496,21 +568,27 @@
 			<when test="justifying=='brand'">
 				BRAND_CODE brandNo
 			</when>
+			<when test="justifying=='pDetail'">
+			DETAIL_NO detailNo
+			</when>
 		</choose>
 	FROM PRODUCT_ATTACHMENT
 	WHERE 
 		<choose>
 			<when test="justifying=='product'">
-				PRODUCT_NO=
+				PRODUCT_NO
 			</when>
 			<when test="justifying=='review'">
-				REVIEW_NO=
+				REVIEW_NO
 			</when>
 			<when test="justifying=='brand'">
-				BRAND_CODE=
+				BRAND_CODE
+			</when>
+			<when test="justifying=='pDetail'">
+			DETAIL_NO
 			</when>
 		</choose>
-		#{number} <!-- 주요키를 담을 공통적으로 사용할 변수  -->
+		=#{number} <!-- 주요키를 담을 공통적으로 사용할 변수  -->
 	ORDER BY FILE_LEVEL
 	</select>
 	
@@ -531,6 +609,9 @@
 			<when test="justifying=='brand'">
 				BRAND_CODE=#{number}
 			</when>
+			<when test="justifying=='pDetail'">
+			DETAIL_NO=#{number}
+			</when>
 		</choose>
 		
 		 )
@@ -545,16 +626,19 @@
 		WHERE 
 		<choose>
 			<when test="justifying=='product'">
-				PRODUCT_NO=
+				PRODUCT_NO
 			</when>
 			<when test="justifying=='review'">
-				REVIEW_NO=
+				REVIEW_NO
 			</when>
 			<when test="justifying=='brand'">
-				BRAND_CODE=
+				BRAND_CODE
+			</when>
+			<when test="justifying=='pDetail'">
+			DETAIL_NO
 			</when>
 		</choose>
-		#{number}
+		=#{number}
 		WHEN NOT MATCHED
 		THEN
 		INSERT(
@@ -573,6 +657,9 @@
 			</when>
 			<when test="justifying=='brand'">
 				BRAND_CODE
+			</when>
+			<when test="justifying=='pDetail'">
+			DETAIL_NO
 			</when>
 		</choose>
 		)VALUES(
@@ -601,6 +688,9 @@
 			<when test="justifying=='brand'">
 				BRAND_CODE
 			</when>
+			<when test="justifying=='pDetail'">
+			DETAIL_NO
+			</when>
 		</choose>
 		=#{number}
 	
@@ -619,6 +709,9 @@
 			</when>
 			<when test="justifying=='brand'">
 				BRAND_CODE
+			</when>
+			<when test="justifying=='pDetail'">
+			DETAIL_NO
 			</when>
 		</choose>=#{number}
 	</update>

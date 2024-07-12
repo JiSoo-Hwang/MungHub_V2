@@ -19,6 +19,7 @@ import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Point;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.ProductDetail;
 import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
@@ -175,7 +176,12 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public int selectCartCount(int userNo) {
 		// TODO Auto-generated method stub
-		return shopDao.selectCartCount(sqlSession,userNo);
+		Integer result=shopDao.selectCartCount(sqlSession,userNo);
+		if(result!=null) {
+			return result;
+		}else {
+			return 0;
+		}
 	}
 
 	@Override
@@ -409,6 +415,36 @@ public class ShopServiceImpl implements ShopService {
 	public Point selectPoint(int userNo) {
 		// TODO Auto-generated method stub
 		return shopDao.selectPoint(sqlSession,userNo);
+	}
+
+	@Override
+	public ProductDetail selectProdcutInfo(int productNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectProductInfo(sqlSession,productNo);
+	}
+
+	@Override
+	@Transactional
+	public int insertDetailInfo(ProductDetail pd,ParameterVo fileParameter) {
+		// TODO Auto-generated method stub
+		int result2=1;
+		int result=shopDao.insertDetailInfo(sqlSession,pd);
+		if(!fileParameter.getAtList().isEmpty()) {
+			
+			result2=shopDao.insertAttachment(sqlSession, fileParameter);
+		}
+		return result*result2;
+	}
+
+	@Override
+	public int updateDetailInfo(ProductDetail pd, ParameterVo fileParameter) {
+		int result2=1;
+		int result=shopDao.updateDetailInfo(sqlSession,pd);
+		if(!fileParameter.getAtList().isEmpty()) {
+			result2=shopDao.updateAttachment(sqlSession, fileParameter);
+		}
+		return result*result2;
+
 	}
 
 	
