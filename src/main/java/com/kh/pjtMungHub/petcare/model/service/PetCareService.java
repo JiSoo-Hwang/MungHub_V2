@@ -98,9 +98,12 @@ public interface PetCareService {
 	HospitalRe selectHospitalRe(int hosReNo);
 	//예약정보 업데이트
 	int hospitalEnrollUp(HospitalRe hosRe);
-	
-	
-	
+	//예약정보 불러오기
+	ArrayList<HospitalRe> hospitalChk(int userNo);
+	//불러온 예약내역보기
+	HospitalRe hospitalChkView(int hosReNo);
+	//예약내역 삭제하기
+	int hospitalDelete(int hosReNo);
 	
 	
 	
