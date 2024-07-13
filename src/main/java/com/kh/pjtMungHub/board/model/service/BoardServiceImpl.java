@@ -25,12 +25,6 @@ public class BoardServiceImpl implements BoardService {
 	@Autowired
 	private BoardDao boardDao;
 
-	//게시물 총 개수 조회
-	@Override
-	public int listCount() {
-		// TODO Auto-generated method stub
-		return boardDao.listCount(sqlSession);
-	}
 	//해당 카테고리 게시물 조회
 	@Override
 	public int listCount(int category) {
@@ -88,6 +82,17 @@ public class BoardServiceImpl implements BoardService {
 		return result1*result2;
 	}
 
+	@Override
+	public int deleteBoard(int boardNo) {
+		// TODO Auto-generated method stub
+		return boardDao.deleteBoard(sqlSession,boardNo);
+	}
+	@Override
+	public int deleteAttachment(int boardNo) {
+		// TODO Auto-generated method stub
+		return boardDao.deleteAttachment(sqlSession,boardNo);
+	}
+	
 	@Override
 	public ArrayList<Reply> replyList(int boardNo) {
 		// TODO Auto-generated method stub

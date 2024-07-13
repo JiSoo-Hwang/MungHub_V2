@@ -46,33 +46,29 @@ public class BoardController {
 	                        @RequestParam(value="category", defaultValue="0") int category,
 	                        @RequestParam(value="sort", defaultValue="latest") String sort) {
 
-	    // 전체 게시글 수 조회
-	    int listCount = boardService.listCount();
+		
+		int listCount=boardService.listCount(category);
 	    
 	    int pageLimit = 10;
+	    
 	    int boardLimit = 20;
+	    
+	   
 	    
 	    // 페이지 정보 객체 생성
 	    PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
-	   
+	    
+	    
 	    // 게시글 목록 조회
-	    ArrayList<Board> List = boardService.selectList(pi,sort);
-	    
-	    if (category==0) {
-	        listCount = boardService.listCount();
-	    } else {
-	        listCount = boardService.listCount(category);
-	    }
-	    
-	    
+	    ArrayList<Board> list = boardService.selectList(pi,sort);
 	    // 카테고리 목록 조회
 	    ArrayList<Category> ctList = boardService.selectCategory();
 
 	    
 	    if (category==0) {
-	    	List = boardService.selectList(pi, sort);
+	    	list = boardService.selectList(pi, sort);
 	    } else {
-	    	List = boardService.selectList(pi, sort,category);
+	    	list = boardService.selectList(pi, sort,category);
 	    }
 	    
 	    
@@ -81,7 +77,7 @@ public class BoardController {
 	    model.addAttribute("sort", sort);
 	    model.addAttribute("category", category);
 	    model.addAttribute("ctList",ctList);
-	    model.addAttribute("List",List);
+	    model.addAttribute("list",list);
 
 	    
 	    return "board/boardListView";
@@ -131,8 +127,8 @@ public class BoardController {
 	//게시물 등록 메소드
 	@PostMapping("insert.bo")
 	public ModelAndView insertBoard(Board b,ModelAndView mv
-			,MultipartFile[] upfile
-			,HttpSession session) {
+									,MultipartFile[] upfile
+									,HttpSession session) {
 		
 		ArrayList<Attachment> aList = new ArrayList<>();
 		
@@ -176,6 +172,27 @@ public class BoardController {
 		}
 		return mv;
 	}
+	
+	//게시글 삭제 메소드
+	@PostMapping("delete.bo")
+	public ModelAndView deleteBoard(int boardNo
+							 ,HttpSession session
+							 ,ModelAndView mv) {
+		
+		int result = boardService.deleteBoard(boardNo);
+		
+			//넘어온 파일 정보가 있다면 해당 파일 서버에서 삭제처리하기 
+		if(result>0) { //성공시 
+			session.setAttribute("alertMsg", "게시글 삭제 성공");
+			mv.setViewName("redirect:/list.bo");
+		}else {
+			session.setAttribute("alertMsg", "게시글 삭제 실패");
+			mv.setViewName("redirect:/detail.bo?boardNo="+boardNo);
+		}
+		
+		return mv;
+	}
+
 	
 	//파일 업로드 실패시 파일 삭제하는 구문
 	private void deleteUploadedFiles(ArrayList<Attachment> aList, HttpSession session) {

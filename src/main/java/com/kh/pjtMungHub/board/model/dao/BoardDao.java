@@ -19,12 +19,6 @@ import com.kh.pjtMungHub.common.model.vo.PageInfo;
 @Repository
 public class BoardDao {
 
-	public int listCount(SqlSessionTemplate sqlSession) {
-		// TODO Auto-generated method stub
-
-		return sqlSession.selectOne("boardMapper.listCount");
-	}
-
 	public int listCount(SqlSessionTemplate sqlSession, int category) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("boardMapper.listCount", category);
@@ -84,6 +78,7 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("boardMapper.selectBoard", boardNo);
 	}
+	
 	public ArrayList<Attachment> AttachmentList(SqlSessionTemplate sqlSession, int boardNo) {
 		// TODO Auto-generated method stub
 		return (ArrayList)sqlSession.selectList("boardMapper.selectAttachmentList",boardNo);
@@ -97,8 +92,18 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.insert("boardMapper.insertAttachment",fileParameter);
 	}
+	public int deleteBoard(SqlSessionTemplate sqlSession, int boardNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("boardMapper.deleteBoard",boardNo);
+	}
+	public int deleteAttachment(SqlSessionTemplate sqlSession, int boardNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("boardMapper.deleteAttachment",boardNo);
+	}
 	
 
+	
+	//댓글기능
 	public ArrayList<Reply> replyList(SqlSessionTemplate sqlSession, int boardNo) {
 		// TODO Auto-generated method stub
 		return (ArrayList)sqlSession.selectList("boardMapper.replyList",boardNo);
@@ -108,6 +113,9 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.insert("boardMapper.insertReply",r);
 	}
+
+	
+
 
 
 

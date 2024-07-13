@@ -154,7 +154,7 @@ input[name=sortBy] {
 				</thead>
 				<tbody>
 					<c:choose>
-						<c:when test="${empty List}">
+						<c:when test="${empty list}">
 							<tr>
 								<th colspan='6'>
 							</tr>
@@ -163,7 +163,7 @@ input[name=sortBy] {
 							</tr>
 						</c:when>
 						<c:otherwise>
-							<c:forEach items="${List}" var="b">
+							<c:forEach items="${list}" var="b">
 								<tr>
 									<td>${b.boardNo}</td>
 									<td>${b.boardTitle}</td>
@@ -207,6 +207,12 @@ input[name=sortBy] {
 				var sortBy=$("input[name=sortBy]:checked").val();
 				location.href="list.bo?currentPage=1&category="+category+"&sort="+sortBy;
 				});
+	     	
+	     	$("input[name=sortBy]").click(function(){
+	     		var sortBy=$(this).val();
+				var category=$(".ctSelected").val();
+				location.href="list.bo?currentPage=1&category="+category+"&sort="+sortBy;
+	     	});
 	     	});
          </script>
 
@@ -218,22 +224,21 @@ input[name=sortBy] {
 				</c:when>
 				<c:otherwise>
 					<li class="page-item"><a class="page-link"
-						href="list.bo?currentPage=${pi.currentPage-1}">이전</a></li>
+						href="list.bo?currentPage=${pi.currentPage-1}&sort=${sort}&category=${category}">이전</a></li>
 				</c:otherwise>
 			</c:choose>
-
-			<c:forEach begin="${pi.startPage }" end="${pi.endPage }" var="p">
-				<li class="page-item"><a class="page-link"
-					href="list.bo?currentPage=${p}">${p}</a></li>
+			<c:forEach begin="${pi.startPage }" end="${pi.endPage }" varStatus="p">
+				<li class="page-item">
+				<a class="page-link" href="list.bo?currentPage=${p.count}&sort=${sort}&category=${category}">${p.count}</a>
+				</li>
 			</c:forEach>
-
 			<c:choose>
 				<c:when test="${pi.currentPage eq pi.maxPage }">
 					<li class="page-item disabled"><a class="page-link" href="#">다음</a></li>
 				</c:when>
 				<c:otherwise>
 					<li class="page-item"><a class="page-link"
-						href="list.bo?currentPage=${pi.currentPage+1}">다음</a></li>
+						href="list.bo?currentPage=${pi.currentPage+1}&sort=${sort}&category=${category}">다음</a></li>
 				</c:otherwise>
 			</c:choose>
 

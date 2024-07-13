@@ -8,22 +8,61 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <style>
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
         .content {
-            background-color:rgb(247, 245, 245);
-            width:80%;
-            margin:auto;
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .innerOuter {
-            border:1px solid lightgray;
-            width:80%;
-            margin:auto;
-            padding:5% 10%;
-            background-color:white;
+            position: relative;
         }
-
-        table * {margin:5px;}
-        table {width:100%;}
+        .btn-secondary {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            float: right;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        td[colspan="4"] p {
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+        }
+        img, video {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -39,7 +78,7 @@
             <table id="contentArea" algin="center" class="table">
                 <tr>
                     <th width="100">제목</th>
-                    <td colspan="6">${b.boardTitle}</td>
+                    <td colspan="10">${b.boardTitle}</td>
                 </tr>
                 <tr>
                     <th>글번호</th>
@@ -58,25 +97,29 @@
                     <p style="height:150px;">${b.boardContent}</p>
                     </td>
                 </tr>
-                <tr> 
-                <c:forEach items="${aList}" var="result">
-                	<c:choose>
-                		<c:when test="${result.fileType eq 'image'}"> 
-                			<img src="${result.filePath}${result.changeName}"> 
-                		</c:when>
-                		<c:otherwise>
-                			<video src="${result.filePath}${result.changeName}">
-                			</video>
-                		</c:otherwise>
-                	</c:choose>
-                </c:forEach>
+                <tr>
+                    <td colspan="4">
+                    <c:forEach items="${aList}" var="result">
+                        <c:choose>
+                            <c:when test="${result.fileType eq 'image'}">
+                                <img src="${result.filePath}${result.changeName}" alt="Attached Image">
+                            </c:when>
+                            <c:otherwise>
+                                <video controls>
+                                    <source src="${result.filePath}${result.changeName}" type="video/mp4">
+                                </video>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                    </td>
                 </tr>
+
             </table>
             <br>
 
             <div align="center">
                 <!-- 수정하기, 삭제하기 버튼은 이 글이 본인이 작성한 글일 경우에만 보여져야 함 -->
-                <c:if test="${loginUser.userId eq b.boardWriter }">
+                <c:if test="${loginUser.userId eq b.boardWriter or loginUser.userGrade eq 2}">
 	                <a class="btn btn-primary" href="update.bo?boardNo=${b.boardNo}">수정하기</a>
     	            <button type="button" class="btn btn-danger" id="deleteBtn">삭제하기</button>
                 </c:if>

@@ -13,7 +13,6 @@ public interface BoardService {
 	
 	//게시글 목록과 페이징처리까지
 		//게시글 총 개수 조회
-		int listCount();
 		//해당 카테고리 게시물 총 개수 조회
 		int listCount(int category);
 		
@@ -23,7 +22,7 @@ public interface BoardService {
 		//가지고있는 카테고리 개수 조회
 		ArrayList<Category> selectCategory();
 		
-		
+		//카테고리 포함한 목록 조회
 		ArrayList<Board> selectList(PageInfo pi, String sort, int category);
 		
 		//조회수 증가
@@ -31,11 +30,14 @@ public interface BoardService {
 
 		//게시물 상세보기
 		Board selectBoard(int boardNo);
+		//해당 게시물 파일 리스트
 		ArrayList<Attachment> AttachmentList(int boardNo);
 
 		//게시물 만들기
-		
 		int insertBoard(Board b,ParameterVo fileParameter);
+		//게시물 삭제
+		int deleteBoard(int boardNo);
+		int deleteAttachment(int boardNo);
 		
 		//댓글 목록 조회
 		ArrayList<Reply> replyList(int boardNo);
