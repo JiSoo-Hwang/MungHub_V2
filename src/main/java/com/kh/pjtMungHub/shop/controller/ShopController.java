@@ -1237,11 +1237,42 @@ public class ShopController {
 	
 	
 	
-	@GetMapping("adminPage.sp")
+	@GetMapping("adminPage/dashBoard")
 	public ModelAndView adminPage(ModelAndView mv) {
 		
 		
 		mv.setViewName("shop/adminPage");
+		return mv;
+	}
+	
+	@GetMapping("adminPage/orderControll")
+	public ModelAndView orderControll(ModelAndView mv) {
+		
+		
+		mv.setViewName("shop/orderControll");
+		return mv;
+	}
+	
+	@GetMapping("adminPage/productControll")
+	public ModelAndView productControll(ModelAndView mv) {
+		
+		
+		mv.setViewName("shop/productControll");
+		return mv;
+	}
+	
+	@GetMapping("adminPage/customerControll")
+	public ModelAndView customerControll(ModelAndView mv) {
+		
+		
+		mv.setViewName("shop/customerControll");
+		return mv;
+	}
+	
+	@GetMapping("adminPage/report")
+	public ModelAndView report(ModelAndView mv) {
+		
+		mv.setViewName("shop/customerControll");
 		return mv;
 	}
 	
