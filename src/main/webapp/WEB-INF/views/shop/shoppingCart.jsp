@@ -476,10 +476,15 @@ margin-bottom: 20px;
 							+"<td><input class='form-check-input' type='checkbox'"
 							+"name='chooseOrNot' checked value='"+productNo+"'></td>"
 							
-							+"<td><a href='/pjtMungHub/detail.sp/"+productNo+"'>"+productName
-							+"<img src='"+img+"' class='img-fluid'></a></td>"
+							+"<td><a href='/pjtMungHub/detail.sp/"+productNo+"'>"+productName;
+							if(result[i].imgType=='image'){
+								
+							str+="<img src='"+img+"' class='img-fluid' style='max-height:400px'></a></td>";
+							}else{
+							str+="<video src='"+img+"' class='img-fluid' style='max-height:400px' autoplay loop></a></td>";
+							}
 							
-							+"<td>"+price.toLocaleString('ko-KR')+" 원</td>"
+							str+="<td>"+price.toLocaleString('ko-KR')+" 원</td>"
 							+"<td><div class='btn-group' role='group' aria-label='amount'>"
 							+"<button class='btn btn-dark' id='minus' type='button' onclick='updateAmount("+productNo+","+${loginUser.userNo}+","+-1+");' ><i class='bi bi-dash-square'></i></button>"
 							+"<button class='btn btn-outline-dark' id='pAmount' type='button' disabled>"+amount.toLocaleString('ko-KR')+"</button>" 
@@ -490,9 +495,9 @@ margin-bottom: 20px;
 							+"<td><button class='btn btn-outline-dark flex-shrink-0' type='button'"
 							+"onclick='deleteItem("+productNo+");'>"
 							+"<i class='bi bi-trash3-fill'></i></button></td>"
-							+"</tr>"
- 							+"<tr><td colspan=6 align='right' id='total'>총합 : "+finalPrice.toLocaleString('ko-KR')+"</td></tr>"
+							+"</tr>";
  					}
+ 							str+="<tr><td colspan=6 align='right' id='total'>총합 : "+finalPrice.toLocaleString('ko-KR')+"</td></tr>";
  					$("#shoppingList tbody").html(str);
  				}},
  				error : function(){

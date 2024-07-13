@@ -1249,7 +1249,7 @@ public class ShopController {
 	public ModelAndView orderControll(ModelAndView mv) {
 		
 		
-		mv.setViewName("shop/orderControll");
+		mv.setViewName("shop/orderController");
 		return mv;
 	}
 	
@@ -1257,7 +1257,7 @@ public class ShopController {
 	public ModelAndView productControll(ModelAndView mv) {
 		
 		
-		mv.setViewName("shop/productControll");
+		mv.setViewName("shop/productController");
 		return mv;
 	}
 	
@@ -1265,14 +1265,14 @@ public class ShopController {
 	public ModelAndView customerControll(ModelAndView mv) {
 		
 		
-		mv.setViewName("shop/customerControll");
+		mv.setViewName("shop/customerController");
 		return mv;
 	}
 	
 	@GetMapping("adminPage/report")
 	public ModelAndView report(ModelAndView mv) {
 		
-		mv.setViewName("shop/customerControll");
+		mv.setViewName("shop/report");
 		return mv;
 	}
 	

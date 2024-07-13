@@ -740,7 +740,8 @@
 		DISCOUNT discount,
 		BRAND_NAME brandName,
 		CATEGORY_NAME categoryName,
-		FILE_PATH || CHANGE_NAME img
+		FILE_PATH || CHANGE_NAME img,
+		TYPE imgType
 		FROM
 		SHOPPING_CART
 		LEFT JOIN PRODUCT P

@@ -67,10 +67,9 @@
     <div class="sidebar">
         <h4 class="text-center">대시보드</h4>
         <a href="/pjtMungHub/adminPage/dashBoard">대시보드</a>
-        <a href="#">주문 관리</a>
-        <a href="#">제품 관리</a>
-        <a href="#">고객 관리</a>
-        <a href="#">보고서</a>
+        <a href="/pjtMungHub/adminPage/orderControll">주문 관리</a>
+        <a href="/pjtMungHub/adminPage/productControll">제품 관리</a>
+        <a href="/pjtMungHub/adminPage/customerControll">고객 관리</a>
     </div>
 
     <div class="main-content">
@@ -79,7 +78,7 @@
                 <div class="col-md-3">
                     <div class="card-custom">
                         <div class="card-body text-center">
-                            <h6 class="card-title">트래픽</h6>
+                            <h6 class="card-title">상점 방문수</h6>
                             <h3>350,897</h3>
                             <p class="text-success"><span class="stat-icon positive">▲</span> 3.48% 지난달 대비</p>
                         </div>
@@ -88,7 +87,7 @@
                 <div class="col-md-3">
                     <div class="card-custom">
                         <div class="card-body text-center">
-                            <h6 class="card-title">신규 사용자</h6>
+                            <h6 class="card-title">신규 주문고객</h6>
                             <h3>2,356</h3>
                             <p class="text-danger"><span class="stat-icon negative">▼</span> 3.48% 지난주 대비</p>
                         </div>
@@ -155,7 +154,7 @@
             data: {
                 labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
                 datasets: [{
-                    label: '매출',
+                    label: '매출(만원)',
                     data: [10000, 20000, 15000, 30000, 25000, 20000, 15000, 40000, 30000, 25000, 20000, 35000],
                     backgroundColor: 'rgba(90, 103, 216, 0.2)',
                     borderColor: 'rgba(90, 103, 216, 1)',
