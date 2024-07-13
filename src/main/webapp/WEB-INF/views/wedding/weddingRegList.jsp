@@ -66,7 +66,7 @@
 								
 								      <!-- Modal Header -->
 								      <div class="modal-header">
-								        <h4 class="modal-title">상대방 연락처</h4>
+								        <h4 class="modal-title">댕댕이 부모님 연락처</h4>
 								        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 								      </div>
 								
@@ -116,7 +116,14 @@
 						<c:when test="${w.approval =='R' }">
 						<tr class="table-secondary"> 
 						<td class="text-center">${w.petName }</td>
+						<c:choose>
+						<c:when test="${empty w.partnerName }">
+						<td class="text-center">(해당 없음)</td>
+						</c:when>
+						<c:otherwise>
 						<td class="text-center">${w.partnerName }</td>
+						</c:otherwise>						
+						</c:choose>
 						<td class="text-center">만남거절&ensp;
 						<a class="btn btn-secondary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 						 </td>
@@ -169,7 +176,7 @@
 			}
 		});
 		$(".cancelApplied").click(function () {
-			if(confirm("이미 승인된 만남을 취소하시면 웨딩플래너 서비스가 14일간 제한됩니다. 그래도 취소하실건가요8ㅅ8?")){
+			if(confirm("이미 확정된 만남을 취소하시면 웨딩플래너 서비스가 14일간 제한됩니다. 그래도 취소하실건가요8ㅅ8?")){
 				var weddingNo =$(this).siblings(':eq(0)').val();
   				$.ajax({
 					url : "${pageContext.request.contextPath}/cancel.wd",
