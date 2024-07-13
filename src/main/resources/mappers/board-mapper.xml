@@ -107,11 +107,7 @@
 		WHERE BOARD_NO = #{boardNo}
 		AND STATUS='Y'
 	</delete>
-	<delete id="deleteAttachment" parameterType="com.kh.pjtMungHub.board.model.vo.Attachment">
-		DELETE 
-		FROM BOARD_ATTACHMENT
-		WHERE ATT_BNO=${boardNo}
-	</delete>
+	
 	
 	<insert id="insertAttachment" parameterType="com.kh.pjtMungHub.board.model.vo.Attachment">
 	INSERT ALL

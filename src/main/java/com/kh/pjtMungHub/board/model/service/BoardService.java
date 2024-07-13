@@ -37,7 +37,6 @@ public interface BoardService {
 		int insertBoard(Board b,ParameterVo fileParameter);
 		//게시물 삭제
 		int deleteBoard(int boardNo);
-		int deleteAttachment(int boardNo);
 		
 		//댓글 목록 조회
 		ArrayList<Reply> replyList(int boardNo);

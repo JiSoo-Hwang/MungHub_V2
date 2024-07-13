@@ -127,8 +127,8 @@ public class BoardController {
 	//게시물 등록 메소드
 	@PostMapping("insert.bo")
 	public ModelAndView insertBoard(Board b,ModelAndView mv
-									,MultipartFile[] upfile
-									,HttpSession session) {
+					,MultipartFile[] upfile
+					,HttpSession session) {
 		
 		ArrayList<Attachment> aList = new ArrayList<>();
 		
@@ -176,15 +176,18 @@ public class BoardController {
 	//게시글 삭제 메소드
 	@PostMapping("delete.bo")
 	public ModelAndView deleteBoard(int boardNo
+							,String filePath
 							 ,HttpSession session
 							 ,ModelAndView mv) {
 		
 		int result = boardService.deleteBoard(boardNo);
 		
 			//넘어온 파일 정보가 있다면 해당 파일 서버에서 삭제처리하기 
-		if(result>0) { //성공시 
-			session.setAttribute("alertMsg", "게시글 삭제 성공");
-			mv.setViewName("redirect:/list.bo");
+		if(result>0) { //성공시
+			if(!filePath.equals("")) {//넘어온 파일정보가 빈문자열이 아닐때(즉,있을때)
+				session.setAttribute("alertMsg", "게시글 삭제 성공");
+				mv.setViewName("redirect:/list.bo");
+			}
 		}else {
 			session.setAttribute("alertMsg", "게시글 삭제 실패");
 			mv.setViewName("redirect:/detail.bo?boardNo="+boardNo);

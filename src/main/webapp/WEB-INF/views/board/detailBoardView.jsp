@@ -151,19 +151,12 @@
             			
             			//form안에 input 넣기
             			var obj = formObj.append(inputObj).append(filePath);
-            			
             			//생성된 최종 form 태그를 이 문서에 포함시키기 
             			$("body").append(obj);
-            			
             			//완성된 form태그를 이용하여 submit() 메소드 수행 
             			obj.submit();
             		});
-            		
-            		
             	});
-            	
-            	
-            
             </script>
 
 
