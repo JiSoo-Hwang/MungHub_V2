@@ -32,7 +32,9 @@ import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
+import com.kh.pjtMungHub.shop.model.vo.Point;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.ProductDetail;
 import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
@@ -124,6 +126,172 @@ public class ShopController {
 		
 	}
 	
+	@GetMapping("updateDetailInfo/{productNo}")
+	public ModelAndView updateDetailInfo(ModelAndView mv,
+										@PathVariable int productNo) {
+
+		ProductDetail pDetail=shopService.selectProdcutInfo(productNo);
+		ParameterVo parameter=ParameterVo.builder().justifying("pDetail").number(pDetail.getDetailNo()).build();
+		ArrayList<Attachment> detailAtList=shopService.selectAttachmentList(parameter);
+		Product p = shopService.selectProductDetail(productNo);
+		mv.addObject("dAtList",detailAtList);
+		mv.addObject("pDetail",pDetail);
+		mv.addObject("p",p);
+		mv.setViewName("shop/updateDetailInfo");
+		return mv;
+	}
+	
+	@GetMapping("insertDetailInfo/{productNo}")
+	public ModelAndView insertDetailInfo(ModelAndView mv,
+										@PathVariable int productNo) {
+		mv.addObject("productNo",productNo);
+		mv.setViewName("shop/insertDetailInfo");
+		return mv;
+	}
+	@PostMapping("insertDetailInfo.sp")
+	public ModelAndView insertDetailInfo(ModelAndView mv,
+										ProductDetail pd,
+										MultipartFile[] upfile,
+										HttpSession session) {
+		
+		
+		ArrayList<Attachment> atList=new ArrayList<>();
+			for(int i=0;i<upfile.length;i++) {
+				
+				String fileType=upfile[i].getOriginalFilename();
+				int index = fileType.lastIndexOf(".");
+				String extension = fileType.substring( index+1 ).toLowerCase();
+				String type="";
+				
+				
+				if(extension.equals("avi")||
+				   extension.equals("mov")||
+				   extension.equals("mp4")||
+				   extension.equals("wmv")||
+				   extension.equals("asf")||
+				   extension.equals("mkv")) {
+					
+						type="video";
+					}else if(extension.equals("jpeg")||
+							 extension.equals("jpg")||
+							 extension.equals("png")||
+							 extension.equals("gif")) {
+						type="image";
+					}else {
+						type="file";
+					}
+					
+					
+					String changeName = saveFile(upfile[i],session,"productDetail",type);
+					
+					Attachment at=Attachment.builder().
+							fileLev(i).
+							originName(upfile[i].getOriginalFilename()).
+							changeName(changeName).
+							fileJustify("pDetail").
+							filePath("/pjtMungHub/resources/uploadFiles/shopFile/productDetail/"+type+"/").
+							type(type).
+							build();
+					
+					atList.add(at);
+				
+				
+			}
+			
+			
+			ParameterVo fileParameter=ParameterVo.builder()
+					.atList(atList)
+					.justifying("pDetail")
+					.build();
+			
+			int result=shopService.insertDetailInfo(pd,fileParameter);
+		
+		
+		mv.setViewName("redirect:detail.sp/"+pd.getProductNo());
+		return mv;
+	}
+	
+	@PostMapping("updateDetailInfo.sp")
+	public ModelAndView updateDetailInfo(ModelAndView mv,
+										ProductDetail pd,
+										MultipartFile[] upfile,
+										HttpSession session) {
+		
+		
+		ParameterVo parameter=ParameterVo.builder()
+				.justifying("pDetail")
+				.number(pd.getDetailNo())
+				.build();
+		
+		ArrayList<Attachment> deleteAtList=shopService.selectAttachmentList(parameter);
+		for (int i = 0; i < deleteAtList.size(); i++) {
+			String deleteFile= "resources/uploadFiles/shopFile/productDetail/"+deleteAtList.get(i).getType()+"/"+deleteAtList.get(i).getChangeName();
+			File f=new File(session.getServletContext().getRealPath(deleteFile));
+			f.delete();
+			parameter.setFileLev(i);
+			shopService.deleteAttachment(parameter);
+		}
+
+		ArrayList<Attachment> atList=new ArrayList<>();
+			for(int i=0;i<upfile.length;i++) {
+				
+				String fileType=upfile[i].getOriginalFilename();
+				int index = fileType.lastIndexOf(".");
+				String extension = fileType.substring( index+1 ).toLowerCase();
+				String type="";
+				
+				
+				if(extension.equals("avi")||
+				   extension.equals("mov")||
+				   extension.equals("mp4")||
+				   extension.equals("wmv")||
+				   extension.equals("asf")||
+				   extension.equals("mkv")) {
+					
+						type="video";
+					}else if(extension.equals("jpeg")||
+							 extension.equals("jpg")||
+							 extension.equals("png")||
+							 extension.equals("gif")) {
+						type="image";
+					}else {
+						type="file";
+					}
+					
+					
+					String changeName = saveFile(upfile[i],session,"productDetail",type);
+					
+					Attachment at=Attachment.builder().
+							fileLev(i).
+							originName(upfile[i].getOriginalFilename()).
+							changeName(changeName).
+							fileJustify("pDetail").
+							filePath("/pjtMungHub/resources/uploadFiles/shopFile/productDetail/"+type+"/").
+							type(type).
+							build();
+					
+					atList.add(at);
+				
+				
+			}
+		
+		
+		
+		ParameterVo fileParameter=ParameterVo.builder()
+				.atList(atList)
+				.justifying("pDetail")
+				.number(pd.getDetailNo())
+				.build();
+		
+		int result=shopService.updateDetailInfo(pd,fileParameter);
+		
+		mv.setViewName("redirect:/detail.sp/"+pd.getProductNo());
+		return mv;
+	}
+			
+	
+	
+	
 	@GetMapping("detail.sp/{productNo}")
 	public ModelAndView ShopDetail(@PathVariable int productNo,
 									ModelAndView mv) {
@@ -140,6 +308,7 @@ public class ShopController {
 		ArrayList<ArrayList<Attachment>> reviewAt=new ArrayList<>();
 		ArrayList<Attachment> rAtList=new ArrayList<>();
 		ParameterVo parameter3;
+		ArrayList<Attachment> detailAtList=new ArrayList<>();
 		for (int i = 0; i < bestReviewTop4.size(); i++) {
 			
 			parameter3=ParameterVo.builder().justifying("review").number(bestReviewTop4.get(i).getReviewNo()).build();
@@ -169,6 +338,16 @@ public class ShopController {
 		
 		ArrayList<Category> questionCategoryList=shopService.selectQuestionCategory();
 		
+		ProductDetail pDetail=shopService.selectProdcutInfo(productNo);
+		if(pDetail!=null) {
+			
+			parameter3=ParameterVo.builder().justifying("pDetail").number(pDetail.getDetailNo()).build();
+			detailAtList=shopService.selectAttachmentList(parameter3);
+		}
+		
+		
+		mv.addObject("pDetail",pDetail);
+		mv.addObject("dAtList",detailAtList);
 		mv.addObject("cList",questionCategoryList);
 		mv.addObject("rAtList",reviewAt);
 		mv.addObject("best4Review",bestReviewTop4);
@@ -388,7 +567,7 @@ public class ShopController {
 								   MultipartFile[] upfile,
 								   HttpSession session) {
 		ArrayList<Attachment> atList=new ArrayList<>();
-		
+	
 		for(int i=0;i<upfile.length;i++) {
 			
 			String fileType=upfile[i].getOriginalFilename();
@@ -551,7 +730,12 @@ public class ShopController {
 	public ModelAndView productOrder(ModelAndView mv ,
 			@RequestParam ArrayList<Integer> chooseOrNot,
 			@RequestParam int userNo) {
+		Point p =shopService.selectPoint(userNo);
 		
+		if(p==null) {
+			p=Point.builder().userNo(userNo).point(0).build();
+			int pointUpdate=shopService.updatePoint(p);
+		}
 		
 		ParameterVo parameter = ParameterVo.builder()
 				.userNo(userNo)
@@ -583,7 +767,7 @@ public class ShopController {
 			
 			totalPrice+=(price-(price/discount)*amount);
 		}
-		
+		mv.addObject("point",p);
 		mv.addObject("itemsNo",itemsNo);
 		mv.addObject("itemsQuantity",itemsQuantity);
 		mv.addObject("itemList",itemList);
@@ -779,7 +963,9 @@ public class ShopController {
 		
 		int result=shopService.insertReview(review,fileParameter);
 		
-		
+		Point point= Point.builder().userNo(review.getUserNo()).point(150).build();
+		int pointUpdate=shopService.updatePoint(point);
+				
 		return result;
 	}
 	
@@ -796,7 +982,6 @@ public class ShopController {
 				.justifying("review")
 				.number(review.getReviewNo())
 				.build();
-		System.out.println(parameter);
 		ArrayList<Attachment> deleteAtList=shopService.selectAttachmentList(parameter);
 		for (int i = 0; i < deleteAtList.size(); i++) {
 			String deleteFile= "resources/uploadFiles/shopFile/reviewFile/"+deleteAtList.get(i).getType()+"/"+deleteAtList.get(i).getChangeName();
@@ -1042,6 +1227,14 @@ public class ShopController {
 		
 		return result;
 	}
+	
+	@PostMapping("updatePoint.sp")
+	@ResponseBody
+	public int updatePoint(Point p) {
+		int result=shopService.updatePoint(p);
+		return result;
+	}
+	
 	
 	
 	@GetMapping("adminPage.sp")

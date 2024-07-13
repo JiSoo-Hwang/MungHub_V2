@@ -43,11 +43,13 @@ position : relative;
 <c:if test="${not empty loginUser }">
 
 
-
+<div align="right" class="py-5">
 <a class="btn btn-outline-dark position-relative me-2" href="cart.sp"><i class="bi bi-cart3">
 </i> 장바구니 
 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
 id="cart-count"></span></a>
+<a href="/pjtMungHub/orderList/${loginUser.userNo }" class="btn btn-secondary">주문 내역 보기</a>
+</div>
 
 <c:if test="${not empty loginUser }">
 <script>
@@ -57,7 +59,7 @@ $(function(){
 		url : "/pjtMungHub/cartCount.sp",
 		data : {userNo : ${loginUser.userNo}},
 		success : function(result){
-			if(result!=null){
+			if(result!=0){
 				
 			$("#cart-count").text(result)
 			}
@@ -71,11 +73,11 @@ $(function(){
 </c:if>
 
 
-<a href="/pjtMungHub/orderList/${loginUser.userNo }" class="btn btn-secondary">주문 내역 보기</a>
+
 
 
 <c:if test="${loginUser.userGrade > 0 }">
-<div id="adminMenu" align="right">
+<div id="adminMenu" align="center">
 <a class="btn btn-info" href="/pjtMungHub/adminPage.sp">관리자 페이지</a>
 <a class="btn btn-primary" href="/pjtMungHub/insert.sp">상품등록</a>
 <c:choose>
