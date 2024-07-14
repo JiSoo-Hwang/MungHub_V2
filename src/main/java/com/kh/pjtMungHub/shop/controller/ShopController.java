@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.servlet.http.HttpSession;
@@ -1248,10 +1249,93 @@ public class ShopController {
 	@GetMapping("adminPage/orderControll")
 	public ModelAndView orderControll(ModelAndView mv) {
 		
-		
 		mv.setViewName("shop/orderController");
 		return mv;
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@GetMapping("selectOrderInfoList.sp")
+	@ResponseBody
+	public JSONObject selectOrderInfo(String category,int currentPage) {
+		
+		int allListCount=shopService.selectOrderCount("전체");
+		int prepareListCount=shopService.selectOrderCount("상품준비중");
+		int ongoingListCount=shopService.selectOrderCount("배송중");
+		int completeListCount=shopService.selectOrderCount("배송완료");
+		int cancelListCount=shopService.selectOrderCount("취소");
+		int exchangeListCount=shopService.selectOrderCount("교환");
+		int recallListCount=shopService.selectOrderCount("환불");
+		
+		
+		
+		int listCount=shopService.selectOrderCount(category);
+		int pageLimit=10;
+		int boardLimit= 30;
+		
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+		
+		
+		ArrayList<POrderInfo> oList=shopService.selectOrderListControll(category,pi);
+		
+		
+		
+		
+		if(!oList.isEmpty()) {
+			int [] itemsArr=null;
+			int [] itemsQuantityArr=null;
+		for (int i = 0; i < oList.size(); i++) {
+			String[] items=oList.get(i).getItems().split(",");
+			String[] itemsQuantity=oList.get(i).getItemsQuantity().split(",");
+			ArrayList<Product> pList=new ArrayList<>();
+
+			itemsArr= Arrays.stream(items)
+							.mapToInt(Integer::parseInt)
+							.toArray();		
+			itemsQuantityArr=Arrays.stream(itemsQuantity)
+									.mapToInt(Integer::parseInt)
+									.toArray();
+			
+			oList.get(i).setItemsArr(itemsArr);
+			oList.get(i).setItemsQuantityArr(itemsQuantityArr);
+		
+			for(int k=0; k<itemsArr.length;k++) {
+				Product p=shopService.selectProductDetail(itemsArr[k]);
+				pList.add(p);
+			}
+			oList.get(i).setPList(pList);
+		}
+	
+		
+		}
+		
+		
+	
+		
+		JSONObject jobj=new JSONObject();
+		
+		jobj.put("pi",pi);
+		jobj.put("oList", oList);
+		jobj.put("total", allListCount);
+		jobj.put("prepare", prepareListCount);
+		jobj.put("ongoing", ongoingListCount);
+		jobj.put("complete", completeListCount);
+		jobj.put("cancel", cancelListCount);
+		jobj.put("exchange", exchangeListCount);
+		jobj.put("recall", recallListCount);
+		return jobj;
+	}
+	
+	@PostMapping("convertProcess.sp")
+	@ResponseBody
+	public int convertOrderProcess(POrderInfo p) {
+		
+		int result=shopService.convertOrderProcess(p);
+		
+		return result;
+	}
+	
+	
 	
 	@GetMapping("adminPage/productControll")
 	public ModelAndView productControll(ModelAndView mv) {

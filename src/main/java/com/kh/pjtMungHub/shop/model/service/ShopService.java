@@ -185,5 +185,14 @@ public interface ShopService {
 	int updateDetailInfo(ProductDetail pd, ParameterVo fileParameter);
 
 
+	ArrayList<POrderInfo> selectOrderListControll(String string, PageInfo pi);
+
+
+	int selectOrderCount(String category);
+
+
+	int convertOrderProcess(POrderInfo p);
+
+
 
 }

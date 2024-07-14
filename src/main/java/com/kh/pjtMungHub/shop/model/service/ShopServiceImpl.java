@@ -447,6 +447,30 @@ public class ShopServiceImpl implements ShopService {
 
 	}
 
+	@Override
+	public ArrayList<POrderInfo> selectOrderListControll(String category,PageInfo pi) {
+		// TODO Auto-generated method stub
+		return shopDao.selectOrderListControll(sqlSession,category,pi);
+	}
+
+	@Override
+	public int selectOrderCount(String category) {
+		// TODO Auto-generated method stub
+		Integer result=shopDao.selectOrderCount(category,sqlSession);
+		if(result!=null) {
+			
+			return result;
+		}else {
+			return 0;
+		}
+	}
+
+	@Override
+	public int convertOrderProcess(POrderInfo p) {
+		// TODO Auto-generated method stub
+		return shopDao.convertOrderProcess(sqlSession,p);
+	}
+
 	
 
 }
