@@ -56,9 +56,8 @@
 								<input type="hidden" value="${w.weddingNo }">
 								<b style="color: blue;">수락</b>&ensp; 
 								<a class="btn btn-primary btn-sm" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
+								&ensp;<button type="button" class="btn btn-primary btn-sm contactBtn" data-bs-toggle="modal" data-bs-target="#infoModal">연락처</button>
 								&ensp;<button class="btn btn-secondary btn-sm cancelApplied">만남취소</button>
-								&ensp;<button type="button" class="btn btn-primary btn-sm contactBtn" data-bs-toggle="modal" data-bs-target="#infoModal">
-								 연락처</button>
 								 <!-- The Modal -->
 								<div class="modal fade" id="infoModal">
 								  <div class="modal-dialog">
