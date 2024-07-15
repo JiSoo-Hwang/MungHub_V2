@@ -1502,7 +1502,13 @@ public class ShopController {
 		return b;
 	}
 	
-	
+	@GetMapping("selectCategory.sp")
+	@ResponseBody
+	public ArrayList<Category> selectCategory(){
+		
+		ArrayList<Category> cList=shopService.selectCategory();
+		return cList;
+	}
 	
 	@SuppressWarnings("unchecked")
 	@GetMapping("productList.sp")

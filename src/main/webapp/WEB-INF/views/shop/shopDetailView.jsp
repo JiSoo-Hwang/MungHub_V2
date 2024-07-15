@@ -442,7 +442,7 @@ color: purple;
 							<dt>판매량</dt>
 							<dd>
 								<strong><fmt:formatNumber type="number"
-										maxFractionDigits="0" value="${p.salesConunt}" /></strong>
+										maxFractionDigits="0" value="${p.salesCount}" /></strong>
 							</dd>
 						</dl>
 						<dl class="dl-row">

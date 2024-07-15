@@ -173,7 +173,13 @@
 	
 	<input type="checkbox" class="btn-check" id="notPostedP" autocomplete="off" onclick="selectProductList(1)">
 	<label class="btn btn-outline-danger" for="notPostedP">게시중단상품</label>
-	
+	<br>
+	<select class="form-select" id="category">
+	  <option selected>Open this select menu</option>
+	  <option value="1">One</option>
+	  <option value="2">Two</option>
+	  <option value="3">Three</option>
+	</select>
       </h2>
     </div>
     <div class="card-body">
@@ -191,29 +197,6 @@
         </thead>
         <tbody id="product-list">
           <!-- 여기에 제품 정보가 동적으로 추가될 예정 -->
-          <tr>
-            <td>1</td>
-            <td>제품1</td>
-            <td>브랜드A</td>
-            <td>사료</td>
-            <td>10000</td>
-            <td>50</td>
-            <td>
-              <button class="btn btn-warning btn-sm">수정</button>
-              <button class="btn btn-danger btn-sm">개시중단</button>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>제품2</td>
-            <td>브랜드B</td>
-            <td>20000</td>
-            <td>30</td>
-            <td>
-              <button class="btn btn-warning btn-sm">수정</button>
-              <button class="btn btn-danger btn-sm">개시중단</button>
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
@@ -230,8 +213,26 @@
 	  selectTopSalesBrand();
 	  selectProductList(1);
 	  selectBrandList();
+	  selectCategort();
 	  
   });
+  
+  function selectCategort(){
+	  $.ajax({
+		  url : "/pjtMungHub/selectCategory.sp",
+		  success:function(result){
+			  var str="<option selected value='all'>전체</option>";
+			  for (var i = 0; i < result.length; i++) {
+				str+="<option value='"+result[i].categoryNo+"'>"+result[i].categoryName+"</option>"
+			}
+			  
+			  $("#category").html(str);
+		  },error:function(){
+			  console.log("통신오류");
+		  }
+	  });
+  }
+  
   
   function selectTopSalesProduct(){
 	  $.ajax({
