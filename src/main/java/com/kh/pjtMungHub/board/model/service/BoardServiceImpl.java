@@ -12,6 +12,7 @@ import com.kh.pjtMungHub.board.model.vo.Attachment;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
 import com.kh.pjtMungHub.board.model.vo.ParameterVo;
+import com.kh.pjtMungHub.board.model.vo.Recommend;
 import com.kh.pjtMungHub.board.model.vo.Reply;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 
@@ -81,6 +82,20 @@ public class BoardServiceImpl implements BoardService {
 		}
 		return result1*result2;
 	}
+	@Override
+	public int updateBoard(Board b, ParameterVo fileParameter) {
+		// TODO Auto-generated method stub
+		
+		int result1 =boardDao.updateBoard(sqlSession,b);
+		int result2 = 1;
+		
+		if(!fileParameter.getAList().isEmpty()) {
+			
+			result2 = boardDao.updateAttachment(sqlSession,fileParameter);
+		}
+		
+		return result1*result2;
+	}
 
 	@Override
 	public int deleteBoard(int boardNo) {
@@ -99,8 +114,27 @@ public class BoardServiceImpl implements BoardService {
 		// TODO Auto-generated method stub
 		return boardDao.insertReply(sqlSession,r);
 	}
-
-	
+	@Override
+	public int deleteReply(int replyNo) {
+		// TODO Auto-generated method stub
+		return boardDao.deleteReply(sqlSession,replyNo);
+	}
+	@Override
+	@Transactional
+	public int updateLike(Recommend r) {
+		// TODO Auto-generated method stub
+		int result1= boardDao.updateLike(sqlSession, r);
+		
+		int result2= boardDao.deleteLike(sqlSession);
+		
+		
+		return result1*result2;
+	}
+	@Override
+	public int likeCount(Recommend r) {
+		// TODO Auto-generated method stub
+		return boardDao.likeCount(sqlSession,r);
+	}
 
 	
 

@@ -32,6 +32,7 @@
 			,USER_ID boardWriter
 			,CATEGORY_NO category
 			,COUNT count
+			,RECOMMEND recommend
 			,UPLOAD_DATE uploadDate
 			,B.STATUS
 		FROM BOARD B
@@ -73,8 +74,8 @@
 	</update>
 	
 	<select id="selectBoard" parameterType="_int" resultType="Board" >
-		SELECT BOARD_TITLE boardTitle
-		 	  ,BOARD_NO boardNo
+		SELECT BOARD_NO boardNo
+			  ,BOARD_TITLE boardTitle
 			  ,USER_ID boardWriter
 			  ,COUNT count
 			  ,RECOMMEND recommend
@@ -107,6 +108,33 @@
 		WHERE BOARD_NO = #{boardNo}
 		AND STATUS='Y'
 	</delete>
+	<delete id="deleteAttachment" parameterType="_int">
+		DELETE FROM
+		BOARD_ATTACHMENT 
+		WHERE ATT_BNO = #{boardNo}
+		AND FILE_STATUS='Y'
+	</delete>
+	
+	<update id="updateBoard" parameterType="_int">
+		UPDATE BOARD
+		SET	BOARD_TITLE = #{boardTitle}
+		   ,BOARD_CONTENT = #{boardContent}
+		WHERE BOARD_NO = #{boardNo}
+		AND STATUS = 'Y'
+	</update>
+	
+	<update id="updateAttachment" parameterType="com.kh.pjtMungHub.board.model.vo.Attachment">
+		UPDATE BOARD_ATTACHMENT
+		<foreach collection="aList" item="arr" >
+		SET	ORIGIN_NAME = #{originName},
+			CHANGE_NAME = #{changeName},
+			FILE_PATH = #{filePath},
+			FILE_LEVEL = #{fileLevel},
+			FILE_TYPE = #{fileType}
+		WHERE ATT_BNO = #{boardNo}
+		AND STATUS = 'Y'
+		</foreach>
+	</update>
 	
 	
 	<insert id="insertAttachment" parameterType="com.kh.pjtMungHub.board.model.vo.Attachment">
@@ -143,8 +171,31 @@
 		WHERE ATT_BNO=#{boardNo}
 		ORDER BY FILE_LEVEL
 	</select>
-	
-	
+	<select id="likeCount" parameterType="com.kh.pjtMungHub.board.model.vo.Recommend" resultType="_int">
+	SELECT RCOUNT
+	FROM BOARD_RECOMMEND BR
+	WHERE BOARD_NO = #{boardNo}
+	JOIN BOARD B ON BR.BOARD_NO=R.BOARD_NO
+	AND BR.STATUS='Y'
+	</select>
+	<update id="updateLike" parameterType="com.kh.pjtMungHub.board.model.vo.Recommend">
+	MERGE INTO BOARD_RECOMMEND BR
+	USING DUAL
+	ON (BOARD_NO=#{boardNo} AND USER_NO=#{userNo})
+	WHEN MATCHED THEN
+    UPDATE SET 
+    STATUS='N'
+    AND (RECOMMEND-1)
+	WHEN NOT MATCHED THEN
+    INSERT (BOARD_NO,USER_NO,RECOMMEND),
+	VALUES
+	(#{boardNo},#{userNo},(RECOMMEND+1))
+	</update>
+	<delete id="deleteLike" parameterType="com.kh.pjtMungHub.board.model.vo.Recommend">
+	DELETE FROM BOARD_RECOMMEND
+	WHERE BOARD_NO=#{boardNo}
+	AND STATUS='N'
+	</delete>
 	
 	
 	<!-- 여기는 댓글 추가기능입니다. -->
@@ -153,6 +204,8 @@
 		SELECT REPLY_NO replyNo
 			  ,REPLY_CONTENT replyContent
 			  ,USER_ID replyWriter
+			  ,BOARD_NO refBno
+			  ,M.USER_NO replyWriter
 			  ,CREATE_DATE createDate
 		FROM BOARD_REPLY R
 		JOIN BOARD B ON B.BOARD_NO = R.REF_BNO
@@ -171,6 +224,12 @@
 						   ,#{replyWriter}
 						   ,#{refBno})
 	</insert>
+	<delete id="deleteReply" parameterType="_int">
+	DELETE FROM 
+	BOARD_REPLY
+	WHERE REPLY_NO = ${replyNo}
+	AND REPLY_WRITER =${userNo}
+	</delete>
 	
 
 </mapper>

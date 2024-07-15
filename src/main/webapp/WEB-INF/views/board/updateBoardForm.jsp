@@ -3,10 +3,34 @@
 <!DOCTYPE html>
 <html>
 <head>
+</body>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-</style>
+        .content {
+            margin: 20px auto;
+            max-width: 800px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .innerOuter {
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+        label {
+            font-weight: bold;
+        }
+        .btn {
+            min-width: 120px;
+        }
+    </style>
 </head>
 <body>
 	<%@include file="../common/header.jsp"%>
@@ -17,7 +41,7 @@
 			<h2>수정하기</h2>
 
 			<form id="updateForm" method="post" action="update.bo">
-				<input type="hidden" name="boardNo" value="">
+				<input type="hidden" name="boardNo" value="${b.boardNo }">
 				<table align="center">
 					<tr>
 						<th><label for="title">글제목</label></th>
@@ -25,13 +49,9 @@
 							value="${b.boardTitle}" name="boardTitle" required></td>
 					</tr>
 					<tr>
-						<th><label for="category">카테고리</label></th>
-						<td><select id=category name="category">
-								<option id="category">라운지</option>
-								<option id="category">질문</option>
-								<option id="category">정보</option>
-						</select></td>
-					</tr>
+                        <th><label for="upfile">첨부파일</label></th>
+                        <td><input type="file" id="upfile" class="form-control-file border" name="upfile" multiple></td>
+                    </tr>
 					<tr>
 						<th><label for="content">내용</label></th>
 						<td><textarea id="content" class="form-control" rows="10" style="resize: none;" name="boardContent" required>${b.boardContent }</textarea></td>

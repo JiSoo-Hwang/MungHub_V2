@@ -248,7 +248,7 @@ input[name=sortBy] {
 	<br clear="both">
 	
 	<br> <br>
-	<form id="searchForm" action="" method="get" align="center">
+	<form id="searchForm" action="search.bo" method="get" align="center">
 		<div class="select">
 			<select class="custom-select" name="condition">
 				<option value="writer">아이디</option>

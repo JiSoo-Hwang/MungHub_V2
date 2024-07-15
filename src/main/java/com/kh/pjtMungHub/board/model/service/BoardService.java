@@ -6,6 +6,7 @@ import com.kh.pjtMungHub.board.model.vo.Attachment;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
 import com.kh.pjtMungHub.board.model.vo.ParameterVo;
+import com.kh.pjtMungHub.board.model.vo.Recommend;
 import com.kh.pjtMungHub.board.model.vo.Reply;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 
@@ -42,6 +43,18 @@ public interface BoardService {
 		ArrayList<Reply> replyList(int boardNo);
 		//댓글 입력 
 		int insertReply(Reply r);
+
+		int deleteReply(int replyNo);
+
+		//파일 업데이트 구문
+		int updateBoard(Board b, ParameterVo fileParameter);
+
+		int updateLike(Recommend r);
+
+		int likeCount(Recommend r);
+
+
+
 
 
 }

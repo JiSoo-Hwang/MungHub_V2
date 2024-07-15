@@ -13,6 +13,7 @@ import com.kh.pjtMungHub.board.model.vo.Attachment;
 import com.kh.pjtMungHub.board.model.vo.Board;
 import com.kh.pjtMungHub.board.model.vo.Category;
 import com.kh.pjtMungHub.board.model.vo.ParameterVo;
+import com.kh.pjtMungHub.board.model.vo.Recommend;
 import com.kh.pjtMungHub.board.model.vo.Reply;
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 
@@ -83,6 +84,7 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return (ArrayList)sqlSession.selectList("boardMapper.selectAttachmentList",boardNo);
 	}
+	
 
 	public int insertBoard(SqlSessionTemplate sqlSession, Board b) {
 		// TODO Auto-generated method stub
@@ -92,6 +94,8 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.insert("boardMapper.insertAttachment",fileParameter);
 	}
+	
+	
 	public int deleteBoard(SqlSessionTemplate sqlSession, int boardNo) {
 		// TODO Auto-generated method stub
 		return sqlSession.delete("boardMapper.deleteBoard",boardNo);
@@ -102,6 +106,15 @@ public class BoardDao {
 	}
 	
 
+	public int updateBoard(SqlSessionTemplate sqlSession, Board b) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("boardMapper.updateBoard",b);
+	}
+	
+	public int updateAttachment(SqlSessionTemplate sqlSession, ParameterVo fileParameter) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("boardMapper.updateAttachment", fileParameter);
+	}
 	
 	//댓글기능
 	public ArrayList<Reply> replyList(SqlSessionTemplate sqlSession, int boardNo) {
@@ -113,6 +126,27 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.insert("boardMapper.insertReply",r);
 	}
+
+	public int deleteReply(SqlSessionTemplate sqlSession, int replyNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("boardMapper.deleteReply",replyNo);
+	}
+
+	public int updateLike(SqlSessionTemplate sqlSession,Recommend r) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("boardMapper.updateLike",r);
+	 }
+
+	public int likeCount(SqlSessionTemplate sqlSession, Recommend r) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("boardMapper.likeCount",r);
+	}
+
+	public int deleteLike(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("boardMapper.deleteLike");
+	}
+
 
 	
 
