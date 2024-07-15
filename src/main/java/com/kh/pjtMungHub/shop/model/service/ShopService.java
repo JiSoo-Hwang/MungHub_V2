@@ -194,5 +194,8 @@ public interface ShopService {
 	int convertOrderProcess(POrderInfo p);
 
 
+	ArrayList<POrderInfo> selectOrderListComplete(int userNo, String category);
+
+
 
 }

@@ -378,6 +378,12 @@ public class ShopDao {
 		return sqlSession.update("shopMapper.convertOrderProcess",p);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<POrderInfo> selectOrderListComplte(POrderInfo p, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectOrderListComplte",p);
+	}
+
 
 
 

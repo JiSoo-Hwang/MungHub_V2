@@ -471,6 +471,15 @@ public class ShopServiceImpl implements ShopService {
 		return shopDao.convertOrderProcess(sqlSession,p);
 	}
 
+	@Override
+	public ArrayList<POrderInfo> selectOrderListComplete(int userNo, String category) {
+		// TODO Auto-generated method stub
+		POrderInfo p= new POrderInfo();
+		p.setUserNo(userNo);
+		p.setProcess(category);
+		return shopDao.selectOrderListComplte(p,sqlSession);
+	}
+
 	
 
 }

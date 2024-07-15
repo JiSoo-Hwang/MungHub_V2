@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.common.template.Pagination;
+import com.kh.pjtMungHub.member.model.vo.Member;
 import com.kh.pjtMungHub.shop.model.service.ShopService;
 import com.kh.pjtMungHub.shop.model.vo.Answer;
 import com.kh.pjtMungHub.shop.model.vo.Attachment;
@@ -295,7 +296,8 @@ public class ShopController {
 	
 	@GetMapping("detail.sp/{productNo}")
 	public ModelAndView ShopDetail(@PathVariable int productNo,
-									ModelAndView mv) {
+									ModelAndView mv,
+									HttpSession session) {
 		
 		Product p=shopService.selectProductDetail(productNo);
 		ArrayList<Product> pList = shopService.selectProductList("Y"); 
@@ -346,7 +348,30 @@ public class ShopController {
 			detailAtList=shopService.selectAttachmentList(parameter3);
 		}
 		
+		Member loginUser=(Member) session.getAttribute("loginUser");
+		ArrayList<POrderInfo> oList=new ArrayList<>();
+		ArrayList<Integer> orderItemArr=new ArrayList<>();
+		if(loginUser!=null) {
+		oList=shopService.selectOrderListComplete(loginUser.getUserNo(),"배송완료");
+		if(oList!=null) {
+			
 		
+			for(int i=0; i<oList.size();i++) {
+				String[] items=oList.get(i).getItems().split(",");
+				
+				int[] itemsArr= Arrays.stream(items)
+						.mapToInt(Integer::parseInt)
+						.toArray();	
+				for(int k=0; k<itemsArr.length;k++) {
+					orderItemArr.add(itemsArr[i]);
+				}
+				
+			}
+				
+			}
+		}
+		
+		mv.addObject("orderItemArr",orderItemArr);
 		mv.addObject("pDetail",pDetail);
 		mv.addObject("dAtList",detailAtList);
 		mv.addObject("cList",questionCategoryList);

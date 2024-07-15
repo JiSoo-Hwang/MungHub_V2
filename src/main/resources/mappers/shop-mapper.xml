@@ -1038,5 +1038,15 @@ WHERE ORDER_PROCESS=#{category}
 	WHERE MERCHANT_UID=#{merchantUid}
 	
 	</update>
+	
+	<select id="selectOrderListComplte" 
+	parameterType="com.kh.pjtMungHub.shop.model.vo.POrderInfo"
+	resultType="com.kh.pjtMungHub.shop.model.vo.POrderInfo">
+	SELECT 
+	SHOPPING_LIST items
+	FROM PRODUCT_ORDER
+	WHERE USER_NO=#{userNo}
+	AND ORDER_PROCESS=#{process}
+	</select>
 
 </mapper>
