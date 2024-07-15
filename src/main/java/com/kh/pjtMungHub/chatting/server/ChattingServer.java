@@ -32,9 +32,6 @@ public class ChattingServer extends TextWebSocketHandler{
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		// TODO Auto-generated method stub
-		log.debug("연결 완료");
-		log.debug("session : {}",session);
-		log.debug("정보 : {}",session.getAttributes().get("loginUser"));
 		Member loginUser=(Member)session.getAttributes().get("loginUser");
 		WebSocketSession counter=null;
 		if(loginUser!=null) {

@@ -7,12 +7,26 @@
 <title>채팅창</title>
 </head>
 <style>
-
+	.chatTotal{
+		width:100%;
+		height:100%;
+		top:0;
+		left:0;
+	}
+	.chatTotal>div{
+		width:100%;
+	}
+	.chatHeader>div{
+		float:left;
+		height:inherit;
+	}
+	.sitter-left{
+		padding-top:25px;
+		padding-left:25px;
+		padding-right:25px;
+		padding-bottom:25px;
+	}
 	.sitter-photo{
-		margin-top:10px;
-		margin-left:10px;
-		margin-right:20px;
-		margin-bottom:10px;
 		overflow:hidden;
 		border-radius:50%;
 		width:150px;
@@ -24,26 +38,28 @@
 		left:50%;
 	}
 	.chatHeader{
-		height:180px;
+		height:200px;
 		border-bottom:1px solid gray;
 		position:absolute;
 		background-color: rgb(218, 253, 255);
 	}
-	.empty{
-		height:180px;
-	}
-	.chatHeader>div{
-		float:left;
-	}
+
 	.chat-main{
-		background-color: rgb(255,219,244);
+		display:inline-block;
 		height:100%;
-		position:absolute;
-		overflow: auto;
-		z-index: -3;
+		background-color: rgb(255,219,244);
+
 	}
 	.chat-main>div{
-		display:block;
+		width:100%;
+		display:inline-block;
+	}
+	.empty{
+		height:200px;
+		min-height:200px;
+	}
+	#chatArea{
+		overflow: auto;
 	}
 	.MASTER{
 		float:right;
@@ -65,9 +81,6 @@
 		float:left;
 		overflow:auto;
 	}
-	.chatHeader,.chat-main,.chatSender{
-		width:100%;
-	}
 	.userChat{
 		margin-bottom:5px;
 		overflow:auto;
@@ -76,7 +89,7 @@
 		height:auto;
 	}
 	.sitter-name{
-		margin-top:10px;
+		padding-top:10px;
 		font-size: 18px;
 		font-weight: bolder;
 	}
@@ -109,11 +122,13 @@
 		float:right;
 	}
 
+
 </style>	
 <body>
 	<div hidden="true">
 		<%@include file="/WEB-INF/views/common/header.jsp" %>
 	</div>
+	<div class="chatTotal">
 	<div class="chatHeader">
 		<div class="sitter-left">
 			<div class="sitter-photo">
@@ -134,7 +149,7 @@
 	</div>
 	<div class="chat-main">
 		<div class="empty"></div>
-		<div class="chatArea">
+		<div id="chatArea">
 			<c:if test="${not empty chatList}">
 				<c:forEach items="${chatList}" var="chat">
 					<div class="userChat">
@@ -146,13 +161,14 @@
 					</div>
 				</c:forEach>
 			</c:if>
+		<div class="empty bottom"></div>
 		</div>
 	</div>
 	<div class="chatSender">
 		<textarea id="summernote"></textarea>
 		<button class="sendButton" onclick="send(); return false;">보내기</button>
 	</div>
-	
+	</div>
 	<script>
 		// 웹소켓 접속 함수
 		var socket; // 웹소켓을 담아 놓을 변수
@@ -180,29 +196,35 @@
 				var data = JSON.parse(message.data);
 				var div = document.getElementById("chatArea");
 				var newDiv = document.createElement("div");
-				var sender="user-chat "+data.chatWriter;
-				var newSpan= document.createElement("span");
-				newDiv.appendChild(newSpan).setAttribute("class",sender);
+				var innerDiv = document.createElement("div");
+				var sender="chat-content "+data.chatWriter;
+				var newSpan= document.createElement("div");
+				innerDiv.appendChild(newSpan).setAttribute("class",sender);
 				newSpan.innerHTML = data.chatContent;
-				newDiv.setAttribute("class","userChat");
-				console.log(newDiv);
-				div.appendChild(newDiv);
-				$(".userChat").prop("style","margin-bottom:5px; overflow:auto;");
-				$(".user-chat").prop("style","height:auto");
+				innerDiv.setAttribute("class","user-chat");
+				newDiv.appendChild(innerDiv);
+				div.appendChild(newDiv).setAttribute("class","userChat");
+				$(".user-Chat").prop("style","height:auto;");
+				$(".chat-content").prop("style","padding:3px;padding-left:8px;padding-right:8px;margin:5px;font-size:18px;display:inline;border-radius:10px;background-color:white;");
 				$(".MASTER").prop("style","float:right;");
+				$(".MASTER *").prop("style","float:right;");
 				$(".SITTER").prop("style","float:left;");
-				var newMsg=window.opener.getElementsById("chatCont");
+				$(".SITTER *").prop("style","float:left;");
+				var newMsg=window.opener.document.querySelectorAll(".chatCont");
 				var counterNo=0;
 				if(${not empty loginUser}){
 					counterNo=data.sitterNo;
 				}else{
 					counterNo=data.masterNo;
 				}
-				newMsg.children().eq(0).each(function(){
-					if(this.val()=sitterNo){
+				console.log(newMsg);
+				for(var i=0;i<newMsg.length,i++;){
+					if(i.children().eq(0).val()=sitterNo){
 						$(this).siblings().eq(2).innerHTML(data.chatContent);
+						console.log($(this).siblings().eq(2).innerHTML());
+						break;
 					}
-				})
+				}
 				$.ajax({
 					url:"chatRead.chat",
 					data:data,
@@ -275,7 +297,7 @@
 			}
 			console.log(message);
 			socket.send(message);
-			document.getElementById("summernote").value="";
+			document.querySelector(".note-editable").innerHTML="";
 		}
 	</script>
 </body>

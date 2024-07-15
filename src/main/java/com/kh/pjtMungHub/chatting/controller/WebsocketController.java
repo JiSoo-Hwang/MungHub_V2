@@ -81,11 +81,9 @@ public class WebsocketController {
 	public String imageUpload(MultipartFile file, HttpSession session){
 		String fullName="";
 		try {
-			System.out.println("업로드시작");
 			String uploadPath = session.getServletContext().getRealPath("/resources/uploadFiles/chat/");
 			String originFile = file.getOriginalFilename();
 			String changeName = saveFile(file,session);
-			System.out.println("업로드끗");
 			fullName="../resources/uploadFiles/chat/"+changeName;
 		} catch (Exception e) {
 			e.printStackTrace();
