@@ -186,11 +186,20 @@ clear: both;
 }
 </style>
 <style>
-	.chatTotal{
+	.chatPopup{
 		z-index: 50;
 		position:fixed;
 		bottom:10px;
 		right:10px;
+		width:200px;
+		background-color: rgb(107, 117, 255);
+	}
+	.chatList{
+		background-color:white;
+		border-bottom:1px solid lightgray;
+	}
+	.chat-prev{
+		color:gray;
 	}
 </style>
 </head>
@@ -263,8 +272,8 @@ clear: both;
     	<c:remove var="alertMsg"/>
 	</c:if>
 	<c:if test="${not empty loginUser||not empty sitterUser}">
-	    <div class="chatTotal">
-			<div class="chatArea">
+	    <div class="chatPopup">
+			<div class="chatName" align="right">
 				<button type="button">채팅</button>
 			</div>
 			<div class="chatList" style="display:none;">
@@ -282,7 +291,7 @@ clear: both;
 									<c:forEach items="${sitterList}" var="sitter">${cList.sitterNo eq sitter.petSitterNo ? sitter.petSitterName:""}</c:forEach> 펫시터님
 								</span>
 								<br>
-								<span>${cList.chatContent}</span>
+								<span class="chat-prev">${cList.chatContent}</span>
 							</div>
 							</c:when>
 							<c:when test="${empty loginUser&&not empty sitterUser}">
@@ -292,7 +301,7 @@ clear: both;
 									<c:forEach items="${masterList}" var="master">${cList.masterNo eq master.userNo ? master.name:""}</c:forEach> 견주님
 								</span>
 								<br>
-								<span>${cList.chatContent}</span>
+								<span class="chat-prev">${cList.chatContent}</span>
 							</div>
 							</c:when>
 						</c:choose>
@@ -306,7 +315,7 @@ clear: both;
 		</div>
 	</c:if>
 	<script>
-		$(".chatArea").on("click",function(){
+		$(".chatPopup").on("click",function(){
 			if($(".chatList").css("display")=="none"){
 				$(".chatList").slideDown(250);
 			}else{

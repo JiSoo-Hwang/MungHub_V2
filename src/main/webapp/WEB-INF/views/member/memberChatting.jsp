@@ -12,6 +12,8 @@
 		height:100%;
 		top:0;
 		left:0;
+		display:flex;
+ 		flex-direction: column;
 	}
 	.chatTotal>div{
 		width:100%;
@@ -40,23 +42,18 @@
 	.chatHeader{
 		height:200px;
 		border-bottom:1px solid gray;
-		position:absolute;
 		background-color: rgb(218, 253, 255);
 	}
 
 	.chat-main{
 		display:inline-block;
-		height:100%;
+		flex-grow:1;
 		background-color: rgb(255,219,244);
-
+		overflow:auto;
 	}
 	.chat-main>div{
 		width:100%;
 		display:inline-block;
-	}
-	.empty{
-		height:200px;
-		min-height:200px;
 	}
 	#chatArea{
 		overflow: auto;
@@ -70,10 +67,8 @@
 	.chatSender{
 		border-top:1px solid gray;
 		height:auto;
-		position:fixed;
 		background-color:white;
-		bottom:0px;
-		left:0px;
+
 	}
 	.chatSender>*{
 		width:80%;
@@ -90,8 +85,9 @@
 	}
 	.sitter-name{
 		padding-top:10px;
-		font-size: 18px;
+		font-size: 25px;
 		font-weight: bolder;
+		position:absoulte;
 	}
 	.sitter-introduce{
 		margin-top:20px;
@@ -100,9 +96,13 @@
 	}
 	.exitButton{
 		float:right;
-		bottom:15px;
-		right:20px;
-		position:absolute;
+		position:relative;
+		border:1px solid lightgray;
+		height:40px;
+		width:150px;
+		right:30px;
+		font-size: 18px;
+		
 	}
 	.chat-content{
 		padding:3px;
@@ -137,31 +137,23 @@
 		</div>
 		<div class="sitter-right">
 			<div class="sitter-name">
-				${sitterUser.petSitterName} 시터님<br>
+				${sitterUser.petSitterName} 시터님
+			<c:if test="${not empty loginUser}">
+			<button class="exitButton" onclick="disconnect(); return false;">채팅방 나가기</button>
+			</c:if>
 			</div>
 			<div class="sitter-introduce">
 				${sitterUser.introduce}
 			</div>
-			<c:if test="${not empty loginUser}">
-			<button class="exitButton" onclick="disconnect();">나가기</button>
-			</c:if>
 		</div>
 	</div>
 	<div class="chat-main">
-		<div class="empty"></div>
 		<div id="chatArea">
 			<c:if test="${not empty chatList}">
 				<c:forEach items="${chatList}" var="chat">
-					<div class="userChat">
-						<div class="user-chat">
-							<div class="chat-content ${chat.chatWriter}">
-								${chat.chatContent}
-							</div>
-						</div>
-					</div>
+					${chat.chatContent}
 				</c:forEach>
 			</c:if>
-		<div class="empty bottom"></div>
 		</div>
 	</div>
 	<div class="chatSender">
@@ -182,6 +174,18 @@
 			}
 			// 연결이 끊겼을 때 동작
 			socket.onclose = function(){
+				var data=$("#chat").innerHTML;
+				$.ajax({
+					url:"update.chat",
+					data:data,
+					success:function(){
+						console.log("저장완료");
+					},
+					error:function(){
+						console.log("통신오류");
+					}
+					
+				})
 				console.log("연결 종료");
 			}
 			// 에러가 발생했을 때 동작
@@ -192,15 +196,16 @@
 			// 메시지를 수신했을 때
 			socket.onmessage = function(message){
 				console.log("메시지를 받았습니다.")
-				console.log(JSON.parse(message.data));
-				var data = JSON.parse(message.data);
+				console.log(message.data);
+				var data = message.data.slice(6);
+				console.log(data);
 				var div = document.getElementById("chatArea");
 				var newDiv = document.createElement("div");
 				var innerDiv = document.createElement("div");
-				var sender="chat-content "+data.chatWriter;
+				var sender="chat-content "+message.data.substring(0,6);
 				var newSpan= document.createElement("div");
 				innerDiv.appendChild(newSpan).setAttribute("class",sender);
-				newSpan.innerHTML = data.chatContent;
+				newSpan.innerHTML = data;
 				innerDiv.setAttribute("class","user-chat");
 				newDiv.appendChild(innerDiv);
 				div.appendChild(newDiv).setAttribute("class","userChat");
@@ -210,42 +215,36 @@
 				$(".MASTER *").prop("style","float:right;");
 				$(".SITTER").prop("style","float:left;");
 				$(".SITTER *").prop("style","float:left;");
+				$("p").prop("style","margin:0;")
 				var newMsg=window.opener.document.querySelectorAll(".chatCont");
 				var counterNo=0;
 				if(${not empty loginUser}){
-					counterNo=data.sitterNo;
+					counterNo=${loginUser.userNo};
 				}else{
-					counterNo=data.masterNo;
+					counterNo=${sitterUser.petSitterNo};
 				}
-				console.log(newMsg);
-				for(var i=0;i<newMsg.length,i++;){
-					if(i.children().eq(0).val()=sitterNo){
-						$(this).siblings().eq(2).innerHTML(data.chatContent);
-						console.log($(this).siblings().eq(2).innerHTML());
+				console.log(counterNo);
+				for(var i=0;i<newMsg.length;i++){
+					console.log(newMsg[i].querySelector("input[type=hidden]"));
+					if(newMsg[i].querySelector("input[type=hidden]").value==counterNo){
+						newMsg[i].querySelector(".chat-prev").innerHTML=data;
 						break;
 					}
-				}
-				$.ajax({
-					url:"chatRead.chat",
-					data:data,
-					success:function(num){
-						if(num>0){
-							console.log("읽기완료");
-						}else{
-							console.log("읽기실패");
-						}
-					},
-					error:function(){
-						console.log("읽기처리 오류");
-					}
-				})
-
+				};
 			}
-		})
+		});
 		function disconnect(){
-			socket.close();
-			window.close();
+			var chat=$("#chatArea");
+			console.log(chat.innerHTML);
+			
+			var out=window.confirm("채팅방을 나갈 시 해당 시터와 나눈 대화가 삭제됩니다. 정말 나가시겠습니까?");
+			if(out){
+
+// 				socket.close();
+// 				window.close();				
+			}
 		}
+
 		$('#summernote').summernote({
 			height:140,
 			disableResizeEditor:true,
@@ -288,17 +287,51 @@
 		// 메시지 전송 함수
 		function send(){
 			// 사용자가 입력한 텍스트를 추출하여 웹소켓에 전달하기
-			var message = document.getElementById("summernote").value;
-			var loginUser=${empty loginUser};
-			if(loginUser){
-				message+='SITTER';
+			var summernote=document.querySelector(".note-editable p");
+			var message;
+			if(message!="<br>"){
+				var loginUser=${empty loginUser};
+				if(loginUser){
+					message='SITTER';
+				}else{
+					message='MASTER';
+				}
+				message+= summernote.innerHTML;
+				console.log(message);
+				socket.send(message);
+				summernote.value="";
+				document.querySelector(".note-editable p").innerHTML="<br>";
 			}else{
-				message+='MASTER';
+				return false;
 			}
-			console.log(message);
-			socket.send(message);
-			document.querySelector(".note-editable").innerHTML="";
 		}
+		window.addEventListener("beforeunload",function(event){
+			var data=document.querySelector("#chatArea").innerHTML;
+			var code='${code}';
+			var [ sitterNo , masterNo ] = code.split("n");
+			console.log(sitterNo);
+			var chatWriter;
+			if(${not empty loginUser}){
+				chatWriter="MASTER";
+			}else{
+				chatWriter="SITTER";
+			};
+			$.ajax({
+				url:"save.chat",
+				data:{
+					sitterNo:sitterNo,
+					masterNo:masterNo,
+					chatContent:data,
+					chatWriter:chatWriter
+				},
+				success:function(){
+					console.log("꺼짐");
+				},
+				error:function(){
+					console.log("근ㄷ ㅔ어차피 못봄ㅎ");
+				}
+			})
+		})
 	</script>
 </body>
 </html>

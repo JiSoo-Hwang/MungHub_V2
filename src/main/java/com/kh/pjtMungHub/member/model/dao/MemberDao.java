@@ -157,7 +157,6 @@ public class MemberDao {
 
 	public PetSitter searchSitterStatus(SqlSessionTemplate sqlSession, PetSitter pst) {
 		PetSitter result=sqlSession.selectOne("memberMapper.searchSitterStatus", pst);
-		System.out.println(result);
 		return result;
 	}
 
@@ -194,13 +193,18 @@ public class MemberDao {
 		return sqlSession.selectOne("memberMapper.getRestrictedUntil",userNo);
 	}
 
-	public int chatUpload(SqlSessionTemplate sqlSession, MessageVO message) {
-		return sqlSession.insert("memberMapper.chatUpload", message);
+	public int chatUpload(SqlSessionTemplate sqlSession, MessageVO msg) {
+		System.out.println("dao 오나?");
+		return sqlSession.insert("memberMapper.chatUpload", msg);
 	}
 	public int chatReadSitter(SqlSessionTemplate sqlSession, MessageVO message) {
 		return sqlSession.update("memberMapper.chatReadSitter", message);
 	}
 	public int chatReadMaster(SqlSessionTemplate sqlSession, MessageVO message) {
 		return sqlSession.update("memberMapper.chatReadMaster", message);
+	}
+
+	public int saveChat(SqlSessionTemplate sqlSession, MessageVO msg) {
+		return sqlSession.update("memberMapper.saveChat",msg);
 	}
 }

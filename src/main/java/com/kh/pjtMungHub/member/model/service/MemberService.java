@@ -58,6 +58,6 @@ public interface MemberService {
 	Member selectMaster(Member m);
 	LocalDateTime getRestrictedUntil(int userNo);
 	int chatUpload(MessageVO msg);
-	int chatReadSitter(MessageVO message);
 	int chatReadMaster(MessageVO message);
+	int saveChat(MessageVO msg);
 }

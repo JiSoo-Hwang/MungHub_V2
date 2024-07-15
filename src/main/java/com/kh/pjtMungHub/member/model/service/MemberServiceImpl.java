@@ -231,17 +231,17 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int chatUpload(MessageVO message) {
-		return dao.chatUpload(sqlSession,message);
-	}
-
-	@Override
-	public int chatReadSitter(MessageVO message) {
-		return dao.chatReadSitter(sqlSession, message);
+	public int chatUpload(MessageVO msg) {
+		return dao.chatUpload(sqlSession,msg);
 	}
 
 	@Override
 	public int chatReadMaster(MessageVO message) {
 		return dao.chatReadMaster(sqlSession, message);
+	}
+
+	@Override
+	public int saveChat(MessageVO msg) {
+		return dao.saveChat(sqlSession,msg);
 	}
 }

@@ -94,13 +94,21 @@ public class WebsocketController {
 	@GetMapping("/chatRead.chat")
 	public int chatRead(HttpSession session, MessageVO msg) {
 		Member loginMember=(Member)session.getAttribute("loginMember");
-		int result;
+		int result=0;
 		if(loginMember!=null) {
 			result=service.chatReadMaster(msg);
-		}else {
-			result=service.chatReadSitter(msg);
 		}
 		return result;
+	}
+	@ResponseBody
+	@GetMapping("/save.chat")
+	public int saveChat(HttpSession session, MessageVO msg) {
+		return service.saveChat(msg);
+	}
+	
+	public int chatUpload(MessageVO msg) {
+		System.out.println(msg);
+		return service.chatUpload(msg);
 	}
 	
 	public String saveFile(MultipartFile upfile,HttpSession session) {
