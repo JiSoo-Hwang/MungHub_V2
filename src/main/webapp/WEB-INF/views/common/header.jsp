@@ -113,8 +113,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-    @import
-	url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+        @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
         #header {
             padding: 10px;
             position: sticky;
@@ -127,7 +126,6 @@
             padding: 0;
             overflow: hidden;
             background-color: #F4D3D3;
-            /* position: sticky; */
         }
 
         #header_1 li {
@@ -162,7 +160,6 @@
             padding: 0;
             overflow: hidden;
             background-color: #FFEAE3;
-            /* position: sticky; */
         }
 
         #header_2 li {
@@ -181,9 +178,9 @@
             border-bottom: #492F10 2px solid;
         }
 
-#header_2:after {
-clear: both;
-}
+        #header_2:after {
+            clear: both;
+        }
 </style>
 <style>
 	.chatTotal{
@@ -228,7 +225,6 @@ clear: both;
         </nav>
         <nav id="header_2">
             <ul>
-				<!-- <li><a href="map.do">지도보기</a></li> -->
 				<c:choose>
                 <c:when test="${loginUser.userGrade == 2 }">
 				<li><a href="regList2.do?userNo=${loginUser.userNo}">상담예약내역</a></li>
@@ -239,7 +235,6 @@ clear: both;
                 </c:choose>
                 <li><a href="sitter.re">단기돌봄예약</a> </li>
                 <li><a href="hospital.ho">동물병원정보</a> </li>
-                <!-- <li><a href="wedList.wd">웨딩플래너</a> </li> -->
                 <li><a href="houseList.re">장기돌봄예약</a> </li>
             </ul>
         </nav>
