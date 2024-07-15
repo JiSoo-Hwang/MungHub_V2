@@ -31,7 +31,7 @@
                     </tr>
                      <tr>
                         <th><label for="discount">할인율</label></th>
-                        <td><input type="text" id="discount" class="form-control" name="discount"></td>
+                        <td><input type="text" id="discount" class="form-control" name="discount">%</td>
                     </tr>
                     <tr>
                         <th><label for="category">카테고리</label></th>
@@ -85,6 +85,19 @@
 					$("#product1").attr("src",null);
 			}
 		}
+		
+		$(function(){
+			$("#discount").keyup(function(){
+				var value=$("#discount").val();
+				if(value>100){
+					alert("100% 이상으로 할인률을 조정할 수 없습니다.");
+					$("#discount").val("100");
+				}else if(value<0){
+					alert("0% 이상으로 할인률을 조정할 수 없습니다.");
+					$("#discount").val("0");
+				}
+			});
+		});
 	</script>
 </body>
 </html>
