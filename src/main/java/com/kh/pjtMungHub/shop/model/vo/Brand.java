@@ -10,5 +10,8 @@ import lombok.NoArgsConstructor;
 public class Brand {
 
 	private int brandCode;
-	private String brandeName;
+	private String brandName;
+	private int brandSales;
+	private int brandSalesCount;
+	private String logo;
 }

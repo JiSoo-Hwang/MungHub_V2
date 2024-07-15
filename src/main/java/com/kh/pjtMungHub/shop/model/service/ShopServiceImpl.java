@@ -1,11 +1,13 @@
 package com.kh.pjtMungHub.shop.model.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.pjtMungHub.common.model.vo.PageInfo;
 import com.kh.pjtMungHub.shop.model.dao.ShopDao;
@@ -54,9 +56,9 @@ public class ShopServiceImpl implements ShopService {
 	}
 	
 	@Override
-	public ArrayList<Brand> selectBrand() {
+	public ArrayList<Brand> selectBrand(String orderBy) {
 		// TODO Auto-generated method stub
-		return shopDao.selectBrand(sqlSession);
+		return shopDao.selectBrand(sqlSession,orderBy);
 	}
 
 
@@ -303,9 +305,15 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
+	@Transactional
 	public int updateSalesCount(ArrayList<Product> pList) {
 		// TODO Auto-generated method stub
-		return shopDao.updateSalesCount(pList,sqlSession);
+		int result=shopDao.updateSalesCount(pList,sqlSession);
+		ArrayList<Brand> bList=shopDao.selectBrand(sqlSession,"");
+		int result2=shopDao.updateBrandSalesCount(sqlSession,bList);
+		int result3=shopDao.updateBrandSales(sqlSession, bList);
+		
+		return result*result2*result3;
 	}
 
 	@Override
@@ -480,6 +488,67 @@ public class ShopServiceImpl implements ShopService {
 		return shopDao.selectOrderListComplte(p,sqlSession);
 	}
 
+	@Override
+	public ArrayList<Product> selectTopSalesProduct(String orderBy) {
+		// TODO Auto-generated method stub
+		return shopDao.selectTopSalesProduct(sqlSession,orderBy);
+	}
+
+	@Override
+	public ArrayList<Brand> selectTopSalesBrand(String orderBy) {
+		// TODO Auto-generated method stub
+		ArrayList<Brand> bList=shopDao.selectBrand(sqlSession,"");
+		int result=shopDao.updateBrandSales(sqlSession, bList);
+		int result2=shopDao.updateBrandSalesCount(sqlSession, bList);
+		return shopDao.selectTopSalesBrand(sqlSession,orderBy);
+	}
+
+	@Override
+	public int selectProductCount() {
+		// TODO Auto-generated method stub
+		Integer result =shopDao.selectProductCount(sqlSession);
+		if(result!=null) {
+			return shopDao.selectProductCount(sqlSession);
+		}else {
+			return 0;
+		}
+		
+	}
+
+	@Override
+	public ArrayList<Product> selectProductListControll(ParameterVo parameter, PageInfo pi) {
+		// TODO Auto-generated method stub
+		return shopDao.selectProductListControll(parameter,pi,sqlSession);
+	}
+
+
+	@Override
+	@Transactional
+	public int insertBrand(String brandName, ParameterVo fileParameter) {
+		int result=shopDao.insertBrand(brandName,sqlSession);
+		int result2=shopDao.insertAttachment(sqlSession, fileParameter);
+		return result*result2;
+
+	}
+
+	@Override
+	public Brand selectBrandOne(int brandCode) {
+		// TODO Auto-generated method stub
+		return shopDao.selectBrandOne(brandCode,sqlSession);
+	}
+
+	@Override
+	@Transactional
+	public int updateBrand(Brand brand, ParameterVo fileParameter) {
+		// TODO Auto-generated method stub
+		int result2=1;
+		int result= shopDao.updateBrand(sqlSession, brand);
+		if(!fileParameter.getAtList().isEmpty()) {
+			
+			result2=shopDao.updateAttachment(sqlSession, fileParameter);
+		}
+		return result*result2;
+	}
 	
 
 }

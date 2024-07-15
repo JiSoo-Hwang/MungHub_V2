@@ -72,89 +72,165 @@
     </div>
 
     <div class="main-content">
-       <div align="center" class="py-5">
-	<h1>주문 관리</h1>
-	</div>
-    <div class="container">
-    
-    <div align="center">
-    <button class="btn btn-outline-secondary btn-lg mx-3">상품준비중()</button>
-    <button class="btn btn-outline-secondary btn-lg mx-3">배송중()</button>
-    <button class="btn btn-outline-secondary btn-lg mx-5">배송완료()</button>
-    
-    <div class="btn-group" role="group" aria-label="Basic outlined example">
-    <button class="btn btn-outline-secondary btn-lg">취소요청()</button>
-    <button class="btn btn-outline-secondary btn-lg">교환처리()</button>
-    <button class="btn btn-outline-secondary btn-lg">환불처리()</button>
+    <div class="container mt-5">
+  <h1 class="text-center mb-4">고객 관리 관리자 페이지</h1>
+  
+   <!-- 가장 많은 상품을 구매한 유저 순위 -->
+  <div class="row justify-content-center py-5">
+  <div class="card mb-4 col col-md-5 mx-3">
+    <div class="card-header">
+      <h2>고객 판매량 순위 TOP5</h2>
     </div>
+    <div class="card-body">
+      <ul id="top-buyers">
+        <li>1위: 고객1 (5개)</li>
+        <li>2위: 고객2 (3개)</li>
+      </ul>
     </div>
-    
-    
-    <table class="table caption-top py-5">
-  <caption id="list">List of users</caption>
-  <thead>
-    <tr>
-   	 <th>선택</th>
-       <th scope="col">주문번호</th>
-		 <th scope="col">결제및배달진행상황</th>
-		 <th scope="col">주문목록</th>
-		 <th scope="col">주문수량</th>
-		 <th scope="col">총결제액</th>
-		 <th scope="col">유저번호</th>
-		 <th scope="col">결제일</th>
-		 <th scope="col">요구사항</th>
-		 <th scope="col">주소</th>
-		 <th scope="col">수취인</th>
-		 <th scope="col">전화번호 </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row"><input type="checkbox"></th>
-      <td>주문번호</td>
-		 <td>결제및배달진행상황</td>
-		 <td>주문목록</td>
-		 <td>주문수량</td>
-		 <td>총결제액</td>
-		 <td>유저번호</td>
-		 <td>결제일</td>
-		  <td>요구사항</td>
-		 <td>주소</td>
-		 <td>수취인</td>
-		 <td>전화번호 </td>
-    </tr>
-    <tr>
-      <th scope="row"><input type="checkbox"></th>
-       <td>주문번호</td>
-		 <td>결제및배달진행상황</td>
-		 <td>주문목록</td>
-		 <td>주문수량</td>
-		 <td>총결제액</td>
-		 <td>유저번호</td>
-		 <td>결제일</td>
-		  <td>요구사항</td>
-		 <td>주소</td>
-		 <td>수취인</td>
-		 <td>전화번호 </td>
-    </tr>
-    <tr>
-      <th scope="row"><input type="checkbox"></th>
-        <td>주문번호</td>
-		 <td>결제및배달진행상황</td>
-		 <td>주문목록</td>
-		 <td>주문수량</td>
-		 <td>총결제액</td>
-		 <td>유저번호</td>
-		 <td>결제일</td>
-		  <td>요구사항</td>
-		 <td>주소</td>
-		 <td>수취인</td>
-		 <td>전화번호 </td>
-    </tr>
-  </tbody>
-</table>
-    
+  </div>
+
+  <!-- 가장 비싼 값을 지불한 유저 순위 -->
+  <div class="card mb-4 col col-md-5 mx-3">
+    <div class="card-header">
+      <h2>고객 매출 순위</h2>
     </div>
+    <div class="card-body">
+      <ul id="top-spenders">
+        <li>1위: 고객1 (50000원)</li>
+        <li>2위: 고객2 (30000원)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+  
+  
+  
+  <!-- 고객 리스트 테이블 -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h2>고객 리스트</h2>
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>고객 ID</th>
+            <th>고객명</th>
+            <th>구매한 상품 수</th>
+            <th>총 지불 금액</th>
+            <th>상담 내역</th>
+          </tr>
+        </thead>
+        <tbody id="customer-list">
+          <!-- 여기에 고객 정보가 동적으로 추가될 예정 -->
+          <tr>
+            <td>1</td>
+            <td>고객1</td>
+            <td>5</td>
+            <td>50000</td>
+            <td>
+              <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewInquiryModal">상담 보기</button>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>고객2</td>
+            <td>3</td>
+            <td>30000</td>
+            <td>
+              <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewInquiryModal">상담 보기</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 고객 문의글 테이블 -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h2>고객 문의글</h2>
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>문의글 ID</th>
+            <th>고객명</th>
+            <th>문의 내용</th>
+            <th>답변 상태</th>
+            <th>관리</th>
+          </tr>
+        </thead>
+        <tbody id="inquiry-list">
+          <!-- 여기에 문의글 정보가 동적으로 추가될 예정 -->
+          <tr>
+            <td>1</td>
+            <td>고객1</td>
+            <td>배송이 언제 되나요?</td>
+            <td>미답변</td>
+            <td>
+              <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#replyInquiryModal">답변하기</button>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>고객2</td>
+            <td>제품 교환 가능할까요?</td>
+            <td>미답변</td>
+            <td>
+              <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#replyInquiryModal">답변하기</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 상담 내용 보기 모달 -->
+<div class="modal fade" id="viewInquiryModal" tabindex="-1" role="dialog" aria-labelledby="viewInquiryModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewInquiryModalLabel">상담 내용</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- 여기에는 상담 내용을 동적으로 추가할 수 있습니다 -->
+        <p>상담 내용이 여기에 표시됩니다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 상담 답변 모달 -->
+<div class="modal fade" id="replyInquiryModal" tabindex="-1" role="dialog" aria-labelledby="replyInquiryModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="replyInquiryModalLabel">상담 답변</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="replyInquiryForm">
+          <div class="form-group">
+            <label for="inquiryReply">답변 내용</label>
+            <textarea class="form-control" id="inquiryReply" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">답변 보내기</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </div>
 
 </body>

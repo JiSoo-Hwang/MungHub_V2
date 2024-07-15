@@ -8,11 +8,13 @@
 		<result column="PRODUCT_NO" property="productNo" />
 		<result column="PRODUCT_NAME" property="productName" />
 		<result column="STATUS" property="status" />
-		<result column="SALES_COUNT" property="salesConunt" />
+		<result column="SALES_COUNT" property="salesCount" />
 		<result column="PRICE" property="price" />
 		<result column="DISCOUNT" property="discount" />
 		<result column="CATEGORY_NO" property="categoryNo" />
+		<result column="CATEGORY_NAME" property="categoryName" />
 		<result column="BRAND_CODE" property="brandCode" />
+		<result column="BRAND_NAME" property="brandName" />
 		<result column="ATTACHMENT" property="attachment" />
 	</resultMap>
 
@@ -222,11 +224,76 @@
 		FROM PRODUCT_CATEGORY
 	</select>
 	<select id="selectBrand"
-		resultType="com.kh.pjtMungHub.shop.model.vo.Brand">
+		resultType="com.kh.pjtMungHub.shop.model.vo.Brand"
+		parameterType="string">
 		SELECT BRAND_CODE brandCode,
-		BRAND_NAME brandeName
+		BRAND_NAME brandName,
+		BRAND_SALES brandSales,
+		BRAND_SALES_COUNT brandSalesCount,
+		FILE_PATH||CHANGE_NAME logo
 		FROM BRAND
+	    LEFT JOIN PRODUCT_ATTACHMENT USING (BRAND_CODE)
+		<choose>
+		<when test="orderBy=='BRAND_CODE'">ORDER BY BRAND_CODE</when>
+		<when test="orderBy=='BRAND_CODEdesc'"> ORDER BY BRAND_CODE DESC</when>
+		<when test="orderBy=='BRAND_NAME'"> ORDER BY BRAND_NAME</when>
+		<when test="orderBy=='BRAND_NAMEdesc'"> ORDER BY BRAND_NAME DESC</when>
+		<when test="orderBy=='BRAND_SALES'"> ORDER BY BRAND_SALES</when>
+		<when test="orderBy=='BRAND_SALESdesc'">ORDER BY BRAND_SALES DESC</when>
+		<when test="orderBy=='BRAND_SALES_COUNT'">ORDER BY BRAND_SALES_COUNT</when>
+		<when test="orderBy=='BRAND_SALES_COUNTdesc'">ORDER BY BRAND_SALES_COUNT DESC</when>
+		<otherwise></otherwise>
+		</choose>
 	</select>
+	
+	<select id="selectBrandOne" parameterType="_int"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Brand">
+		SELECT BRAND_CODE brandCode,
+		BRAND_NAME brandName,
+		BRAND_SALES brandSales,
+		BRAND_SALES_COUNT brandSalesCount,
+		FILE_PATH||CHANGE_NAME logo
+		FROM BRAND
+	    JOIN PRODUCT_ATTACHMENT USING (BRAND_CODE)
+	    WHERE BRAND_CODE=#{brandCode}
+	</select>
+	
+	<update id="updateBrandSalesCount"
+	parameterType="java.util.ArrayList">
+	<foreach collection="list" item="arr"
+	open="DECLARE BEGIN" separator=";" close="; END;">
+	UPDATE BRAND SET
+		BRAND_SALES_COUNT=(
+		SELECT NVL(SUM(SALES_COUNT),0)
+		FROM PRODUCT
+		JOIN BRAND USING(BRAND_CODE)
+		WHERE BRAND_CODE=#{arr.brandCode}
+		)
+		WHERE BRAND_CODE=#{arr.brandCode}
+	</foreach>
+	</update>
+	
+	<update id="updateBrandSales"
+	parameterType="java.util.ArrayList">
+	<foreach collection="list" item="arr"
+	open="DECLARE BEGIN" separator=";" close="; END;">
+	UPDATE BRAND SET
+	BRAND_SALES=(SELECT NVL(SUM(SALES_COUNT*(PRICE-(PRICE/DISCOUNT))),0)
+	FROM PRODUCT
+	WHERE BRAND_CODE=#{arr.brandCode}
+	)
+	WHERE BRAND_CODE=#{arr.brandCode}
+	</foreach>
+	</update>
+		
+	<update id="updateBrand"
+	 parameterType="com.kh.pjtMungHub.shop.model.vo.Brand">
+	 UPDATE BRAND SET
+	 BRAND_NAME=#{brandName}
+	 WHERE BRAND_CODE=#{brandCode}
+	 </update>
+
+
 
 	<select id="selectReviewList" parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo"
 	resultType="com.kh.pjtMungHub.shop.model.vo.Review">
@@ -1048,5 +1115,97 @@ WHERE ORDER_PROCESS=#{category}
 	WHERE USER_NO=#{userNo}
 	AND ORDER_PROCESS=#{process}
 	</select>
+	
+	<select id="selectTopSalesProdcut"
+	parameterType="string"
+	resultMap="productResultSet">
+	SELECT *
+	FROM
+	(SELECT PRODUCT_NO,
+	PRODUCT_NAME,
+	STATUS,
+	SALES_COUNT,
+	PRICE,
+	DISCOUNT,
+	CATEGORY_NO,
+	BRAND_CODE,
+	BRAND_NAME
+	FROM PRODUCT
+	JOIN BRAND USING (BRAND_CODE)
+	ORDER BY <choose>
+	<when test="orderBy=='highest'">SALES_COUNT DESC</when>
+	<when test="orderBy=='lowest'">SALES_COUNT </when>
+	<when test="orderBy=='highestSal'">SALES_COUNT*(PRICE-(PRICE/DISCOUNT)) DESC</when>
+	<when test="orderBy=='lowestSal'">SALES_COUNT*(PRICE-(PRICE/DISCOUNT))</when>
+	</choose>
+	)
+	WHERE ROWNUM BETWEEN 1 AND 5
+	</select>
+	
+	<select id="selectTopSalesBrand"
+	parameterType="string"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Brand">
+	SELECT *
+	FROM(
+	SELECT BRAND_CODE brandCode,
+	BRAND_NAME brandName,
+	BRAND_SALES brandSales,
+	BRAND_SALES_COUNT brandSalesCount,
+    FILE_PATH||CHANGE_NAME logo
+	FROM BRAND
+    LEFT JOIN PRODUCT_ATTACHMENT USING (BRAND_CODE)
+	ORDER BY 
+	
+	<choose>
+	<when test="orderBy=='highest'">BRAND_SALES_COUNT DESC</when>
+	<when test="orderBy=='lowest'">BRAND_SALES_COUNT</when>
+	<when test="orderBy=='highestSal'">BRAND_SALES DESC</when>
+	<when test="orderBy=='lowestSal'">BRAND_SALES</when>
+	</choose>
+	
+	)
+	WHERE ROWNUM BETWEEN 1 AND 5
+	</select>
+	
+	<select id="selectProductCount"
+	resultType="_int">
+	SELECT MAX(ROWNUM)
+	FROM PRODUCT
+	</select>
+	
+	<select id="selectProductControll"
+	parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo"
+	resultMap="productResultSet">
+	SELECT PRODUCT_NO,
+        PRODUCT_NAME,
+        STATUS,
+        SALES_COUNT,
+        PRICE,
+        DISCOUNT,
+        CATEGORY_NO,
+        CATEGORY_NAME,
+        BRAND_CODE,
+        BRAND_NAME
+        FROM PRODUCT
+        JOIN BRAND USING (BRAND_CODE)
+        JOIN PRODUCT_CATEGORY USING(CATEGORY_NO)
+        WHERE STATUS =#{justifying}
+        ORDER BY <choose>
+        <when test="orderBy=='PRODUCT_NO'">PRODUCT_NO</when>
+        <when test="orderBy=='PRODUCT_NAME'">PRODUCT_NAME</when>
+        <when test="orderBy=='BRAND_NAME'">BRAND_NAME</when>
+        <when test="orderBy=='PRICE'">PRICE</when>
+        <when test="orderBy=='SALES_COUNT'">SALES_COUNT</when>
+        <when test="orderBy=='PRODUCT_NOdesc'">PRODUCT_NO DESC</when>
+        <when test="orderBy=='PRODUCT_NAMEdesc'">PRODUCT_NAME DESC</when>
+        <when test="orderBy=='BRAND_NAMEdesc'">BRAND_NAME DESC</when>
+        <when test="orderBy=='PRICEdesc'">PRICE DESC</when>
+        <when test="orderBy=='SALES_COUNTdesc'">SALES_COUNT DESC</when>
+        </choose>
+	</select>
+	<insert id="insertBrand" parameterType="string">
+	INSERT INTO BRAND(BRAND_CODE,BRAND_NAME)
+	VALUES(SEQ_BRAND.NEXTVAL,#{brandName})
+	</insert>
 
 </mapper>

@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
@@ -454,7 +455,7 @@ public class ShopController {
 		ParameterVo parameter=ParameterVo.builder().justifying("product").number(p.getProductNo()).build();
 		
 		ArrayList<Category> c=shopService.selectCategory();
-		ArrayList<Brand> b=shopService.selectBrand();
+		ArrayList<Brand> b=shopService.selectBrand("");
 		ArrayList<Attachment> atList=shopService.selectAttachmentList(parameter);
 		
 		mv.addObject("c",c);
@@ -577,7 +578,7 @@ public class ShopController {
 	public ModelAndView shopInsertForm(ModelAndView mv) {
 		
 		ArrayList<Category> c=shopService.selectCategory();
-		ArrayList<Brand> b=shopService.selectBrand();
+		ArrayList<Brand> b=shopService.selectBrand("");
 		mv.addObject("c",c);
 		mv.addObject("b",b);
 		mv.setViewName("shop/insertProductView");
@@ -675,15 +676,9 @@ public class ShopController {
 		int result = shopService.stopItemPost(parameter);
 		
 		if(result>0) {
-			if(justifying.equals("Y")) {
-				mv.addObject("alertMsg", "상품게시를 시작합니다.");
-			}else {
-				mv.addObject("alertMsg","상품게시를 중단합니다.");
-			}
 			mv.setViewName("redirect:/list.sp");
 			return mv;
 		}else {
-			mv.addObject("alertMsg","요청에 실패했습니다.");
 			mv.setViewName("redirect:/shopListDetail.sp"+productNo);
 			return mv;
 		}
@@ -1102,6 +1097,7 @@ public class ShopController {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@GetMapping("reviewList.sp")
 	@ResponseBody
 	public JSONArray selectReviewList(ParameterVo param) {
@@ -1199,6 +1195,7 @@ public class ShopController {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@GetMapping("questionList.sp")
 	@ResponseBody
 	public JSONObject selectQuestionList(int productNo,int currentPage){
@@ -1365,23 +1362,199 @@ public class ShopController {
 	@GetMapping("adminPage/productControll")
 	public ModelAndView productControll(ModelAndView mv) {
 		
-		
 		mv.setViewName("shop/productController");
 		return mv;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@GetMapping("selectTopSalesProduct.sp")
+	@ResponseBody
+	public JSONObject selectTopSalesProduct(){
+		ArrayList<Product> highList=shopService.selectTopSalesProduct("highest");
+		ArrayList<Product> lowList=shopService.selectTopSalesProduct("lowest");
+		ArrayList<Product> highSalList=shopService.selectTopSalesProduct("highestSal");
+		ArrayList<Product> lowSalList=shopService.selectTopSalesProduct("lowestSal");
+		JSONObject jobj=new JSONObject();
+		
+		jobj.put("pList", highList);
+		jobj.put("lowList", lowList);
+		jobj.put("highSal", highSalList);
+		jobj.put("lowSal", lowSalList);
+		
+		return jobj;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@GetMapping("selectTopSalesBrand.sp")
+	@ResponseBody
+	public JSONObject selectTopSalesBrand(){
+		
+		ArrayList<Brand> highList=shopService.selectTopSalesBrand("highest");
+		ArrayList<Brand> lowList=shopService.selectTopSalesBrand("lowest");
+		ArrayList<Brand> highSalList=shopService.selectTopSalesBrand("highestSal");
+		ArrayList<Brand> lowSalList=shopService.selectTopSalesBrand("lowestSal");
+		JSONObject jobj=new JSONObject();
+		
+		jobj.put("pList", highList);
+		jobj.put("lowList", lowList);
+		jobj.put("highSal", highSalList);
+		jobj.put("lowSal", lowSalList);
+		
+		
+		return jobj;
+	}
+	
+	@GetMapping("brandList.sp")
+	@ResponseBody
+	public ArrayList<Brand> selectBrandList(String orderBy){
+		
+		ArrayList<Brand> bList=shopService.selectBrand(orderBy);
+		return bList;
+	}
+	
+	@PostMapping("insertBrand.sp")
+	@ResponseBody
+	public int insertBrand(@RequestPart(value="upfile")MultipartFile upfile,
+			@RequestPart(value="brandName") Brand brandName,
+			HttpSession session) {
+		
+		String changeName=saveFile(upfile, session, "brandLogo", "image");
+		
+		ArrayList<Attachment> atList=new ArrayList<>();
+		Attachment at=new Attachment();
+		at=Attachment.builder().
+				fileLev(0).
+				originName(upfile.getOriginalFilename()).
+				changeName(changeName).
+				fileJustify("brand").
+				filePath("/pjtMungHub/resources/uploadFiles/shopFile/brandLogo/image/").
+				type("image").
+				build();
+		
+		atList.add(at);
+		
+		
+		ParameterVo fileParameter=ParameterVo.builder()
+				.atList(atList)
+				.justifying("brand")
+				.build();
+		int result=shopService.insertBrand(brandName.getBrandName(),fileParameter);
+		
+		return result;
+	}
+	
+	@PostMapping("updateBrand.sp")
+	@ResponseBody
+	public int updateBrand(@RequestPart(value="upfile",required=false)MultipartFile upfile,
+			@RequestPart(value="brand") Brand brand,
+			HttpSession session) {
+		
+		Attachment at=new Attachment();
+		ArrayList<Attachment> atList=new ArrayList<>();
+		if(upfile!=null) {
+			
+			ParameterVo parameter= ParameterVo.builder().
+					justifying("brand").
+					fileLev(0).
+					number(brand.getBrandCode())
+					.build();
+			
+			at=shopService.selectAttachment(parameter);
+			
+			String deleteFile= "resources/uploadFiles/shopFile/brandLogo/"+at.getType()+"/"+at.getChangeName();
+			File f= new File(session.getServletContext().getRealPath(deleteFile));
+			f.delete();
+			
+			
+			String changeName=saveFile(upfile, session, "brandLogo", "image");
+			
+			at=Attachment.builder().
+					fileLev(0).
+					originName(upfile.getOriginalFilename()).
+					changeName(changeName).
+					fileJustify("brand").
+					filePath("/pjtMungHub/resources/uploadFiles/shopFile/brandLogo/image/").
+					type("image").
+					build();
+			
+			atList.add(at);
+		}
+		
+		
+		
+		ParameterVo fileParameter=ParameterVo.builder()
+				.atList(atList)
+				.justifying("brand")
+				.number(brand.getBrandCode())
+				.build();
+		int result=shopService.updateBrand(brand,fileParameter);
+		
+		return result;
+	}
+	
+	
+	
+	@GetMapping("selectBrandOne.sp")
+	@ResponseBody
+	public Brand selectBrandOne(int brandCode) {
+		Brand b=shopService.selectBrandOne(brandCode);
+		
+		return b;
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	@GetMapping("productList.sp")
+	@ResponseBody
+	public JSONObject selectProductListControll(String orderBy,String justifying,int currentPage){
+		
+		
+		int listCount=shopService.selectProductCount();
+		int pageLimit=10;
+		int boardLimit= 20;
+		
+		ParameterVo parameter=new ParameterVo();
+		
+		parameter.setJustifying(justifying);
+		parameter.setOrderBy(orderBy);
+		
+		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
+
+		ArrayList<Product> pList=shopService.selectProductListControll(parameter,pi);
+		
+		JSONObject jobj=new JSONObject();
+		
+		jobj.put("pList", pList);
+		jobj.put("pi", pi);
+		
+		return jobj;
+	}
+	
+	@PostMapping("convertProductPost.sp")
+	@ResponseBody
+	public int convertProductPost(int productNo,String justifying) {
+		
+		ParameterVo parameter = ParameterVo.builder()
+				.justifying(justifying)
+				.productNo(productNo)
+				.build();
+		
+		
+		
+		int result=shopService.stopItemPost(parameter);
+		
+		return result;
+	}
+	
+	
+	
 	
 	@GetMapping("adminPage/customerControll")
 	public ModelAndView customerControll(ModelAndView mv) {
 		
 		
 		mv.setViewName("shop/customerController");
-		return mv;
-	}
-	
-	@GetMapping("adminPage/report")
-	public ModelAndView report(ModelAndView mv) {
-		
-		mv.setViewName("shop/report");
 		return mv;
 	}
 	
@@ -1401,7 +1574,6 @@ public class ShopController {
 		try {
 			upfile.transferTo(new File(savePath+changeName));
 		} catch (IllegalStateException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return changeName;

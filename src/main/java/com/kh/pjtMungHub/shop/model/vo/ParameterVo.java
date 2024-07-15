@@ -33,4 +33,7 @@ public class ParameterVo {
 	private ArrayList<Integer> checkedItem;
 	
 	private PageInfo pi;
+	
+	private String orderBy;
+	private String desc;
 }
