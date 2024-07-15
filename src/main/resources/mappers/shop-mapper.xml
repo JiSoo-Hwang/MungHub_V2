@@ -740,7 +740,8 @@
 		DISCOUNT discount,
 		BRAND_NAME brandName,
 		CATEGORY_NAME categoryName,
-		FILE_PATH || CHANGE_NAME img
+		FILE_PATH || CHANGE_NAME img,
+		TYPE imgType
 		FROM
 		SHOPPING_CART
 		LEFT JOIN PRODUCT P
@@ -819,7 +820,7 @@
 	
 	<update id="updateSalesCount"
 	parameterType="Product">
-	<foreach collection="list" item="arr">
+	<foreach collection="list" item="arr" open="DECLARE BEGIN" separator=";" close="; END;">
 	UPDATE PRODUCT SET
 	SALES_COUNT = SALES_COUNT+#{arr.quantity}
 	WHERE PRODUCT_NO = #{arr.productNo}
@@ -999,5 +1000,43 @@
 	FROM SHOP_POINT
 	WHERE USER_NO=${userNo}
 	</select>
+
+	<select id="selectOrderListControl" parameterType="string"
+	resultType="com.kh.pjtMungHub.shop.model.vo.POrderInfo">
+	SELECT MERCHANT_UID merchantUid,
+	ORDER_PROCESS process,
+	SHOPPING_LIST items,
+	ITMES_QUANTITY itemsQuantity,
+	TOTAL_PRICE totalPrice,
+	USER_NO userNo,
+	PAY_DATE payDate,
+	UP_DATE updateDay,
+	MESSAGE messageString,
+	ADDRESS address,
+	RECIPIENT recipient,
+	PHONE phone
+	FROM PRODUCT_ORDER
+	<if test="category!='전체'">
+	WHERE ORDER_PROCESS=#{category}
+	</if>
+	ORDER BY UP_DATE DESC
+	</select>
+	<select id="selectOrderCount" parameterType="string"
+	resultType="_int">
+	SELECT MAX(ROWNUM)
+FROM PRODUCT_ORDER
+<if test="category!='전체'">
+WHERE ORDER_PROCESS=#{category}
+</if>
+	</select>
+	
+	<update id="convertOrderProcess" 
+	parameterType="com.kh.pjtMungHub.shop.model.vo.POrderInfo">
+	UPDATE PRODUCT_ORDER SET
+	ORDER_PROCESS=#{process},
+	UP_DATE=SYSDATE
+	WHERE MERCHANT_UID=#{merchantUid}
+	
+	</update>
 
 </mapper>

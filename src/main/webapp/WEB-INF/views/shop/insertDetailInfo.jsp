@@ -49,7 +49,7 @@
         <input type="hidden" name="productNo" value="${productNo }">
         
         <div class="form-group">
-            <label for="country-of-manufacture">제조국/원산지</label>
+            <label for="originContry">제조국/원산지</label>
             <input type="text" id="originContry" name="originContry" required>
         </div>
         <div class="form-group">

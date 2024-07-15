@@ -356,6 +356,28 @@ public class ShopDao {
 		return sqlSession.update("shopMapper.updateDetailInfo",pd);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<POrderInfo> selectOrderListControll(SqlSessionTemplate sqlSession, String category, PageInfo pi) {
+		
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage()-1)*limit;
+		
+		RowBounds rowBounds = new RowBounds(offset,limit);
+		
+		
+		return (ArrayList)sqlSession.selectList("shopMapper.selectOrderListControl",category,rowBounds);
+	}
+
+	public Integer selectOrderCount(String category, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectOrderCount",category);
+	}
+
+	public int convertOrderProcess(SqlSessionTemplate sqlSession, POrderInfo p) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.convertOrderProcess",p);
+	}
+
 
 
 

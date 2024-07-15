@@ -902,14 +902,6 @@ color: purple;
 					</tr>
 					<tr>
 						<td class="detail-tag">
-							<p>인증사항</p>
-						</td>
-						<td class="detail-content">
-							<p><a href="" download></a></p>
-						</td>
-					</tr>
-					<tr>
-						<td class="detail-tag">
 							<p>제조국 또는 원산지</p>
 						</td>
 						<td class="detail-content">
@@ -976,17 +968,17 @@ color: purple;
 
 			</table>
 			
-			<div class="row py-5" align="center">
+			<div class="row py-5 justify-content-center" align="center">
 			<c:forEach items="${dAtList }" var="dAt">
 			      		<c:choose>
 					    		<c:when test="${dAt.type eq 'video' }">
-					    		<div class="col-sm-12">
-					    	<video src="${dAt.filePath }${dAt.changeName}" class="img-fluid" controls></video>
+					    		<div class="col-sm-10">
+					    	<video src="${dAt.filePath }${dAt.changeName}" class="img-fluid" style="width:100%" controls></video>
 					    		</div>
 					    		</c:when>
 					    		<c:otherwise>
-					    		<div class="col-sm-12">
-					      <img src="${dAt.filePath }${dAt.changeName}" class="img-fluid" >
+					    		<div class="col-sm-10">
+					      <img src="${dAt.filePath }${dAt.changeName}" class="img-fluid" style="width:100%" >
 					     			 </div>
 					    		</c:otherwise>
 					    	</c:choose>
