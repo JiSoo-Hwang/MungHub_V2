@@ -293,7 +293,7 @@ color: purple;
 					</div>
 					<div class="d-flex justify-content-end">
 						<input class="form-control text-center me-3" id="inputQuantity"
-							type="number" min="1" value="1" style="max-width: 3rem">
+							type="number" min="1" max="99" value="1" style="max-width: 4rem" onkeyup="minusChk()">
 						&nbsp;&nbsp;
 						<button class="btn btn-outline-dark flex-shrink-0" id="addCart" type="button">
 							<i class="bi bi-bag-plus-fill"></i>&nbsp; 장바구니 추가
@@ -324,7 +324,17 @@ color: purple;
 	</div>
 	
 	<script>
-	
+	function minusChk(){
+		var value=$("#inputQuantity").val();
+		if(value<1){
+			$("#inputQuantity").val("1");
+		}
+		
+		if(value>99){
+			$("#inputQuantity").val("99");
+		}
+		
+	}
 	
 	function selectFavor(){
 		
@@ -771,7 +781,24 @@ color: purple;
 						}
 					});
 				}
-				
+				function likeModal(num){
+					$.ajax({
+						url : "/pjtMungHub/reviewLike.sp",
+						type : "post",
+						data : {userNo : ${loginUser.userNo},
+								reviewNo : num},
+						success : function(result){
+							console.log(result);
+							$("#likeCountT"+num).text(result);
+							$("#likeCount"+num).text(result);
+							$("#likeCountB"+num).text(result);
+							$("#likeCountTmodal"+num).text(result);
+							
+							},error : function(){
+							console.log("통신오류");
+						}
+					});
+				}
 				
 				</script>
 			</c:if>
@@ -843,12 +870,27 @@ color: purple;
 		</div>
 	</section>
 
+			
 	<section class="py-5">
 		<div class="container" id="detail-section01">
 			<h4>상품 설명</h4>
-
-			<table class="mt-5" align="center">
-
+							<c:if test="${not empty loginUser and loginUser.userGrade>0 }">
+								<c:choose>
+								<c:when test="${not empty pDetail}">
+								<div align="center">
+									<a href="/pjtMungHub/updateDetailInfo/${p.productNo }" class="btn btn-warning">상품 상세정보 수정</a>
+								</div>
+								</c:when>
+								<c:otherwise>
+								<div align="center">
+									<a href="/pjtMungHub/insertDetailInfo/${p.productNo }" class="btn btn-primary">상품 상세정보 작성</a>
+								</div>
+								</c:otherwise>
+								</c:choose>
+								</c:if>
+		<c:if test="${not empty pDetail}">
+			<table class="mt-5 py-5" align="center" style="border: 1px solid lightgray">
+			
 				<tbody>
 					<tr>
 						<td class="detail-tag">
@@ -860,18 +902,10 @@ color: purple;
 					</tr>
 					<tr>
 						<td class="detail-tag">
-							<p>인증사항</p>
-						</td>
-						<td class="detail-content">
-							<p>해당없음</p>
-						</td>
-					</tr>
-					<tr>
-						<td class="detail-tag">
 							<p>제조국 또는 원산지</p>
 						</td>
 						<td class="detail-content">
-							<p>조선인민민주주의공화국</p>
+							<p>${pDetail.originContry }</p>
 						</td>
 					</tr>
 					<tr>
@@ -879,7 +913,7 @@ color: purple;
 							<p>제조자/수입자</p>
 						</td>
 						<td class="detail-content">
-							<p>멍허브</p>
+							<p>${pDetail.manufacturer }</p>
 						</td>
 					</tr>
 					<tr>
@@ -887,7 +921,7 @@ color: purple;
 							<p>소비자 상담관련 전화번호</p>
 						</td>
 						<td class="detail-content">
-							<p>010-6689-5059</p>
+							<p>${pDetail.phone }</p>
 						</td>
 					</tr>
 					<tr>
@@ -895,7 +929,7 @@ color: purple;
 							<p>유통기한</p>
 						</td>
 						<td class="detail-content">
-							<p>별도표기</p>
+							<p>${pDetail.expireDate }</p>
 						</td>
 					</tr>
 					<tr>
@@ -903,7 +937,7 @@ color: purple;
 							<p>권장연령</p>
 						</td>
 						<td class="detail-content">
-							<p>어덜트</p>
+							<p>${pDetail.recommendedAge }</p>
 						</td>
 					</tr>
 					<tr>
@@ -911,7 +945,7 @@ color: purple;
 							<p>중량</p>
 						</td>
 						<td class="detail-content">
-							<p>9.95kg</p>
+							<p>${pDetail.weight }</p>
 						</td>
 					</tr>
 					<tr>
@@ -919,7 +953,7 @@ color: purple;
 							<p>원료구성</p>
 						</td>
 						<td class="detail-content">
-							<p>대충 닭이랑 생선이랑 기타 영양성분</p>
+							<p>${pDetail.ingredient }</p>
 						</td>
 					</tr>
 					<tr>
@@ -927,12 +961,36 @@ color: purple;
 							<p>성분구성</p>
 						</td>
 						<td class="detail-content">
-							<p>조단백 100% 조지방 100% 칼슘 1%</p>
+							<p>${pDetail.component }</p>
 						</td>
 					</tr>
 				</tbody>
 
 			</table>
+			
+			<div class="row py-5 justify-content-center" align="center">
+			<c:forEach items="${dAtList }" var="dAt">
+			      		<c:choose>
+					    		<c:when test="${dAt.type eq 'video' }">
+					    		<div class="col-sm-10">
+					    	<video src="${dAt.filePath }${dAt.changeName}" class="img-fluid" style="width:100%" controls></video>
+					    		</div>
+					    		</c:when>
+					    		<c:otherwise>
+					    		<div class="col-sm-10">
+					      <img src="${dAt.filePath }${dAt.changeName}" class="img-fluid" style="width:100%" >
+					     			 </div>
+					    		</c:otherwise>
+					    	</c:choose>
+					</c:forEach>
+			</div>
+		</c:if>
+		
+		<c:if test="${empty pDetail}">
+		<div align="center" class='py-5'>
+		<h1>작성대기중</h1>
+		</div>
+		</c:if>
 
 		</div>
 	</section>
@@ -954,9 +1012,12 @@ color: purple;
 	<div class="container" id="detail-section02">
 		<h2>구매후기</h2>
 		<div align="right" id="reviewBtnDiv">
-		<button type="button" class="btn btn-primary" 
+		<button type="button" class="btn btn-primary position-relative" 
 		<c:if test="${not empty loginUser }"> data-bs-toggle="modal" data-bs-target="#reviewModal"</c:if>
-		id="reviewButton">리뷰작성</button>
+		id="reviewButton"> 
+	<span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
+    <span class="visually-hidden">New alerts</span> <small>작성 시 150P 적립!</small>
+  </span>리뷰작성</button>
 		</div>
 		
 		<c:if test="${empty loginUser }">
@@ -1351,7 +1412,7 @@ color: purple;
 					+"<div class='col-sm-1' id='likeCountTmodal"+result[i].reviewNo+"' align='center'>"
 					+result[i].likeCount
 					+"</div>"
-					+"<button class='btn btn-primary col-sm-1' style='max-height:40px' onclick='like("+result[i].reviewNo+")'><i class='bi bi-hand-thumbs-up'></i></button>"
+					+"<button class='btn btn-primary col-sm-1' style='max-height:40px' onclick='likeModal("+result[i].reviewNo+")'><i class='bi bi-hand-thumbs-up'></i></button>"
 					+"</div>"
 					+"<div class='row align-items-center justify-content-center py-2'>"
 					+"<hr>"
@@ -1481,7 +1542,11 @@ color: purple;
 						},
 				success : function(result){
 					selectQuestionList(1);
-					alert("문의가 완료되었습니다. 최대한 빨리 답변할 수 있도록 노력하겠습니다.");
+					
+					
+
+					alertify
+					  .alert("문의글 작성완료","문의가 완료되었습니다. 최대한 빨리 답변할 수 있도록 노력하겠습니다.");
 					$('#insertQuestionModal').modal('hide');
 				},error : function(){
 					console.log("통신오류");

@@ -114,7 +114,7 @@ public class WeddingServiceImpl implements WeddingService{
 	public int cancelWedding(int weddingNo, int userNo) {
 		//해당 신청 상태를 'R'로 변경하는 로직
 		dao.cancelWedding(sqlSession,weddingNo);
-		return memberService.restrictUser(userNo, 3);
+		return memberService.restrictUser(userNo, 14);
 	}
 
 	@Override

@@ -37,27 +37,65 @@ position : relative;
 <%@ include file="../common/header.jsp" %>
 
 <div class="container">
-<div class="jumbotron">
-<h1>애견용품</h1>
-</div>
-<c:if test="${not empty loginUser }">
 
 
-
+<div align="right" class="py-5">
 <a class="btn btn-outline-dark position-relative me-2" href="cart.sp"><i class="bi bi-cart3">
 </i> 장바구니 
 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
 id="cart-count"></span></a>
+<a href="/pjtMungHub/orderList/${loginUser.userNo }" class="btn btn-secondary">주문 내역 보기</a>
+</div>
 
-<c:if test="${not empty loginUser }">
+<div class="jumbotron">
+<div id="carouselExampleIndicators" class="carousel slide">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="5" aria-label="Slide 6"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="..." class="d-block w-100 img-fluid" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100 img-fluid" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100 img-fluid" alt="...">
+    </div>
+     <div class="carousel-item active">
+      <img src="..." class="d-block w-100 img-fluid" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100 img-fluid" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100 img-fluid" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+</div>
+
 <script>
 $(function(){
 	
 	$.ajax({
 		url : "/pjtMungHub/cartCount.sp",
-		data : {userNo : ${loginUser.userNo}},
+		data : {userNo : "${loginUser.userNo}"},
 		success : function(result){
-			if(result!=null){
+			if(result!=0){
 				
 			$("#cart-count").text(result)
 			}
@@ -68,15 +106,14 @@ $(function(){
 	});
 });
 </script>
-</c:if>
 
 
-<a href="/pjtMungHub/orderList/${loginUser.userNo }" class="btn btn-secondary">주문 내역 보기</a>
+
 
 
 <c:if test="${loginUser.userGrade > 0 }">
-<div id="adminMenu" align="right">
-<a class="btn btn-info" href="/pjtMungHub/adminPage.sp">관리자 페이지</a>
+<div id="adminMenu" align="center">
+<a class="btn btn-info" href="/pjtMungHub/adminPage/dashBoard">관리자 페이지</a>
 <a class="btn btn-primary" href="/pjtMungHub/insert.sp">상품등록</a>
 <c:choose>
 <c:when test="${empty notPostList}">
@@ -87,7 +124,6 @@ $(function(){
 </c:otherwise>
 </c:choose>
 </div>
-</c:if>
 </c:if>
 <div class="row align-items-center">
 <c:forEach items="${pList }" var="p" varStatus="status">

@@ -56,8 +56,10 @@
                         </td>
                         <c:if test="${not empty atList }">
                         <c:forEach items="${atList }" var="at">
-                       <td>현재 업로드된 파일 : 
-                        <a href="${at.filePath }${changeName}" download="${at.originName }">${at.originName }</a></td> 
+                        <tr>
+                       <td>현재 업로드된 파일 : </td>
+                        <td><a href="${at.filePath }${at.changeName}" download="${at.originName }">${at.originName }</a></td>
+                        </tr> 
                         </c:forEach>
                         </c:if>
                     </tr>

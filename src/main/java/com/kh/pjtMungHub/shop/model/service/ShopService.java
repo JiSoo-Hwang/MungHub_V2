@@ -13,7 +13,9 @@ import com.kh.pjtMungHub.shop.model.vo.Category;
 import com.kh.pjtMungHub.shop.model.vo.Favorite;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
+import com.kh.pjtMungHub.shop.model.vo.Point;
 import com.kh.pjtMungHub.shop.model.vo.Product;
+import com.kh.pjtMungHub.shop.model.vo.ProductDetail;
 import com.kh.pjtMungHub.shop.model.vo.Question;
 import com.kh.pjtMungHub.shop.model.vo.Review;
 import com.kh.pjtMungHub.shop.model.vo.ReviewReply;
@@ -166,6 +168,30 @@ public interface ShopService {
 
 
 	int updateReview(Review review, ParameterVo fileParameter);
+
+
+	int updatePoint(Point point);
+
+
+	Point selectPoint(int userNo);
+
+
+	ProductDetail selectProdcutInfo(int productNo);
+
+
+	int insertDetailInfo(ProductDetail pd, ParameterVo fileParameter);
+
+
+	int updateDetailInfo(ProductDetail pd, ParameterVo fileParameter);
+
+
+	ArrayList<POrderInfo> selectOrderListControll(String string, PageInfo pi);
+
+
+	int selectOrderCount(String category);
+
+
+	int convertOrderProcess(POrderInfo p);
 
 
 
