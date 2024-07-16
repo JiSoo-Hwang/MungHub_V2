@@ -162,4 +162,7 @@
 	<update id="deleteChat" parameterType="Chat">
 		UPDATE CHAT SET STATUS='N' WHERE MASTER_NO=#{masterNo} AND SITTER_NO=#{sitterNo}
 	</update>
+	<insert id="createChat" parameterType="Chat">
+		INSERT INTO CHAT VALUES(SEQ_CHAT.NEXTVAL,#{sitterNo},#{masterNo},'',SYSDATE,'MASTER','Y')
+	</insert>
 </mapper>

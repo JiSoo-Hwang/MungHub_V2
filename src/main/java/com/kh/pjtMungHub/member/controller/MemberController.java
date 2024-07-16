@@ -252,6 +252,7 @@ public class MemberController {
 		int result1;
 		int result2;
 		String alertMsg;
+		String url="redirect:/myPage.me";
 		if(!upFile.getOriginalFilename().equals("")) {
 			PetPhoto petPhoto = new PetPhoto();
 			int pNum=service.getPhotoNo();
@@ -275,11 +276,17 @@ public class MemberController {
 			alertMsg="반려견 등록을 완료하였습니다!";
 			m.setPetYN("Y");
 			service.updateMember(m);
+			Member loginUser=(Member)session.getAttribute("loginUser");
+			if(loginUser.getStatus().equals("N")) {
+				session.removeAttribute("loginUser");
+				alertMsg+=" 관리자 승인 후 정상적으로 이용 가능합니다.";
+				url="redirect:/";
+			}
 		}else{
 			alertMsg="반려견 등록을 실패하셨습니다.";
 		}
 		session.setAttribute("alertMsg", alertMsg);
-		return "redirect:/myPage.me";
+		return url;
 	}
 	
 	@PostMapping("updatePetStat.me")
@@ -488,7 +495,7 @@ public class MemberController {
 		session.setAttribute("setState", setState);
 		String clientId="db01c7b6cca2d27d7a975ae0bd9aecdb";
 		String url="https://kauth.kakao.com/oauth/authorize";
-		String uri=URLEncoder.encode("http://localhost:8887/pjtMungHub/kakaoCheck.me","UTF-8");
+		String uri=URLEncoder.encode("http://localhost:8888/pjtMungHub/kakaoCheck.me","UTF-8");
 		url+="?client_id="+clientId;
 		url+="&response_type=code&redirect_uri="+uri;
 		url+="&state="+setState;
@@ -505,7 +512,7 @@ public class MemberController {
 		    MultiValueMap<String, String> parameter = new LinkedMultiValueMap<>();
 		    parameter.add("grant_type", "authorization_code");
 		    parameter.add("client_id", clientId);
-		    parameter.add("redirect_uri", "http://localhost:8887/pjtMungHub/kakaoCheck.me");
+		    parameter.add("redirect_uri", "http://localhost:8888/pjtMungHub/kakaoCheck.me");
 		    parameter.add("code", code);
 
 		    // request header 설정
@@ -607,7 +614,7 @@ public class MemberController {
 		session.setAttribute("setState", setState);
 		String clientId="fx5vZaNv0sDLANZnS_vt";
 		String url="https://nid.naver.com/oauth2.0/authorize";
-		String uri=URLEncoder.encode("http://localhost:8887/pjtMungHub/naverCheck.me","UTF-8");
+		String uri=URLEncoder.encode("http://localhost:8888/pjtMungHub/naverCheck.me","UTF-8");
 		url+="?client_id="+clientId;
 		url+="&response_type=code&redirect_uri="+uri;
 		url+="&state="+setState+"&auth_type=reauthenticate";
@@ -735,6 +742,28 @@ public class MemberController {
 	@GetMapping("/read.chat")
 	public int chatRead(HttpSession session, MessageVO msg) {
 		return service.chatRead(msg);
+	}
+	
+	@ResponseBody
+	@GetMapping("/loadNewChat.chat")
+	public MessageVO loadNewChat(MessageVO msg, HttpSession session) {
+		int result;
+		MessageVO newMsg=service.getNewChat(msg);
+		PetSitter petSitter= new PetSitter();
+		PetSitter pst=new PetSitter();
+		pst.setPetSitterNo(msg.getSitterNo());
+		petSitter=service.searchSitterStatus(pst);
+		session.setAttribute("sitterUser", petSitter);
+		ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+		if(newMsg==null) {
+			result=service.createChat(msg);
+			if(result>0) {
+				newMsg=service.getNewChat(msg);
+			}
+		}
+		chatList.add(newMsg);
+		session.setAttribute("chatList", chatList);
+		return newMsg;
 	}
 	public String generateState()
 	{

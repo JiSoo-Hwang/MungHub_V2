@@ -296,6 +296,7 @@
 		                        + "<input type='hidden' name='originName' value='" + list[i].originName + "'>"
 		                        + "<input type='hidden' name='filePath' value='" + list[i].filePath + "'>"
 		                        + "<button type='submit' class='btn-reserve' id='resBtn'>펫시터 선택</button>"
+		                        + "<button type='submit' class='btn-reserve' id='chatBtn' onclick='return false;' style='margin-left:80px;'>펫시터와 대화 나누기</button>"
 		                        + "</div>"
 		                        + "<img src='/pjtMungHub/" + list[i].filePath + list[i].originName + "' class='sitter-photo'>"
 		                        + "</form>";
@@ -394,6 +395,26 @@
 				$(".str-btn").removeClass("selected");
 				$(".petType-btn").removeClass("selected");
 			});
+			$("#sitterListContainer").on("click","#chatBtn",function(){
+				var sitterNo=$(this).siblings().eq(4).val();
+				console.log(sitterNo);
+				var masterNo=${loginUser.userNo};
+				$.ajax({
+					url:"loadNewChat.chat",
+					data:{
+						sitterNo:sitterNo,
+						masterNo:masterNo
+					},
+					success:function(msg){
+						var code='';
+						code=sitterNo+'n'+masterNo;
+						var chatRoom=window.open('http://localhost:8888/pjtMungHub/chat/code'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=850');
+					},
+					error:function(){
+						console.log("채팅방 열기 실패");
+					}
+				})
+			})
 	</script>
 </body>
 </html>

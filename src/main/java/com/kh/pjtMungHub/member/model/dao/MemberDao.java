@@ -209,4 +209,8 @@ public class MemberDao {
 	public int deleteChat(SqlSessionTemplate sqlSession, MessageVO msg) {
 		return sqlSession.update("memberMapper.deleteChat", msg);
 	}
+
+	public int createChat(SqlSessionTemplate sqlSession, MessageVO msg) {
+		return sqlSession.insert("memberMapper.createChat",msg);
+	}
 }
