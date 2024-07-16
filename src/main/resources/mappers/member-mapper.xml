@@ -113,14 +113,14 @@
 
 	<select id="isUserRestricted" parameterType="int" resultType="boolean">
 		SELECT CASE 
-    		WHEN RESTRICTED_UNTIL > CURRENT_TIMESTAMP THEN 1
+    		WHEN RESTRICTED_UNTIL > LOCALTIMESTAMP THEN 1
     		ELSE 0
 		END AS DAYS
 		FROM MEMBER
 		WHERE USER_NO = #{userNo}
 	</select>
 	<update id="restrictUser" parameterType="hashmap">
-		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL '${days}' MINUTE
+		UPDATE MEMBER SET RESTRICTED_UNTIL = SYSTIMESTAMP + INTERVAL '${days}' DAY
 		WHERE USER_NO = #{userNo}
 	</update>
 	<select id="searchSitterStatus" parameterType="PetSitter" resultType="PetSitter">
