@@ -28,8 +28,8 @@
 								<td class="kindName">${w.userName }</td>
 								<td>${w.petName}</td>
 								<td>${w.breed}</td>
-								<td>${w.meetingMethod }</td>
-								<td style="color: blue;">승인
+								<td>(해당없음)</td>
+								<td style="color: blue;">관리자승인
 								<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 								</td>
 							</tr>
@@ -39,8 +39,8 @@
 								<td class="userName">${w.userName }</td>
 								<td>${w.petName}</td>
 								<td>${w.breed}</td>
-								<td>${w.meetingMethod }</td>
-								<td>대기중
+								<td>(해당없음)</td>
+								<td>관리자 승인 대기중
 									<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 								</td>
 							</tr>
@@ -63,7 +63,7 @@
 								<td>${w.petName}</td>
 								<td>${w.breed}</td>
 								<td>${w.meetingMethod }</td>
-								<td style="color: blue;">만남수락
+								<td style="color: blue;">매칭수락
 									<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 								</td>
 							</tr>
@@ -75,7 +75,7 @@
 								<td>${w.petName}</td>
 								<td>${w.breed}</td>
 								<td>${w.meetingMethod }</td>
-								<td>신청거절
+								<td>매칭거절
 								<a class="btn btn-primary" href="detail.wd?weddingNo=${w.weddingNo}">상세보기</a>
 								</td>
 							</tr>
