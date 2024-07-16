@@ -237,7 +237,64 @@
 	</c:when>
 </c:choose>
 <br clear="all">
-    <nav id="header">
+
+ <nav class="navbar navbar-expand-lg navbar-light my-2 mx-2" style="background-color: #E8A9A9;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/pjtMungHub/"><img src="/pjtMungHub/resources/uploadFiles/common/css/logo.png" class="img-fluid" style="max-height:70px;"></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="map.do">Kindergarten</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#news" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                 petCare
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  	<c:choose>
+	                <c:when test="${loginUser.userGrade == 2 }">
+					<li><a class="dropdown-item" href="regList2.do?userNo=${loginUser.userNo}">상담예약내역</a></li>
+	                </c:when>
+	                <c:otherwise>
+					<li><a class="dropdown-item" href="regList.do?userNo=${loginUser.userNo}">상담예약내역</a></li>
+	                </c:otherwise>
+             	   </c:choose>
+                  <li><a class="dropdown-item" href="sitter.re">단기돌봄예약</a></li>
+                  <li><a class="dropdown-item" href="hospital.ho">동물병원정보</a></li>
+                  <li><a class="dropdown-item" href="houseList.re">장기돌봄예약</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="wedList.wd">Wedding</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="/pjtMungHub/list.bo">Board</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page"  href="/pjtMungHub/list.sp">Shop</a>
+              </li>
+            </ul>
+            		<c:choose>
+						<c:when test="${empty sitterUser&&empty loginUser}">
+						<a class="btn btn-success"  href="/pjtMungHub/enter.me"
+                          style="color: white; margin-right: 0px;">Login</a>
+						</c:when>
+						<c:otherwise>
+							<a class="btn btn-success" href="/pjtMungHub/logout.me"
+							style="color: white;">Logout</a>
+						</c:otherwise>
+					</c:choose>
+	          </div>
+	        </div>
+	      </nav>
+
+
+
+
+   <%--  <nav id="header">
         <nav id="header_1">
             <ul>
                 <li class="menu"><a href="map.do">Kindergarten</a></li>
@@ -285,7 +342,7 @@
             	$("#header_2").hide();
 			});
         });
-    </script>
+    </script> --%>
     
     <!-- 알림창 -->
     <c:if test="${not empty alertMsg}">

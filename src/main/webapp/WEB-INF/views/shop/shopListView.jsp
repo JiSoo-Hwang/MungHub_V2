@@ -37,7 +37,20 @@ position : relative;
 <%@ include file="../common/header.jsp" %>
 
 <div class="container">
-
+<c:if test="${loginUser.userGrade > 0 }">
+<div id="adminMenu" align="center">
+<a class="btn btn-info" href="/pjtMungHub/adminPage/dashBoard">관리자 페이지</a>
+<a class="btn btn-primary" href="/pjtMungHub/insert.sp">상품등록</a>
+<c:choose>
+<c:when test="${empty notPostList}">
+<a class="btn btn-warning" href="/pjtMungHub/notPosted.sp">상품게시중단목록</a>
+</c:when>
+<c:otherwise>
+<a class="btn btn-secondary" href="/pjtMungHub/list.sp">상품게시목록</a>
+</c:otherwise>
+</c:choose>
+</div>
+</c:if>
 
 <div align="right" class="py-5">
 <a class="btn btn-outline-dark position-relative me-2" href="cart.sp"><i class="bi bi-cart3">
@@ -47,6 +60,7 @@ id="cart-count"></span></a>
 <a href="/pjtMungHub/orderList/${loginUser.userNo }" class="btn btn-secondary">주문 내역 보기</a>
 </div>
 
+<c:if test="${!empty mainSlide }"> 
 <div class="jumbotron">
 <div id="carouselExampleIndicators" class="carousel slide">
   <div class="carousel-indicators">
@@ -71,7 +85,7 @@ id="cart-count"></span></a>
   </button>
 </div>
 </div>
-
+</c:if>
 <script>
 $(function(){
 	console.log("${mainSlide}");
@@ -92,23 +106,6 @@ $(function(){
 </script>
 
 
-
-
-
-<c:if test="${loginUser.userGrade > 0 }">
-<div id="adminMenu" align="center">
-<a class="btn btn-info" href="/pjtMungHub/adminPage/dashBoard">관리자 페이지</a>
-<a class="btn btn-primary" href="/pjtMungHub/insert.sp">상품등록</a>
-<c:choose>
-<c:when test="${empty notPostList}">
-<a class="btn btn-warning" href="/pjtMungHub/notPosted.sp">상품게시중단목록</a>
-</c:when>
-<c:otherwise>
-<a class="btn btn-secondary" href="/pjtMungHub/list.sp">상품게시목록</a>
-</c:otherwise>
-</c:choose>
-</div>
-</c:if>
 <div class="row align-items-center">
 <c:forEach items="${pList }" var="p" varStatus="status">
 <div class="col-lg-3 my-3 ">
