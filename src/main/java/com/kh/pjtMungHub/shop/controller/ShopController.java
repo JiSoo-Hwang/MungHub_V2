@@ -3,7 +3,6 @@ package com.kh.pjtMungHub.shop.controller;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -88,9 +87,11 @@ public class ShopController {
 					pList.get(i).setReviewTScore(reviewScoreAvg);
 				}
 			}
-		
+		ArrayList<Attachment> mainSlide=shopService.selectMainSlide();
 		mv.addObject("atList",atList);
 		mv.addObject("pList", pList);
+		mv.addObject("mainSlide",mainSlide);
+		
 		mv.setViewName("shop/shopListView");
 	
 		
@@ -1589,13 +1590,18 @@ public class ShopController {
 		return result;
 	}
 	
-	
-	
-	
 	@GetMapping("adminPage/customerControll")
 	public ModelAndView customerControll(ModelAndView mv) {
 		
 		mv.setViewName("shop/customerController");
+		return mv;
+	}
+	
+	
+	@GetMapping("adminPage/eventControll")
+	public ModelAndView eventControll(ModelAndView mv) {
+		
+		mv.setViewName("shop/eventControll");
 		return mv;
 	}
 	
@@ -1651,6 +1657,88 @@ public class ShopController {
 		
 		return result;
 	}
+	
+	@GetMapping("selectMainSlide.sp")
+	@ResponseBody
+	public ArrayList<Attachment> selectMainSlide(){
+		
+		ArrayList<Attachment> aList=shopService.selectMainSlide();
+		
+		return aList;
+	}
+	
+	
+	@PostMapping("insertMainSlide.sp")
+	public String insertMainSlide(MultipartFile[] upfile,HttpSession session) {
+		
+		
+		ParameterVo parameter=ParameterVo.builder()
+				.justifying("main")
+				.build();
+		
+		ArrayList<Attachment> atList=shopService.selectAttachmentList(parameter);
+		
+		for(int i=0;i<atList.size();i++) {
+			String deleteFile= "resources/uploadFiles/shopFile/main/"+atList.get(i).getType()+"/"+atList.get(i).getChangeName();
+			File f= new File(session.getServletContext().getRealPath(deleteFile));
+			f.delete();
+		}
+		
+		atList=new ArrayList<>();
+		for(int i=0;i<upfile.length;i++) {
+			
+			String fileType=upfile[i].getOriginalFilename();
+			int index = fileType.lastIndexOf(".");
+			String extension = fileType.substring( index+1 ).toLowerCase();
+			String type="";
+			
+			
+			if(extension.equals("avi")||
+			   extension.equals("mov")||
+			   extension.equals("mp4")||
+			   extension.equals("wmv")||
+			   extension.equals("asf")||
+			   extension.equals("mkv")) {
+				
+					type="video";
+				}else if(extension.equals("jpeg")||
+						 extension.equals("jpg")||
+						 extension.equals("png")||
+						 extension.equals("gif")) {
+					type="image";
+				}else {
+					type="file";
+				}
+				
+				
+				String changeName = saveFile(upfile[i],session,"main",type);
+				
+				Attachment at=Attachment.builder().
+						fileLev(i).
+						originName(upfile[i].getOriginalFilename()).
+						changeName(changeName).
+						fileJustify("main").
+						filePath("/pjtMungHub/resources/uploadFiles/shopFile/main/"+type+"/").
+						type(type).
+						build();
+				
+				atList.add(at);
+			
+			
+		}
+		
+		
+		ParameterVo fileParameter=ParameterVo.builder()
+				.atList(atList)
+				.justifying("main")
+				.build();
+		
+		int result=shopService.insertMain(fileParameter);
+		
+		
+		return "redirect:list.sp";
+	}
+	
 	
 	public String saveFile(MultipartFile upfile
 						  ,HttpSession session

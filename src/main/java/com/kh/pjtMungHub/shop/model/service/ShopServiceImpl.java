@@ -487,7 +487,7 @@ public class ShopServiceImpl implements ShopService {
 		POrderInfo p= new POrderInfo();
 		p.setUserNo(userNo);
 		p.setProcess(category);
-		return shopDao.selectOrderListComplte(p,sqlSession);
+		return shopDao.selectOrderListComplete(p,sqlSession);
 	}
 
 	@Override
@@ -619,6 +619,18 @@ public class ShopServiceImpl implements ShopService {
 	public MonthlyTally selectMonthlyTallyCount(HashMap<String, String> map) {
 		// TODO Auto-generated method stub
 		return shopDao.selectMonthlyTallyCount(map, sqlSession);
+	}
+
+	@Override
+	public ArrayList<Attachment> selectMainSlide() {
+		// TODO Auto-generated method stub
+		return shopDao.selectMainSlide(sqlSession);
+	}
+
+	@Override
+	public int insertMain(ParameterVo fileParameter) {
+		// TODO Auto-generated method stub
+		return shopDao.updateAttachment(sqlSession, fileParameter);
 	}
 	
 
