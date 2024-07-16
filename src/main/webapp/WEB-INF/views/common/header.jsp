@@ -187,16 +187,43 @@
 		z-index: 50;
 		position:fixed;
 		bottom:10px;
-		right:10px;
-		width:200px;
+		left:10px;
+		width:300px;
+		border:5px solid rgba(107, 117, 255, 0.45);
+		padding:2px;
+	}
+	.chatPopup, .chatTitle{
 		background-color: rgb(107, 117, 255);
+		color:white;
+		font-weight:border;
 	}
 	.chatList{
 		background-color:white;
 		border-bottom:1px solid lightgray;
+		opacity:100%;
+	}
+	.chatCont{
+		padding-top:10px;
+		line-height:150%;
+		border-bottom:3px solid rgba(107, 117, 255,0.4);
+		border-right:3px solid rgba(107, 117, 255,0.4);
+	}
+	.chatCont>*{
+		display:inline-block;
+	}
+	.counterName{
+		width:100%;
+		font-weight:bold;
+		font-size: 18px;
+		color:black;
+		padding-left:10px;
+		margin-bottom:10px;
 	}
 	.chat-prev{
+		width:80%;
+		padding-left:20px;
 		color:gray;
+		padding-bottom:5px;
 	}
 </style>
 </head>
@@ -268,8 +295,8 @@
 	</c:if>
 	<c:if test="${not empty loginUser||not empty sitterUser}">
 	    <div class="chatPopup">
-			<div class="chatName" align="right">
-				<button type="button">채팅</button>
+			<div class="chatName" align="left">
+				<button class="chatBTN" type="button">채팅</button>
 			</div>
 			<div class="chatList" style="display:none;">
 				<div class="chatTitle">
@@ -282,21 +309,21 @@
 							<c:when test="${not empty loginUser}">
 							<div class="chatCont sitter">
 								<input type="hidden" value="${cList.sitterNo}">
-								<span style="font-weight:bold;">
+								<span class="counterName">
 									<c:forEach items="${sitterList}" var="sitter">${cList.sitterNo eq sitter.petSitterNo ? sitter.petSitterName:""}</c:forEach> 펫시터님
 								</span>
 								<br>
-								<span class="chat-prev">${cList.chatContent}</span>
+								<span class="chat-prev">${cList.chatWriter eq 'SITTER' ? '새로운 메시지가 있습니다.' : '새로운 메시지를 남겨보세요'}</span>
 							</div>
 							</c:when>
 							<c:when test="${empty loginUser&&not empty sitterUser}">
 							<div class="chatCont master">
 								<input type="hidden" value="${cList.masterNo}">
-								<span style="font-weight:bold;">
+								<span class="counterName">
 									<c:forEach items="${masterList}" var="master">${cList.masterNo eq master.userNo ? master.name:""}</c:forEach> 견주님
 								</span>
 								<br>
-								<span class="chat-prev">${cList.chatContent}</span>
+								<span class="chat-prev">${cList.chatWriter eq 'MASTER' ? '새로운 메시지가 있습니다.' : '새로운 메시지를 남겨보세요'}</span>
 							</div>
 							</c:when>
 						</c:choose>
@@ -312,14 +339,33 @@
 	<script>
 		$(".chatPopup").on("click",function(){
 			if($(".chatList").css("display")=="none"){
+				$(".chatName").prop("hidden",true);
 				$(".chatList").slideDown(250);
 			}else{
 				$(".chatList").slideUp();
+				$(".chatName").prop("hidden",false);
 			}
 		})
 		$(".sitter").on("click",function(){
 			var sitterNo= $(this).children().eq(0).val();
 			var sitterUser;
+			$.ajax({
+				url:"read.chat",
+				data:{
+					sitterNo:sitterNo,
+					masterNo:'${loginUser.userNo}'
+				},
+				success:function(result){
+					if(result>0){
+						console.log("채팅확인");
+					}else{
+						console.log("못바꿈");
+					}
+				},
+				error:function(){
+					console.log("통신오류");
+				}
+			});
 			$.ajax({
 				url:"searchSitter.me",
 				data:{
@@ -335,15 +381,32 @@
 			var code='';
 				code=sitterNo+'n'+"${loginUser.userNo}";
 
-			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/code'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=850');
+			var chatRoom=window.open('http://localhost:8888/pjtMungHub/chat/code'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=850');
 		})
 		$(".master").on("click",function(){
 			var masterNo= $(this).children().eq(0).val();
 			var sitterUser;
+			$.ajax({
+				url:"read.chat",
+				data:{
+					sitterNo:'${sitterUser.petSitterNo}',
+					masterNo:masterNo
+				},
+				success:function(result){
+					if(result>0){
+						console.log("채팅확인");
+					}else{
+						console.log("못바꿈");
+					}
+				},
+				error:function(){
+					console.log("통신오류");
+				}
+			});
 			var code='';
 				code=${sitterUser.petSitterNo}+'n'+masterNo;
 
-			var chatRoom=window.open('http://localhost:8887/pjtMungHub/chat/code'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=850');
+			var chatRoom=window.open('http://localhost:8888/pjtMungHub/chat/code'+code,'chatpop','titlebar=1,location=no,status=no, scrollbars=yes, width=600, height=850');
 		})
 	</script>
 </body>

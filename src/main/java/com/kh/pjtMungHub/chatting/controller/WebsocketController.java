@@ -91,16 +91,6 @@ public class WebsocketController {
 		return fullName;
 	}
 	@ResponseBody
-	@GetMapping("/chatRead.chat")
-	public int chatRead(HttpSession session, MessageVO msg) {
-		Member loginMember=(Member)session.getAttribute("loginMember");
-		int result=0;
-		if(loginMember!=null) {
-			result=service.chatReadMaster(msg);
-		}
-		return result;
-	}
-	@ResponseBody
 	@GetMapping("/save.chat")
 	public int saveChat(HttpSession session, MessageVO msg) {
 		return service.saveChat(msg);
@@ -110,7 +100,11 @@ public class WebsocketController {
 		System.out.println(msg);
 		return service.chatUpload(msg);
 	}
-	
+	@ResponseBody
+	@GetMapping("/delete.chat")
+	public int deleteChat(HttpSession session, MessageVO msg) {
+		return service.deleteChat(msg);
+	}
 	public String saveFile(MultipartFile upfile,HttpSession session) {
 
 		String originName = upfile.getOriginalFilename();

@@ -197,14 +197,16 @@ public class MemberDao {
 		System.out.println("dao 오나?");
 		return sqlSession.insert("memberMapper.chatUpload", msg);
 	}
-	public int chatReadSitter(SqlSessionTemplate sqlSession, MessageVO message) {
-		return sqlSession.update("memberMapper.chatReadSitter", message);
-	}
-	public int chatReadMaster(SqlSessionTemplate sqlSession, MessageVO message) {
-		return sqlSession.update("memberMapper.chatReadMaster", message);
+
+	public int chatRead(SqlSessionTemplate sqlSession, MessageVO message) {
+		return sqlSession.update("memberMapper.chatRead", message);
 	}
 
 	public int saveChat(SqlSessionTemplate sqlSession, MessageVO msg) {
 		return sqlSession.update("memberMapper.saveChat",msg);
+	}
+
+	public int deleteChat(SqlSessionTemplate sqlSession, MessageVO msg) {
+		return sqlSession.update("memberMapper.deleteChat", msg);
 	}
 }

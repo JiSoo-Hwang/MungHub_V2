@@ -52,6 +52,7 @@ public class ChattingServer extends TextWebSocketHandler{
 		if(counter!=null) {
 			chattingSet.add(counter);
 		}
+		System.out.println(chattingSet);
 	}
 	
 	@Override

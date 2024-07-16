@@ -236,12 +236,17 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int chatReadMaster(MessageVO message) {
-		return dao.chatReadMaster(sqlSession, message);
+	public int chatRead(MessageVO message) {
+		return dao.chatRead(sqlSession, message);
 	}
 
 	@Override
 	public int saveChat(MessageVO msg) {
 		return dao.saveChat(sqlSession,msg);
+	}
+
+	@Override
+	public int deleteChat(MessageVO msg) {
+		return dao.deleteChat(sqlSession,msg);
 	}
 }

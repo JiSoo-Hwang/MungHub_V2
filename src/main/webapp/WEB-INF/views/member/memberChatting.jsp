@@ -9,7 +9,7 @@
 <style>
 	.chatTotal{
 		width:100%;
-		height:100%;
+		height:99vh;
 		top:0;
 		left:0;
 		display:flex;
@@ -49,6 +49,7 @@
 		display:inline-block;
 		flex-grow:1;
 		background-color: rgb(255,219,244);
+		height:auto;
 		overflow:auto;
 	}
 	.chat-main>div{
@@ -66,7 +67,7 @@
 	}
 	.chatSender{
 		border-top:1px solid gray;
-		height:auto;
+		height:200px;
 		background-color:white;
 
 	}
@@ -122,7 +123,6 @@
 		float:right;
 	}
 
-
 </style>	
 <body>
 	<div hidden="true">
@@ -164,9 +164,12 @@
 	<script>
 		// 웹소켓 접속 함수
 		var socket; // 웹소켓을 담아 놓을 변수
+		var code='${code}';
+		var lastWriter;
+		var [ sitterNo , masterNo ] = code.split("n");
 		$(function(){
 			// 접속 경로를 담아 socket 생성
-			var url = "ws://localhost:8887/pjtMungHub/chat";
+			var url = "ws://localhost:8888/pjtMungHub/chat";
 			socket = new WebSocket(url);
 			// 연결이 되었을 때 동작
 			socket.onopen = function(){
@@ -203,6 +206,7 @@
 				var newDiv = document.createElement("div");
 				var innerDiv = document.createElement("div");
 				var sender="chat-content "+message.data.substring(0,6);
+				lastWriter=message.data.substring(0,6);
 				var newSpan= document.createElement("div");
 				innerDiv.appendChild(newSpan).setAttribute("class",sender);
 				newSpan.innerHTML = data;
@@ -219,9 +223,9 @@
 				var newMsg=window.opener.document.querySelectorAll(".chatCont");
 				var counterNo=0;
 				if(${not empty loginUser}){
-					counterNo=${loginUser.userNo};
+					counterNo=sitterNo;
 				}else{
-					counterNo=${sitterUser.petSitterNo};
+					counterNo=masterNo;
 				}
 				console.log(counterNo);
 				for(var i=0;i<newMsg.length;i++){
@@ -231,6 +235,7 @@
 						break;
 					}
 				};
+				saveData();
 			}
 		});
 		function disconnect(){
@@ -239,9 +244,21 @@
 			
 			var out=window.confirm("채팅방을 나갈 시 해당 시터와 나눈 대화가 삭제됩니다. 정말 나가시겠습니까?");
 			if(out){
-
-// 				socket.close();
-// 				window.close();				
+				$.ajax({
+					url:"delete.chat",
+					data:{
+						sitterNo:sitterNo,
+						masterNo:masterNo
+					},
+					success:function(){
+						console.log("삭제");
+					},
+					error:function(){
+						console.log("통신오류");
+					}
+				})
+				socket.close();
+				window.close();				
 			}
 		}
 
@@ -306,32 +323,34 @@
 			}
 		}
 		window.addEventListener("beforeunload",function(event){
+		})
+		function saveData(){
 			var data=document.querySelector("#chatArea").innerHTML;
-			var code='${code}';
-			var [ sitterNo , masterNo ] = code.split("n");
-			console.log(sitterNo);
-			var chatWriter;
-			if(${not empty loginUser}){
-				chatWriter="MASTER";
+			var chatWriter=lastWriter;
+			console.log("lastWriter : "+lastWriter);
+			var status;
+			if(${not empty loginUser&&chatWriter=='MASTER'||empty loginUser&&chatWriter=='SITTER'}){
+				status='N';
 			}else{
-				chatWriter="SITTER";
-			};
+				status='Y'
+			}
 			$.ajax({
 				url:"save.chat",
 				data:{
 					sitterNo:sitterNo,
 					masterNo:masterNo,
-					chatContent:data,
-					chatWriter:chatWriter
+					chatContent:data.trim(),
+					chatWriter:chatWriter,
+					status:status
 				},
 				success:function(){
-					console.log("꺼짐");
+					console.log("저장완료");
 				},
 				error:function(){
-					console.log("근ㄷ ㅔ어차피 못봄ㅎ");
+					console.log("저장 간 통신문제");
 				}
 			})
-		})
+		}
 	</script>
 </body>
 </html>

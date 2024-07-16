@@ -1,21 +1,14 @@
 package com.kh.pjtMungHub.member.controller;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -87,6 +80,8 @@ public class MemberController {
 			}
 		}
 		session.setAttribute("petList",petList);
+		ArrayList<Breed> breed=service.selectBreedList();
+		session.setAttribute("breed", breed);
 		session.setAttribute("petPhotoList",petPhotoList);
 		return "member/memberMyPage";
 	}
@@ -583,6 +578,7 @@ public class MemberController {
 			session.setAttribute("sitterUser", sitterUser);
 			msg=sitterUser.getPetSitterName()+" 펫시터님 환영합니다.";
 			ArrayList<MessageVO> cList=service.getSitterChatList(sitterUser);
+			System.out.println(cList);
 			ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
 			ArrayList<Member> masterList=new ArrayList<>();
 			for(MessageVO c:cList) {
@@ -595,6 +591,7 @@ public class MemberController {
 			session.setAttribute("masterList", masterList);
 			session.setAttribute("chatList", chatList);
 			session.removeAttribute("loginUser");
+			System.out.println(chatList);
 		}else {			
 			msg="해당하는 회원을 찾을 수 없습니다. 회원 가입 후 이용해 주세요.";
 		}
@@ -734,7 +731,11 @@ public class MemberController {
 		}
 		return sitter;
 	}
-
+	@ResponseBody
+	@GetMapping("/read.chat")
+	public int chatRead(HttpSession session, MessageVO msg) {
+		return service.chatRead(msg);
+	}
 	public String generateState()
 	{
 	    SecureRandom random = new SecureRandom();
