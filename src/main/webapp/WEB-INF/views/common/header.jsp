@@ -241,6 +241,7 @@ clear: both;
                 <li><a href="hospital.ho">동물병원정보</a> </li>
                 <!-- <li><a href="wedList.wd">웨딩플래너</a> </li> -->
                 <li><a href="houseList.re">장기돌봄예약</a> </li>
+                <li><a href="css.re">CSS</a> </li>
             </ul>
         </nav>
     </nav>
