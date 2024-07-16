@@ -620,6 +620,18 @@ public class ShopServiceImpl implements ShopService {
 		// TODO Auto-generated method stub
 		return shopDao.selectMonthlyTallyCount(map, sqlSession);
 	}
+
+	@Override
+	public ArrayList<Attachment> selectMainSlide() {
+		// TODO Auto-generated method stub
+		return shopDao.selectMainSlide(sqlSession);
+	}
+
+	@Override
+	public int insertMain(ParameterVo fileParameter) {
+		// TODO Auto-generated method stub
+		return shopDao.updateAttachment(sqlSession, fileParameter);
+	}
 	
 
 }

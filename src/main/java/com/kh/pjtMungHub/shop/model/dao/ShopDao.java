@@ -508,6 +508,12 @@ public class ShopDao {
 		return sqlSession.selectOne("shopMapper.selectMonthlyTallyCount",map);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Attachment> selectMainSlide(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectMainSlide");
+	}
+
 
 
 

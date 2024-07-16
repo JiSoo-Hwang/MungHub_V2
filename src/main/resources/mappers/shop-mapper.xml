@@ -624,38 +624,41 @@
 		UPLOAD_DATE uploadDate,
 		FILE_JUSTIFY fileJustify,
 		FILE_PATH filePath,
-		TYPE type,
+		TYPE type
 		<choose>
 			<when test="justifying=='product'">
-				PRODUCT_NO productNo
+				,PRODUCT_NO productNo
 			</when>
 			<when test="justifying=='review'">
-				REVIEW_NO reviewNo
+				,REVIEW_NO reviewNo
 			</when>
 			<when test="justifying=='brand'">
-				BRAND_CODE brandNo
+				,BRAND_CODE brandNo
 			</when>
 			<when test="justifying=='pDetail'">
-			DETAIL_NO detailNo
+				,DETAIL_NO detailNo
 			</when>
 		</choose>
 	FROM PRODUCT_ATTACHMENT
 	WHERE 
 		<choose>
 			<when test="justifying=='product'">
-				PRODUCT_NO
+				PRODUCT_NO=#{number}
 			</when>
 			<when test="justifying=='review'">
-				REVIEW_NO
+				REVIEW_NO=#{number}
 			</when>
 			<when test="justifying=='brand'">
-				BRAND_CODE
+				BRAND_CODE=#{number}
 			</when>
 			<when test="justifying=='pDetail'">
-			DETAIL_NO
+			DETAIL_NO=#{number}
+			</when>
+			<when test="justifying=='main'">
+			FILE_JUSTIFY='main'
 			</when>
 		</choose>
-		=#{number} <!-- 주요키를 담을 공통적으로 사용할 변수  -->
+		
 	ORDER BY FILE_LEVEL
 	</select>
 	
@@ -677,7 +680,10 @@
 				BRAND_CODE=#{number}
 			</when>
 			<when test="justifying=='pDetail'">
-			DETAIL_NO=#{number}
+			 DETAIL_NO=#{number}
+			</when>
+			<when test="justifying=='main'">
+			 FILE_JUSTIFY='main'
 			</when>
 		</choose>
 		
@@ -693,19 +699,22 @@
 		WHERE 
 		<choose>
 			<when test="justifying=='product'">
-				PRODUCT_NO
+				PRODUCT_NO=#{number}
 			</when>
 			<when test="justifying=='review'">
-				REVIEW_NO
+				REVIEW_NO=#{number}
 			</when>
 			<when test="justifying=='brand'">
-				BRAND_CODE
+				BRAND_CODE=#{number}
 			</when>
 			<when test="justifying=='pDetail'">
-			DETAIL_NO
+			DETAIL_NO=#{number}
+			</when>
+			<when test="justifying=='main'">
+			FILE_JUSTIFY='main'
 			</when>
 		</choose>
-		=#{number}
+		
 		WHEN NOT MATCHED
 		THEN
 		INSERT(
@@ -714,19 +723,19 @@
 		CHANGE_NAME,
 		FILE_JUSTIFY,
 		FILE_PATH,
-		TYPE,
+		TYPE
 		<choose>
 			<when test="justifying=='product'">
-				PRODUCT_NO
+				,PRODUCT_NO
 			</when>
 			<when test="justifying=='review'">
-				REVIEW_NO
+				,REVIEW_NO
 			</when>
 			<when test="justifying=='brand'">
-				BRAND_CODE
+				,BRAND_CODE
 			</when>
 			<when test="justifying=='pDetail'">
-			DETAIL_NO
+				,DETAIL_NO
 			</when>
 		</choose>
 		)VALUES(
@@ -735,8 +744,8 @@
 			#{arr.changeName},
 			#{arr.fileJustify},
 			#{arr.filePath},
-			#{arr.type},
-			#{number}
+			#{arr.type}
+			<if test="justifying!='main'">,#{number}</if>
 			)
 	</foreach>
 	</update>
@@ -1403,5 +1412,21 @@ WHERE ORDER_PROCESS=#{category}
                     AND TO_DATE(#{end}, 'YYYY-MM-DD')
 	
 	</select>
+	
+	
+	<select id="selectMainSlide"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Attachment">
+	SELECT FILE_LEVEL fileLev,
+	ORIGIN_NAME originName,
+	CHANGE_NAME changeName,
+	UPLOAD_DATE status,
+	FILE_JUSTIFY fileJustify,
+	FILE_PATH filePath,
+	TYPE type
+	FROM PRODUCT_ATTACHMENT
+	WHERE FILE_JUSTIFY='main'
+	</select>
+	
+	
 	
 </mapper>
