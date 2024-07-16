@@ -1302,7 +1302,6 @@ WHERE ORDER_PROCESS=#{category}
 	        ORDER BY TOTAL DESC
 	        )
 	        JOIN MEMBER USING(USER_NO)
-	        WHERE USER_NO BETWEEN 1 AND 5
 	        GROUP BY USER_NO,NAME) B
 	WHERE A.USER_NO=B.USER_NO
 	</select>
