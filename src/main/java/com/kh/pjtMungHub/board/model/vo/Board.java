@@ -14,7 +14,6 @@ public class Board {
 	
 	private int boardNo;//	BOARD_NO	NUMBER
 	private int category;//	CATEGORY_NO	NUMBER
-	private String fileNo;//	FILE_NO	NUMBER
 	private String breedId;//	BREED_ID	VARCHAR2(4 BYTE)
 	private String boardTitle;//	BOARD_TITLE	VARCHAR2(100 BYTE)
 	private String boardWriter;//	BOARD_WRITER	VARCHAR2(100 BYTE)
@@ -27,8 +26,10 @@ public class Board {
 	
 	private String originName;
 	private String changeName;
+	
 	//댓글 목록 조회용
 	private ArrayList<Reply> rList;
-
+	//파일 참조용
+	private ArrayList<Attachment> aList;
 
 }

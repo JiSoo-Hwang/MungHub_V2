@@ -17,5 +17,8 @@ public class Reply {
 	private int refBno;
 	private Date createDate;
 	private String replyStatus;
+	
+	private int userNo;
+	private String userId;
 
 }
