@@ -83,8 +83,6 @@
     </div>
     <div class="card-body">
       <ul id="top-buyers">
-        <li>1위: 고객1 (5개)</li>
-        <li>2위: 고객2 (3개)</li>
       </ul>
     </div>
   </div>
@@ -96,13 +94,54 @@
     </div>
     <div class="card-body">
       <ul id="top-spenders">
-        <li>1위: 고객1 (50000원)</li>
-        <li>2위: 고객2 (30000원)</li>
       </ul>
     </div>
   </div>
 </div>
   
+  <script>
+  $(function(){
+	  selectTopBuyer();
+	  selectTopSpenders();
+	  selectCustomerList();
+	  selectInquiry();
+  });
+  function selectTopBuyer(){
+	  $.ajax({
+		  url : "/pjtMungHub/TopBuyer.sp",
+		  success: function(result){
+			  var str="";
+				 
+				 for (var i = 0; i < result.length; i++) {
+					str+="<li>"+(i+1)+"위: "+result[i].userName+" ("+result[i].buyerCount.toLocaleString('ko-KR')+"개)</li>"
+				}
+				 
+				 $("#top-buyers").html(str)
+		  },error:function(){
+			  console.log("통신오류");
+		  }
+	  })
+  }
+  
+  function selectTopSpenders(){
+	  $.ajax({
+		  url : "/pjtMungHub/TopSpenders.sp",
+		  success:function(result){
+			 var str="";
+			 
+			 for (var i = 0; i < result.length; i++) {
+				str+="<li>"+(i+1)+"위: "+result[i].userName+" ("+result[i].spendCount.toLocaleString('ko-KR')+"원)</li>"
+			}
+			 
+			 $("#top-spenders").html(str)
+		  },error:function(){
+			  console.log("통신오류");
+		  }
+	  });
+  }
+  
+  
+  </script>
   
   
   <!-- 고객 리스트 테이블 -->
@@ -117,34 +156,45 @@
             <th>고객 ID</th>
             <th>고객명</th>
             <th>구매한 상품 수</th>
-            <th>총 지불 금액</th>
+            <th>총 지불 금액(배송비 포함)</th>
             <th>상담 내역</th>
           </tr>
         </thead>
         <tbody id="customer-list">
           <!-- 여기에 고객 정보가 동적으로 추가될 예정 -->
-          <tr>
-            <td>1</td>
-            <td>고객1</td>
-            <td>5</td>
-            <td>50000</td>
-            <td>
-              <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewInquiryModal">상담 보기</button>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>고객2</td>
-            <td>3</td>
-            <td>30000</td>
-            <td>
-              <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#viewInquiryModal">상담 보기</button>
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
   </div>
+
+	<script>
+	
+		function selectCustomerList(){
+			$.ajax({
+				url: "/pjtMungHub/customerList.sp",
+				success : function(result){
+					var str="";
+					for (var i = 0; i < result.length; i++) {
+						str+="<tr>"
+				         +"<td>"+result[i].userNo+"</td>"
+				         +"<td>"+result[i].userName+"</td>"
+				         +"<td>"+result[i].buyerCount.toLocaleString('ko-KR')+"개</td>"
+				         +"<td>"+result[i].spendCount.toLocaleString('ko-KR')+"원</td>"
+				         +"<td>"
+				         +"<button class='btn btn-info btn-sm' data-toggle='modal' data-target='#viewInquiryModal' onclick='changeSearchModal("+result[i].userNo+")'>상담 보기</button>"
+				         +"</td>"
+				         +"</tr>";
+					}
+					$("#customer-list").html(str);
+				},error:function(){
+					console.log("통신오류");
+				}
+			})
+		}
+	
+	
+	</script>
+
 
   <!-- 고객 문의글 테이블 -->
   <div class="card mb-4">
@@ -164,29 +214,37 @@
         </thead>
         <tbody id="inquiry-list">
           <!-- 여기에 문의글 정보가 동적으로 추가될 예정 -->
-          <tr>
-            <td>1</td>
-            <td>고객1</td>
-            <td>배송이 언제 되나요?</td>
-            <td>미답변</td>
-            <td>
-              <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#replyInquiryModal">답변하기</button>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>고객2</td>
-            <td>제품 교환 가능할까요?</td>
-            <td>미답변</td>
-            <td>
-              <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#replyInquiryModal">답변하기</button>
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
   </div>
 </div>
+
+<script>
+function selectInquiry(){
+	$.ajax({
+		url : "/pjtMungHub/inquiryList.sp",
+		success : function(result){
+			var str="";
+			for (var i = 0; i < result.length; i++) {
+				str+="<tr>"
+		        +"<td>"+result[i].questionNo+"</td>"
+		        +"<td>"+result[i].userName+"</td>"
+		        +"<td>"+result[i].content+"</td>"
+		        +"<td>"+result[i].answerStatus+"</td>"
+		        +"<td>"
+		        +"<button class='btn btn-primary btn-sm' data-toggle='modal' data-target='#replyInquiryModal' onclick='changeInquiryModal("+result[i].questionNo+")'>답변하기</button>"
+		        +"</td>"
+		        +"</tr>";
+			}
+			$("#inquiry-list").html(str);
+		},error:function(){
+			console.log("통신오류");
+		}
+	});
+}
+
+</script>
 
 <!-- 상담 내용 보기 모달 -->
 <div class="modal fade" id="viewInquiryModal" tabindex="-1" role="dialog" aria-labelledby="viewInquiryModalLabel" aria-hidden="true">
@@ -199,13 +257,56 @@
         </button>
       </div>
       <div class="modal-body">
-        <!-- 여기에는 상담 내용을 동적으로 추가할 수 있습니다 -->
-        <p>상담 내용이 여기에 표시됩니다.</p>
+       <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>문의글 ID</th>
+            <th>고객명</th>
+            <th>문의 내용</th>
+            <th>답변 상태</th>
+            <th>관리</th>
+          </tr>
+        </thead>
+        <tbody id="inquiry-list-user">
+          <!-- 여기에 문의글 정보가 동적으로 추가될 예정 -->
+        </tbody>
+      </table>
       </div>
     </div>
   </div>
 </div>
+<script>
+function changeSearchModal(num){
+	$.ajax({
+		url : "/pjtMungHub/selectUserQuestion.sp",
+		data : {userNo : num },
+		success : function(result){
+			str="";
+			for (var i = 0; i < result.length; i++) {
+				str+="<tr>"
+		        +"<td>"+result[i].questionNo+"</td>"
+		        +"<td>"+result[i].userName+"</td>"
+		        +"<td>"+result[i].content+"</td>"
+		        +"<td>"+result[i].answerStatus+"</td>"
+		        +"<td>"
+		        +"<button class='btn btn-primary btn-sm' data-toggle='modal' data-target='#replyInquiryModal' onclick='changeInquiryModal("+result[i].questionNo+")'>답변하기</button>"
+		        +"</td>"
+		        +"</tr>";
+			}
+			if(str==""){
+				str+="<div align='center'><h1>조회결과가 없습니다.</h1><div>"
+			}
+			$("#inquiry-list-user").html(str);
+			
+		},error : function(){
+			console.log("통신오류");
+		}
+	
+	});
+}
 
+
+</script>
 <!-- 상담 답변 모달 -->
 <div class="modal fade" id="replyInquiryModal" tabindex="-1" role="dialog" aria-labelledby="replyInquiryModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -217,18 +318,48 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="replyInquiryForm">
           <div class="form-group">
+          <p id="question"></p>
             <label for="inquiryReply">답변 내용</label>
             <textarea class="form-control" id="inquiryReply" rows="3" required></textarea>
           </div>
-          <button type="submit" class="btn btn-primary">답변 보내기</button>
-        </form>
+          <button type="button" id="answerBtn" class="btn btn-primary">답변 보내기</button>
       </div>
     </div>
   </div>
 </div>
+<script>
+function changeInquiryModal(num){
+	$.ajax({
+		url : "/pjtMungHub/selectInquiry.sp",
+		data : {questionNo : num},
+		success : function(result){
+			$("#question").text(result.content);
+			$("#answerBtn").attr("onclick","replyInquiry("+result.questionNo+")")
+			
+		},error : function(){
+			console.log("통신오류");
+		}
+	});
+}
 
+function replyInquiry(num){
+	$.ajax({
+		url : "/pjtMungHub/replyInquiry.sp",
+		type : "post",
+		data : {content : $("#inquiryReply").val(),
+				userNo : ${loginUser.userNo},
+				questionNo : num},
+		success:function(result){
+			alert("답변이 완료되었습니다.")
+		},error:function(){
+			console.log("통신오류");
+		}
+		
+	});
+}
+
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </div>

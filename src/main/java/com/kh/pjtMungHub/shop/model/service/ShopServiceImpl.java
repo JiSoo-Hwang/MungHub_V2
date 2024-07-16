@@ -16,7 +16,9 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.Customer;
 import com.kh.pjtMungHub.shop.model.vo.Favorite;
+import com.kh.pjtMungHub.shop.model.vo.MonthlyTally;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Point;
@@ -504,11 +506,11 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public int selectProductCount() {
+	public int selectProductCount(ParameterVo parameter) {
 		// TODO Auto-generated method stub
-		Integer result =shopDao.selectProductCount(sqlSession);
+		Integer result =shopDao.selectProductCount(sqlSession,parameter);
 		if(result!=null) {
-			return shopDao.selectProductCount(sqlSession);
+			return result;
 		}else {
 			return 0;
 		}
@@ -548,6 +550,75 @@ public class ShopServiceImpl implements ShopService {
 			result2=shopDao.updateAttachment(sqlSession, fileParameter);
 		}
 		return result*result2;
+	}
+
+	@Override
+	public int insertCategory(String categoryName) {
+		// TODO Auto-generated method stub
+		return shopDao.insertCategory(sqlSession,categoryName);
+	}
+
+	@Override
+	public int updateCategory(Category c) {
+		// TODO Auto-generated method stub
+		return shopDao.updateCategory(sqlSession,c);
+	}
+
+	@Override
+	public int deleteCategory(int categoryNo) {
+		// TODO Auto-generated method stub
+		return shopDao.deleteCategory(sqlSession,categoryNo);
+	}
+
+	@Override
+	public ArrayList<Customer> selectTopBuyer() {
+		// TODO Auto-generated method stub
+		return shopDao.selectTopBuyer(sqlSession);
+	}
+
+	@Override
+	public ArrayList<Customer> selectTopSpenders() {
+		// TODO Auto-generated method stub
+		return shopDao.selectTopSpenders(sqlSession);
+	}
+
+	@Override
+	public ArrayList<Customer> selectCustomerList() {
+		// TODO Auto-generated method stub
+		return shopDao.selectCustomerList(sqlSession);
+	}
+
+	@Override
+	public ArrayList<Question> selectQuestionListControll() {
+		// TODO Auto-generated method stub
+		return shopDao.selectQuestionListControll(sqlSession);
+	}
+
+	@Override
+	public ArrayList<Question> selectQuestionListUser(int userNo) {
+		// TODO Auto-generated method stub
+		return shopDao.selectQuestionListUser(userNo,sqlSession);
+	}
+
+	@Override
+	@Transactional
+	public int replyInquiry(Answer a) {
+		// TODO Auto-generated method stub
+		int result=shopDao.replyInquiry(a,sqlSession);
+		int result2=shopDao.updateQustionStatus(a.getQuestionNo(),sqlSession);
+		return result*result2;
+	}
+
+	@Override
+	public MonthlyTally selectMonthlyTally(HashMap<String, String> map) {
+		// TODO Auto-generated method stub
+		return shopDao.selectMonthlyTally(map,sqlSession);
+	}
+
+	@Override
+	public MonthlyTally selectMonthlyTallyCount(HashMap<String, String> map) {
+		// TODO Auto-generated method stub
+		return shopDao.selectMonthlyTallyCount(map, sqlSession);
 	}
 	
 

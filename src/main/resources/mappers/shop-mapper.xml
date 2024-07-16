@@ -1168,9 +1168,14 @@ WHERE ORDER_PROCESS=#{category}
 	</select>
 	
 	<select id="selectProductCount"
+	parameterType="com.kh.pjtMungHub.shop.model.vo.ParameterVo"
 	resultType="_int">
 	SELECT MAX(ROWNUM)
 	FROM PRODUCT
+	WHERE STATUS =#{justifying}
+    <if test="categoryNo!=0">
+    AND CATEGORY_NO=#{categoryNo}
+    </if>
 	</select>
 	
 	<select id="selectProductControll"
@@ -1190,6 +1195,9 @@ WHERE ORDER_PROCESS=#{category}
         JOIN BRAND USING (BRAND_CODE)
         JOIN PRODUCT_CATEGORY USING(CATEGORY_NO)
         WHERE STATUS =#{justifying}
+        <if test="categoryNo!=0">
+        AND CATEGORY_NO=#{categoryNo}
+        </if>
         ORDER BY <choose>
         <when test="orderBy=='PRODUCT_NO'">PRODUCT_NO</when>
         <when test="orderBy=='PRODUCT_NAME'">PRODUCT_NAME</when>
@@ -1208,4 +1216,192 @@ WHERE ORDER_PROCESS=#{category}
 	VALUES(SEQ_BRAND.NEXTVAL,#{brandName})
 	</insert>
 
+	<insert id="insertCategory"
+	parameterType="string">
+	INSERT INTO PRODUCT_CATEGORY(
+	CATEGORY_NO,CATEGORY_NAME
+	)VALUES(
+	SEQ_PCATE.NEXTVAL,#{categoryName}
+	)
+	</insert>
+	<update id="updateCategory"
+	parameterType="com.kh.pjtMungHub.shop.model.vo.Category">
+	UPDATE PRODUCT_CATEGORY SET
+	CATEGORY_NAME=#{categoryName}
+	WHERE CATEGORY_NO=#{categoryNo}
+	</update>
+	<delete id="deleteCategory"
+	parameterType="_int">
+    DELETE FROM PRODUCT_CATEGORY
+    WHERE CATEGORY_NO=#{categoryNo}		
+	
+	</delete>
+	
+	<select id="selectTopBuyer"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Customer">
+	SELECT USER_NO userNo,NAME userName,QUANTITY buyerCount
+	FROM(
+	   SELECT P.USER_NO
+	     ,SUM(REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv)) AS QUANTITY
+	  FROM  PRODUCT_ORDER P 
+	     , (SELECT LEVEL AS lv 
+	          FROM dual 
+	       CONNECT BY LEVEL <![CDATA[<]]>= 50) b
+	 WHERE REGEXP_SUBSTR(P.ITMES_QUANTITY, '[^,]+', 1, b.lv) IS NOT NULL
+	GROUP BY USER_NO
+	ORDER BY QUANTITY DESC)
+	JOIN MEMBER M USING(USER_NO)
+	WHERE ROWNUM BETWEEN 1 AND 5
+	</select>
+	
+	<select id="selectTopSpenders"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Customer">
+	SELECT SUM(TOTAL) spendCount,USER_NO userNo,NAME userName
+    FROM (SELECT CASE 
+         WHEN TOTAL_PRICE <![CDATA[<]]>30000 THEN TOTAL_PRICE-2500
+         WHEN TOTAL_PRICE >30000 THEN TOTAL_PRICE
+         END AS TOTAL,
+         USER_NO
+        FROM PRODUCT_ORDER
+        ORDER BY TOTAL DESC
+        )
+        JOIN MEMBER USING(USER_NO)
+        WHERE ROWNUM BETWEEN 1 AND 5
+        GROUP BY USER_NO,NAME
+	</select>
+	
+	<select id="selectCustomerList"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Customer">
+	SELECT A.USER_NO userNo,B.NAME userName,A.QUANTITY buyerCount,B.TOTAL spendCount
+	FROM(
+	   SELECT P.USER_NO
+	     ,SUM(REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv)) AS QUANTITY
+	  FROM  PRODUCT_ORDER P 
+	     , (SELECT LEVEL AS lv 
+	          FROM dual 
+	       CONNECT BY LEVEL <![CDATA[<]]>= 50) b
+	       
+	 WHERE REGEXP_SUBSTR(P.ITMES_QUANTITY, '[^,]+', 1, b.lv) IS NOT NULL
+	GROUP BY USER_NO
+	ORDER BY QUANTITY DESC) A,(SELECT SUM(TOTAL) TOTAL,USER_NO,NAME
+	    FROM (SELECT CASE 
+	         WHEN TOTAL_PRICE <![CDATA[<]]>30000 THEN TOTAL_PRICE-2500
+	         WHEN TOTAL_PRICE >30000 THEN TOTAL_PRICE
+	         END AS TOTAL,
+	         USER_NO
+	        FROM PRODUCT_ORDER
+	        ORDER BY TOTAL DESC
+	        )
+	        JOIN MEMBER USING(USER_NO)
+	        WHERE USER_NO BETWEEN 1 AND 5
+	        GROUP BY USER_NO,NAME) B
+	WHERE A.USER_NO=B.USER_NO
+	</select>
+	<select id="selectQuestionListControll"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Question">
+	SELECT QUESTION_NO questionNo,
+	PRODUCT_NO productNo,
+	USER_NO userNo,
+	NAME userName,
+	QUESTION_CONTENT content,
+	CATEGORY_NO categoryNo,
+	OPEN_STATUS openStatus,
+	CREATE_DATE createDate,
+	ANSWER_STATUS answerStatus
+	FROM PRODUCT_QUESTION
+	JOIN MEMBER USING (USER_NO)
+	</select>
+	
+	<select id="selectQuestionListUser"
+	parameterType="_int"
+	resultType="com.kh.pjtMungHub.shop.model.vo.Question">
+	SELECT QUESTION_NO questionNo,
+	PRODUCT_NO productNo,
+	USER_NO userNo,
+	NAME userName,
+	QUESTION_CONTENT content,
+	CATEGORY_NO categoryNo,
+	OPEN_STATUS openStatus,
+	CREATE_DATE createDate,
+	ANSWER_STATUS answerStatus
+	FROM PRODUCT_QUESTION
+	JOIN MEMBER USING (USER_NO)
+	WHERE USER_NO =#{userNo}
+	</select>
+	
+	<insert id="replyInquiry"
+	parameterType="com.kh.pjtMungHub.shop.model.vo.Answer">
+	MERGE INTO PRODUCT_ANSWER
+    USING DUAL
+    ON (QUESTION_NO=#{questionNo})
+    WHEN MATCHED THEN
+    UPDATE SET 
+    ANSWER_CONTENT=#{content}
+    WHEN NOT MATCHED THEN
+     INSERT 
+    (ANSWER_NO,
+	QUESTION_NO,
+	USER_NO,
+	ANSWER_CONTENT)
+    VALUES
+    (SEQ_ANSWER.NEXTVAL
+    ,#{questionNo}
+    ,#{userNo}
+    ,#{content})
+	
+	
+	</insert>
+	
+	<update id="updateQustionStatus"
+	parameterType="_int">
+	UPDATE PRODUCT_QUESTION SET
+	ANSWER_STATUS='Y'
+	WHERE QUESTION_NO=#{questionNo}
+	</update>
+	<select id="selectMonthlyTally"
+	parameterType="string"
+	resultType="com.kh.pjtMungHub.shop.model.vo.MonthlyTally">
+	SELECT SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '01', TOTAL_PRICE)) AS "january"
+     , SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '02', TOTAL_PRICE)) AS "feburary"
+     , SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '03', TOTAL_PRICE)) AS "march"
+     , SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '04', TOTAL_PRICE)) AS "april"
+     , SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '05', TOTAL_PRICE)) AS "may"
+     , SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '06', TOTAL_PRICE)) AS "june"
+     , SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '07', TOTAL_PRICE)) AS "july"
+     , SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '08', TOTAL_PRICE)) AS "august"
+     , SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '09', TOTAL_PRICE)) AS "september"
+     , SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '10', TOTAL_PRICE)) AS "october"
+     , SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '11', TOTAL_PRICE)) AS "november"
+     , SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'), '12', TOTAL_PRICE)) AS "december"
+  FROM PRODUCT_ORDER
+ WHERE PAY_DATE BETWEEN TO_DATE(#{start}, 'YYYY-MM-DD')
+                    AND TO_DATE(#{end}, 'YYYY-MM-DD')
+	
+	
+	</select>
+	<select id="selectMonthlyTallyCount"
+	resultType="com.kh.pjtMungHub.shop.model.vo.MonthlyTally">
+	SELECT 
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'01',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "january",
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'02',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "feburary",
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'03',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "march",
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'04',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "april",
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'05',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "may",
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'06',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "june",
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'07',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "july",
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'08',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "august",
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'09',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "september",
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'10',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "october",
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'11',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "november",
+    SUM(DECODE(TO_CHAR(PAY_DATE, 'MM'),'12',REGEXP_SUBSTR(P.ITMES_QUANTITY,'[^,]+', 1, b.lv))) AS "december"
+	  FROM  PRODUCT_ORDER P 
+	     , (SELECT LEVEL AS lv 
+	          FROM dual 
+	       CONNECT BY LEVEL <![CDATA[<]]>= 50) b
+	 WHERE REGEXP_SUBSTR(P.ITMES_QUANTITY, '[^,]+', 1, b.lv) IS NOT NULL
+        AND PAY_DATE BETWEEN TO_DATE(#{start}, 'YYYY-MM-DD')
+                    AND TO_DATE(#{end}, 'YYYY-MM-DD')
+	
+	</select>
+	
 </mapper>

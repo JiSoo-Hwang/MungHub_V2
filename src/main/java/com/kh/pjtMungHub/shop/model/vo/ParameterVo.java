@@ -24,6 +24,7 @@ public class ParameterVo {
 	private int userNo;
 	private int productNo;
 	private int amount;
+	private int categoryNo;
 
 	private int star;
 	private int currentPage;

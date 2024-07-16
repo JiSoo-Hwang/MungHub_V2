@@ -11,7 +11,9 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.Customer;
 import com.kh.pjtMungHub.shop.model.vo.Favorite;
+import com.kh.pjtMungHub.shop.model.vo.MonthlyTally;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Point;
@@ -204,7 +206,7 @@ public interface ShopService {
 	ArrayList<Brand> selectTopSalesBrand(String orderBy);
 
 
-	int selectProductCount();
+	int selectProductCount(ParameterVo parameter);
 
 
 	ArrayList<Product> selectProductListControll(ParameterVo parameter, PageInfo pi);
@@ -217,6 +219,39 @@ public interface ShopService {
 
 
 	int updateBrand(Brand brand, ParameterVo fileParameter);
+
+
+	int insertCategory(String categoryName);
+
+
+	int updateCategory(Category c);
+
+
+	int deleteCategory(int categoryNo);
+
+
+	ArrayList<Customer> selectTopBuyer();
+
+
+	ArrayList<Customer> selectTopSpenders();
+
+
+	ArrayList<Customer> selectCustomerList();
+
+
+	ArrayList<Question> selectQuestionListControll();
+
+
+	ArrayList<Question> selectQuestionListUser(int userNo);
+
+
+	int replyInquiry(Answer a);
+
+
+	MonthlyTally selectMonthlyTally(HashMap<String, String> map);
+
+
+	MonthlyTally selectMonthlyTallyCount(HashMap<String, String> map);
 
 
 

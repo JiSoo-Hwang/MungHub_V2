@@ -150,7 +150,40 @@
   
   <div align="center">
   <button class="btn btn-primary mb-3" onclick="location.href='/pjtMungHub/insert.sp'">신제품 등록</button>
+  <button class="btn btn-info mb-3" data-bs-toggle="modal" data-bs-target="#categoryModal">카테고리 관리</button>
   </div>
+  
+  <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">카테고리 관리</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+       <div class="form-group">
+       		<label for="categoryName">카테고리 추가</label>
+            <input type="text" class="form-control" id="categoryName">
+            <br>
+             <button type="button" class="btn btn-primary" onclick="insertCategory()">추가</button>
+            <hr>
+            <label for="categoryUpdateSelect">카테고리 수정</label>
+            <select class="form-select my-3" id="categoryUpdateSelect">
+			</select>
+			<label for="categoryUpdateName">수정할 이름</label>
+            <input type="text" class="form-control" id="categoryUpdateName">
+            <br>
+            <button type="button" class="btn btn-warning" onclick="updateCategory()">수정</button>
+            <button type="button" class="btn btn-danger" onclick="deleteCategory()">삭제</button>
+       </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
   
   
   <!-- 제품 리스트 테이블 -->
@@ -173,12 +206,8 @@
 	
 	<input type="checkbox" class="btn-check" id="notPostedP" autocomplete="off" onclick="selectProductList(1)">
 	<label class="btn btn-outline-danger" for="notPostedP">게시중단상품</label>
-	<br>
-	<select class="form-select" id="category">
-	  <option selected>Open this select menu</option>
-	  <option value="1">One</option>
-	  <option value="2">Two</option>
-	  <option value="3">Three</option>
+	<select class="form-select my-3" id="category" onchange="selectProductList(1)">
+	<option selected value='0'>전체(카테고리)</option>
 	</select>
       </h2>
     </div>
@@ -213,25 +242,93 @@
 	  selectTopSalesBrand();
 	  selectProductList(1);
 	  selectBrandList();
-	  selectCategort();
+	  selectCategory();
 	  
   });
   
-  function selectCategort(){
+  function selectCategory(){
 	  $.ajax({
 		  url : "/pjtMungHub/selectCategory.sp",
 		  success:function(result){
-			  var str="<option selected value='all'>전체</option>";
+			  var str="<option selected value='0'>전체(카테고리)</option>";
+			  var str2="";
 			  for (var i = 0; i < result.length; i++) {
 				str+="<option value='"+result[i].categoryNo+"'>"+result[i].categoryName+"</option>"
-			}
+				str2+="<option value='"+result[i].categoryNo+"'>"+result[i].categoryName+"</option>"
+			
+			  }
 			  
 			  $("#category").html(str);
+			  $("#categoryUpdateSelect").html(str2);
 		  },error:function(){
 			  console.log("통신오류");
 		  }
 	  });
   }
+  
+  function insertCategory(){
+	  if($("#categoryName").val()!=""){
+		  
+	  
+	  $.ajax({
+		  url : "/pjtMungHub/insertCategory.sp",
+		  type : "post",
+		  data: {categoryName : $("#categoryName").val() },
+		  success:function(result){
+			  alert("카테고리가 추가되었습니다.");
+			  selectCategory();
+		  },error:function(){
+			  console.log("통신오류");
+		  }
+	  	
+	  });
+	  }else{
+		  alert("카테고리 명을 입력해 주세요");
+	  }
+  }
+  
+  function updateCategory(){
+	  if($("#categoryUpdateName").val()!=""){
+		  
+	  
+	  $.ajax({
+		 url : "/pjtMungHub/updateCategory.sp",
+		 type: "post",
+		 data : {categoryName : $("#categoryUpdateName").val(),
+			 	 categoryNo : $("#categoryUpdateSelect option:selected").val()},
+		success: function(result){
+			alert("수정이 완료되었습니다.");
+			selectCategory();
+		},error: function(){
+			console.log("통신오류");
+		}
+	  	
+	  });
+	  }else{
+		  alert("수정할 이름을 입력해주세요.");
+	  }
+  }
+  
+  function deleteCategory(){
+	  if(confirm("해당 카테고리와 연동된 데이터가 같이 삭제됩니다. 정말 지우시겠습니까?")){
+		  
+	  
+	  $.ajax({
+			 url : "/pjtMungHub/deleteCategory.sp",
+			 type: "post",
+			 data : {categoryNo : $("#categoryUpdateSelect option:selected").val()},
+			success: function(result){
+				alert("삭제가 완료되었습니다.");
+				selectCategory();
+			},error: function(){
+				console.log("통신오류");
+			}
+		  	
+		  });
+		  }
+		  }
+  
+  
   
   
   function selectTopSalesProduct(){
@@ -315,7 +412,7 @@
 			  
 			  for (var i = 0; i < result.pList.length; i++) {
 					
-				  str += "<li>"+(i+1)+"위: 브랜드코드["+result.pList[i].brandCode+"] "
+				  str += "<li>"+(i+1)+"위: 코드["+result.pList[i].brandCode+"] "
 				  +result.pList[i].brandName 
 				  +"("+result.pList[i].brandSalesCount+")</li>";
 				  
@@ -328,7 +425,7 @@
 			  
 			  for (var i = 0; i < result.lowList.length; i++) {
 					
-				  str += "<li>"+(i+1)+"위: 브랜드코드["+result.lowList[i].brandCode+"] "
+				  str += "<li>"+(i+1)+"위: 코드["+result.lowList[i].brandCode+"] "
 				  +result.pList[i].brandName 
 				  +"("+result.lowList[i].brandSalesCount+")</li>";
 				       		
@@ -339,7 +436,7 @@
 			  
 			  for (var i = 0; i < result.highSal.length; i++) {
 					
-				  str += "<li>"+(i+1)+"위: 브랜드코드["+result.highSal[i].brandCode+"] "
+				  str += "<li>"+(i+1)+"위: 코드["+result.highSal[i].brandCode+"] "
 				  +result.pList[i].brandName 
 				  +"("+result.highSal[i].brandSales+"원)</li>";
 				       		
@@ -350,7 +447,7 @@
 			  
 			  for (var i = 0; i < result.lowSal.length; i++) {
 					
-				  str += "<li>"+(i+1)+"위: 브랜드코드["+result.lowSal[i].brandCode+"] "
+				  str += "<li>"+(i+1)+"위: 코드["+result.lowSal[i].brandCode+"] "
 				  +result.pList[i].brandName 
 				  +"("+result.lowSal[i].brandSales+"원)</li>";
 				       		
@@ -375,12 +472,15 @@
 	  if($("#notPostedP").is(':checked')){
 		  justifying="N";
 	  }
+	 var categoryNo=$("#category option:selected").val();
+	 
 	 
 	 $.ajax({
 		 url: "/pjtMungHub/productList.sp",
 		 data : {orderBy : $("input:radio[name='productOrderBy']:checked").val()+desc,
 			 	justifying : justifying,
-			 	currentPage : num},
+			 	currentPage : num,
+			 	categoryNo : categoryNo},
 		 success : function(result){
 			 var str="";
 			 var pagination="";

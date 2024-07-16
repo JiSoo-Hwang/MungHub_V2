@@ -15,7 +15,9 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.Customer;
 import com.kh.pjtMungHub.shop.model.vo.Favorite;
+import com.kh.pjtMungHub.shop.model.vo.MonthlyTally;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Point;
@@ -407,9 +409,9 @@ public class ShopDao {
 		return sqlSession.update("shopMapper.updateBrandSales",bList);
 	}
 
-	public Integer selectProductCount(SqlSessionTemplate sqlSession) {
+	public Integer selectProductCount(SqlSessionTemplate sqlSession, ParameterVo parameter) {
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne("shopMapper.selectProductCount");
+		return sqlSession.selectOne("shopMapper.selectProductCount",parameter);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -439,6 +441,71 @@ public class ShopDao {
 	public int updateBrand(SqlSessionTemplate sqlSession, Brand brand) {
 		// TODO Auto-generated method stub
 		return sqlSession.update("shopMapper.updateBrand",brand);
+	}
+
+	public int insertCategory(SqlSessionTemplate sqlSession, String categoryName) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.insertCategory",categoryName);
+	}
+
+	public int updateCategory(SqlSessionTemplate sqlSession, Category c) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateCategory",c);
+	}
+
+	public int deleteCategory(SqlSessionTemplate sqlSession, int categoryNo) {
+		// TODO Auto-generated method stub
+		return sqlSession.delete("shopMapper.deleteCategory",categoryNo);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Customer> selectTopBuyer(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectTopBuyer");
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Customer> selectTopSpenders(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectTopSpenders");
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Customer> selectCustomerList(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectCustomerList");
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public ArrayList<Question> selectQuestionListControll(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectQuestionListControll");
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Question> selectQuestionListUser(int userNo, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectQuestionListUser",userNo);
+	}
+
+	public int replyInquiry(Answer a, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.insert("shopMapper.replyInquiry",a);
+	}
+
+	public int updateQustionStatus(int questionNo, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("shopMapper.updateQustionStatus",questionNo);
+	}
+
+	public MonthlyTally selectMonthlyTally(HashMap<String, String> map, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectMonthlyTally",map);
+	}
+
+	public MonthlyTally selectMonthlyTallyCount(HashMap<String, String> map, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("shopMapper.selectMonthlyTallyCount",map);
 	}
 
 

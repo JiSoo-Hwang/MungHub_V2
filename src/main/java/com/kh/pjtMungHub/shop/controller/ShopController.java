@@ -3,8 +3,10 @@ package com.kh.pjtMungHub.shop.controller;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -32,7 +34,9 @@ import com.kh.pjtMungHub.shop.model.vo.Attachment;
 import com.kh.pjtMungHub.shop.model.vo.Brand;
 import com.kh.pjtMungHub.shop.model.vo.Cart;
 import com.kh.pjtMungHub.shop.model.vo.Category;
+import com.kh.pjtMungHub.shop.model.vo.Customer;
 import com.kh.pjtMungHub.shop.model.vo.Favorite;
+import com.kh.pjtMungHub.shop.model.vo.MonthlyTally;
 import com.kh.pjtMungHub.shop.model.vo.POrderInfo;
 import com.kh.pjtMungHub.shop.model.vo.ParameterVo;
 import com.kh.pjtMungHub.shop.model.vo.Point;
@@ -1263,7 +1267,17 @@ public class ShopController {
 	@GetMapping("adminPage/dashBoard")
 	public ModelAndView adminPage(ModelAndView mv) {
 		
-		
+		Calendar now = Calendar.getInstance();
+		int year = now.get(Calendar.YEAR);
+		String startDate = Integer.toString(year)+"-01-01";
+		String endDate = Integer.toString(year)+"-12-31";
+		HashMap<String, String> map=new HashMap<>();
+		map.put("start", startDate);
+		map.put("end", endDate);
+		MonthlyTally Mon=shopService.selectMonthlyTally(map);
+		MonthlyTally MonCount=shopService.selectMonthlyTallyCount(map);
+		mv.addObject("month",Mon);
+		mv.addObject("monthCount",MonCount);
 		mv.setViewName("shop/adminPage");
 		return mv;
 	}
@@ -1510,20 +1524,42 @@ public class ShopController {
 		return cList;
 	}
 	
+	@PostMapping("insertCategory.sp")
+	@ResponseBody
+	public int insertCategory(String categoryName) {
+		int result=shopService.insertCategory(categoryName);
+		return result;
+	}
+	
+	@PostMapping("updateCategory.sp")
+	@ResponseBody
+	public int updateCategory(Category c) {
+		int result=shopService.updateCategory(c);
+		return result;
+	}
+	@PostMapping("deleteCategory.sp")
+	@ResponseBody
+	public int deleteCategory(int categoryNo) {
+		int result=shopService.deleteCategory(categoryNo);
+		
+		return result;
+	}
 	@SuppressWarnings("unchecked")
 	@GetMapping("productList.sp")
 	@ResponseBody
-	public JSONObject selectProductListControll(String orderBy,String justifying,int currentPage){
+	public JSONObject selectProductListControll(String orderBy,String justifying,int currentPage,int categoryNo){
 		
-		
-		int listCount=shopService.selectProductCount();
-		int pageLimit=10;
-		int boardLimit= 20;
 		
 		ParameterVo parameter=new ParameterVo();
 		
 		parameter.setJustifying(justifying);
 		parameter.setOrderBy(orderBy);
+		parameter.setCategoryNo(categoryNo);
+		
+		int listCount=shopService.selectProductCount(parameter);
+		int pageLimit=10;
+		int boardLimit= 20;
+		
 		
 		PageInfo pi = Pagination.getPageInfo(listCount, currentPage, pageLimit, boardLimit);
 
@@ -1559,11 +1595,62 @@ public class ShopController {
 	@GetMapping("adminPage/customerControll")
 	public ModelAndView customerControll(ModelAndView mv) {
 		
-		
 		mv.setViewName("shop/customerController");
 		return mv;
 	}
 	
+	
+	@GetMapping("TopBuyer.sp")
+	@ResponseBody
+	public ArrayList<Customer> selectTopBuyer(){
+		ArrayList<Customer> cList=shopService.selectTopBuyer();
+		return cList;
+	}
+	
+	@GetMapping("TopSpenders.sp")
+	@ResponseBody
+	public ArrayList<Customer> selectTopSpenders(){
+		ArrayList<Customer> cList=shopService.selectTopSpenders();
+		return cList;
+	}
+	@GetMapping("customerList.sp")
+	@ResponseBody
+	public ArrayList<Customer> selectCustomerList(){
+		ArrayList<Customer> cList=shopService.selectCustomerList();
+		return cList;
+	}
+	@GetMapping("inquiryList.sp")
+	@ResponseBody
+	public ArrayList<Question> selectInquiryList(){
+		ArrayList<Question> qList=shopService.selectQuestionListControll();
+		return qList;
+	}
+	
+	@GetMapping("selectUserQuestion.sp")
+	@ResponseBody
+	public ArrayList<Question> selectUserQuestion(int userNo){
+		
+		ArrayList<Question> qList=shopService.selectQuestionListUser(userNo);
+		
+		return qList;
+	}
+	
+	@GetMapping("selectInquiry.sp")
+	@ResponseBody
+	public Question selectInquiry(int questionNo) {
+		Question q=shopService.selectQuestionDetail(questionNo);
+		
+		return q;
+	}
+	
+	@PostMapping("replyInquiry.sp")
+	@ResponseBody
+	public int replyInquiry(Answer a) {
+		
+		int result=shopService.replyInquiry(a);
+		
+		return result;
+	}
 	
 	public String saveFile(MultipartFile upfile
 						  ,HttpSession session
