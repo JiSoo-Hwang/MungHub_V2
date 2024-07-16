@@ -1277,6 +1277,7 @@ WHERE ORDER_PROCESS=#{category}
         JOIN MEMBER USING(USER_NO)
         WHERE ROWNUM BETWEEN 1 AND 5
         GROUP BY USER_NO,NAME
+        ORDER BY SUM(TOTAL) DESC
 	</select>
 	
 	<select id="selectCustomerList"
@@ -1289,7 +1290,6 @@ WHERE ORDER_PROCESS=#{category}
 	     , (SELECT LEVEL AS lv 
 	          FROM dual 
 	       CONNECT BY LEVEL <![CDATA[<]]>= 50) b
-	       
 	 WHERE REGEXP_SUBSTR(P.ITMES_QUANTITY, '[^,]+', 1, b.lv) IS NOT NULL
 	GROUP BY USER_NO
 	ORDER BY QUANTITY DESC) A,(SELECT SUM(TOTAL) TOTAL,USER_NO,NAME
@@ -1302,9 +1302,9 @@ WHERE ORDER_PROCESS=#{category}
 	        ORDER BY TOTAL DESC
 	        )
 	        JOIN MEMBER USING(USER_NO)
-	        WHERE USER_NO BETWEEN 1 AND 5
 	        GROUP BY USER_NO,NAME) B
-	WHERE A.USER_NO=B.USER_NO
+           WHERE A.USER_NO=B.USER_NO
+           ORDER BY B.TOTAL DESC
 	</select>
 	<select id="selectQuestionListControll"
 	resultType="com.kh.pjtMungHub.shop.model.vo.Question">
