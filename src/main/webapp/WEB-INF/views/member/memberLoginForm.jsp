@@ -187,7 +187,7 @@
 			alert(naver_id_login.getProfileData('nickname'));
 		}
 	  	function kakao(){
-	  		var kakapPopup=window.open('http://localhost:8887/pjtMungHub/kakao.me', 'kakaologinpop', 'titlebar=1, resizable=1, scrollbars=yes, width=600, height=550'); 
+	  		var kakapPopup=window.open('http://localhost:8888/pjtMungHub/kakao.me', 'kakaologinpop', 'titlebar=1, resizable=1, scrollbars=yes, width=600, height=550'); 
 	  	}
 		function loginUpdate(){
 			location.href="loginInfo.me";
