@@ -24,6 +24,11 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("boardMapper.listCount", category);
 	}
+	
+	public int searchCount(SqlSessionTemplate sqlSession, int category) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("boardMapper.searchCount", category);
+	}
 
 	public ArrayList<Board> selectList(SqlSessionTemplate sqlSession, PageInfo pi, String sort) {
 		// TODO Auto-generated method stub
@@ -95,6 +100,15 @@ public class BoardDao {
 		return sqlSession.insert("boardMapper.insertAttachment",fileParameter);
 	}
 	
+	public int updateBoard(SqlSessionTemplate sqlSession, Board b) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("boardMapper.updateBoard",b);
+	}
+	
+	public int updateAttachment(SqlSessionTemplate sqlSession, ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return sqlSession.update("boardMapper.updateAttachment", parameter);
+	}
 	
 	public int deleteBoard(SqlSessionTemplate sqlSession, int boardNo) {
 		// TODO Auto-generated method stub
@@ -106,15 +120,6 @@ public class BoardDao {
 	}
 	
 
-	public int updateBoard(SqlSessionTemplate sqlSession, Board b) {
-		// TODO Auto-generated method stub
-		return sqlSession.update("boardMapper.updateBoard",b);
-	}
-	
-	public int updateAttachment(SqlSessionTemplate sqlSession, ParameterVo fileParameter) {
-		// TODO Auto-generated method stub
-		return sqlSession.update("boardMapper.updateAttachment", fileParameter);
-	}
 	
 	//댓글기능
 	public ArrayList<Reply> replyList(SqlSessionTemplate sqlSession, int boardNo) {
@@ -146,6 +151,47 @@ public class BoardDao {
 		// TODO Auto-generated method stub
 		return sqlSession.delete("boardMapper.deleteLike");
 	}
+
+	public ArrayList<Attachment> selectAttachmentList(SqlSessionTemplate sqlSession, ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("boardMapper.selectAttachmentList",parameter);
+	}
+
+	public ArrayList<Board> searchList(SqlSessionTemplate sqlSession, PageInfo pi, String sort, String keyword) {
+		// TODO Auto-generated method stub
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+
+		RowBounds rowBounds = new RowBounds(offset, limit);
+
+		ParameterVo params = new ParameterVo();
+
+		params.setLimit(limit);
+		params.setOffset(offset);
+		params.setSort(sort);
+
+		return (ArrayList) sqlSession.selectList("boardMapper.searchList", params, rowBounds);
+	}
+
+	public ArrayList<Board> searchList(SqlSessionTemplate sqlSession, PageInfo pi, String sort, String keyword,
+			int category) {
+		// TODO Auto-generated method stub
+		int limit = pi.getBoardLimit();
+		int offset = (pi.getCurrentPage() - 1) * limit;
+
+		RowBounds rowBounds = new RowBounds(offset, limit);
+
+		ParameterVo params = new ParameterVo();
+
+		params.setLimit(limit);
+		params.setOffset(offset);
+		params.setCategory(category);
+		params.setSort(sort);
+
+		return (ArrayList) sqlSession.selectList("boardMapper.searchList", params, rowBounds);
+	}
+
+	
 
 
 	

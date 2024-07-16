@@ -32,6 +32,11 @@ public class BoardServiceImpl implements BoardService {
 		// TODO Auto-generated method stub
 		return boardDao.listCount(sqlSession,category);
 	}
+	@Override
+	public int searchCount(int category) {
+		// TODO Auto-generated method stub
+		return boardDao.searchCount(sqlSession,category);
+	}
 	//카테고리 선택
 	@Override
 	public ArrayList<Category> selectCategory() {
@@ -82,19 +87,16 @@ public class BoardServiceImpl implements BoardService {
 		}
 		return result1*result2;
 	}
+	
 	@Override
-	public int updateBoard(Board b, ParameterVo fileParameter) {
+	public int updateBoard(Board b) {
 		// TODO Auto-generated method stub
-		
-		int result1 =boardDao.updateBoard(sqlSession,b);
-		int result2 = 1;
-		
-		if(!fileParameter.getAList().isEmpty()) {
-			
-			result2 = boardDao.updateAttachment(sqlSession,fileParameter);
-		}
-		
-		return result1*result2;
+		return boardDao.updateBoard(sqlSession,b);
+	}
+	@Override
+	public int updateAttachment(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return boardDao.updateAttachment(sqlSession,parameter);
 	}
 
 	@Override
@@ -134,6 +136,25 @@ public class BoardServiceImpl implements BoardService {
 	public int likeCount(Recommend r) {
 		// TODO Auto-generated method stub
 		return boardDao.likeCount(sqlSession,r);
+	}
+	@Override
+	public ArrayList<Attachment> selectAttachmentList(ParameterVo parameter) {
+		// TODO Auto-generated method stub
+		return boardDao.selectAttachmentList(sqlSession,parameter);
+	}
+	
+	
+	
+	
+	@Override
+	public ArrayList<Board> searchList(PageInfo pi, String sort, String keyword) {
+		// TODO Auto-generated method stub
+		return boardDao.searchList(sqlSession, pi, sort,keyword);
+	}
+	@Override
+	public ArrayList<Board> searchList(PageInfo pi, String sort, String keyword, int category) {
+		// TODO Auto-generated method stub
+		return boardDao.searchList(sqlSession, pi, sort,keyword,category);
 	}
 
 	

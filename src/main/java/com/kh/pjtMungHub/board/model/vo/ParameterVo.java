@@ -24,5 +24,7 @@ public class ParameterVo {
 	private int number;
 	private String[] items;
 	
+	private int boardNo;
+	
 
 }

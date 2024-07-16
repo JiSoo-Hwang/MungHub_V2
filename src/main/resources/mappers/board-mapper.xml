@@ -58,6 +58,37 @@
 		</choose>
 
 	</select>
+	<select id="searchList" resultType="Board" parameterType="com.kh.pjtMungHub.board.model.vo.ParameterVo">
+		SELECT BOARD_NO boardNo
+			,BOARD_TITLE boardTitle
+			,USER_ID boardWriter
+			,COUNT count
+			,RECOMMEND recommend
+			,UPLOAD_DATE uploadDate
+			,B.STATUS
+		FROM BOARD B
+		JOIN MEMBER M ON M.USER_NO=B.BOARD_WRITER
+		WHERE B.STATUS='Y'
+	<if test="category!=0">
+		AND CATEGORY_NO = #{category}
+	</if>
+ 		ORDER BY
+		<choose>
+			<when test="sort == 'latest'">
+				UPLOAD_DATE DESC
+			</when>
+			<when test="sort == 'view'">
+				COUNT DESC
+			</when>
+			<when test="sort == 'recommned'">
+				RECOMMEND DESC
+			</when>
+			<otherwise>
+				UPLOAD_DATE DESC
+			</otherwise>
+		</choose>
+
+	</select>
 
 	<select id="selectCategory"
 		resultType="com.kh.pjtMungHub.board.model.vo.Category">
@@ -135,8 +166,6 @@
 		AND STATUS = 'Y'
 		</foreach>
 	</update>
-	
-	
 	<insert id="insertAttachment" parameterType="com.kh.pjtMungHub.board.model.vo.Attachment">
 	INSERT ALL
 	<foreach collection="aList" item="arr">
@@ -157,6 +186,10 @@
 	</foreach>
 	SELECT * FROM DUAL 
 	</insert>
+
+
+
+
 
 	<select id="selectAttachmentList"
 		resultType="com.kh.pjtMungHub.board.model.vo.Attachment">

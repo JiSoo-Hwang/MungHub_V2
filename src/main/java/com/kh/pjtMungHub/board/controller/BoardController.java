@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,6 +72,35 @@ public class BoardController {
 
 		return "board/boardListView";
 	}
+	@GetMapping("search.bo")
+	public String searchList(Model model, @RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
+			@RequestParam(value = "category", defaultValue = "0") int category,
+			@RequestParam(value = "sort", defaultValue = "latest") String sort,
+			@RequestParam(value="keyword",defaultValue ="") String keyword){
+		
+		int searchCount = boardService.searchCount(category);
+		int pageLimit = 10;
+
+		int boardLimit = 20;
+		// 페이지 정보 객체 생성
+		PageInfo pi = Pagination.getPageInfo(searchCount, currentPage, pageLimit, boardLimit);
+		// 게시글 목록 조회
+		
+		ArrayList<Board> list = boardService.searchList(pi, sort,keyword);
+		
+		// 카테고리 목록 조회
+		
+		ArrayList<Category> ctList = boardService.selectCategory();
+		
+		if (category == 0) {
+			list = boardService.searchList(pi, sort, keyword);
+		} else {
+			list = boardService.searchList(pi, sort,keyword ,category);
+		}
+		
+		return "board/searchBoardForm";
+	}
+
 
 	@GetMapping("detail.bo")
 	public ModelAndView selectBoard(int boardNo, ModelAndView mv) {
@@ -174,82 +204,87 @@ public class BoardController {
 
 	// 게시글 수정페이지 이동 메소드
 	@GetMapping("update.bo")
-	public String boardUpdateForm(int boardNo, ModelAndView mv) {
+	public ModelAndView boardUpdateForm(int boardNo, ModelAndView mv) {
 
 		// boardNo로 db에서 해당 게시글 정보 조회해오기 (기존 상세보기시 사용했던 메소드 재활용하기)
 		Board b = boardService.selectBoard(boardNo);
+		ParameterVo parameter=ParameterVo.builder().number(b.getBoardNo()).build();
+		
+		
 		ArrayList<Category> ctList = boardService.selectCategory();
-		ArrayList<Attachment> aList = boardService.AttachmentList(boardNo);
+		ArrayList<Attachment> aList = boardService.selectAttachmentList(parameter);
 
-		System.out.println(b);
-		System.out.println(ctList);
-		System.out.println(aList);
 		mv.addObject("aList", aList);
 		mv.addObject("ctList", ctList);
 		mv.addObject("b", b);
+		
+		mv.setViewName("board/updateBoardForm");
 		// 페이지 이동할때 전달하기
-		return "board/updateBoardForm";
+		return mv;
 	}
 
 	// 게시글 수정처리 메소드
 	@PostMapping("update.bo")
-	public String updateBoard(Board b, MultipartFile[] upfile, HttpSession session) {
-
-		boolean flag = false; // 파일 삭제 필요시 사용할 논리값
-		String deleteFile = "";// 파일 저장경로 및 변경파일명 담아놓을 변수
-		ArrayList<Attachment> aList = new ArrayList<>();
-		// 새로운 첨부파일이 넘어온 경우(파일명이 넘어왔을때)
-		if (!upfile[0].getOriginalFilename().equals("")) {
-			for (int i = 0; i < upfile.length; i++) {
+	public String updateBoard(Board b,MultipartFile[] upfile,HttpSession session) {
+		
+		boolean flag= false;
+		String deleteFile= "";
+		
+		ParameterVo parameter=ParameterVo.builder()
+								.number(b.getBoardNo()).build();
+		
+		ArrayList<Attachment> aList=boardService.selectAttachmentList(parameter);
+		ArrayList<Attachment> uploadList=new ArrayList<>();
+		
+		for(int i=0; i<upfile.length; i++) {
+			if(!upfile[i].getOriginalFilename().equals("")) {
+				
+				
 				String fileType = upfile[i].getOriginalFilename();
 				int index = fileType.lastIndexOf(".");
-
 				String extension = fileType.substring(index + 1).toLowerCase();
 				String type = determineFileType(extension);
-				String changeName = saveFile(upfile[i], session, type);
-
-				Attachment a = Attachment.builder().fileLevel(i).originName(upfile[i].getOriginalFilename())
-						.changeName(changeName)
-						.filePath("/pjtMungHub/resources/uploadFiles/board/boardDetail/" + type + "/").fileType(type)
-						.build();
-
-				aList.add(a);
-				// 새로운 첨부파일이 있는경우 기존 첨부파일을 찾아서 삭제하는 작업을 해야함
-				if (b.getOriginName() != null) {
+				String changeName = saveFile(upfile[i], session,type);
+				
+				
+				if(aList.size()>i) {
 					flag = true;
-					deleteFile = b.getChangeName();
+					deleteFile="resources/uploadFiles/board/boardDetail/"+aList
+							.get(i).getFileType()+"/"+aList.get(i).getChangeName();
+					if(flag) {
+						File f = new File(session.getServletContext().getRealPath(deleteFile));
+						f.delete();
+						
+						flag= false;
+					}
 				}
-
-				// 처리된 변경이름과 원본명을 board에 담아주기
-				//b.setOriginName(upfile[i].getOriginalFilename());
-				//b.setChangeName("pjtMungHub/resources/uploadFiles/board/boardDetail/" + type + "/").fileType(type));
+				
+				Attachment a = Attachment
+							  .builder()
+							  .fileLevel(i)
+							  .originName(upfile[i].getOriginalFilename())
+						      .changeName(changeName)
+						      .filePath("/pjtMungHub/resources/uploadFiles/board/boardDetail/" + type + "/")
+						      .attBno(b.getBoardNo())
+						      .fileType(fileType)
+						      .build();
+				uploadList.add(a);
+						      
 			}
+			parameter.setAList(uploadList);
+			int result1=boardService.updateBoard(b);
+			int result2=boardService.updateAttachment(parameter);
 		}
-		ParameterVo fileParameter = ParameterVo.builder().aList(aList).build();
-		/*
-		 * 게시글정보인 b 에는 boardNo,boardTitle,boardContent가 들어있다
-		 * 
-		 * 추가적으로 고려해야하는 경우는 1.새로 첨부된 파일이 없고 기존 파일도 없을때 2.새로 첨부된 파일이 없고 기존 파일은 있을때 3.새로
-		 * 첨부된 파일이 있고 기존 파일은 없을때 - 새로 전달된 파일을 서버에 저장하고 데이터베이스에도 등록 4.새로 첨부된 파일이 있고 기존
-		 * 파일도 있을때 - 기존파일은 삭제 / 새로 첨부된 파일을 저장 및 등록하기
-		 */
-		int result = boardService.updateBoard(b,fileParameter);
+				
+	    return "redirect:/detail.bo/"+b.getBoardNo();
 
-		if (result > 0) { // 수정 성공시
-			String msg = "게시글 수정 성공!";
-			if (flag) {
-				// File(실제 파일 저장 경로)
-				File f = new File(session.getServletContext().getRealPath(deleteFile));
-				f.delete(); // 삭제
-			}
-			session.setAttribute("alertMsg", msg);
-		} else {// 수정 실패
-			String msg = "게시글 수정 실패!";
-			session.setAttribute("alertMsg", msg);
-		}
-		// 수정된 게시글 상세보기 페이지로 이동
-		return "redirect:/detail.bo?boardNo=" + b.getBoardNo();
-
+	}
+	
+	//파일 업데이트 시 기조 파일 삭제하는 구문
+	public void deleteFile(String deleteFile, HttpSession session) {
+		// TODO Auto-generated method stub
+		new File(session.getServletContext().getRealPath(deleteFile)).delete();
+		
 	}
 
 	// 파일 업로드 실패시 파일 삭제하는 구문
@@ -301,21 +336,35 @@ public class BoardController {
 		return changeName;
 	}
 	
+	
+	
+	
+	
+	
 	@PostMapping("RecCount.bo")
 	@ResponseBody
 	public int getLikeCount(Recommend r) {
 		return boardService.likeCount(r);
 	}
+	
+	
+	
+	
+	
 	@PostMapping("RecUpdate.bo")
 	@ResponseBody
-	public int updateLike(Recommend r) {
+	public int updateLike(HttpSession Session,Recommend r) {
+		
+		int likeCount=boardService.likeCount(r);
 		int result=boardService.updateLike(r);
 		
 		
-		int likeCount=boardService.likeCount(r);
+			
+		return result;
+		}
 		
-		return likeCount;
-	}
+		
+		
 	// 댓글 목록 조회
 	@ResponseBody
 	@RequestMapping(value = "replyList.bo", produces = "application/json;charset=UTF-8")

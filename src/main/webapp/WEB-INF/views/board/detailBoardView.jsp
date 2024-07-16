@@ -135,7 +135,7 @@ img, video {
 					<c:when test="${empty loginUser}"> 
 					<a class="active" href="/pjtMungHub/enter.me"
 							style="color: white;">Login</a>
-					<span id="likeCount">${b.recommend}</span>
+					<span id="recCount">${b.recommend}</span>
 					</c:when>
 					<c:otherwise>
 					<button id="likeButton" name="likeBtn">Like</button>
@@ -207,7 +207,7 @@ img, video {
             	
             		},
             		success:function(count){
-            			$("#likeCount").text(recommend);
+            			$("#recCount").text(recommend);
             		},
             		error:function(){
             			console.log("통신오류");
