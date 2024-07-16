@@ -249,4 +249,9 @@ public class MemberServiceImpl implements MemberService{
 	public int deleteChat(MessageVO msg) {
 		return dao.deleteChat(sqlSession,msg);
 	}
+
+	@Override
+	public int createChat(MessageVO msg) {
+		return dao.createChat(sqlSession,msg);
+	}
 }

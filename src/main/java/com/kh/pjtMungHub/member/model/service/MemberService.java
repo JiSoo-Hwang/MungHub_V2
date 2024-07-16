@@ -61,4 +61,5 @@ public interface MemberService {
 	int chatRead(MessageVO msg);
 	int saveChat(MessageVO msg);
 	int deleteChat(MessageVO msg);
+	int createChat(MessageVO msg);
 }

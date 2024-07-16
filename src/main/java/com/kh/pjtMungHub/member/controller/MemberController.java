@@ -743,6 +743,28 @@ public class MemberController {
 	public int chatRead(HttpSession session, MessageVO msg) {
 		return service.chatRead(msg);
 	}
+	
+	@ResponseBody
+	@GetMapping("/loadNewChat.chat")
+	public MessageVO loadNewChat(MessageVO msg, HttpSession session) {
+		int result;
+		MessageVO newMsg=service.getNewChat(msg);
+		PetSitter petSitter= new PetSitter();
+		PetSitter pst=new PetSitter();
+		pst.setPetSitterNo(msg.getSitterNo());
+		petSitter=service.searchSitterStatus(pst);
+		session.setAttribute("sitterUser", petSitter);
+		ArrayList<MessageVO> chatList=new ArrayList<MessageVO>();
+		if(newMsg==null) {
+			result=service.createChat(msg);
+			if(result>0) {
+				newMsg=service.getNewChat(msg);
+			}
+		}
+		chatList.add(newMsg);
+		session.setAttribute("chatList", chatList);
+		return newMsg;
+	}
 	public String generateState()
 	{
 	    SecureRandom random = new SecureRandom();
