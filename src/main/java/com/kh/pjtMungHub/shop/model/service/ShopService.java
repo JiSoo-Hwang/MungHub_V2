@@ -254,5 +254,11 @@ public interface ShopService {
 	MonthlyTally selectMonthlyTallyCount(HashMap<String, String> map);
 
 
+	ArrayList<Attachment> selectMainSlide();
+
+
+	int insertMain(ParameterVo fileParameter);
+
+
 
 }

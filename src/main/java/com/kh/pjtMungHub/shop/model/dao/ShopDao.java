@@ -382,7 +382,7 @@ public class ShopDao {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ArrayList<POrderInfo> selectOrderListComplte(POrderInfo p, SqlSessionTemplate sqlSession) {
+	public ArrayList<POrderInfo> selectOrderListComplete(POrderInfo p, SqlSessionTemplate sqlSession) {
 		// TODO Auto-generated method stub
 		return (ArrayList)sqlSession.selectList("shopMapper.selectOrderListComplte",p);
 	}
@@ -506,6 +506,12 @@ public class ShopDao {
 	public MonthlyTally selectMonthlyTallyCount(HashMap<String, String> map, SqlSessionTemplate sqlSession) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("shopMapper.selectMonthlyTallyCount",map);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Attachment> selectMainSlide(SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("shopMapper.selectMainSlide");
 	}
 
 
