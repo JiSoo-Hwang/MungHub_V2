@@ -487,7 +487,7 @@ public class ShopServiceImpl implements ShopService {
 		POrderInfo p= new POrderInfo();
 		p.setUserNo(userNo);
 		p.setProcess(category);
-		return shopDao.selectOrderListComplte(p,sqlSession);
+		return shopDao.selectOrderListComplete(p,sqlSession);
 	}
 
 	@Override

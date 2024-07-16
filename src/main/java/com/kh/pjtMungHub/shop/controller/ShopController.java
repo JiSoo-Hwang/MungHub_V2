@@ -1589,13 +1589,18 @@ public class ShopController {
 		return result;
 	}
 	
-	
-	
-	
 	@GetMapping("adminPage/customerControll")
 	public ModelAndView customerControll(ModelAndView mv) {
 		
 		mv.setViewName("shop/customerController");
+		return mv;
+	}
+	
+	
+	@GetMapping("adminPage/eventControll")
+	public ModelAndView eventControll(ModelAndView mv) {
+		
+		mv.setViewName("shop/eventControll");
 		return mv;
 	}
 	

@@ -382,7 +382,7 @@ public class ShopDao {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ArrayList<POrderInfo> selectOrderListComplte(POrderInfo p, SqlSessionTemplate sqlSession) {
+	public ArrayList<POrderInfo> selectOrderListComplete(POrderInfo p, SqlSessionTemplate sqlSession) {
 		// TODO Auto-generated method stub
 		return (ArrayList)sqlSession.selectList("shopMapper.selectOrderListComplte",p);
 	}
