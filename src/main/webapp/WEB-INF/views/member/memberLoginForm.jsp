@@ -172,7 +172,7 @@
 	</div>
 	</div>
 	<script>
-		var naver_id_login = new naver_id_login("fx5vZaNv0sDLANZnS_vt", "http://localhost:8887/pjtMungHub/naver.me");
+		var naver_id_login = new naver_id_login("fx5vZaNv0sDLANZnS_vt", "http://localhost:8888/pjtMungHub/naver.me");
 	  	var state = naver_id_login.getUniqState();
 	  	naver_id_login.setButton("green", 3, 45);
 	  	naver_id_login.setDomain();
