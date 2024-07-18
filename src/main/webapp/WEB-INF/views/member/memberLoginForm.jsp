@@ -11,7 +11,7 @@
 	<script src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
 	
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>로그인 페이지입니다 ♡(ᐢ ᴥ ᐢし)</title>
 <style>
 	.total-area{
 		width:100%;
