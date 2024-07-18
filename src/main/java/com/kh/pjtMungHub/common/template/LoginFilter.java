@@ -26,8 +26,7 @@ public class LoginFilter implements Filter {
         HttpSession session = htRequest.getSession();
 
         if(session.getAttribute("loginUser") == null) {
-            session.setAttribute("alertMsg", "로그인 후 이용해주세요.");
-            ((HttpServletResponse)response).sendRedirect(htRequest.getContextPath());
+            ((HttpServletResponse)response).sendRedirect(htRequest.getContextPath()+"/enter.me");
         } else {
             chain.doFilter(request, response);
         }
